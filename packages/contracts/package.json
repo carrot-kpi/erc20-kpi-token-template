@@ -1,5 +1,5 @@
 {
-    "name": "cct-contracts-kpi-token-preset-foundry-solidity",
+    "name": "erc20-kpi-token-template-contracts",
     "version": "0.1.0",
     "description": "A preset for developing Carrot KPI token template smart contracts with Foundry and Solidity.",
     "author": "Federico Luzzi <federico.luzzi@protonmail.com>",
@@ -9,6 +9,7 @@
         "lint": "prettier -l src/**/*.sol tests/**/*.sol",
         "build": "forge build",
         "test": "forge test",
+        "coverage": "forge coverage",
         "prepare": "node ./init.js"
     },
     "devDependencies": {
