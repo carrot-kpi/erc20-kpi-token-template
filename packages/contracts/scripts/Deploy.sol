@@ -2,7 +2,7 @@ pragma solidity 0.8.17;
 
 import {Script} from "forge-std/Script.sol";
 import {console2} from "forge-std/console2.sol";
-import {KPITokenTemplate} from "../src/KPITokenTemplate.sol";
+import {ERC20KPIToken} from "../src/ERC20KPIToken.sol";
 
 /// SPDX-License-Identifier: GPL-3.0-or-later
 /// @title Deploy
@@ -11,7 +11,10 @@ import {KPITokenTemplate} from "../src/KPITokenTemplate.sol";
 contract Deploy is Script {
     function run() external {
         vm.broadcast();
-        KPITokenTemplate _kpiTokenTemplate = new KPITokenTemplate();
-        console2.log("Template deployed at address", address(_kpiTokenTemplate));
+        ERC20KPIToken _kpiTokenTemplate = new ERC20KPIToken();
+        console2.log(
+            "Template deployed at address",
+            address(_kpiTokenTemplate)
+        );
     }
 }
