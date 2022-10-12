@@ -5,7 +5,7 @@ import {BaseTestSetup} from "tests/commons/BaseTestSetup.sol";
 import {ERC20KPIToken} from "../src/ERC20KPIToken.sol";
 import {IOraclesManager1} from "carrot/interfaces/oracles-managers/IOraclesManager1.sol";
 import {Clones} from "oz/proxy/Clones.sol";
-import {IERC20KPIToken} from "../src/interfaces/IERC20KPIToken.sol";
+import {IERC20KPIToken, OracleData, Collateral, FinalizableOracle} from "../src/interfaces/IERC20KPIToken.sol";
 
 /// SPDX-License-Identifier: GPL-3.0-or-later
 /// @title ERC20 KPI token initialize test
@@ -17,9 +17,8 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
             Clones.clone(address(erc20KpiTokenTemplate))
         );
 
-        IERC20KPIToken.Collateral[]
-            memory collaterals = new IERC20KPIToken.Collateral[](1);
-        collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory collaterals = new Collateral[](1);
+        collaterals[0] = Collateral({
             token: address(1),
             amount: 1,
             minimumPayout: 0
@@ -38,6 +37,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 expiration: block.timestamp + 60,
                 kpiTokenData: abi.encode(
                     collaterals,
+                    true,
                     "Token",
                     "TKN",
                     100 ether
@@ -138,10 +138,9 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
             Clones.clone(address(erc20KpiTokenTemplate))
         );
 
-        IERC20KPIToken.Collateral[]
-            memory collaterals = new IERC20KPIToken.Collateral[](6);
+        Collateral[] memory collaterals = new Collateral[](6);
         for (uint8 i = 0; i < 6; i++)
-            collaterals[i] = IERC20KPIToken.Collateral({
+            collaterals[i] = Collateral({
                 token: address(uint160(i)),
                 amount: i,
                 minimumPayout: 0
@@ -158,7 +157,13 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 10 ether),
+                kpiTokenData: abi.encode(
+                    collaterals,
+                    true,
+                    "Token",
+                    "TKN",
+                    10 ether
+                ),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -169,8 +174,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
             Clones.clone(address(erc20KpiTokenTemplate))
         );
 
-        IERC20KPIToken.Collateral[]
-            memory collaterals = new IERC20KPIToken.Collateral[](0);
+        Collateral[] memory collaterals = new Collateral[](0);
 
         vm.expectRevert(abi.encodeWithSignature("NoCollaterals()"));
         kpiTokenInstance.initialize(
@@ -183,7 +187,13 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 10 ether),
+                kpiTokenData: abi.encode(
+                    collaterals,
+                    true,
+                    "Token",
+                    "TKN",
+                    10 ether
+                ),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -194,10 +204,9 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
             Clones.clone(address(erc20KpiTokenTemplate))
         );
 
-        IERC20KPIToken.Collateral[]
-            memory collaterals = new IERC20KPIToken.Collateral[](5);
+        Collateral[] memory collaterals = new Collateral[](5);
         for (uint8 i = 0; i < 5; i++)
-            collaterals[i] = IERC20KPIToken.Collateral({
+            collaterals[i] = Collateral({
                 token: address(uint160(i)),
                 amount: i,
                 minimumPayout: 0
@@ -214,7 +223,13 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, "", "TKN", 10 ether),
+                kpiTokenData: abi.encode(
+                    collaterals,
+                    true,
+                    "",
+                    "TKN",
+                    10 ether
+                ),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -225,10 +240,9 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
             Clones.clone(address(erc20KpiTokenTemplate))
         );
 
-        IERC20KPIToken.Collateral[]
-            memory collaterals = new IERC20KPIToken.Collateral[](5);
+        Collateral[] memory collaterals = new Collateral[](5);
         for (uint8 i = 0; i < 5; i++)
-            collaterals[i] = IERC20KPIToken.Collateral({
+            collaterals[i] = Collateral({
                 token: address(uint160(i)),
                 amount: i,
                 minimumPayout: 0
@@ -245,7 +259,13 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, "Token", "", 10 ether),
+                kpiTokenData: abi.encode(
+                    collaterals,
+                    true,
+                    "Token",
+                    "",
+                    10 ether
+                ),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -256,10 +276,9 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
             Clones.clone(address(erc20KpiTokenTemplate))
         );
 
-        IERC20KPIToken.Collateral[]
-            memory collaterals = new IERC20KPIToken.Collateral[](5);
+        Collateral[] memory collaterals = new Collateral[](5);
         for (uint8 i = 0; i < 5; i++)
-            collaterals[i] = IERC20KPIToken.Collateral({
+            collaterals[i] = Collateral({
                 token: address(uint160(i)),
                 amount: i,
                 minimumPayout: 0
@@ -276,7 +295,13 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 0 ether),
+                kpiTokenData: abi.encode(
+                    collaterals,
+                    true,
+                    "Token",
+                    "TKN",
+                    0 ether
+                ),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -287,14 +312,13 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
             Clones.clone(address(erc20KpiTokenTemplate))
         );
 
-        IERC20KPIToken.Collateral[]
-            memory collaterals = new IERC20KPIToken.Collateral[](2);
-        collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory collaterals = new Collateral[](2);
+        collaterals[0] = Collateral({
             token: address(10000),
             amount: 200,
             minimumPayout: 0
         });
-        collaterals[1] = IERC20KPIToken.Collateral({
+        collaterals[1] = Collateral({
             token: address(10000),
             amount: 100,
             minimumPayout: 0
@@ -311,7 +335,13 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 10 ether),
+                kpiTokenData: abi.encode(
+                    collaterals,
+                    true,
+                    "Token",
+                    "TKN",
+                    10 ether
+                ),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -322,9 +352,8 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
             Clones.clone(address(erc20KpiTokenTemplate))
         );
 
-        IERC20KPIToken.Collateral[]
-            memory collaterals = new IERC20KPIToken.Collateral[](1);
-        collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory collaterals = new Collateral[](1);
+        collaterals[0] = Collateral({
             token: address(0),
             amount: 0,
             minimumPayout: 0
@@ -341,7 +370,13 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 10 ether),
+                kpiTokenData: abi.encode(
+                    collaterals,
+                    true,
+                    "Token",
+                    "TKN",
+                    10 ether
+                ),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -352,9 +387,8 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
             Clones.clone(address(erc20KpiTokenTemplate))
         );
 
-        IERC20KPIToken.Collateral[]
-            memory collaterals = new IERC20KPIToken.Collateral[](1);
-        collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory collaterals = new Collateral[](1);
+        collaterals[0] = Collateral({
             token: address(1),
             amount: 0,
             minimumPayout: 0
@@ -371,7 +405,13 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 10 ether),
+                kpiTokenData: abi.encode(
+                    collaterals,
+                    true,
+                    "Token",
+                    "TKN",
+                    10 ether
+                ),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -382,9 +422,8 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
             Clones.clone(address(erc20KpiTokenTemplate))
         );
 
-        IERC20KPIToken.Collateral[]
-            memory collaterals = new IERC20KPIToken.Collateral[](1);
-        collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory collaterals = new Collateral[](1);
+        collaterals[0] = Collateral({
             token: address(1),
             amount: 1,
             minimumPayout: 1
@@ -401,7 +440,13 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 10 ether),
+                kpiTokenData: abi.encode(
+                    collaterals,
+                    true,
+                    "Token",
+                    "TKN",
+                    10 ether
+                ),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -412,9 +457,8 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
             Clones.clone(address(erc20KpiTokenTemplate))
         );
 
-        IERC20KPIToken.Collateral[]
-            memory collaterals = new IERC20KPIToken.Collateral[](1);
-        collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory collaterals = new Collateral[](1);
+        collaterals[0] = Collateral({
             token: address(1),
             amount: 1,
             minimumPayout: 10
@@ -431,7 +475,13 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 10 ether),
+                kpiTokenData: abi.encode(
+                    collaterals,
+                    true,
+                    "Token",
+                    "TKN",
+                    10 ether
+                ),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -445,9 +495,8 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
         firstErc20.mint(address(this), 10 ether);
         firstErc20.approve(address(kpiTokenInstance), 10 ether);
 
-        IERC20KPIToken.Collateral[]
-            memory collaterals = new IERC20KPIToken.Collateral[](1);
-        collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory collaterals = new Collateral[](1);
+        collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 10 ether,
             minimumPayout: 1 ether
@@ -460,9 +509,8 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
             abi.encode(address(2))
         );
 
-        IERC20KPIToken.OracleData[]
-            memory oracleData = new IERC20KPIToken.OracleData[](1);
-        oracleData[0] = IERC20KPIToken.OracleData({
+        OracleData[] memory oracleData = new OracleData[](1);
+        oracleData[0] = OracleData({
             templateId: 1,
             lowerBound: 0,
             higherBound: 1,
@@ -483,6 +531,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 expiration: block.timestamp + 60,
                 kpiTokenData: abi.encode(
                     collaterals,
+                    true,
                     "Token",
                     "TKN",
                     100 ether
@@ -492,8 +541,8 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
         );
 
         (
-            IERC20KPIToken.Collateral[] memory onChainCollaterals,
-            IERC20KPIToken.FinalizableOracle[] memory onChainFinalizableOracles,
+            Collateral[] memory onChainCollaterals,
+            FinalizableOracle[] memory onChainFinalizableOracles,
             bool onChainAndRelationship,
             uint256 onChainInitialSupply,
             string memory onChainName,
@@ -501,8 +550,8 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
         ) = abi.decode(
                 kpiTokenInstance.data(),
                 (
-                    IERC20KPIToken.Collateral[],
-                    IERC20KPIToken.FinalizableOracle[],
+                    Collateral[],
+                    FinalizableOracle[],
                     bool,
                     uint256,
                     string,
@@ -525,23 +574,22 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
     }
 
     function testInitializationSuccess() external {
-        IERC20KPIToken.Collateral[]
-            memory _collaterals = new IERC20KPIToken.Collateral[](1);
-        _collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory _collaterals = new Collateral[](1);
+        _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 110 ether,
             minimumPayout: 0
         });
         bytes memory _erc20KpiTokenInitializationData = abi.encode(
             _collaterals,
+            true,
             "Test",
             "TST",
             100 ether
         );
 
-        IERC20KPIToken.OracleData[]
-            memory _oracleDatas = new IERC20KPIToken.OracleData[](1);
-        _oracleDatas[0] = IERC20KPIToken.OracleData({
+        OracleData[] memory _oracleDatas = new OracleData[](1);
+        _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10,
             higherBound: 11,
@@ -580,23 +628,22 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
     }
 
     function testInitializationSuccessWithValue() external {
-        IERC20KPIToken.Collateral[]
-            memory _collaterals = new IERC20KPIToken.Collateral[](1);
-        _collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory _collaterals = new Collateral[](1);
+        _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 110 ether,
             minimumPayout: 0
         });
         bytes memory _erc20KpiTokenInitializationData = abi.encode(
             _collaterals,
+            true,
             "Test",
             "TST",
             100 ether
         );
 
-        IERC20KPIToken.OracleData[]
-            memory _oracleDatas = new IERC20KPIToken.OracleData[](1);
-        _oracleDatas[0] = IERC20KPIToken.OracleData({
+        OracleData[] memory _oracleDatas = new OracleData[](1);
+        _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10,
             higherBound: 11,

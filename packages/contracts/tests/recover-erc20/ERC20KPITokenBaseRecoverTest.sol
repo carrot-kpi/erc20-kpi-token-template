@@ -2,7 +2,7 @@ pragma solidity 0.8.17;
 
 import {BaseTestSetup} from "tests/commons/BaseTestSetup.sol";
 import {ERC20KPIToken} from "../../src/ERC20KPIToken.sol";
-import {IERC20KPIToken} from "../../src/interfaces/IERC20KPIToken.sol";
+import {IERC20KPIToken, OracleData, Collateral, FinalizableOracle} from "../../src/interfaces/IERC20KPIToken.sol";
 import {ERC20PresetMinterPauser} from "oz/token/ERC20/presets/ERC20PresetMinterPauser.sol";
 import {Clones} from "oz/proxy/Clones.sol";
 
@@ -29,27 +29,19 @@ contract ERC20KPITokenBaseRecoverTest is BaseTestSetup {
     }
 
     function testNothingToRecoverCollateral() external {
-        IERC20KPIToken kpiTokenInstance = createKpiToken("a", "b");
+        IERC20KPIToken kpiTokenInstance = createKpiToken("a");
 
-        (IERC20KPIToken.Collateral[] memory _collaterals, , , , , ) = abi
-            .decode(
-                kpiTokenInstance.data(),
-                (
-                    IERC20KPIToken.Collateral[],
-                    IERC20KPIToken.FinalizableOracle[],
-                    bool,
-                    uint256,
-                    string,
-                    string
-                )
-            );
+        (Collateral[] memory _collaterals, , , , , ) = abi.decode(
+            kpiTokenInstance.data(),
+            (Collateral[], FinalizableOracle[], bool, uint256, string, string)
+        );
 
         vm.expectRevert(abi.encodeWithSignature("NothingToRecover()"));
         kpiTokenInstance.recoverERC20(_collaterals[0].token, address(1));
     }
 
     function testNothingToRecoverToken() external {
-        IERC20KPIToken kpiTokenInstance = createKpiToken("a", "b");
+        IERC20KPIToken kpiTokenInstance = createKpiToken("a");
 
         ERC20PresetMinterPauser token = new ERC20PresetMinterPauser(
             "Token 1",
@@ -61,7 +53,7 @@ contract ERC20KPITokenBaseRecoverTest is BaseTestSetup {
     }
 
     function testRecoverExternalToken() external {
-        IERC20KPIToken kpiTokenInstance = createKpiToken("a", "b");
+        IERC20KPIToken kpiTokenInstance = createKpiToken("a");
 
         ERC20PresetMinterPauser token = new ERC20PresetMinterPauser(
             "Token 1",

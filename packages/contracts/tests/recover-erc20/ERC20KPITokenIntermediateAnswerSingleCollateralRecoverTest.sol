@@ -2,7 +2,7 @@ pragma solidity 0.8.17;
 
 import {BaseTestSetup} from "../commons/BaseTestSetup.sol";
 import {ERC20KPIToken} from "../../src/ERC20KPIToken.sol";
-import {IERC20KPIToken} from "../../src/interfaces/IERC20KPIToken.sol";
+import {IERC20KPIToken, OracleData, Collateral, FinalizableOracle} from "../../src/interfaces/IERC20KPIToken.sol";
 
 /// SPDX-License-Identifier: GPL-3.0-or-later
 /// @title ERC20 KPI token recover test
@@ -14,24 +14,22 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is
     function testIntermediateBoundAndRelationshipSingleOracleZeroMinimumPayout()
         external
     {
-        IERC20KPIToken.Collateral[]
-            memory _collaterals = new IERC20KPIToken.Collateral[](1);
-        _collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory _collaterals = new Collateral[](1);
+        _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2,
             minimumPayout: 0
         });
         bytes memory _erc20KpiTokenInitializationData = abi.encode(
             _collaterals,
+            true,
             "Test",
             "TST",
             100 ether
         );
 
-        
-        IERC20KPIToken.OracleData[]
-            memory _oracleDatas = new IERC20KPIToken.OracleData[](1);
-        _oracleDatas[0] = IERC20KPIToken.OracleData({
+        OracleData[] memory _oracleDatas = new OracleData[](1);
+        _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10,
             higherBound: 12,
@@ -84,24 +82,22 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is
     function testIntermediateBoundAndRelationshipSingleOracleZeroMinimumPayoutExpired()
         external
     {
-        IERC20KPIToken.Collateral[]
-            memory _collaterals = new IERC20KPIToken.Collateral[](1);
-        _collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory _collaterals = new Collateral[](1);
+        _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2,
             minimumPayout: 0
         });
         bytes memory _erc20KpiTokenInitializationData = abi.encode(
             _collaterals,
+            true,
             "Test",
             "TST",
             100 ether
         );
 
-        
-        IERC20KPIToken.OracleData[]
-            memory _oracleDatas = new IERC20KPIToken.OracleData[](1);
-        _oracleDatas[0] = IERC20KPIToken.OracleData({
+        OracleData[] memory _oracleDatas = new OracleData[](1);
+        _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10,
             higherBound: 12,
@@ -158,24 +154,22 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is
     function testIntermediateBoundAndRelationshipSingleOracleNonZeroMinimumPayout()
         external
     {
-        IERC20KPIToken.Collateral[]
-            memory _collaterals = new IERC20KPIToken.Collateral[](1);
-        _collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory _collaterals = new Collateral[](1);
+        _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 10 ether,
             minimumPayout: 1 ether
         });
         bytes memory _erc20KpiTokenInitializationData = abi.encode(
             _collaterals,
+            true,
             "Test",
             "TST",
             10 ether
         );
 
-        
-        IERC20KPIToken.OracleData[]
-            memory _oracleDatas = new IERC20KPIToken.OracleData[](1);
-        _oracleDatas[0] = IERC20KPIToken.OracleData({
+        OracleData[] memory _oracleDatas = new OracleData[](1);
+        _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10 ether,
             higherBound: 20 ether,
@@ -228,24 +222,22 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is
     function testIntermediateBoundAndRelationshipSingleOracleNonZeroMinimumPayoutExpired()
         external
     {
-        IERC20KPIToken.Collateral[]
-            memory _collaterals = new IERC20KPIToken.Collateral[](1);
-        _collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory _collaterals = new Collateral[](1);
+        _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 10 ether,
             minimumPayout: 1 ether
         });
         bytes memory _erc20KpiTokenInitializationData = abi.encode(
             _collaterals,
+            true,
             "Test",
             "TST",
             10 ether
         );
 
-        
-        IERC20KPIToken.OracleData[]
-            memory _oracleDatas = new IERC20KPIToken.OracleData[](1);
-        _oracleDatas[0] = IERC20KPIToken.OracleData({
+        OracleData[] memory _oracleDatas = new OracleData[](1);
+        _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10 ether,
             higherBound: 20 ether,
@@ -302,24 +294,22 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is
     function testIntermediateBoundOrRelationshipSingleOracleZeroMinimumPayout()
         external
     {
-        IERC20KPIToken.Collateral[]
-            memory _collaterals = new IERC20KPIToken.Collateral[](1);
-        _collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory _collaterals = new Collateral[](1);
+        _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2 ether,
             minimumPayout: 0
         });
         bytes memory _erc20KpiTokenInitializationData = abi.encode(
             _collaterals,
+            true,
             "Test",
             "TST",
             100 ether
         );
 
-        
-        IERC20KPIToken.OracleData[]
-            memory _oracleDatas = new IERC20KPIToken.OracleData[](1);
-        _oracleDatas[0] = IERC20KPIToken.OracleData({
+        OracleData[] memory _oracleDatas = new OracleData[](1);
+        _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 40 ether,
             higherBound: 50 ether,
@@ -372,24 +362,22 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is
     function testIntermediateBoundOrRelationshipSingleOracleZeroMinimumPayoutExpired()
         external
     {
-        IERC20KPIToken.Collateral[]
-            memory _collaterals = new IERC20KPIToken.Collateral[](1);
-        _collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory _collaterals = new Collateral[](1);
+        _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2 ether,
             minimumPayout: 0
         });
         bytes memory _erc20KpiTokenInitializationData = abi.encode(
             _collaterals,
+            true,
             "Test",
             "TST",
             100 ether
         );
 
-        
-        IERC20KPIToken.OracleData[]
-            memory _oracleDatas = new IERC20KPIToken.OracleData[](1);
-        _oracleDatas[0] = IERC20KPIToken.OracleData({
+        OracleData[] memory _oracleDatas = new OracleData[](1);
+        _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 40 ether,
             higherBound: 50 ether,
@@ -446,24 +434,22 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is
     function testIntermediateBoundOrRelationshipSingleOracleNonZeroMinimumPayout()
         external
     {
-        IERC20KPIToken.Collateral[]
-            memory _collaterals = new IERC20KPIToken.Collateral[](1);
-        _collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory _collaterals = new Collateral[](1);
+        _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 45 ether,
             minimumPayout: 22 ether
         });
         bytes memory _erc20KpiTokenInitializationData = abi.encode(
             _collaterals,
+            true,
             "Test",
             "TST",
             100 ether
         );
 
-        
-        IERC20KPIToken.OracleData[]
-            memory _oracleDatas = new IERC20KPIToken.OracleData[](1);
-        _oracleDatas[0] = IERC20KPIToken.OracleData({
+        OracleData[] memory _oracleDatas = new OracleData[](1);
+        _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 102 ether,
             higherBound: 286 ether,
@@ -519,24 +505,22 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is
     function testIntermediateBoundOrRelationshipSingleOracleNonZeroMinimumPayoutExpired()
         external
     {
-        IERC20KPIToken.Collateral[]
-            memory _collaterals = new IERC20KPIToken.Collateral[](1);
-        _collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory _collaterals = new Collateral[](1);
+        _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 45 ether,
             minimumPayout: 22 ether
         });
         bytes memory _erc20KpiTokenInitializationData = abi.encode(
             _collaterals,
+            true,
             "Test",
             "TST",
             100 ether
         );
 
-        
-        IERC20KPIToken.OracleData[]
-            memory _oracleDatas = new IERC20KPIToken.OracleData[](1);
-        _oracleDatas[0] = IERC20KPIToken.OracleData({
+        OracleData[] memory _oracleDatas = new OracleData[](1);
+        _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 102 ether,
             higherBound: 286 ether,
@@ -593,24 +577,22 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is
     function testIntermediateBoundAndRelationshipMultipleOraclesZeroMinimumPayout()
         external
     {
-        IERC20KPIToken.Collateral[]
-            memory _collaterals = new IERC20KPIToken.Collateral[](1);
-        _collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory _collaterals = new Collateral[](1);
+        _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2 ether,
             minimumPayout: 0
         });
         bytes memory _erc20KpiTokenInitializationData = abi.encode(
             _collaterals,
+            true,
             "Test",
             "TST",
             100 ether
         );
 
-        
-        IERC20KPIToken.OracleData[]
-            memory _oracleDatas = new IERC20KPIToken.OracleData[](2);
-        _oracleDatas[0] = IERC20KPIToken.OracleData({
+        OracleData[] memory _oracleDatas = new OracleData[](2);
+        _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10 ether,
             higherBound: 14 ether,
@@ -618,7 +600,7 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is
             value: 0,
             data: abi.encode("1")
         });
-        _oracleDatas[1] = IERC20KPIToken.OracleData({
+        _oracleDatas[1] = OracleData({
             templateId: 1,
             lowerBound: 20 ether,
             higherBound: 26 ether,
@@ -671,24 +653,22 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is
     function testIntermediateBoundAndRelationshipMultipleOraclesZeroMinimumPayoutExpired()
         external
     {
-        IERC20KPIToken.Collateral[]
-            memory _collaterals = new IERC20KPIToken.Collateral[](1);
-        _collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory _collaterals = new Collateral[](1);
+        _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2 ether,
             minimumPayout: 0
         });
         bytes memory _erc20KpiTokenInitializationData = abi.encode(
             _collaterals,
+            true,
             "Test",
             "TST",
             100 ether
         );
 
-        
-        IERC20KPIToken.OracleData[]
-            memory _oracleDatas = new IERC20KPIToken.OracleData[](2);
-        _oracleDatas[0] = IERC20KPIToken.OracleData({
+        OracleData[] memory _oracleDatas = new OracleData[](2);
+        _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10 ether,
             higherBound: 14 ether,
@@ -696,7 +676,7 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is
             value: 0,
             data: abi.encode("1")
         });
-        _oracleDatas[1] = IERC20KPIToken.OracleData({
+        _oracleDatas[1] = OracleData({
             templateId: 1,
             lowerBound: 20 ether,
             higherBound: 26 ether,
@@ -753,24 +733,22 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is
     function testIntermediateBoundAndRelationshipMultipleOraclesNonZeroMinimumPayout()
         external
     {
-        IERC20KPIToken.Collateral[]
-            memory _collaterals = new IERC20KPIToken.Collateral[](1);
-        _collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory _collaterals = new Collateral[](1);
+        _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2 ether,
             minimumPayout: 1 ether
         });
         bytes memory _erc20KpiTokenInitializationData = abi.encode(
             _collaterals,
+            true,
             "Test",
             "TST",
             100 ether
         );
 
-        
-        IERC20KPIToken.OracleData[]
-            memory _oracleDatas = new IERC20KPIToken.OracleData[](2);
-        _oracleDatas[0] = IERC20KPIToken.OracleData({
+        OracleData[] memory _oracleDatas = new OracleData[](2);
+        _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10 ether,
             higherBound: 43 ether,
@@ -778,7 +756,7 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is
             value: 0,
             data: abi.encode("1")
         });
-        _oracleDatas[1] = IERC20KPIToken.OracleData({
+        _oracleDatas[1] = OracleData({
             templateId: 1,
             lowerBound: 200 ether,
             higherBound: 2607 ether,
@@ -827,24 +805,22 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is
     function testIntermediateBoundAndRelationshipMultipleOraclesNonZeroMinimumPayoutExpired()
         external
     {
-        IERC20KPIToken.Collateral[]
-            memory _collaterals = new IERC20KPIToken.Collateral[](1);
-        _collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory _collaterals = new Collateral[](1);
+        _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2 ether,
             minimumPayout: 1 ether
         });
         bytes memory _erc20KpiTokenInitializationData = abi.encode(
             _collaterals,
+            true,
             "Test",
             "TST",
             100 ether
         );
 
-        
-        IERC20KPIToken.OracleData[]
-            memory _oracleDatas = new IERC20KPIToken.OracleData[](2);
-        _oracleDatas[0] = IERC20KPIToken.OracleData({
+        OracleData[] memory _oracleDatas = new OracleData[](2);
+        _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10 ether,
             higherBound: 43 ether,
@@ -852,7 +828,7 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is
             value: 0,
             data: abi.encode("1")
         });
-        _oracleDatas[1] = IERC20KPIToken.OracleData({
+        _oracleDatas[1] = OracleData({
             templateId: 1,
             lowerBound: 200 ether,
             higherBound: 2607 ether,

@@ -8,7 +8,7 @@ import {ERC20KPIToken} from "../../src/ERC20KPIToken.sol";
 import {KPITokensManager1} from "carrot/kpi-tokens-managers/KPITokensManager1.sol";
 import {OraclesManager1} from "carrot/oracles-managers/OraclesManager1.sol";
 import {KPITokensFactory} from "carrot/KPITokensFactory.sol";
-import {IERC20KPIToken} from "../../src/interfaces/IERC20KPIToken.sol";
+import {IERC20KPIToken, Collateral, OracleData} from "../../src/interfaces/IERC20KPIToken.sol";
 import {MockOracle} from "tests/mocks/MockOracle.sol";
 
 /// SPDX-License-Identifier: GPL-3.0-or-later
@@ -54,27 +54,26 @@ abstract contract BaseTestSetup is Test {
         factory.setOraclesManager(address(oraclesManager));
     }
 
-    function createKpiToken(string memory _description, string memory _question)
+    function createKpiToken(string memory _description)
         public
         returns (ERC20KPIToken)
     {
-        IERC20KPIToken.Collateral[]
-            memory _collaterals = new IERC20KPIToken.Collateral[](1);
-        _collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory _collaterals = new Collateral[](1);
+        _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2,
             minimumPayout: 1
         });
         bytes memory _erc20KpiTokenInitializationData = abi.encode(
             _collaterals,
+            true,
             "Test",
             "TST",
             100 ether
         );
 
-        IERC20KPIToken.OracleData[]
-            memory _oracleDatas = new IERC20KPIToken.OracleData[](1);
-        _oracleDatas[0] = IERC20KPIToken.OracleData({
+        OracleData[] memory _oracleDatas = new OracleData[](1);
+        _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 0,
             higherBound: 1,

@@ -2,7 +2,7 @@ pragma solidity 0.8.17;
 
 import {BaseTestSetup} from "../commons/BaseTestSetup.sol";
 import {ERC20KPIToken} from "../../src/ERC20KPIToken.sol";
-import {IERC20KPIToken} from "../../src/interfaces/IERC20KPIToken.sol";
+import {IERC20KPIToken, OracleData, Collateral, FinalizableOracle} from "../../src/interfaces/IERC20KPIToken.sol";
 import {Clones} from "oz/proxy/Clones.sol";
 
 /// SPDX-License-Identifier: GPL-3.0-or-later
@@ -19,13 +19,13 @@ contract ERC20KPITokenBaseFinalizeTest is BaseTestSetup {
     }
 
     function testInvalidCallerNotAnOracle() external {
-        IERC20KPIToken kpiTokenInstance = createKpiToken("a", "b");
+        IERC20KPIToken kpiTokenInstance = createKpiToken("a");
         vm.expectRevert(abi.encodeWithSignature("Forbidden()"));
         kpiTokenInstance.finalize(0);
     }
 
     function testInvalidCallerAlreadyFinalizedOracle() external {
-        IERC20KPIToken kpiTokenInstance = createKpiToken("a", "b");
+        IERC20KPIToken kpiTokenInstance = createKpiToken("a");
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
         kpiTokenInstance.finalize(0);
@@ -34,24 +34,22 @@ contract ERC20KPITokenBaseFinalizeTest is BaseTestSetup {
     }
 
     function testValidCallerAlreadyFinalizedKpiToken() external {
-        IERC20KPIToken.Collateral[]
-            memory _collaterals = new IERC20KPIToken.Collateral[](1);
-        _collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[] memory _collaterals = new Collateral[](1);
+        _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2,
             minimumPayout: 0
         });
         bytes memory _erc20KpiTokenInitializationData = abi.encode(
             _collaterals,
+            true,
             "Test",
             "TST",
             100 ether
         );
 
-        
-        IERC20KPIToken.OracleData[]
-            memory _oracleDatas = new IERC20KPIToken.OracleData[](2);
-        _oracleDatas[0] = IERC20KPIToken.OracleData({
+        OracleData[] memory _oracleDatas = new OracleData[](2);
+        _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10,
             higherBound: 11,
@@ -59,7 +57,7 @@ contract ERC20KPITokenBaseFinalizeTest is BaseTestSetup {
             value: 0,
             data: abi.encode("1")
         });
-        _oracleDatas[1] = IERC20KPIToken.OracleData({
+        _oracleDatas[1] = OracleData({
             templateId: 1,
             lowerBound: 20,
             higherBound: 21,
@@ -107,8 +105,8 @@ contract ERC20KPITokenBaseFinalizeTest is BaseTestSetup {
         assertEq(firstErc20.balanceOf(address(this)), 0);
 
         (
-            IERC20KPIToken.Collateral[] memory onChainCollaterals,
-            IERC20KPIToken.FinalizableOracle[] memory onChainFinalizableOracles,
+            Collateral[] memory onChainCollaterals,
+            FinalizableOracle[] memory onChainFinalizableOracles,
             ,
             ,
             ,
@@ -116,8 +114,8 @@ contract ERC20KPITokenBaseFinalizeTest is BaseTestSetup {
         ) = abi.decode(
                 kpiTokenInstance.data(),
                 (
-                    IERC20KPIToken.Collateral[],
-                    IERC20KPIToken.FinalizableOracle[],
+                    Collateral[],
+                    FinalizableOracle[],
                     bool,
                     uint256,
                     string,
@@ -139,14 +137,7 @@ contract ERC20KPITokenBaseFinalizeTest is BaseTestSetup {
 
         (onChainCollaterals, onChainFinalizableOracles, , , , ) = abi.decode(
             kpiTokenInstance.data(),
-            (
-                IERC20KPIToken.Collateral[],
-                IERC20KPIToken.FinalizableOracle[],
-                bool,
-                uint256,
-                string,
-                string
-            )
+            (Collateral[], FinalizableOracle[], bool, uint256, string, string)
         );
 
         assertEq(onChainCollaterals.length, 1);

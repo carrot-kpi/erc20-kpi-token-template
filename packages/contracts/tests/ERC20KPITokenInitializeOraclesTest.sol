@@ -5,7 +5,7 @@ import {BaseTestSetup} from "tests/commons/BaseTestSetup.sol";
 import {ERC20KPIToken} from "../src/ERC20KPIToken.sol";
 import {IOraclesManager1} from "carrot/interfaces/oracles-managers/IOraclesManager1.sol";
 import {Clones} from "oz/proxy/Clones.sol";
-import {IERC20KPIToken} from "../src/interfaces/IERC20KPIToken.sol";
+import {IERC20KPIToken, OracleData, Collateral, FinalizableOracle} from "../src/interfaces/IERC20KPIToken.sol";
 
 /// SPDX-License-Identifier: GPL-3.0-or-later
 /// @title ERC20 KPI token initialize oracles test
@@ -22,7 +22,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
             Clones.clone(address(erc20KpiTokenTemplate))
         );
 
-        IERC20KPIToken.Collateral[] memory collaterals = prepareCollateral(
+        Collateral[] memory collaterals = prepareCollateral(
             address(kpiTokenInstance)
         );
         mockCalls(oracleData, oraclesManager);
@@ -43,6 +43,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
                 expiration: block.timestamp + 60,
                 kpiTokenData: abi.encode(
                     collaterals,
+                    true,
                     "Token",
                     "TKN",
                     100 ether
@@ -56,14 +57,14 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
 
     function prepareCollateral(address kpiTokenInstance)
         internal
-        returns (IERC20KPIToken.Collateral[] memory)
+        returns (Collateral[] memory)
     {
         firstErc20.mint(address(this), 10 ether);
         firstErc20.approve(address(kpiTokenInstance), 10 ether);
 
-        IERC20KPIToken.Collateral[]
-            memory collaterals = new IERC20KPIToken.Collateral[](1);
-        collaterals[0] = IERC20KPIToken.Collateral({
+        Collateral[]
+            memory collaterals = new Collateral[](1);
+        collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 10 ether,
             minimumPayout: 1 ether
@@ -75,12 +76,12 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
     function mockCalls(bytes memory oracleData, address oraclesManager)
         internal
     {
-        (IERC20KPIToken.OracleData[] memory _oracleDatas, ) = abi.decode(
+        (OracleData[] memory _oracleDatas, ) = abi.decode(
             oracleData,
-            (IERC20KPIToken.OracleData[], bool)
+            (OracleData[], bool)
         );
         for (uint256 _i = 0; _i < _oracleDatas.length; _i++) {
-            IERC20KPIToken.OracleData memory _oracleData = _oracleDatas[_i];
+            OracleData memory _oracleData = _oracleDatas[_i];
             vm.mockCall(
                 oraclesManager,
                 abi.encodeWithSignature(
@@ -97,10 +98,10 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
     }
 
     function testTooManyOracles() external {
-        IERC20KPIToken.OracleData[]
-            memory oracleData = new IERC20KPIToken.OracleData[](6);
+        OracleData[]
+            memory oracleData = new OracleData[](6);
         for (uint8 i = 0; i < 6; i++) {
-            oracleData[i] = IERC20KPIToken.OracleData({
+            oracleData[i] = OracleData({
                 templateId: 1,
                 lowerBound: 0,
                 higherBound: 0,
@@ -119,8 +120,8 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
     }
 
     function testNoOracles() external {
-        IERC20KPIToken.OracleData[]
-            memory oracleData = new IERC20KPIToken.OracleData[](0);
+        OracleData[]
+            memory oracleData = new OracleData[](0);
         initializeKpiToken(
             address(123),
             abi.encode(oracleData, true),
@@ -130,9 +131,9 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
     }
 
     function testSameOracleBounds() external {
-        IERC20KPIToken.OracleData[]
-            memory oracleData = new IERC20KPIToken.OracleData[](1);
-        oracleData[0] = IERC20KPIToken.OracleData({
+        OracleData[]
+            memory oracleData = new OracleData[](1);
+        oracleData[0] = OracleData({
             templateId: 1,
             lowerBound: 0,
             higherBound: 0,
@@ -150,9 +151,9 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
     }
 
     function testInvalidOracleBounds() external {
-        IERC20KPIToken.OracleData[]
-            memory oracleData = new IERC20KPIToken.OracleData[](1);
-        oracleData[0] = IERC20KPIToken.OracleData({
+        OracleData[]
+            memory oracleData = new OracleData[](1);
+        oracleData[0] = OracleData({
             templateId: 1,
             lowerBound: 1,
             higherBound: 0,
@@ -169,9 +170,9 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
     }
 
     function testZeroWeight() external {
-        IERC20KPIToken.OracleData[]
-            memory oracleData = new IERC20KPIToken.OracleData[](1);
-        oracleData[0] = IERC20KPIToken.OracleData({
+        OracleData[]
+            memory oracleData = new OracleData[](1);
+        oracleData[0] = OracleData({
             templateId: 1,
             lowerBound: 0,
             higherBound: 1,
@@ -188,9 +189,9 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
     }
 
     function testSuccessAndSingleOracle() external {
-        IERC20KPIToken.OracleData[]
-            memory oracleData = new IERC20KPIToken.OracleData[](1);
-        oracleData[0] = IERC20KPIToken.OracleData({
+        OracleData[]
+            memory oracleData = new OracleData[](1);
+        oracleData[0] = OracleData({
             templateId: 1,
             lowerBound: 0,
             higherBound: 1,
@@ -208,7 +209,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
 
         (
             ,
-            IERC20KPIToken.FinalizableOracle[] memory onChainFinalizableOracles,
+            FinalizableOracle[] memory onChainFinalizableOracles,
             bool andRelationship,
             ,
             ,
@@ -216,8 +217,8 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
         ) = abi.decode(
                 kpiTokenInstance.data(),
                 (
-                    IERC20KPIToken.Collateral[],
-                    IERC20KPIToken.FinalizableOracle[],
+                    Collateral[],
+                    FinalizableOracle[],
                     bool,
                     uint256,
                     string,
@@ -226,7 +227,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
             );
 
         assertEq(onChainFinalizableOracles.length, 1);
-        IERC20KPIToken.FinalizableOracle
+        FinalizableOracle
             memory finalizableOracle = onChainFinalizableOracles[0];
         assertEq(finalizableOracle.lowerBound, 0);
         assertEq(finalizableOracle.higherBound, 1);
@@ -237,9 +238,9 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
     }
 
     function testSuccessNoAndSingleOracle() external {
-        IERC20KPIToken.OracleData[]
-            memory oracleData = new IERC20KPIToken.OracleData[](1);
-        oracleData[0] = IERC20KPIToken.OracleData({
+        OracleData[]
+            memory oracleData = new OracleData[](1);
+        oracleData[0] = OracleData({
             templateId: 1,
             lowerBound: 0,
             higherBound: 1,
@@ -257,7 +258,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
 
         (
             ,
-            IERC20KPIToken.FinalizableOracle[] memory onChainFinalizableOracles,
+            FinalizableOracle[] memory onChainFinalizableOracles,
             bool andRelationship,
             ,
             ,
@@ -265,8 +266,8 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
         ) = abi.decode(
                 kpiTokenInstance.data(),
                 (
-                    IERC20KPIToken.Collateral[],
-                    IERC20KPIToken.FinalizableOracle[],
+                    Collateral[],
+                    FinalizableOracle[],
                     bool,
                     uint256,
                     string,
@@ -275,7 +276,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
             );
 
         assertEq(onChainFinalizableOracles.length, 1);
-        IERC20KPIToken.FinalizableOracle
+        FinalizableOracle
             memory finalizableOracle = onChainFinalizableOracles[0];
         assertEq(finalizableOracle.lowerBound, 0);
         assertEq(finalizableOracle.higherBound, 1);
@@ -286,9 +287,9 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
     }
 
     function testSuccessAndMultipleOracles() external {
-        IERC20KPIToken.OracleData[]
-            memory oracleData = new IERC20KPIToken.OracleData[](2);
-        oracleData[0] = IERC20KPIToken.OracleData({
+        OracleData[]
+            memory oracleData = new OracleData[](2);
+        oracleData[0] = OracleData({
             templateId: 1,
             lowerBound: 0,
             higherBound: 1,
@@ -296,7 +297,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
             value: 0,
             data: abi.encode("1")
         });
-        oracleData[1] = IERC20KPIToken.OracleData({
+        oracleData[1] = OracleData({
             templateId: 1,
             lowerBound: 5 ether,
             higherBound: 10 ether,
@@ -314,7 +315,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
 
         (
             ,
-            IERC20KPIToken.FinalizableOracle[] memory onChainFinalizableOracles,
+            FinalizableOracle[] memory onChainFinalizableOracles,
             bool andRelationship,
             ,
             ,
@@ -322,8 +323,8 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
         ) = abi.decode(
                 kpiTokenInstance.data(),
                 (
-                    IERC20KPIToken.Collateral[],
-                    IERC20KPIToken.FinalizableOracle[],
+                    Collateral[],
+                    FinalizableOracle[],
                     bool,
                     uint256,
                     string,
@@ -349,9 +350,9 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
     }
 
     function testFailureZeroValueSingleOracle() external {
-        IERC20KPIToken.OracleData[]
-            memory oracleData = new IERC20KPIToken.OracleData[](1);
-        oracleData[0] = IERC20KPIToken.OracleData({
+        OracleData[]
+            memory oracleData = new OracleData[](1);
+        oracleData[0] = OracleData({
             templateId: 1,
             lowerBound: 0,
             higherBound: 1,
@@ -370,9 +371,9 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
     }
 
     function testFailureSomeValueSingleOracle() external {
-        IERC20KPIToken.OracleData[]
-            memory oracleData = new IERC20KPIToken.OracleData[](1);
-        oracleData[0] = IERC20KPIToken.OracleData({
+        OracleData[]
+            memory oracleData = new OracleData[](1);
+        oracleData[0] = OracleData({
             templateId: 1,
             lowerBound: 0,
             higherBound: 1,
@@ -391,9 +392,9 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
     }
 
     function testSuccessValueSingleOracle() external {
-        IERC20KPIToken.OracleData[]
-            memory oracleData = new IERC20KPIToken.OracleData[](1);
-        oracleData[0] = IERC20KPIToken.OracleData({
+        OracleData[]
+            memory oracleData = new OracleData[](1);
+        oracleData[0] = OracleData({
             templateId: 1,
             lowerBound: 0,
             higherBound: 1,
@@ -410,9 +411,9 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
     }
 
     function testFailureZeroValueMultipleOracles() external {
-        IERC20KPIToken.OracleData[]
-            memory oracleData = new IERC20KPIToken.OracleData[](2);
-        oracleData[0] = IERC20KPIToken.OracleData({
+        OracleData[]
+            memory oracleData = new OracleData[](2);
+        oracleData[0] = OracleData({
             templateId: 1,
             lowerBound: 0,
             higherBound: 1,
@@ -420,7 +421,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
             value: 10 ether,
             data: abi.encode("1")
         });
-        oracleData[1] = IERC20KPIToken.OracleData({
+        oracleData[1] = OracleData({
             templateId: 1,
             lowerBound: 0,
             higherBound: 1,
@@ -439,9 +440,9 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
     }
 
     function testFailureSomeValueMultipleOracles() external {
-        IERC20KPIToken.OracleData[]
-            memory oracleData = new IERC20KPIToken.OracleData[](2);
-        oracleData[0] = IERC20KPIToken.OracleData({
+        OracleData[]
+            memory oracleData = new OracleData[](2);
+        oracleData[0] = OracleData({
             templateId: 1,
             lowerBound: 0,
             higherBound: 1,
@@ -449,7 +450,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
             value: 10 ether,
             data: abi.encode("1")
         });
-        oracleData[1] = IERC20KPIToken.OracleData({
+        oracleData[1] = OracleData({
             templateId: 1,
             lowerBound: 0,
             higherBound: 1,
@@ -468,9 +469,9 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
     }
 
     function testSuccessWithValueMultipleOracles() external {
-        IERC20KPIToken.OracleData[]
-            memory oracleData = new IERC20KPIToken.OracleData[](2);
-        oracleData[0] = IERC20KPIToken.OracleData({
+        OracleData[]
+            memory oracleData = new OracleData[](2);
+        oracleData[0] = OracleData({
             templateId: 1,
             lowerBound: 0,
             higherBound: 1,
@@ -478,7 +479,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
             value: 10 ether,
             data: abi.encode("1")
         });
-        oracleData[1] = IERC20KPIToken.OracleData({
+        oracleData[1] = OracleData({
             templateId: 1,
             lowerBound: 0,
             higherBound: 1,
@@ -496,9 +497,9 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
     }
 
     function testSuccessNoAndMultipleOracles() external {
-        IERC20KPIToken.OracleData[]
-            memory oracleData = new IERC20KPIToken.OracleData[](2);
-        oracleData[0] = IERC20KPIToken.OracleData({
+        OracleData[]
+            memory oracleData = new OracleData[](2);
+        oracleData[0] = OracleData({
             templateId: 1,
             lowerBound: 0,
             higherBound: 1,
@@ -506,7 +507,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
             value: 0,
             data: abi.encode("1")
         });
-        oracleData[1] = IERC20KPIToken.OracleData({
+        oracleData[1] = OracleData({
             templateId: 1,
             lowerBound: 5 ether,
             higherBound: 10 ether,
@@ -524,7 +525,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
 
         (
             ,
-            IERC20KPIToken.FinalizableOracle[] memory onChainFinalizableOracles,
+            FinalizableOracle[] memory onChainFinalizableOracles,
             bool andRelationship,
             ,
             ,
@@ -532,8 +533,8 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
         ) = abi.decode(
                 kpiTokenInstance.data(),
                 (
-                    IERC20KPIToken.Collateral[],
-                    IERC20KPIToken.FinalizableOracle[],
+                    Collateral[],
+                    FinalizableOracle[],
                     bool,
                     uint256,
                     string,
