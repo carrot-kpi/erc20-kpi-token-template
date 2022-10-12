@@ -12,8 +12,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
     function testBelowLowerBoundAndRelationshipSingleOracleZeroMinimumPayout()
         external
     {
-        Collateral[]
-            memory _collaterals = new Collateral[](1);
+        Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2,
@@ -27,9 +26,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
             100 ether
         );
 
-        
-        OracleData[]
-            memory _oracleDatas = new OracleData[](1);
+        OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10,
@@ -109,8 +106,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
     function testBelowLowerBoundAndRelationshipSingleOracleNonZeroMinimumPayout()
         external
     {
-        Collateral[]
-            memory _collaterals = new Collateral[](1);
+        Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2,
@@ -124,9 +120,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
             100 ether
         );
 
-        
-        OracleData[]
-            memory _oracleDatas = new OracleData[](1);
+        OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10,
@@ -206,8 +200,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
     function testBelowLowerBoundOrRelationshipSingleOracleZeroMinimumPayout()
         external
     {
-        Collateral[]
-            memory _collaterals = new Collateral[](1);
+        Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2,
@@ -221,9 +214,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
             100 ether
         );
 
-        
-        OracleData[]
-            memory _oracleDatas = new OracleData[](1);
+        OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10,
@@ -303,8 +294,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
     function testBelowLowerBoundOrRelationshipSingleOracleNonZeroMinimumPayout()
         external
     {
-        Collateral[]
-            memory _collaterals = new Collateral[](1);
+        Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2,
@@ -318,9 +308,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
             100 ether
         );
 
-        
-        OracleData[]
-            memory _oracleDatas = new OracleData[](1);
+        OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10,
@@ -400,8 +388,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
     function testBelowLowerBoundAndRelationshipMultipleOraclesZeroMinimumPayout()
         external
     {
-        Collateral[]
-            memory _collaterals = new Collateral[](1);
+        Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2,
@@ -415,9 +402,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
             100 ether
         );
 
-        
-        OracleData[]
-            memory _oracleDatas = new OracleData[](2);
+        OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10,
@@ -506,8 +491,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
     function testBelowLowerBoundAndRelationshipMultipleOraclesBothOraclesFinalization()
         external
     {
-        Collateral[]
-            memory _collaterals = new Collateral[](1);
+        Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2,
@@ -521,9 +505,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
             100 ether
         );
 
-        
-        OracleData[]
-            memory _oracleDatas = new OracleData[](2);
+        OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10,
@@ -610,14 +592,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
 
         (onChainCollaterals, onChainFinalizableOracles, , , , ) = abi.decode(
             kpiTokenInstance.data(),
-            (
-                Collateral[],
-                FinalizableOracle[],
-                bool,
-                uint256,
-                string,
-                string
-            )
+            (Collateral[], FinalizableOracle[], bool, uint256, string, string)
         );
 
         assertEq(onChainCollaterals.length, 1);
@@ -636,8 +611,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
     function testBelowLowerBoundAndRelationshipMultipleOraclesNonZeroMinimumPayout()
         external
     {
-        Collateral[]
-            memory _collaterals = new Collateral[](1);
+        Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2,
@@ -651,9 +625,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
             100 ether
         );
 
-        
-        OracleData[]
-            memory _oracleDatas = new OracleData[](2);
+        OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10,
@@ -742,8 +714,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
     function testBelowLowerBoundAndRelationshipSingleOracleZeroMinimumPayoutMultiCollateral()
         external
     {
-        Collateral[]
-            memory _collaterals = new Collateral[](2);
+        Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2,
@@ -762,9 +733,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
             100 ether
         );
 
-        
-        OracleData[]
-            memory _oracleDatas = new OracleData[](1);
+        OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10,
@@ -850,8 +819,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
     function testBelowLowerBoundAndRelationshipSingleOracleNonZeroMinimumPayoutMultiCollateral()
         external
     {
-        Collateral[]
-            memory _collaterals = new Collateral[](2);
+        Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2,
@@ -870,9 +838,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
             100 ether
         );
 
-        
-        OracleData[]
-            memory _oracleDatas = new OracleData[](1);
+        OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10,
@@ -958,8 +924,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
     function testBelowLowerBoundOrRelationshipSingleOracleZeroMinimumPayoutMultiCollateral()
         external
     {
-        Collateral[]
-            memory _collaterals = new Collateral[](2);
+        Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2,
@@ -978,9 +943,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
             100 ether
         );
 
-        
-        OracleData[]
-            memory _oracleDatas = new OracleData[](1);
+        OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10,
@@ -1066,8 +1029,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
     function testBelowLowerBoundOrRelationshipSingleOracleNonZeroMinimumPayoutMultiCollateral()
         external
     {
-        Collateral[]
-            memory _collaterals = new Collateral[](2);
+        Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2,
@@ -1086,9 +1048,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
             100 ether
         );
 
-        
-        OracleData[]
-            memory _oracleDatas = new OracleData[](1);
+        OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10,
@@ -1174,8 +1134,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
     function testBelowLowerBoundAndRelationshipMultipleOraclesZeroMinimumPayoutMultiCollateral()
         external
     {
-        Collateral[]
-            memory _collaterals = new Collateral[](2);
+        Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2,
@@ -1194,9 +1153,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
             100 ether
         );
 
-        
-        OracleData[]
-            memory _oracleDatas = new OracleData[](2);
+        OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10,
@@ -1291,8 +1248,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
     function testBelowLowerBoundAndRelationshipMultipleOraclesNonZeroMinimumPayoutMultiCollateral()
         external
     {
-        Collateral[]
-            memory _collaterals = new Collateral[](2);
+        Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({
             token: address(firstErc20),
             amount: 2,
@@ -1311,9 +1267,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
             100 ether
         );
 
-        
-        OracleData[]
-            memory _oracleDatas = new OracleData[](2);
+        OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({
             templateId: 1,
             lowerBound: 10,

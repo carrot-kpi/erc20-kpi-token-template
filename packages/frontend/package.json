@@ -19,7 +19,7 @@
     "url": "https://github.com/carrot-kpi/cct-frontend-preset-react-typescript/issues"
   },
   "scripts": {
-    "lint": "eslint --ext .ts,.tsx ./src ./scripts && prettier --check ./src ./scripts",
+    "lint": "eslint --ext .js,.ts,.tsx ./src ./scripts && prettier --check ./src ./scripts",
     "build": "node ./scripts/build.js",
     "start": "node ./scripts/run.js",
     "test": "jest"
