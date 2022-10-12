@@ -1,8 +1,6 @@
 pragma solidity 0.8.17;
 
 import {Test} from "forge-std/Test.sol";
-import {TransparentUpgradeableProxy} from "oz/proxy/transparent/TransparentUpgradeableProxy.sol";
-import {ProxyAdmin} from "oz/proxy/transparent/ProxyAdmin.sol";
 import {ERC20PresetMinterPauser} from "oz/token/ERC20/presets/ERC20PresetMinterPauser.sol";
 import {ERC20KPIToken} from "../../src/ERC20KPIToken.sol";
 import {KPITokensManager1} from "carrot/kpi-tokens-managers/KPITokensManager1.sol";
@@ -10,6 +8,7 @@ import {OraclesManager1} from "carrot/oracles-managers/OraclesManager1.sol";
 import {KPITokensFactory} from "carrot/KPITokensFactory.sol";
 import {IERC20KPIToken, Collateral, OracleData} from "../../src/interfaces/IERC20KPIToken.sol";
 import {MockOracle} from "tests/mocks/MockOracle.sol";
+import {CreationProxy} from "../../src/CreationProxy.sol";
 
 /// SPDX-License-Identifier: GPL-3.0-or-later
 /// @title Base test setup
@@ -25,10 +24,8 @@ abstract contract BaseTestSetup is Test {
     KPITokensFactory internal factory;
     ERC20KPIToken internal erc20KpiTokenTemplate;
     KPITokensManager1 internal kpiTokensManager;
-    address internal oraclesManagerImplementation;
     OraclesManager1 internal oraclesManager;
-    ProxyAdmin internal oraclesManagerProxyAdmin;
-    TransparentUpgradeableProxy internal oraclesManagerProxy;
+    CreationProxy internal creationProxy;
 
     function setUp() external {
         firstErc20 = new ERC20PresetMinterPauser("Token 1", "TKN1");
@@ -48,6 +45,12 @@ abstract contract BaseTestSetup is Test {
         oraclesManager.addTemplate(
             address(new MockOracle()),
             "test-specification-mock"
+        );
+
+        creationProxy = new CreationProxy(
+            address(factory),
+            address(kpiTokensManager),
+            1
         );
 
         factory.setKpiTokensManager(address(kpiTokensManager));

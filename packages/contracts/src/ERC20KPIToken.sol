@@ -6,7 +6,7 @@ import {ReentrancyGuardUpgradeable} from "oz-upgradeable/security/ReentrancyGuar
 import {IOraclesManager1} from "carrot/interfaces/oracles-managers/IOraclesManager1.sol";
 import {IKPITokensManager1} from "carrot/interfaces/kpi-tokens-managers/IKPITokensManager1.sol";
 import {Template, IBaseTemplatesManager} from "carrot/interfaces/IBaseTemplatesManager.sol";
-import {IERC20KPIToken} from "./interfaces/IERC20KPIToken.sol";
+import {IERC20KPIToken, Collateral, OracleData, CollateralWithoutToken, FinalizableOracle, FinalizableOracleWithoutAddress} from "./interfaces/IERC20KPIToken.sol";
 import {TokenAmount, InitializeKPITokenParams} from "carrot/commons/Types.sol";
 
 /// SPDX-License-Identifier: GPL-3.0-or-later
@@ -72,6 +72,7 @@ contract ERC20KPIToken is
     error InvalidKpiTokensManager();
     error InvalidMinimumPayoutAfterFee();
     error DuplicatedCollateral();
+    error NotEnoughCollateral();
     error NoOracles();
     error NoCollaterals();
     error NothingToRedeem();
@@ -171,14 +172,16 @@ contract ERC20KPIToken is
             _params.kpiTokenData
         );
 
-        (Collateral[] memory _collaterals, , , ) = abi.decode(
-            _params.kpiTokenData,
-            (Collateral[], string, string, uint256)
-        );
+        (Collateral[] memory _collaterals, bool _takeFromCreator, , , ) = abi
+            .decode(
+                _params.kpiTokenData,
+                (Collateral[], bool, string, string, uint256)
+            );
 
         collectCollateralsAndFees(
             _params.creator,
             _collaterals,
+            _takeFromCreator,
             _params.feeReceiver
         );
         initializeOracles(
@@ -214,10 +217,11 @@ contract ERC20KPIToken is
 
         (
             ,
+            ,
             string memory _erc20Name,
             string memory _erc20Symbol,
             uint256 _erc20Supply
-        ) = abi.decode(_data, (Collateral[], string, string, uint256));
+        ) = abi.decode(_data, (Collateral[], bool, string, string, uint256));
 
         if (bytes(_erc20Name).length == 0) revert InvalidName();
         if (bytes(_erc20Symbol).length == 0) revert InvalidSymbol();
@@ -245,6 +249,7 @@ contract ERC20KPIToken is
     function collectCollateralsAndFees(
         address _creator,
         Collateral[] memory _collaterals,
+        bool _takeFromCreator,
         address _feeReceiver
     ) internal onlyInitializing {
         if (_collaterals.length == 0) revert NoCollaterals();
@@ -279,11 +284,16 @@ contract ERC20KPIToken is
                 .minimumPayout;
             collateral[_collateral.token].postFinalizationAmount = 0;
             collateralAddressByIndex[_i] = _collateral.token;
-            IERC20Upgradeable(_collateral.token).safeTransferFrom(
-                _creator,
-                address(this),
+            if (_takeFromCreator) {
+                IERC20Upgradeable(_collateral.token).safeTransferFrom(
+                    _creator,
+                    address(this),
+                    _collateralAmountBeforeFee
+                );
+            } else if (
+                IERC20Upgradeable(_collateral.token).balanceOf(address(this)) <
                 _collateralAmountBeforeFee
-            );
+            ) revert NotEnoughCollateral();
             if (_fee > 0) {
                 IERC20Upgradeable(_collateral.token).safeTransfer(
                     _feeReceiver,
