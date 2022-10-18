@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 const { ContractFactory } = ethers;
 const require = createRequire(fileURLToPath(import.meta.url));
 
-export const deploy = async (
+export const deployToFork = async (
     factory,
     kpiTokensManager,
     _oraclesManager,
