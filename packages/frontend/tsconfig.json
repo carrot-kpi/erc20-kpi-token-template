@@ -1,10 +1,11 @@
 {
-  "include": ["./src/**/*.tsx", "./src/**/*.ts", "./playground/app.tsx"],
+  "include": ["./src/**/*.tsx", "./src/**/*.ts", "./playground/*.tsx"],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "outDir": "./dist",
     "module": "ESNext",
     "lib": ["DOM", "ESNext"],
+    "target": "ES6",
     "sourceMap": true,
     "strict": true,
     "rootDirs": ["./src"],

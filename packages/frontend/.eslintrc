@@ -4,6 +4,7 @@
     "es2021": true
   },
   "extends": [
+    "plugin:prettier/recommended",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "standard-with-typescript"
@@ -27,6 +28,7 @@
     "comma-dangle": "off",
     "react/react-in-jsx-scope": "off",
     "react-hooks/exhaustive-deps": "error",
-    "space-before-function-paren": "off"
+    "space-before-function-paren": "off",
+    "curly": "off"
   }
 }

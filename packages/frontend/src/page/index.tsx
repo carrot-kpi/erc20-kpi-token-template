@@ -1,9 +1,9 @@
 import { KpiToken } from '@carrot-kpi/sdk'
 import { ReactElement } from 'react'
-import { TFunction } from 'react-i18next'
+import { NamespacedTranslateFunction } from '@carrot-kpi/react'
 
 interface PageProps {
-  t: TFunction
+  t: NamespacedTranslateFunction
   kpiToken: KpiToken
 }
 
@@ -13,6 +13,9 @@ export const Component = ({ t, kpiToken }: PageProps): ReactElement => {
       {t('main')}
       <br />
       Address: {kpiToken.address}
+      Title: {kpiToken.specification.title}
+      Description: {kpiToken.specification.description}
+      Tags: {kpiToken.specification.tags.join(', ')}
     </>
   )
 }
