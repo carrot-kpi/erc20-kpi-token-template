@@ -71,7 +71,7 @@ const main = async () => {
             },
             shared: {
               '@carrot-kpi/react': '^0.12.0',
-              '@carrot-kpi/sdk': '^1.7.0',
+              '@carrot-kpi/sdk': '^1.8.0',
               ethers: '^5.7.1',
               react: { requiredVersion: '^18.2.0', singleton: true },
               'react-dom': { requiredVersion: '^18.2.0', singleton: true },
@@ -88,7 +88,7 @@ const main = async () => {
             },
             shared: {
               '@carrot-kpi/react': '^0.12.0',
-              '@carrot-kpi/sdk': '^1.7.0',
+              '@carrot-kpi/sdk': '^1.8.0',
               ethers: '^5.7.1',
               react: { requiredVersion: '^18.2.0', singleton: true },
               'react-dom': { requiredVersion: '^18.2.0', singleton: true },
