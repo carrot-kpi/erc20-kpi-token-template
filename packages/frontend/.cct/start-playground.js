@@ -48,9 +48,9 @@ export const startPlayground = async (
         new webpack.DefinePlugin(globals),
         new webpack.container.ModuleFederationPlugin({
           name: 'host',
-          shared: { 
+          shared: {
             '@carrot-kpi/react': '^0.12.0',
-            '@carrot-kpi/sdk': '^1.7.0',
+            '@carrot-kpi/sdk': '^1.9.0',
             '@emotion/react': '^11.10.4',
             ethers: '^5.7.1',
             react: { requiredVersion: '^18.2.0', singleton: true },
