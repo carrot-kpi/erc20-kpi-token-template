@@ -1,15 +1,15 @@
-import { ReactElement, useCallback, useEffect, useState } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import {
   addBundleForTemplate,
   CarrotCoreProvider,
   NamespacedTranslateFunction,
+  TemplateComponent,
+  useOracleTemplates,
 } from '@carrot-kpi/react'
-import { BigNumber, Wallet, providers, Signer, constants } from 'ethers'
+import { Wallet, providers, Signer } from 'ethers'
 import i18n from 'i18next'
-import { Component as CreationForm } from '../../src/creation-form'
 import { bundle as creationFormBundle } from '../../src/creation-form/i18n'
-import { Component as Page } from '../../src/page'
 import { bundle as pageBundle } from '../../src/page/i18n'
 import { useTranslation } from 'react-i18next'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
@@ -20,12 +20,7 @@ import {
   Connector,
   ConnectorData,
   useConnect,
-  usePrepareSendTransaction,
-  useProvider,
-  useSendTransaction,
 } from 'wagmi'
-import { Fetcher, KpiToken } from '@carrot-kpi/sdk'
-import { defaultAbiCoder, keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 
 class CarrotConnector extends Connector<
   providers.JsonRpcProvider,
@@ -116,28 +111,14 @@ const supportedChains = [forkedChain]
 
 const App = (): ReactElement => {
   const { connect, connectors } = useConnect({ chainId: CCT_CHAIN_ID })
+  const { loading: isLoadingTemplates, templates } = useOracleTemplates()
   const { t } = useTranslation()
-  const provider = useProvider()
+
+  console.log(isLoadingTemplates, templates)
 
   const [creationFormT, setCreationFormT] =
     useState<NamespacedTranslateFunction | null>(null)
   const [pageT, setPageT] = useState<NamespacedTranslateFunction | null>(null)
-
-  const [creationTx, setCreationTx] = useState<
-    providers.TransactionRequest & {
-      to: string
-    }
-  >({
-    to: '',
-    data: '',
-    value: BigNumber.from('0'),
-  })
-  const [kpiToken, setKpiToken] = useState<KpiToken | null>(null)
-
-  const { config } = usePrepareSendTransaction({
-    request: creationTx,
-  })
-  const { sendTransactionAsync } = useSendTransaction(config)
 
   useEffect(() => {
     connect({ connector: connectors[0] })
@@ -151,56 +132,16 @@ const App = (): ReactElement => {
     })
   }, [t, connect, connectors])
 
-  useEffect(() => {
-    let cancelled = false
-    if (sendTransactionAsync) {
-      const fetch = async (): Promise<void> => {
-        const tx = await sendTransactionAsync()
-        const receipt = await tx.wait()
-        const createTokenEventHash = keccak256(
-          toUtf8Bytes('CreateToken(address)')
-        )
-        const createdKpiTokenAddress = receipt.logs.reduce(
-          (address: string, log) => {
-            const [hash] = log.topics
-            if (hash !== createTokenEventHash) return address
-            address = defaultAbiCoder.decode(['address'], log.data)[0]
-            return address
-          },
-          constants.AddressZero
-        )
-        const kpiTokens = await Fetcher.fetchKpiTokens(provider, [
-          createdKpiTokenAddress,
-        ])
-        if (!cancelled) setKpiToken(kpiTokens[createdKpiTokenAddress])
-      }
-      void fetch()
-    }
-    return () => {
-      cancelled = true
-    }
-  }, [provider, sendTransactionAsync])
-
-  const handleDone = useCallback(
-    (to: Address, data: string, value: BigNumber) => {
-      setCreationTx({ to, data, value, gasLimit: 10_000_000 })
-    },
-    []
-  )
-
   if (!creationFormT || !pageT) return <>Loading...</>
   return (
     <>
       <h1>Core Application</h1>
       <h2>Creation form</h2>
-      <CreationForm t={creationFormT} onDone={handleDone} />
-      <br />
-      <h2>Page</h2>
-      {!!kpiToken ? (
-        <Page t={pageT} kpiToken={kpiToken} />
-      ) : (
-        'Please create a KPI token to show the page'
-      )}
+      <TemplateComponent
+        type="creationForm"
+        template={isLoadingTemplates ? undefined : templates[0]}
+      />
+      {/* TODO: add page component */}
     </>
   )
 }

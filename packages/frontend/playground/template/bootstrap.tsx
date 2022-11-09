@@ -122,6 +122,7 @@ const App = (): ReactElement => {
   const [creationFormT, setCreationFormT] =
     useState<NamespacedTranslateFunction | null>(null)
   const [pageT, setPageT] = useState<NamespacedTranslateFunction | null>(null)
+  const [kpiToken, setKpiToken] = useState<KpiToken | null>(null)
 
   const [creationTx, setCreationTx] = useState<
     providers.TransactionRequest & {
@@ -132,7 +133,6 @@ const App = (): ReactElement => {
     data: '',
     value: BigNumber.from('0'),
   })
-  const [kpiToken, setKpiToken] = useState<KpiToken | null>(null)
 
   const { config } = usePrepareSendTransaction({
     request: creationTx,
