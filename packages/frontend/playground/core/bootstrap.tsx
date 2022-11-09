@@ -7,10 +7,10 @@ import {
 } from '@carrot-kpi/react'
 import { BigNumber, Wallet, providers, Signer, constants } from 'ethers'
 import i18n from 'i18next'
-import { Component as CreationForm } from '../src/creation-form'
-import { bundle as creationFormBundle } from '../src/creation-form/i18n'
-import { Component as Page } from '../src/page'
-import { bundle as pageBundle } from '../src/page/i18n'
+import { Component as CreationForm } from '../../src/creation-form'
+import { bundle as creationFormBundle } from '../../src/creation-form/i18n'
+import { Component as Page } from '../../src/page'
+import { bundle as pageBundle } from '../../src/page/i18n'
 import { useTranslation } from 'react-i18next'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import {
@@ -191,10 +191,11 @@ const App = (): ReactElement => {
   if (!creationFormT || !pageT) return <>Loading...</>
   return (
     <>
-      <h1>Creation form</h1>
+      <h1>Core Application</h1>
+      <h2>Creation form</h2>
       <CreationForm t={creationFormT} onDone={handleDone} />
       <br />
-      <h1>Page</h1>
+      <h2>Page</h2>
       {!!kpiToken ? (
         <Page t={pageT} kpiToken={kpiToken} />
       ) : (
