@@ -61,6 +61,10 @@ const main = async () => {
           ],
         },
         plugins: [
+          // TODO: further globals might be passed by carrot-scripts??
+          new webpack.DefinePlugin({
+            __DEV__: JSON.stringify(false),
+          }),
           new webpack.container.ModuleFederationPlugin({
             name: `${commitHash}creationForm`,
             library: { type: 'window', name: `${commitHash}creationForm` },
