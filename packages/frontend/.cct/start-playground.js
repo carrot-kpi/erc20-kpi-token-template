@@ -29,7 +29,7 @@ export const startPlayground = async (
       level: 'none',
     },
     stats: 'none',
-    entry: join(__dirname, '../playground/core/index.tsx'),
+    entry: join(__dirname, '../playground/index.tsx'),
     resolve: {
       extensions: ['.ts', '.tsx', '...'],
     },
@@ -38,7 +38,7 @@ export const startPlayground = async (
     },
     plugins: [
       new HtmlWebpackPlugin({
-        template: join(__dirname, '../playground/core/index.html'),
+        template: join(__dirname, '../playground/index.html'),
       }),
       new webpack.DefinePlugin(globals),
       new webpack.container.ModuleFederationPlugin({
@@ -61,7 +61,7 @@ export const startPlayground = async (
       level: 'none',
     },
     stats: 'none',
-    entry: join(__dirname, '../playground/template/index.tsx'),
+    entry: join(__dirname, '../playground/index.tsx'),
     resolve: {
       extensions: ['.ts', '.tsx', '...'],
     },
@@ -70,7 +70,7 @@ export const startPlayground = async (
     },
     plugins: [
       new HtmlWebpackPlugin({
-        template: join(__dirname, '../playground/template/index.html'),
+        template: join(__dirname, '../playground/index.html'),
       }),
       new webpack.DefinePlugin(globals),
       new webpack.container.ModuleFederationPlugin({
@@ -138,7 +138,7 @@ export const startPlayground = async (
   const templateApplicationDevServer = new WebpackDevServer(
     {
       port: 3001,
-      open: true,
+      open: false,
       compress: true,
     },
     templateApplicationCompiler
