@@ -70,8 +70,8 @@ const main = async () => {
               './set-public-path': join(__dirname, '../src/set-public-path.ts'),
             },
             shared: {
-              '@carrot-kpi/react': '^0.13.0',
-              '@carrot-kpi/sdk': '^1.9.0',
+              '@carrot-kpi/react': '^0.15.1',
+              '@carrot-kpi/sdk': '^1.9.2',
               ethers: '^5.7.1',
               react: { requiredVersion: '^18.2.0', singleton: true },
               'react-dom': { requiredVersion: '^18.2.0', singleton: true },
@@ -87,8 +87,8 @@ const main = async () => {
               './set-public-path': join(__dirname, '../src/set-public-path.ts'),
             },
             shared: {
-              '@carrot-kpi/react': '^0.13.0',
-              '@carrot-kpi/sdk': '^1.9.0',
+              '@carrot-kpi/react': '^0.15.1',
+              '@carrot-kpi/sdk': '^1.9.2',
               ethers: '^5.7.1',
               react: { requiredVersion: '^18.2.0', singleton: true },
               'react-dom': { requiredVersion: '^18.2.0', singleton: true },

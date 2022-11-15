@@ -1,17 +1,18 @@
-import { ReactElement, useEffect, useState } from 'react'
-import { createRoot } from 'react-dom/client'
 import {
   addBundleForTemplate,
+  Campaign,
   CarrotCoreProvider,
+  CARROT_KPI_REACT_I18N_NAMESPACE,
+  CreationForm,
   NamespacedTranslateFunction,
-  TemplateComponent,
-  useOracleTemplates,
+  useKpiTokens,
+  useKpiTokenTemplates,
 } from '@carrot-kpi/react'
-import { Wallet, providers, Signer } from 'ethers'
-import i18n from 'i18next'
-import { bundle as creationFormBundle } from '../src/creation-form/i18n'
-import { bundle as pageBundle } from '../src/page/i18n'
+import { ReactElement, useEffect, useMemo, useState } from 'react'
+import { createRoot } from 'react-dom/client'
+import i18next from 'i18next'
 import { useTranslation } from 'react-i18next'
+import { Wallet, providers, Signer, BigNumber } from 'ethers'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import {
   Address,
@@ -21,6 +22,8 @@ import {
   ConnectorData,
   useConnect,
 } from 'wagmi'
+import { bundle as creationFormBundle } from '../src/creation-form/i18n'
+import { bundle as pageBundle } from '../src/page/i18n'
 
 class CarrotConnector extends Connector<
   providers.JsonRpcProvider,
@@ -110,9 +113,14 @@ if (!forkedChain) {
 const supportedChains = [forkedChain]
 
 const App = (): ReactElement => {
+  const cctTemplateIds = useMemo(() => [1], [CCT_TEMPLATE_ID])
+
   const { connect, connectors } = useConnect({ chainId: CCT_CHAIN_ID })
-  const { loading: isLoadingTemplates, templates } = useOracleTemplates()
-  const { t } = useTranslation()
+  const { loading: isLoadingTemplates, templates } =
+    useKpiTokenTemplates(cctTemplateIds)
+  const { loading: isLoadingKpiTokens, kpiTokens } = useKpiTokens()
+
+  const { t, i18n } = useTranslation()
 
   const [creationFormT, setCreationFormT] =
     useState<NamespacedTranslateFunction | null>(null)
@@ -130,6 +138,10 @@ const App = (): ReactElement => {
     })
   }, [t, connect, connectors])
 
+  const handleDone = (to: Address, data: string, value: BigNumber) => {
+    console.log(to, data, value.toString())
+  }
+
   if (!creationFormT || !pageT) return <>Loading...</>
 
   return (
@@ -137,13 +149,20 @@ const App = (): ReactElement => {
       <h1>Core Application</h1>
       <h2>Creation form</h2>
       {!isLoadingTemplates && (
-        <TemplateComponent type="creationForm" template={templates[0]} />
+        <CreationForm
+          template={templates[0]}
+          customBaseUrl={`${CCT_IPFS_GATEWAY_URL}/${templates[0]?.specification.cid}`}
+          onDone={handleDone}
+        />
       )}
       {/* FIXME: page component */}
-      {/* <h2>Page</h2> */}
-      {/* {!isLoadingTemplates && (
-        <TemplateComponent type="page" template={templates[0]} />
-      )} */}
+      <h2>Page</h2>
+      {!isLoadingKpiTokens && (
+        <Campaign
+          address={kpiTokens[0]?.address}
+          customBaseUrl={`${CCT_IPFS_GATEWAY_URL}/${templates[0]?.specification.cid}`}
+        />
+      )}
     </>
   )
 }
@@ -151,9 +170,9 @@ const App = (): ReactElement => {
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 createRoot(document.getElementById('root')!).render(
   <CarrotCoreProvider
-    i18nInstance={i18n}
+    i18nInstance={i18next}
     i18nResources={{}}
-    i18nDefaultNamespace={''}
+    i18nDefaultNamespace={CARROT_KPI_REACT_I18N_NAMESPACE}
     supportedChains={supportedChains}
     providers={[
       jsonRpcProvider({
