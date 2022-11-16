@@ -80,9 +80,9 @@ export const setupFork = async (
             },
         ],
         frontendGlobals: {
-            CREATION_PROXY_ADDRESS: creationProxy.address,
-            ERC20_1_ADDRESS: testToken1Contract.address,
-            ERC20_2_ADDRESS: testToken2Contract.address,
+            CCT_CREATION_PROXY_ADDRESS: creationProxy.address,
+            CCT_ERC20_1_ADDRESS: testToken1Contract.address,
+            CCT_ERC20_2_ADDRESS: testToken2Contract.address,
         },
     };
 };
