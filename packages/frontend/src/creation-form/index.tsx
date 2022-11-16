@@ -3,7 +3,7 @@ import {
   NamespacedTranslateFunction,
   useDecentralizedStorageUploader,
 } from '@carrot-kpi/react'
-import { Template } from '@carrot-kpi/sdk'
+import { ChainId, Template } from '@carrot-kpi/sdk'
 import { BigNumber, constants, utils } from 'ethers'
 import { defaultAbiCoder } from 'ethers/lib/utils'
 import { ReactElement, useCallback, useMemo, useState } from 'react'
@@ -18,23 +18,33 @@ import {
   SpecificationData,
 } from './types'
 import CREATION_PROXY_ABI from '../abis/creation-proxy.json'
-import { Address } from 'wagmi'
+import { Address, useNetwork } from 'wagmi'
 
 const CREATION_PROXY_INTERFACE = new utils.Interface(CREATION_PROXY_ABI)
+
+const CREATION_PROXY_ADDRESS: Record<ChainId, Address> = {
+  [ChainId.GOERLI]: constants.AddressZero,
+  [ChainId.SEPOLIA]: '0x4300d4C410f87c7c1824Cbc2eF67431030106604',
+}
 
 interface CreationFormProps {
   t: NamespacedTranslateFunction
   onDone: (to: Address, data: string, value: BigNumber) => void
 }
 
+// TODO: add a check that displays an error message if the creation
+// proxy address is 0 for more than x time
 export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
+  const { chain } = useNetwork()
   const uploadToDecentralizeStorage = useDecentralizedStorageUploader(
     __DEV__ ? 'playground' : 'ipfs'
   )
   const creationProxyAddress = useMemo(() => {
-    if (__DEV__) return CREATION_PROXY_ADDRESS
-    return constants.AddressZero
-  }, [])
+    if (__DEV__) return CCT_CREATION_PROXY_ADDRESS
+    return chain && chain.id in ChainId
+      ? CREATION_PROXY_ADDRESS[chain.id as ChainId]
+      : constants.AddressZero
+  }, [chain])
 
   const [data, setData] = useState<CreationData>({
     specification: {
