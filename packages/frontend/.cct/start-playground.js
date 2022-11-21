@@ -44,7 +44,7 @@ export const startPlayground = async (
       new webpack.container.ModuleFederationPlugin({
         name: 'host',
         shared: {
-          '@carrot-kpi/react': '^0.15.2',
+          '@carrot-kpi/react': '^0.16.0',
           '@carrot-kpi/sdk': '^1.9.2',
           '@emotion/react': '^11.10.4',
           ethers: '^5.7.1',
@@ -81,7 +81,7 @@ export const startPlayground = async (
           './set-public-path': join(__dirname, '../src/set-public-path.ts'),
         },
         shared: {
-          '@carrot-kpi/react': '^0.15.2',
+          '@carrot-kpi/react': '^0.16.0',
           '@carrot-kpi/sdk': '^1.9.2',
           ethers: '^5.7.1',
           react: { requiredVersion: '^18.2.0', singleton: true },
@@ -98,7 +98,7 @@ export const startPlayground = async (
           './set-public-path': join(__dirname, '../src/set-public-path.ts'),
         },
         shared: {
-          '@carrot-kpi/react': '^0.15.2',
+          '@carrot-kpi/react': '^0.16.0',
           '@carrot-kpi/sdk': '^1.9.2',
           ethers: '^5.7.1',
           react: { requiredVersion: '^18.2.0', singleton: true },
