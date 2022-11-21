@@ -44,13 +44,13 @@ export const startPlayground = async (
       new webpack.container.ModuleFederationPlugin({
         name: 'host',
         shared: {
-          '@carrot-kpi/react': '^0.15.1',
+          '@carrot-kpi/react': '^0.15.2',
           '@carrot-kpi/sdk': '^1.9.2',
           '@emotion/react': '^11.10.4',
           ethers: '^5.7.1',
           react: { requiredVersion: '^18.2.0', singleton: true },
           'react-dom': { requiredVersion: '^18.2.0', singleton: true },
-          wagmi: '^0.7.7',
+          wagmi: '^0.8.5',
         },
       }),
     ],
@@ -60,8 +60,11 @@ export const startPlayground = async (
     infrastructureLogging: {
       level: 'none',
     },
+    entry: {
+      creationForm: join(__dirname, '../src/set-public-path.ts'),
+      page: join(__dirname, '../src/set-public-path.ts'),
+    },
     stats: 'none',
-    entry: join(__dirname, '../playground/index.tsx'),
     resolve: {
       extensions: ['.ts', '.tsx', '...'],
     },
@@ -69,42 +72,38 @@ export const startPlayground = async (
       rules: [{ test: /\.tsx?$/, use: 'ts-loader' }],
     },
     plugins: [
-      new HtmlWebpackPlugin({
-        template: join(__dirname, '../playground/index.html'),
-      }),
-      new webpack.DefinePlugin(globals),
       new webpack.container.ModuleFederationPlugin({
-        name: `${commitHash}creationForm`,
-        library: { type: 'window', name: `${commitHash}creationForm` },
+        name: 'creationForm',
+        library: { type: 'window', name: `creationForm` },
         exposes: {
           './component': join(__dirname, '../src/creation-form/index.tsx'),
           './i18n': join(__dirname, '../src/creation-form/i18n/index.ts'),
           './set-public-path': join(__dirname, '../src/set-public-path.ts'),
         },
         shared: {
-          '@carrot-kpi/react': '^0.15.1',
+          '@carrot-kpi/react': '^0.15.2',
           '@carrot-kpi/sdk': '^1.9.2',
           ethers: '^5.7.1',
           react: { requiredVersion: '^18.2.0', singleton: true },
           'react-dom': { requiredVersion: '^18.2.0', singleton: true },
-          wagmi: '^0.7.7',
+          wagmi: '^0.8.5',
         },
       }),
       new webpack.container.ModuleFederationPlugin({
-        name: `${commitHash}page`,
-        library: { type: 'window', name: `${commitHash}page` },
+        name: 'page',
+        library: { type: 'window', name: `page` },
         exposes: {
           './component': join(__dirname, '../src/page/index.tsx'),
           './i18n': join(__dirname, '../src/page/i18n/index.ts'),
           './set-public-path': join(__dirname, '../src/set-public-path.ts'),
         },
         shared: {
-          '@carrot-kpi/react': '^0.15.1',
+          '@carrot-kpi/react': '^0.15.2',
           '@carrot-kpi/sdk': '^1.9.2',
           ethers: '^5.7.1',
           react: { requiredVersion: '^18.2.0', singleton: true },
           'react-dom': { requiredVersion: '^18.2.0', singleton: true },
-          wagmi: '^0.7.7',
+          wagmi: '^0.8.5',
         },
       }),
     ],
