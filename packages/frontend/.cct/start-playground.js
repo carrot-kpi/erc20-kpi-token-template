@@ -72,6 +72,7 @@ export const startPlayground = async (
       rules: [{ test: /\.tsx?$/, use: 'ts-loader' }],
     },
     plugins: [
+      new webpack.DefinePlugin(globals),
       new webpack.container.ModuleFederationPlugin({
         name: 'creationForm',
         library: { type: 'window', name: `creationForm` },
@@ -128,7 +129,7 @@ export const startPlayground = async (
   // initialize the webpack dev servers
   const coreApplicationDevServer = new WebpackDevServer(
     {
-      port: 3000,
+      port: 9000,
       open: true,
       compress: true,
     },
@@ -136,9 +137,12 @@ export const startPlayground = async (
   )
   const templateApplicationDevServer = new WebpackDevServer(
     {
-      port: 3001,
+      port: 9002,
       open: false,
       compress: true,
+      headers: {
+        'Access-Control-Allow-Origin': 'http://localhost:9000',
+      },
     },
     templateApplicationCompiler
   )
