@@ -132,16 +132,15 @@ const App = (): ReactElement => {
       {!isLoadingTemplates && (
         <CreationForm
           template={templates[0]}
-          customBaseUrl="http://localhost:3001/"
+          customBaseUrl={'http://localhost:9002/'}
           onDone={handleDone}
         />
       )}
-      {/* FIXME: page component */}
       <h2>Page</h2>
       {!isLoadingKpiTokens && (
         <Campaign
           address={kpiTokens[0]?.address}
-          customBaseUrl={`${CCT_IPFS_GATEWAY_URL}/${templates[0]?.specification.cid}`}
+          customBaseUrl={'http://localhost:9002/'}
         />
       )}
     </>
