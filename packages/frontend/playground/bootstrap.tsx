@@ -137,12 +137,15 @@ const App = (): ReactElement => {
         />
       )}
       <h2>Page</h2>
-      {!isLoadingKpiTokens && (
-        <Campaign
-          address={kpiTokens[0]?.address}
-          customBaseUrl={'http://localhost:9002/'}
-        />
-      )}
+      {!isLoadingKpiTokens &&
+        Object.values(kpiTokens).map((kpiToken) => (
+          <div key={kpiToken.address}>
+            <Campaign
+              address={kpiToken.address}
+              customBaseUrl={`${CCT_IPFS_GATEWAY_URL}/${kpiToken.template.specification.cid}`}
+            />
+          </div>
+        ))}
     </>
   )
 }
