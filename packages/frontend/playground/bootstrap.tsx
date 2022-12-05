@@ -1,17 +1,13 @@
-import { ReactElement, useCallback, useEffect, useState } from 'react'
-import { createRoot } from 'react-dom/client'
 import {
-  addBundleForTemplate,
+  Campaign,
   CarrotCoreProvider,
-  NamespacedTranslateFunction,
+  CreationForm,
+  useKpiTokens,
+  useKpiTokenTemplates,
 } from '@carrot-kpi/react'
-import { BigNumber, Wallet, providers, Signer, constants } from 'ethers'
-import i18n from 'i18next'
-import { Component as CreationForm } from '../src/creation-form'
-import { bundle as creationFormBundle } from '../src/creation-form/i18n'
-import { Component as Page } from '../src/page'
-import { bundle as pageBundle } from '../src/page/i18n'
-import { useTranslation } from 'react-i18next'
+import { ReactElement, useEffect, useMemo } from 'react'
+import { createRoot } from 'react-dom/client'
+import { Wallet, providers, Signer, BigNumber } from 'ethers'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import {
   Address,
@@ -19,13 +15,9 @@ import {
   Chain,
   Connector,
   ConnectorData,
+  useAccount,
   useConnect,
-  usePrepareSendTransaction,
-  useProvider,
-  useSendTransaction,
 } from 'wagmi'
-import { Fetcher, KpiToken } from '@carrot-kpi/sdk'
-import { defaultAbiCoder, keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 
 class CarrotConnector extends Connector<
   providers.JsonRpcProvider,
@@ -115,91 +107,45 @@ if (!forkedChain) {
 const supportedChains = [forkedChain]
 
 const App = (): ReactElement => {
-  const { connect, connectors } = useConnect({ chainId: CCT_CHAIN_ID })
-  const { t } = useTranslation()
-  const provider = useProvider()
+  const cctTemplateIds = useMemo(() => [CCT_TEMPLATE_ID], [])
 
-  const [creationFormT, setCreationFormT] =
-    useState<NamespacedTranslateFunction | null>(null)
-  const [pageT, setPageT] = useState<NamespacedTranslateFunction | null>(null)
-
-  const [creationTx, setCreationTx] = useState<
-    providers.TransactionRequest & {
-      to: string
-    }
-  >({
-    to: '',
-    data: '',
-    value: BigNumber.from('0'),
+  const { isConnected } = useAccount()
+  const { connect, connectors } = useConnect({
+    chainId: CCT_CHAIN_ID,
   })
-  const [kpiToken, setKpiToken] = useState<KpiToken | null>(null)
-
-  const { config } = usePrepareSendTransaction({
-    request: creationTx,
-  })
-  const { sendTransactionAsync } = useSendTransaction(config)
+  const { loading: isLoadingTemplates, templates } =
+    useKpiTokenTemplates(cctTemplateIds)
+  const { loading: isLoadingKpiTokens, kpiTokens } = useKpiTokens()
 
   useEffect(() => {
-    connect({ connector: connectors[0] })
-    addBundleForTemplate(i18n, 'creationForm', creationFormBundle)
-    addBundleForTemplate(i18n, 'page', pageBundle)
-    setCreationFormT(() => (key: any, options?: any) => {
-      return t(key, { ...options, ns: 'creationForm' })
-    })
-    setPageT(() => (key: any, options?: any) => {
-      return t(key, { ...options, ns: 'page' })
-    })
-  }, [t, connect, connectors])
+    if (!isConnected) connect({ connector: connectors[0] })
+  }, [connect, connectors, isConnected])
 
-  useEffect(() => {
-    let cancelled = false
-    if (sendTransactionAsync) {
-      const fetch = async (): Promise<void> => {
-        const tx = await sendTransactionAsync()
-        const receipt = await tx.wait()
-        const createTokenEventHash = keccak256(
-          toUtf8Bytes('CreateToken(address)')
-        )
-        const createdKpiTokenAddress = receipt.logs.reduce(
-          (address: string, log) => {
-            const [hash] = log.topics
-            if (hash !== createTokenEventHash) return address
-            address = defaultAbiCoder.decode(['address'], log.data)[0]
-            return address
-          },
-          constants.AddressZero
-        )
-        const kpiTokens = await Fetcher.fetchKpiTokens(provider, [
-          createdKpiTokenAddress,
-        ])
-        if (!cancelled) setKpiToken(kpiTokens[createdKpiTokenAddress])
-      }
-      void fetch()
-    }
-    return () => {
-      cancelled = true
-    }
-  }, [provider, sendTransactionAsync])
+  const handleDone = (to: Address, data: string, value: BigNumber): void => {
+    console.log(to, data, value.toString())
+  }
 
-  const handleDone = useCallback(
-    (to: Address, data: string, value: BigNumber) => {
-      setCreationTx({ to, data, value, gasLimit: 10_000_000 })
-    },
-    []
-  )
-
-  if (!creationFormT || !pageT) return <>Loading...</>
   return (
     <>
-      <h1>Creation form</h1>
-      <CreationForm t={creationFormT} onDone={handleDone} />
-      <br />
-      <h1>Page</h1>
-      {!!kpiToken ? (
-        <Page t={pageT} kpiToken={kpiToken} />
-      ) : (
-        'Please create a KPI token to show the page'
+      <h1>Core Application</h1>
+      <h2>Creation form</h2>
+      {!isLoadingTemplates && (
+        <CreationForm
+          template={templates[0]}
+          customBaseUrl={'http://localhost:9002/'}
+          onDone={handleDone}
+        />
       )}
+      <h2>Page</h2>
+      {!isLoadingKpiTokens &&
+        Object.values(kpiTokens).map((kpiToken) => (
+          <div key={kpiToken.address}>
+            <Campaign
+              address={kpiToken.address}
+              customBaseUrl={`${CCT_IPFS_GATEWAY_URL}/${kpiToken.template.specification.cid}`}
+            />
+          </div>
+        ))}
     </>
   )
 }
@@ -207,7 +153,6 @@ const App = (): ReactElement => {
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 createRoot(document.getElementById('root')!).render(
   <CarrotCoreProvider
-    i18nInstance={i18n}
     i18nResources={{}}
     i18nDefaultNamespace={''}
     supportedChains={supportedChains}
@@ -219,7 +164,7 @@ createRoot(document.getElementById('root')!).render(
       }),
     ]}
     getConnectors={(chains: Chain[]) => [
-      new CarrotConnector({ chains, options: {} }),
+      new CarrotConnector({ chains, options: {} }) as Connector,
     ]}
     ipfsGateway={CCT_IPFS_GATEWAY_URL}
   >

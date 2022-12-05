@@ -1,24 +1,14 @@
-import chalk from 'chalk'
-import { formatWebpackMessages } from './utils/format-webpack-messages.js'
 import WebpackDevServer from 'webpack-dev-server'
-import webpack from 'webpack'
-import { join, dirname } from 'path'
-import { fileURLToPath } from 'url'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
+import { long as longCommitHash } from 'git-rev-sync'
+import { join } from 'path'
+import webpack from 'webpack'
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
+
+import { setupCompiler } from './setup-compiler.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-
-const printInstructions = (writableStream, globals, extra) => {
-  let printable =
-    'Playground frontend available at:\n\n  http://localhost:9000\n\n' +
-    'Globals available:\n\n' +
-    Object.entries(globals).reduce((accumulator, [key, value]) => {
-      accumulator += `  ${key}: ${value}\n`
-      return accumulator
-    }, '')
-  if (extra) printable += `\n ${extra}`
-  writableStream.write(printable)
-}
 
 export const startPlayground = async (
   forkedNetworkChainId,
@@ -27,92 +17,140 @@ export const startPlayground = async (
   globals,
   writableStream
 ) => {
-  return new Promise((resolve, reject) => {
-    const compiler = webpack({
-      mode: 'development',
-      infrastructureLogging: {
-        level: 'none',
-      },
-      stats: 'none',
-      entry: join(__dirname, '../playground/index.tsx'),
-      resolve: {
-        extensions: ['.ts', '.tsx', '...'],
-      },
-      module: {
-        rules: [{ test: /\.tsx?$/, use: 'ts-loader' }],
-      },
-      plugins: [
-        new HtmlWebpackPlugin({
-          template: join(__dirname, '../playground/index.html'),
-        }),
-        new webpack.DefinePlugin(globals),
-        new webpack.container.ModuleFederationPlugin({
-          name: 'host',
-          shared: {
-            '@carrot-kpi/react': '^0.13.0',
-            '@carrot-kpi/sdk': '^1.9.0',
-            '@emotion/react': '^11.10.4',
-            ethers: '^5.7.1',
-            react: { requiredVersion: '^18.2.0', singleton: true },
-            'react-dom': { requiredVersion: '^18.2.0', singleton: true },
-            wagmi: '^0.7.7',
-          },
-        }),
-      ],
-    })
+  let coreFirstCompilation = true
+  let templateFirstCompilation = true
 
-    let firstCompilation = true
+  const commitHash = longCommitHash(join(__dirname, '../'))
 
-    compiler.hooks.invalid.tap('invalid', () => {
-      if (!firstCompilation)
-        printInstructions(writableStream, globals, 'Compiling playground...')
-    })
-
-    const devServer = new WebpackDevServer(
-      {
-        port: 9000,
-        open: true,
-        compress: true,
-      },
-      compiler
-    )
-    devServer.startCallback((error) => {
-      if (error) reject(error)
-    })
-
-    compiler.hooks.done.tap('done', async (stats) => {
-      if (firstCompilation) {
-        resolve()
-        firstCompilation = false
-      }
-
-      const statsData = stats.toJson({
-        all: false,
-        warnings: true,
-        errors: true,
-      })
-
-      const messages = formatWebpackMessages(statsData)
-      const isSuccessful = !messages.errors.length && !messages.warnings.length
-      if (isSuccessful) {
-        printInstructions(writableStream, globals)
-      } else if (messages.errors.length) {
-        if (messages.errors.length > 1) messages.errors.length = 1
-        printInstructions(
-          writableStream,
-          globals,
-          `Failed to compile playground.\n${messages.errors.join('\n\n')}`
-        )
-      } else if (messages.warnings.length)
-        printInstructions(
-          writableStream,
-          globals,
-          chalk.yellow(
-            `Playground compiled with warnings:\n${messages.warnings.join(
-              '\n\n'
-            )}`
-          )
-        )
-    })
+  // initialize the applications compiler
+  const coreApplicationCompiler = webpack({
+    mode: 'development',
+    infrastructureLogging: {
+      level: 'none',
+    },
+    stats: 'none',
+    entry: join(__dirname, '../playground/index.tsx'),
+    resolve: {
+      extensions: ['.ts', '.tsx', '...'],
+    },
+    module: {
+      rules: [{ test: /\.tsx?$/, use: 'ts-loader' }],
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: join(__dirname, '../playground/index.html'),
+      }),
+      new webpack.DefinePlugin(globals),
+      new webpack.container.ModuleFederationPlugin({
+        name: 'host',
+        shared: {
+          '@carrot-kpi/react': '^0.16.0',
+          '@carrot-kpi/sdk': '^1.9.2',
+          '@emotion/react': '^11.10.4',
+          ethers: '^5.7.1',
+          react: { requiredVersion: '^18.2.0', singleton: true },
+          'react-dom': { requiredVersion: '^18.2.0', singleton: true },
+          wagmi: '^0.8.5',
+        },
+      }),
+    ],
   })
+  const templateApplicationCompiler = webpack({
+    mode: 'development',
+    infrastructureLogging: {
+      level: 'none',
+    },
+    entry: {
+      creationForm: join(__dirname, '../src/set-public-path.ts'),
+      page: join(__dirname, '../src/set-public-path.ts'),
+    },
+    stats: 'none',
+    resolve: {
+      extensions: ['.ts', '.tsx', '...'],
+    },
+    module: {
+      rules: [{ test: /\.tsx?$/, use: 'ts-loader' }],
+    },
+    plugins: [
+      new webpack.DefinePlugin(globals),
+      new webpack.container.ModuleFederationPlugin({
+        name: 'creationForm',
+        library: { type: 'window', name: `creationForm` },
+        exposes: {
+          './component': join(__dirname, '../src/creation-form/index.tsx'),
+          './i18n': join(__dirname, '../src/creation-form/i18n/index.ts'),
+          './set-public-path': join(__dirname, '../src/set-public-path.ts'),
+        },
+        shared: {
+          '@carrot-kpi/react': '^0.16.0',
+          '@carrot-kpi/sdk': '^1.9.2',
+          ethers: '^5.7.1',
+          react: { requiredVersion: '^18.2.0', singleton: true },
+          'react-dom': { requiredVersion: '^18.2.0', singleton: true },
+          wagmi: '^0.8.5',
+        },
+      }),
+      new webpack.container.ModuleFederationPlugin({
+        name: 'page',
+        library: { type: 'window', name: `page` },
+        exposes: {
+          './component': join(__dirname, '../src/page/index.tsx'),
+          './i18n': join(__dirname, '../src/page/i18n/index.ts'),
+          './set-public-path': join(__dirname, '../src/set-public-path.ts'),
+        },
+        shared: {
+          '@carrot-kpi/react': '^0.16.0',
+          '@carrot-kpi/sdk': '^1.9.2',
+          ethers: '^5.7.1',
+          react: { requiredVersion: '^18.2.0', singleton: true },
+          'react-dom': { requiredVersion: '^18.2.0', singleton: true },
+          wagmi: '^0.8.5',
+        },
+      }),
+    ],
+  })
+
+  // setup the applications compilers hooks
+  const coreCompilerPromise = setupCompiler(
+    coreApplicationCompiler,
+    globals,
+    writableStream,
+    coreFirstCompilation,
+    'CORE'
+  )
+  const templateCompilerPromise = setupCompiler(
+    templateApplicationCompiler,
+    globals,
+    writableStream,
+    templateFirstCompilation,
+    'TEMPLATE'
+  )
+
+  // initialize the webpack dev servers
+  const coreApplicationDevServer = new WebpackDevServer(
+    {
+      port: 9000,
+      open: true,
+      compress: true,
+    },
+    coreApplicationCompiler
+  )
+  const templateApplicationDevServer = new WebpackDevServer(
+    {
+      port: 9002,
+      open: false,
+      compress: true,
+      headers: {
+        'Access-Control-Allow-Origin': 'http://localhost:9000',
+      },
+    },
+    templateApplicationCompiler
+  )
+
+  // run the applications
+  await coreApplicationDevServer.start()
+  await templateApplicationDevServer.start()
+
+  // wait for the applications to be fully started
+  await Promise.all([coreCompilerPromise, templateCompilerPromise])
 }
