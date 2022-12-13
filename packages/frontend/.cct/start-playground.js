@@ -1,11 +1,13 @@
 import WebpackDevServer from 'webpack-dev-server'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { long as longCommitHash } from 'git-rev-sync'
 import { join } from 'path'
 import webpack from 'webpack'
 import { dirname } from 'path'
 import { fileURLToPath } from 'url'
+import tailwindcss from 'tailwindcss'
+import autoprefixer from 'autoprefixer'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 
 import { setupCompiler } from './setup-compiler.js'
 
@@ -38,8 +40,28 @@ export const startPlayground = async (
       rules: [
         { test: /\.tsx?$/, use: 'ts-loader' },
         {
-          test: /\.css$/,
-          use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
+          test: /\.css$/i,
+          include: join(__dirname, '../playground'),
+          exclude: /node_modules/,
+          use: [
+            MiniCssExtractPlugin.loader,
+            'css-loader',
+            {
+              loader: 'postcss-loader',
+              options: {
+                postcssOptions: {
+                  plugins: [
+                    tailwindcss({
+                      config: {
+                        content: ['../playground/**/*.{js,jsx,ts,tsx}'],
+                      },
+                    }),
+                    autoprefixer,
+                  ],
+                },
+              },
+            },
+          ],
         },
       ],
     },
@@ -48,8 +70,8 @@ export const startPlayground = async (
         template: join(__dirname, '../playground/index.html'),
       }),
       new MiniCssExtractPlugin({
-        filename: 'global.css',
-        chunkFilename: 'global.css',
+        filename: '[name].bundle.css',
+        chunkFilename: '[id].css',
       }),
       new webpack.DefinePlugin(globals),
       new webpack.container.ModuleFederationPlugin({
@@ -80,9 +102,39 @@ export const startPlayground = async (
       extensions: ['.ts', '.tsx', '...'],
     },
     module: {
-      rules: [{ test: /\.tsx?$/, use: 'ts-loader' }],
+      rules: [
+        { test: /\.tsx?$/, use: 'ts-loader' },
+        {
+          test: /\.css$/i,
+          include: join(__dirname, '../src'),
+          exclude: /node_modules/,
+          use: [
+            MiniCssExtractPlugin.loader,
+            'css-loader',
+            {
+              loader: 'postcss-loader',
+              options: {
+                postcssOptions: {
+                  plugins: [
+                    tailwindcss({
+                      config: {
+                        content: ['../src/**/*.{js,jsx,ts,tsx}'],
+                      },
+                    }),
+                    autoprefixer,
+                  ],
+                },
+              },
+            },
+          ],
+        },
+      ],
     },
     plugins: [
+      new MiniCssExtractPlugin({
+        filename: '[name].bundle.css',
+        chunkFilename: '[id].css',
+      }),
       new webpack.DefinePlugin(globals),
       new webpack.container.ModuleFederationPlugin({
         name: 'creationForm',
