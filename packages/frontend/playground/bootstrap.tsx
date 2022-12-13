@@ -19,6 +19,8 @@ import {
   useConnect,
 } from 'wagmi'
 
+import './global.css'
+
 class CarrotConnector extends Connector<
   providers.JsonRpcProvider,
   any,
@@ -136,7 +138,7 @@ const App = (): ReactElement => {
           onDone={handleDone}
         />
       )}
-      <h2>Page</h2>
+      <h2 className="text-3xl font-bold underline">Page</h2>
       {!isLoadingKpiTokens &&
         Object.values(kpiTokens).map((kpiToken) => (
           <div key={kpiToken.address}>

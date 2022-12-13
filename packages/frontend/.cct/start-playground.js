@@ -1,5 +1,6 @@
 import WebpackDevServer from 'webpack-dev-server'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { long as longCommitHash } from 'git-rev-sync'
 import { join } from 'path'
 import webpack from 'webpack'
@@ -34,11 +35,21 @@ export const startPlayground = async (
       extensions: ['.ts', '.tsx', '...'],
     },
     module: {
-      rules: [{ test: /\.tsx?$/, use: 'ts-loader' }],
+      rules: [
+        { test: /\.tsx?$/, use: 'ts-loader' },
+        {
+          test: /\.css$/,
+          use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
+        },
+      ],
     },
     plugins: [
       new HtmlWebpackPlugin({
         template: join(__dirname, '../playground/index.html'),
+      }),
+      new MiniCssExtractPlugin({
+        filename: 'global.css',
+        chunkFilename: 'global.css',
       }),
       new webpack.DefinePlugin(globals),
       new webpack.container.ModuleFederationPlugin({
