@@ -9,6 +9,7 @@ import tailwindcss from 'tailwindcss'
 import autoprefixer from 'autoprefixer'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 
+import postcssOptions from '../postcss.config.js'
 import { setupCompiler } from './setup-compiler.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -42,23 +43,13 @@ export const startPlayground = async (
         {
           test: /\.css$/i,
           include: join(__dirname, '../playground'),
-          exclude: /node_modules/,
           use: [
-            MiniCssExtractPlugin.loader,
+            'style-loader',
             'css-loader',
             {
               loader: 'postcss-loader',
               options: {
-                postcssOptions: {
-                  plugins: [
-                    tailwindcss({
-                      config: {
-                        content: ['../playground/**/*.{js,jsx,ts,tsx}'],
-                      },
-                    }),
-                    autoprefixer,
-                  ],
-                },
+                postcssOptions,
               },
             },
           ],
@@ -68,10 +59,6 @@ export const startPlayground = async (
     plugins: [
       new HtmlWebpackPlugin({
         template: join(__dirname, '../playground/index.html'),
-      }),
-      new MiniCssExtractPlugin({
-        filename: '[name].bundle.css',
-        chunkFilename: '[id].css',
       }),
       new webpack.DefinePlugin(globals),
       new webpack.container.ModuleFederationPlugin({
@@ -107,23 +94,13 @@ export const startPlayground = async (
         {
           test: /\.css$/i,
           include: join(__dirname, '../src'),
-          exclude: /node_modules/,
           use: [
-            MiniCssExtractPlugin.loader,
+            'style-loader',
             'css-loader',
             {
               loader: 'postcss-loader',
               options: {
-                postcssOptions: {
-                  plugins: [
-                    tailwindcss({
-                      config: {
-                        content: ['../src/**/*.{js,jsx,ts,tsx}'],
-                      },
-                    }),
-                    autoprefixer,
-                  ],
-                },
+                postcssOptions,
               },
             },
           ],
@@ -131,10 +108,6 @@ export const startPlayground = async (
       ],
     },
     plugins: [
-      new MiniCssExtractPlugin({
-        filename: '[name].bundle.css',
-        chunkFilename: '[id].css',
-      }),
       new webpack.DefinePlugin(globals),
       new webpack.container.ModuleFederationPlugin({
         name: 'creationForm',

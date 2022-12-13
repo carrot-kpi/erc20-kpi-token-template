@@ -15,10 +15,10 @@ export const TextInput = ({
   value,
   onChange,
 }: Props): ReactElement => (
-  <div className="flex-col gap-2">
+  <div className="flex-col">
     <label htmlFor={id}>{label}</label>
     <input
-      className="p-12 border-2 border-black"
+      className="border-2 border-black"
       placeholder={placeholder}
       onChange={onChange}
       value={value}
