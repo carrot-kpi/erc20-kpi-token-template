@@ -26,6 +26,8 @@
   "dependencies": {
     "@carrot-kpi/react": "^0.16.0",
     "@carrot-kpi/sdk": "^1.9.2",
+    "@carrot-kpi/ui": "^0.3.0",
+    "@fontsource/ibm-plex-mono": "^4.5.13",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@types/git-rev-sync": "^2.0.0",
@@ -69,6 +71,7 @@
     "mini-css-extract-plugin": "^2.7.2",
     "postcss": "^8.4.20",
     "postcss-loader": "^7.0.2",
+    "prettier-plugin-tailwindcss": "^0.2.1",
     "style-loader": "^3.3.1",
     "tailwindcss": "^3.2.4"
   }

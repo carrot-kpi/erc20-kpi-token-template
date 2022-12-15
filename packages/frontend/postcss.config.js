@@ -1,4 +1,4 @@
-import tailwindPostCssConfig from './tailwind.config.js'
+import tailwindPostCssConfig from './tailwind.config.cjs'
 
 export default {
   plugins: {
