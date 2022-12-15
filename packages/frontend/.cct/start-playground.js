@@ -6,6 +6,7 @@ import webpack from 'webpack'
 import { dirname } from 'path'
 import { fileURLToPath } from 'url'
 
+import postcssOptions from '../postcss.config.js'
 import { setupCompiler } from './setup-compiler.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -34,7 +35,23 @@ export const startPlayground = async (
       extensions: ['.ts', '.tsx', '...'],
     },
     module: {
-      rules: [{ test: /\.tsx?$/, use: 'ts-loader' }],
+      rules: [
+        { test: /\.tsx?$/, use: 'ts-loader' },
+        {
+          test: /\.css$/i,
+          include: join(__dirname, '../playground'),
+          use: [
+            'style-loader',
+            'css-loader',
+            {
+              loader: 'postcss-loader',
+              options: {
+                postcssOptions,
+              },
+            },
+          ],
+        },
+      ],
     },
     plugins: [
       new HtmlWebpackPlugin({
@@ -69,7 +86,23 @@ export const startPlayground = async (
       extensions: ['.ts', '.tsx', '...'],
     },
     module: {
-      rules: [{ test: /\.tsx?$/, use: 'ts-loader' }],
+      rules: [
+        { test: /\.tsx?$/, use: 'ts-loader' },
+        {
+          test: /\.css$/i,
+          include: join(__dirname, '../src'),
+          use: [
+            'style-loader',
+            'css-loader',
+            {
+              loader: 'postcss-loader',
+              options: {
+                postcssOptions,
+              },
+            },
+          ],
+        },
+      ],
     },
     plugins: [
       new webpack.DefinePlugin(globals),

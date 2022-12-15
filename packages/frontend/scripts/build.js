@@ -9,6 +9,9 @@ import webpack from 'webpack'
 import ora from 'ora'
 import { createRequire } from 'module'
 import TerserPlugin from 'terser-webpack-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+
+import postcssOptions from '../postcss.config.js'
 import { formatWebpackMessages } from '../.cct/utils/format-webpack-messages.js'
 
 // TODO: support different React versions
@@ -45,7 +48,23 @@ const main = async () => {
           extensions: ['.ts', '.tsx', '...'],
         },
         module: {
-          rules: [{ test: /\.tsx?$/, use: 'ts-loader' }],
+          rules: [
+            { test: /\.tsx?$/, use: 'ts-loader' },
+            {
+              test: /\.css$/i,
+              include: join(__dirname, '../src'),
+              use: [
+                MiniCssExtractPlugin.loader,
+                'css-loader',
+                {
+                  loader: 'postcss-loader',
+                  options: {
+                    postcssOptions,
+                  },
+                },
+              ],
+            },
+          ],
         },
         optimization: {
           minimize: true,
@@ -65,6 +84,7 @@ const main = async () => {
           new webpack.DefinePlugin({
             __DEV__: JSON.stringify(false),
           }),
+          new MiniCssExtractPlugin(),
           new webpack.container.ModuleFederationPlugin({
             name: `${commitHash}creationForm`,
             library: { type: 'window', name: `${commitHash}creationForm` },

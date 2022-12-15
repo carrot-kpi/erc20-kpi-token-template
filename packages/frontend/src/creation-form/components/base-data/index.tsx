@@ -2,6 +2,7 @@ import { BigNumber, constants } from 'ethers'
 import { ChangeEvent, ReactElement, useCallback, useState } from 'react'
 import { CollateralData, ERC20Data, SpecificationData } from '../../types'
 import { NamespacedTranslateFunction } from '@carrot-kpi/react'
+import { TextInput } from '../../../ui/TextInput'
 
 interface BaseDataProps {
   t: NamespacedTranslateFunction
@@ -73,16 +74,14 @@ export const BaseData = ({ t, onNext }: BaseDataProps): ReactElement => {
   return (
     <>
       <div>
-        <label htmlFor="title">{t('label.title')}</label>
-        <br />
-        <input
+        <TextInput
           id="title"
-          placeholder="Campaign title"
+          label={t('label.title')}
+          placeholder={'Campaign title'}
           onChange={handleSpecificationDataChange('title')}
           value={specificationData.title}
         />
         <br />
-
         <label htmlFor="description">{t('label.description')}</label>
         <br />
         <input
