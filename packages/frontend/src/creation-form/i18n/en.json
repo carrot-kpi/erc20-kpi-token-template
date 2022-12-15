@@ -1,4 +1,10 @@
 {
+  "card.step.label": "Step {{number}}",
+  "card.campaing.title": "Campaign description",
+  "card.collateral.title": "Collateral",
+  "card.token.title": "ERC20",
+  "card.oracle.title": "Oracle",
+  "card.question.title": "Question",
   "label.title": "Campaign title:",
   "label.description": "Description:",
   "label.collateral.address": "Collateral address:",

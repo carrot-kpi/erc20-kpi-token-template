@@ -1,10 +1,9 @@
 import {
-  Campaign,
   CarrotCoreProvider,
   CreationForm,
-  useKpiTokens,
   useKpiTokenTemplates,
 } from '@carrot-kpi/react'
+import { CarrotUIProvider } from '@carrot-kpi/ui'
 import { ReactElement, useEffect, useMemo } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Wallet, providers, Signer, BigNumber } from 'ethers'
@@ -117,7 +116,7 @@ const App = (): ReactElement => {
   })
   const { loading: isLoadingTemplates, templates } =
     useKpiTokenTemplates(cctTemplateIds)
-  const { loading: isLoadingKpiTokens, kpiTokens } = useKpiTokens()
+  // const { loading: isLoadingKpiTokens, kpiTokens } = useKpiTokens()
 
   useEffect(() => {
     if (!isConnected) connect({ connector: connectors[0] })
@@ -128,9 +127,7 @@ const App = (): ReactElement => {
   }
 
   return (
-    <>
-      <h1>Core Application</h1>
-      <h2>Creation form</h2>
+    <div className="h-screen w-screen">
       {!isLoadingTemplates && (
         <CreationForm
           template={templates[0]}
@@ -138,7 +135,7 @@ const App = (): ReactElement => {
           onDone={handleDone}
         />
       )}
-      <h2 className="text-sky-400">Page</h2>
+      {/* <h2>Page</h2>
       {!isLoadingKpiTokens &&
         Object.values(kpiTokens).map((kpiToken) => (
           <div key={kpiToken.address}>
@@ -147,8 +144,8 @@ const App = (): ReactElement => {
               customBaseUrl={`${CCT_IPFS_GATEWAY_URL}/${kpiToken.template.specification.cid}`}
             />
           </div>
-        ))}
-    </>
+        ))} */}
+    </div>
   )
 }
 
@@ -170,6 +167,8 @@ createRoot(document.getElementById('root')!).render(
     ]}
     ipfsGateway={CCT_IPFS_GATEWAY_URL}
   >
-    <App />
+    <CarrotUIProvider>
+      <App />
+    </CarrotUIProvider>
   </CarrotCoreProvider>
 )

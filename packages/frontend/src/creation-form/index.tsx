@@ -7,7 +7,6 @@ import { ChainId, Template } from '@carrot-kpi/sdk'
 import { BigNumber, constants, utils } from 'ethers'
 import { defaultAbiCoder } from 'ethers/lib/utils'
 import { ReactElement, useCallback, useMemo, useState } from 'react'
-import { BaseData } from './components/base-data'
 import { OracleConfiguration } from './components/oracle-configuration'
 import { OraclesPicker } from './components/oracles-picker'
 import { OnchainPreparations } from './components/onchain-preparations'
@@ -19,6 +18,10 @@ import {
 } from './types'
 import CREATION_PROXY_ABI from '../abis/creation-proxy.json'
 import { Address, useNetwork } from 'wagmi'
+import { Card } from '../ui/card'
+import { CampaignDescription } from './components/campaign-description'
+import { Collateral } from './components/collateral'
+import { Erc20 } from './components/erc-20'
 
 const CREATION_PROXY_INTERFACE = new utils.Interface(CREATION_PROXY_ABI)
 
@@ -47,6 +50,7 @@ export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
   }, [chain])
 
   const [data, setData] = useState<CreationData>({
+    step: 1,
     specification: {
       title: '',
       description: '',
@@ -62,62 +66,73 @@ export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
   })
   const [specificationCid, setSpecificationCid] = useState('')
 
-  const handleBaseDataNext = useCallback(
-    (
-      specificationData: SpecificationData,
-      collateralsData: CollateralData[],
-      erc20Data: ERC20Data
-    ) => {
+  const handleCampaignDescriptionDataNext = useCallback(
+    (specificationData: SpecificationData) => {
       setData({
         ...data,
+        step: 2,
         specification: specificationData,
-        collaterals: collateralsData,
-        erc20: erc20Data,
       })
     },
     [data]
   )
 
-  const handleOraclePick = useCallback(
-    (oracleTemplate: Template) => {
-      if (data.oracles.length === 0)
-        setData({
-          ...data,
-          oracles: [
-            {
-              template: oracleTemplate,
-              initializationData: '',
-              value: BigNumber.from('0'),
-              lowerBound: BigNumber.from('0'),
-              higherBound: BigNumber.from('0'),
-              weight: BigNumber.from('0'),
-            },
-          ],
-        })
-      else
-        setData({
-          ...data,
-          oracles: [{ ...data.oracles[0], template: oracleTemplate }],
-        })
-    },
-    [data]
-  )
+  const handleCollateralDataNext = (collateralsData: CollateralData[]) => {
+    setData({
+      ...data,
+      step: 3,
+      collaterals: collateralsData,
+    })
+  }
 
-  const handleOracleDataNext = useCallback(
-    (initializationData: string, value: BigNumber) => {
+  const handleErc20DataNext = (erc20Data: ERC20Data) => {
+    setData({
+      ...data,
+      step: 4,
+      erc20: erc20Data,
+    })
+  }
+
+  const handleOraclePick = (oracleTemplate: Template) => {
+    if (data.oracles.length === 0)
       setData({
         ...data,
+        step: 5,
         oracles: [
           {
-            ...data.oracles[0],
-            initializationData,
-            value,
+            template: oracleTemplate,
+            initializationData: '',
+            value: BigNumber.from('0'),
+            lowerBound: BigNumber.from('0'),
+            higherBound: BigNumber.from('0'),
+            weight: BigNumber.from('0'),
           },
         ],
       })
-    },
-    [data]
-  )
+    else
+      setData({
+        ...data,
+        step: 5,
+        oracles: [{ ...data.oracles[0], template: oracleTemplate }],
+      })
+  }
+
+  const handleOracleDataNext = (
+    initializationData: string,
+    value: BigNumber
+  ) => {
+    setData({
+      ...data,
+      step: 6,
+      oracles: [
+        {
+          ...data.oracles[0],
+          initializationData,
+          value,
+        },
+      ],
+    })
+  }
 
   const handleOracleConfigurationSubmit = useCallback(
     (lowerBound: BigNumber, higherBound: BigNumber) => {
@@ -187,13 +202,48 @@ export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
     specificationCid,
   ])
 
-  if (data.collaterals.length === 0)
-    return <BaseData t={t} onNext={handleBaseDataNext} />
-  if (data.collaterals.length > 0 && data.oracles.length === 0)
-    return <OraclesPicker t={t} onPick={handleOraclePick} />
-  if (data.oracles.length > 0 && !specificationCid) {
-    if (!data.oracles[0].initializationData)
-      return (
+  const FirstStep = () => (
+    <Card
+      title={t('card.campaing.title')}
+      step={t('card.step.label', { number: 1 })}
+    >
+      <CampaignDescription t={t} onNext={handleCampaignDescriptionDataNext} />
+    </Card>
+  )
+
+  const SecondStep = () => (
+    <Card
+      title={t('card.collateral.title')}
+      step={t('card.step.label', { number: 2 })}
+    >
+      <Collateral t={t} onNext={handleCollateralDataNext} />
+    </Card>
+  )
+
+  const ThirdStep = () => (
+    <Card
+      title={t('card.token.title')}
+      step={t('card.step.label', { number: 3 })}
+    >
+      <Erc20 t={t} onNext={handleErc20DataNext} />
+    </Card>
+  )
+
+  const FourthStep = () => (
+    <Card
+      title={t('card.oracle.title')}
+      step={t('card.step.label', { number: 4 })}
+    >
+      <OraclesPicker t={t} onPick={handleOraclePick} />
+    </Card>
+  )
+
+  const FifthStep = () => (
+    <Card
+      title={t('card.question.title')}
+      step={t('card.step.label', { number: 5 })}
+    >
+      {!data.oracles[0].initializationData ? (
         <>
           <h3>Base oracle data</h3>
           <CreationForm
@@ -201,17 +251,33 @@ export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
             onDone={handleOracleDataNext}
           />
         </>
-      )
-    else
-      return (
+      ) : (
         <OracleConfiguration t={t} onSubmit={handleOracleConfigurationSubmit} />
-      )
-  }
+      )}
+    </Card>
+  )
+
+  const SixthStep = () => (
+    <Card
+      title={t('card.collateral.title')}
+      step={t('card.step.label', { number: 6 })}
+    >
+      <OnchainPreparations
+        collaterals={data.collaterals}
+        creationProxyAddress={creationProxyAddress}
+        onCreate={handleCreate}
+      />
+    </Card>
+  )
+
   return (
-    <OnchainPreparations
-      collaterals={data.collaterals}
-      creationProxyAddress={creationProxyAddress}
-      onCreate={handleCreate}
-    />
+    <div className="flex h-screen items-center justify-center bg-carrot-green">
+      {data.step === 1 ? FirstStep() : null}
+      {data.step === 2 ? SecondStep() : null}
+      {data.step === 3 ? ThirdStep() : null}
+      {data.step === 4 ? FourthStep() : null}
+      {data.step === 5 ? FifthStep() : null}
+      {data.step === 6 ? SixthStep() : null}
+    </div>
   )
 }

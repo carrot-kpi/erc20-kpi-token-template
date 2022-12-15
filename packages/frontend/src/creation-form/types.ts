@@ -30,6 +30,7 @@ export interface OracleData {
 }
 
 export interface CreationData {
+  step: number
   specification: SpecificationData
   erc20: ERC20Data
   collaterals: CollateralData[]
