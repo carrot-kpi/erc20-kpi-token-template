@@ -39,7 +39,6 @@ export const startPlayground = async (
         { test: /\.tsx?$/, use: 'ts-loader' },
         {
           test: /\.css$/i,
-          include: join(__dirname, '../playground'),
           use: [
             'style-loader',
             'css-loader',
@@ -90,7 +89,6 @@ export const startPlayground = async (
         { test: /\.tsx?$/, use: 'ts-loader' },
         {
           test: /\.css$/i,
-          include: join(__dirname, '../src'),
           use: [
             'style-loader',
             'css-loader',
