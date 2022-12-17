@@ -5,6 +5,7 @@
   "card.token.title": "ERC20",
   "card.oracle.title": "Oracle",
   "card.question.title": "Question",
+  "card.deploy.title": "Deploy",
   "label.title": "Campaign title:",
   "label.description": "Description:",
   "label.collateral.address": "Collateral address:",

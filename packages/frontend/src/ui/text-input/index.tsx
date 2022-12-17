@@ -1,12 +1,12 @@
 import { TextMono } from '@carrot-kpi/ui'
-import { ReactElement } from 'react'
+import { ChangeEventHandler, ReactElement } from 'react'
 
-interface Props {
+interface TextInputProps {
   id: string
   label: string
   placeholder: string
   value: string
-  onChange: React.ChangeEventHandler<HTMLInputElement>
+  onChange: ChangeEventHandler<HTMLInputElement>
 }
 
 export const TextInput = ({
@@ -15,7 +15,7 @@ export const TextInput = ({
   placeholder,
   value,
   onChange,
-}: Props): ReactElement => (
+}: TextInputProps): ReactElement => (
   <div className="flex flex-col gap-2">
     <label className="block" htmlFor={id}>
       <TextMono size="sm" className="font-medium">
@@ -23,7 +23,7 @@ export const TextInput = ({
       </TextMono>
     </label>
     <input
-      className="rounded-2xl border border-black p-3 text-sm font-normal outline-none"
+      className="rounded-2xl border border-black p-3 font-mono text-sm font-normal outline-none"
       placeholder={placeholder}
       onChange={onChange}
       value={value}

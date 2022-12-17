@@ -1,13 +1,14 @@
 import { Title, TextMono } from '@carrot-kpi/ui'
+import { ReactElement, ReactNode } from 'react'
 
-interface Props {
+interface CardProps {
   title: string
   step: string
-  children: React.ReactNode
+  children: ReactNode
 }
 
-export const Card = ({ title, step, children }: Props): React.ReactElement => (
-  <div className="flex w-2/6 max-w-xl flex-col gap-2 border border-black bg-white">
+export const Card = ({ title, step, children }: CardProps): ReactElement => (
+  <div className="flex max-w-xl flex-col gap-2 border border-black bg-white">
     <div className="flex flex-col gap-1 border-b border-black p-6">
       <TextMono size="sm" className="font-medium">
         {step}

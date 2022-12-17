@@ -50,6 +50,10 @@ export const startPlayground = async (
             },
           ],
         },
+        {
+          test: /\.svg/,
+          type: 'asset/resource',
+        },
       ],
     },
     plugins: [
@@ -99,6 +103,10 @@ export const startPlayground = async (
               },
             },
           ],
+        },
+        {
+          test: /\.svg/,
+          type: 'asset/resource',
         },
       ],
     },

@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* TODO: standardize and move to the monorepo UI */
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 14px;
+    height: 20px;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #e0cbcb;
+    border-radius: 100vh;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #c0a0b9;
+  }
+}

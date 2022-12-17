@@ -6,6 +6,7 @@ module.exports = {
     join(__dirname, './playground/**/*.{js,jsx,ts,tsx}'),
     join(__dirname, './src/**/*.{js,jsx,ts,tsx}'),
   ],
+  presets: [require('@carrot-kpi/ui/tailwind-preset')],
   theme: {},
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
 }
