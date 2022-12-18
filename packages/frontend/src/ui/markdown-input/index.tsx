@@ -2,7 +2,7 @@ import { TextMono } from '@carrot-kpi/ui'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
-import { ChangeEventHandler, ReactElement } from 'react'
+import { ReactElement } from 'react'
 
 import { MenuBar } from './menu-bar'
 
@@ -11,7 +11,7 @@ interface MarkdownInputProps {
   label: string
   placeholder: string
   value: string
-  onChange: ChangeEventHandler<HTMLInputElement>
+  onChange: (value: string) => void
 }
 
 export const MarkdownInput = ({
@@ -22,6 +22,7 @@ export const MarkdownInput = ({
   onChange,
 }: MarkdownInputProps): ReactElement => {
   const editor = useEditor({
+    content: value,
     extensions: [
       StarterKit,
       Placeholder.configure({
@@ -34,6 +35,9 @@ export const MarkdownInput = ({
       attributes: {
         class: 'prose prose-sm focus:outline-none font-mono',
       },
+    },
+    onUpdate: ({ editor }) => {
+      onChange(editor.getHTML())
     },
   })
 
@@ -49,8 +53,6 @@ export const MarkdownInput = ({
         <EditorContent
           className="scrollbar prose h-44 overflow-auto p-3 text-sm font-normal outline-none"
           editor={editor}
-          onChange={onChange}
-          value={value}
         />
       </div>
     </div>
