@@ -22,6 +22,7 @@ import { Card } from '../ui/card'
 import { CampaignDescription } from './components/campaign-description'
 import { Collateral } from './components/collateral'
 import { Erc20 } from './components/erc-20'
+import { useTranslation } from 'react-i18next'
 
 const CREATION_PROXY_INTERFACE = new utils.Interface(CREATION_PROXY_ABI)
 
@@ -39,6 +40,7 @@ interface CreationFormProps {
 // proxy address is 0 for more than x time
 export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
   const { chain } = useNetwork()
+  const { i18n } = useTranslation()
   const uploadToDecentralizeStorage = useDecentralizedStorageUploader(
     __DEV__ ? 'playground' : 'ipfs'
   )
@@ -230,6 +232,8 @@ export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
           <h3>Base oracle data</h3>
           {data.oracles && data.oracles.length > 0 && (
             <CreationForm
+              i18n={i18n}
+              fallback={<>Loading...</>}
               template={data.oracles[0].template}
               onDone={handleOracleDataNext}
             />

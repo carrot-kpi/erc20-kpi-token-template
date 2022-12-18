@@ -10,18 +10,21 @@ import { Wallet, providers, Signer, BigNumber } from 'ethers'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import {
   Address,
-  chain,
-  Chain,
   Connector,
   ConnectorData,
   useAccount,
   useConnect,
 } from 'wagmi'
+import { Chain } from 'wagmi/chains'
+import * as chains from 'wagmi/chains'
+import i18next from "i18next"
+import { initReactI18next } from "react-i18next"
 
-import './global.css'
 import '@fontsource/ibm-plex-mono/400.css'
 import '@fontsource/ibm-plex-mono/500.css'
 import '@carrot-kpi/ui/styles.css'
+
+import './global.css'
 
 class CarrotConnector extends Connector<
   providers.JsonRpcProvider,
@@ -101,7 +104,15 @@ class CarrotConnector extends Connector<
   }
 }
 
-const forkedChain = Object.values(chain).find(
+i18next.use(initReactI18next).init({
+  lng: "en",
+  fallbackLng: "en",
+  interpolation: {
+      escapeValue: false,
+  },
+});
+
+const forkedChain = Object.values(chains).find(
   (chain) => chain.id === CCT_CHAIN_ID
 )
 if (!forkedChain) {
@@ -133,6 +144,8 @@ const App = (): ReactElement => {
     <div className="h-screen w-screen">
       {!isLoadingTemplates && (
         <CreationForm
+          i18n={i18next}
+          fallback={<>Loading...</>}
           template={templates[0]}
           customBaseUrl={'http://localhost:9002/'}
           onDone={handleDone}
@@ -155,8 +168,6 @@ const App = (): ReactElement => {
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 createRoot(document.getElementById('root')!).render(
   <CarrotCoreProvider
-    i18nResources={{}}
-    i18nDefaultNamespace={''}
     supportedChains={supportedChains}
     providers={[
       jsonRpcProvider({
