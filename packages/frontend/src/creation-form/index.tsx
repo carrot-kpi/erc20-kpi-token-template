@@ -1,3 +1,4 @@
+import { TextMono } from '@carrot-kpi/ui'
 import {
   CreationForm,
   NamespacedTranslateFunction,
@@ -23,8 +24,9 @@ import { CampaignDescription } from './components/campaign-description'
 import { Collateral } from './components/collateral'
 import { Erc20 } from './components/erc-20'
 import { useTranslation } from 'react-i18next'
+import { NextStepPreview } from './components/next-step-preview'
 
-import "./global.css";
+import './global.css'
 
 const CREATION_PROXY_INTERFACE = new utils.Interface(CREATION_PROXY_ABI)
 
@@ -260,13 +262,39 @@ export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
   ]
 
   return (
-    <div className="flex h-screen items-center justify-center bg-carrot-green">
+    <div className="flex h-full flex-col items-center justify-between gap-24 overflow-y-hidden bg-carrot-green pt-10">
+      <div className="square-list absolute left-20 top-1/3 hidden flex-col gap-8 lg:flex">
+        {steps.map((step, index) => (
+          <div key={index} className="flex items-center gap-4">
+            <div
+              className={`${
+                index === data.step ? 'bg-carrot-orange' : 'bg-black'
+              } h-2.5 w-2.5`}
+            />
+            <TextMono>{step.title}</TextMono>
+          </div>
+        ))}
+      </div>
       <Card
         step={t('card.step.label', { number: data.step + 1 })}
         title={steps[data.step].title}
       >
         {steps[data.step].content}
       </Card>
+      <div className="min-h-fit w-full max-w-xl">
+        {!!steps[data.step + 1] && (
+          <NextStepPreview
+            step={t('card.step.label', { number: data.step + 2 })}
+            title={steps[data.step + 1].title}
+          />
+        )}
+        {!!steps[data.step + 2] && (
+          <NextStepPreview
+            step={t('card.step.label', { number: data.step + 3 })}
+            title={steps[data.step + 2].title}
+          />
+        )}
+      </div>
     </div>
   )
 }

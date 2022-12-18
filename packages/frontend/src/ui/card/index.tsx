@@ -8,7 +8,7 @@ interface CardProps {
 }
 
 export const Card = ({ title, step, children }: CardProps): ReactElement => (
-  <div className="flex max-w-xl flex-col gap-2 border border-black bg-white">
+  <div className="flex w-full max-w-xl flex-col gap-2 border border-black bg-white">
     <div className="flex flex-col gap-1 border-b border-black p-6">
       <TextMono size="sm" className="font-medium">
         {step}
