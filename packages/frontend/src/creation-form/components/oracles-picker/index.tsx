@@ -3,6 +3,7 @@ import {
   useOracleTemplates,
 } from '@carrot-kpi/react'
 import { Template } from '@carrot-kpi/sdk'
+import { Button } from '@carrot-kpi/ui'
 import { ReactElement } from 'react'
 
 interface OraclesPickerProps {
@@ -42,13 +43,13 @@ export const OraclesPicker = ({
                 {t('oracles.picker.template.address')}: {template.address}
               </li>
             </ul>
-            <button
+            <Button
               onClick={() => {
                 onPick(template)
               }}
             >
               {t('oracles.picker.template.use')}
-            </button>
+            </Button>
           </div>
         )
       })}

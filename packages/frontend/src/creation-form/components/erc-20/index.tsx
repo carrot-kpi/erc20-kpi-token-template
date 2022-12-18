@@ -3,13 +3,14 @@ import { ChangeEvent, ReactElement, useCallback, useState } from 'react'
 import { ERC20Data } from '../../types'
 import { NamespacedTranslateFunction } from '@carrot-kpi/react'
 import { TextInput } from '../../../ui/text-input'
+import { Button } from '@carrot-kpi/ui'
 
-interface BaseDataProps {
+interface Erc20Props {
   t: NamespacedTranslateFunction
   onNext: (erc20Data: ERC20Data) => void
 }
 
-export const Erc20 = ({ t, onNext }: BaseDataProps): ReactElement => {
+export const Erc20 = ({ t, onNext }: Erc20Props): ReactElement => {
   const [erc20Data, setErc20Data] = useState<ERC20Data>({
     name: '',
     symbol: '',
@@ -55,7 +56,9 @@ export const Erc20 = ({ t, onNext }: BaseDataProps): ReactElement => {
         value={erc20Data.supply.toString()}
       />
       <br />
-      <button onClick={handleNext}>{t('next')}</button>
+      <Button size="small" onClick={handleNext}>
+        {t('next')}
+      </Button>
     </div>
   )
 }

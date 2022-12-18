@@ -2,8 +2,10 @@ import { ChangeEvent, ReactElement, useCallback, useState } from 'react'
 import { SpecificationData } from '../../types'
 import { NamespacedTranslateFunction } from '@carrot-kpi/react'
 import { TextInput } from '../../../ui/text-input'
+import { MarkdownInput } from '../../../ui/markdown-input'
+import { Button } from '@carrot-kpi/ui'
 
-interface BaseDataProps {
+interface CampaignDescriptionProps {
   t: NamespacedTranslateFunction
   onNext: (specificationData: SpecificationData) => void
 }
@@ -11,47 +13,37 @@ interface BaseDataProps {
 export const CampaignDescription = ({
   t,
   onNext,
-}: BaseDataProps): ReactElement => {
-  const [specificationData, setSpecificationData] = useState<SpecificationData>(
-    {
-      title: '',
-      description: '',
-      tags: [],
-    }
-  )
+}: CampaignDescriptionProps): ReactElement => {
+  const [title, setTitle] = useState<string>('')
+  const [description, setDescription] = useState<string>('')
 
-  const handleSpecificationDataChange = useCallback(
-    (field: keyof SpecificationData) =>
-      (event: ChangeEvent<HTMLInputElement>) => {
-        setSpecificationData({
-          ...specificationData,
-          [field]: event.target.value,
-        })
-      },
-    [specificationData]
-  )
+  const handleTitleChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    setTitle(event.target.value)
+  }
 
   const handleNext = useCallback(() => {
-    onNext(specificationData)
-  }, [onNext, specificationData])
+    onNext({ description, title, tags: [] })
+  }, [onNext, description, title])
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-6">
       <TextInput
         id="title"
         label={t('label.title')}
         placeholder={'Enter campaign title'}
-        onChange={handleSpecificationDataChange('title')}
-        value={specificationData.title}
+        onChange={handleTitleChange}
+        value={title}
       />
-      <TextInput
+      <MarkdownInput
         id="description"
         label={t('label.description')}
         placeholder={'Enter campaign description'}
-        onChange={handleSpecificationDataChange('description')}
-        value={specificationData.description}
+        onChange={setDescription}
+        value={description}
       />
-      <button onClick={handleNext}>{t('next')}</button>
+      <Button size="small" onClick={handleNext}>
+        {t('next')}
+      </Button>
     </div>
   )
 }

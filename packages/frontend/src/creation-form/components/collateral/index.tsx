@@ -2,13 +2,14 @@ import { BigNumber, constants } from 'ethers'
 import { ChangeEvent, ReactElement, useCallback, useState } from 'react'
 import { CollateralData } from '../../types'
 import { NamespacedTranslateFunction } from '@carrot-kpi/react'
+import { Button } from '@carrot-kpi/ui'
 
-interface BaseDataProps {
+interface CollateralProps {
   t: NamespacedTranslateFunction
   onNext: (collateralsData: CollateralData[]) => void
 }
 
-export const Collateral = ({ t, onNext }: BaseDataProps): ReactElement => {
+export const Collateral = ({ t, onNext }: CollateralProps): ReactElement => {
   const [collateralsData, setCollateralsData] = useState<CollateralData[]>([
     {
       address: constants.AddressZero,
@@ -66,7 +67,9 @@ export const Collateral = ({ t, onNext }: BaseDataProps): ReactElement => {
         value={collateralsData[0].minimumPayout.toString()}
       />
       <br />
-      <button onClick={handleNext}>{t('next')}</button>
+      <Button size="small" onClick={handleNext}>
+        {t('next')}
+      </Button>
     </div>
   )
 }
