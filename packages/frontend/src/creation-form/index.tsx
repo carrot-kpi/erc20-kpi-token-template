@@ -50,7 +50,7 @@ export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
   }, [chain])
 
   const [data, setData] = useState<CreationData>({
-    step: 1,
+    step: 0,
     specification: {
       title: '',
       description: '',
@@ -70,34 +70,36 @@ export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
     (specificationData: SpecificationData) => {
       setData({
         ...data,
-        step: 2,
+        step: 1,
         specification: specificationData,
       })
     },
     [data]
   )
 
-  const handleCollateralDataNext = (collateralsData: CollateralData[]) => {
+  const handleCollateralDataNext = (
+    collateralsData: CollateralData[]
+  ): void => {
     setData({
       ...data,
-      step: 3,
+      step: 2,
       collaterals: collateralsData,
     })
   }
 
-  const handleErc20DataNext = (erc20Data: ERC20Data) => {
+  const handleErc20DataNext = (erc20Data: ERC20Data): void => {
     setData({
       ...data,
-      step: 4,
+      step: 3,
       erc20: erc20Data,
     })
   }
 
-  const handleOraclePick = (oracleTemplate: Template) => {
+  const handleOraclePick = (oracleTemplate: Template): void => {
     if (data.oracles.length === 0)
       setData({
         ...data,
-        step: 5,
+        step: 4,
         oracles: [
           {
             template: oracleTemplate,
@@ -112,7 +114,7 @@ export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
     else
       setData({
         ...data,
-        step: 5,
+        step: 4,
         oracles: [{ ...data.oracles[0], template: oracleTemplate }],
       })
   }
@@ -120,10 +122,9 @@ export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
   const handleOracleDataNext = (
     initializationData: string,
     value: BigNumber
-  ) => {
+  ): void => {
     setData({
       ...data,
-      step: 6,
       oracles: [
         {
           ...data.oracles[0],
@@ -138,6 +139,7 @@ export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
     (lowerBound: BigNumber, higherBound: BigNumber) => {
       setData({
         ...data,
+        step: 5,
         oracles: [
           {
             ...data.oracles[0],
@@ -202,82 +204,63 @@ export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
     specificationCid,
   ])
 
-  const FirstStep = () => (
-    <Card
-      title={t('card.campaing.title')}
-      step={t('card.step.label', { number: 1 })}
-    >
-      <CampaignDescription t={t} onNext={handleCampaignDescriptionDataNext} />
-    </Card>
-  )
-
-  const SecondStep = () => (
-    <Card
-      title={t('card.collateral.title')}
-      step={t('card.step.label', { number: 2 })}
-    >
-      <Collateral t={t} onNext={handleCollateralDataNext} />
-    </Card>
-  )
-
-  const ThirdStep = () => (
-    <Card
-      title={t('card.token.title')}
-      step={t('card.step.label', { number: 3 })}
-    >
-      <Erc20 t={t} onNext={handleErc20DataNext} />
-    </Card>
-  )
-
-  const FourthStep = () => (
-    <Card
-      title={t('card.oracle.title')}
-      step={t('card.step.label', { number: 4 })}
-    >
-      <OraclesPicker t={t} onPick={handleOraclePick} />
-    </Card>
-  )
-
-  const FifthStep = () => (
-    <Card
-      title={t('card.question.title')}
-      step={t('card.step.label', { number: 5 })}
-    >
-      {!data.oracles[0].initializationData ? (
-        <>
+  const steps = [
+    {
+      title: t('card.campaing.title'),
+      content: (
+        <CampaignDescription t={t} onNext={handleCampaignDescriptionDataNext} />
+      ),
+    },
+    {
+      title: t('card.collateral.title'),
+      content: <Collateral t={t} onNext={handleCollateralDataNext} />,
+    },
+    {
+      title: t('card.token.title'),
+      content: <Erc20 t={t} onNext={handleErc20DataNext} />,
+    },
+    {
+      title: t('card.oracle.title'),
+      content: <OraclesPicker t={t} onPick={handleOraclePick} />,
+    },
+    {
+      title: t('card.question.title'),
+      content: (
+        <div>
           <h3>Base oracle data</h3>
-          <CreationForm
-            template={data.oracles[0].template}
-            onDone={handleOracleDataNext}
+          {data.oracles && data.oracles.length > 0 && (
+            <CreationForm
+              template={data.oracles[0].template}
+              onDone={handleOracleDataNext}
+            />
+          )}
+          <OracleConfiguration
+            t={t}
+            onSubmit={handleOracleConfigurationSubmit}
           />
-        </>
-      ) : (
-        <OracleConfiguration t={t} onSubmit={handleOracleConfigurationSubmit} />
-      )}
-    </Card>
-  )
-
-  const SixthStep = () => (
-    <Card
-      title={t('card.collateral.title')}
-      step={t('card.step.label', { number: 6 })}
-    >
-      <OnchainPreparations
-        collaterals={data.collaterals}
-        creationProxyAddress={creationProxyAddress}
-        onCreate={handleCreate}
-      />
-    </Card>
-  )
+        </div>
+      ),
+    },
+    {
+      title: t('card.deploy.title'),
+      content: (
+        <OnchainPreparations
+          collaterals={data.collaterals}
+          creationProxyAddress={creationProxyAddress}
+          onCreate={handleCreate}
+        />
+      ),
+    },
+  ]
 
   return (
     <div className="flex h-screen items-center justify-center bg-carrot-green">
-      {data.step === 1 ? FirstStep() : null}
-      {data.step === 2 ? SecondStep() : null}
-      {data.step === 3 ? ThirdStep() : null}
-      {data.step === 4 ? FourthStep() : null}
-      {data.step === 5 ? FifthStep() : null}
-      {data.step === 6 ? SixthStep() : null}
+      <Card
+        step={t('card.step.label', { number: data.step + 1 })}
+        title={steps[data.step].title}
+      >
+        {steps[data.step].content}
+      </Card>
     </div>
   )
 }
