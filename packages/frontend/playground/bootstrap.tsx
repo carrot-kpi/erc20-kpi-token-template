@@ -24,8 +24,6 @@ import '@fontsource/ibm-plex-mono/400.css'
 import '@fontsource/ibm-plex-mono/500.css'
 import '@carrot-kpi/ui/styles.css'
 
-import './global.css'
-
 class CarrotConnector extends Connector<
   providers.JsonRpcProvider,
   any,
