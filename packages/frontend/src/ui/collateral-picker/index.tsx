@@ -25,19 +25,19 @@ export const CollateralPicker = ({
   const [collateralAmount, setCollateralAmount] = useState<string>('')
   const [minimumPayout, setMinimumPayout] = useState<string>('')
 
-  const handleCollateralChange = (value: string) => {
+  const handleCollateralChange = (value: string): void => {
     setCollateralAddress(value as Address)
   }
 
-  const handleColletarlAmountChange = (event: any) => {
+  const handleColletarlAmountChange = (event: any): void => {
     setCollateralAmount(event.target.value)
   }
 
-  const handleMinimumPayoutChange = (event: any) => {
+  const handleMinimumPayoutChange = (event: any): void => {
     setMinimumPayout(event.target.value)
   }
 
-  const handleOnConfirm = () => {
+  const handleOnConfirm = (): void => {
     onConfirm({
       address: collateralAddress,
       amount: BigNumber.from(collateralAmount),
@@ -51,7 +51,7 @@ export const CollateralPicker = ({
         value: token.address,
         label: token.symbol,
       })),
-    []
+    [tokens]
   )
 
   return (

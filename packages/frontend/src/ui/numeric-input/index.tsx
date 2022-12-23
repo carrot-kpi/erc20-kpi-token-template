@@ -31,7 +31,7 @@ export const NumericInput = ({
         onChange(event)
       }
     },
-    [value]
+    [value, onChange]
   )
 
   return (

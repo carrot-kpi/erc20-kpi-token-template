@@ -3,9 +3,14 @@ import RcSelect, { Option } from 'rc-select'
 
 import ArrowDownIcon from '../assets/arrow-down.svg'
 
+interface Options {
+  value: string
+  label: string
+}
+
 interface SelectProps {
   value: string
-  options: { value: string; label: string }[]
+  options: Options[]
   onChange: (value: any) => void
 }
 
