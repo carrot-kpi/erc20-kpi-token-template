@@ -1,7 +1,7 @@
 import { ReactElement } from 'react'
 
 interface MenuItemProps {
-  icon: any
+  icon: string
   title: string
   action: () => void
   isActive: () => boolean
