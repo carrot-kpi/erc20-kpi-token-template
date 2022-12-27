@@ -13,7 +13,9 @@ export const Card = ({ title, step, children }: CardProps): ReactElement => (
       <TextMono size="sm" className="font-medium">
         {step}
       </TextMono>
-      <Title size="5xl">{title}</Title>
+      <Title size="5xl" className="font-bold">
+        {title}
+      </Title>
     </div>
     <div className="p-6">{children}</div>
   </div>

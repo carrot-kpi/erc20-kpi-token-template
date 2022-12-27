@@ -9,18 +9,23 @@ import {
 interface NumericInputProps {
   id: string
   value: number | string
-  onChange: ChangeEventHandler<HTMLInputElement>
+  // TODO: move to core UI package and use cva with variants
+  size?: '2xs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
   label?: string
   placeholder?: string
   className?: string
+  isBordered?: boolean
+  onChange: ChangeEventHandler<HTMLInputElement>
 }
 
 export const NumericInput = ({
   id,
+  size = 'md',
   value,
   label,
   placeholder,
   className,
+  isBordered = true,
   onChange,
 }: NumericInputProps): ReactElement => {
   const handleValueOnChange = useCallback(
@@ -45,7 +50,9 @@ export const NumericInput = ({
       ) : null}
 
       <input
-        className={`${className} w-full border-0 p-2 font-mono text-2xl font-normal outline-none`}
+        className={`${className} 'w-full ${
+          isBordered ? 'rounded-2xl border border-black' : 'border-none'
+        } p-3 font-mono text-${size} font-normal outline-none`}
         value={value}
         onChange={handleValueOnChange}
         inputMode="decimal"

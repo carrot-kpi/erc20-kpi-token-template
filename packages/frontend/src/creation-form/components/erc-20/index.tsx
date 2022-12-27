@@ -4,6 +4,7 @@ import { ERC20Data } from '../../types'
 import { NamespacedTranslateFunction } from '@carrot-kpi/react'
 import { TextInput } from '../../../ui/text-input'
 import { Button } from '@carrot-kpi/ui'
+import { NumericInput } from '../../../ui/numeric-input'
 
 interface Erc20Props {
   t: NamespacedTranslateFunction
@@ -32,7 +33,7 @@ export const Erc20 = ({ t, onNext }: Erc20Props): ReactElement => {
   }, [erc20Data, onNext])
 
   return (
-    <div>
+    <div className="flex flex-col gap-6">
       <TextInput
         id="erc20-name"
         label={t('label.erc20.name')}
@@ -47,15 +48,13 @@ export const Erc20 = ({ t, onNext }: Erc20Props): ReactElement => {
         onChange={handleErc20DataChange('symbol')}
         value={erc20Data.symbol}
       />
-      <label htmlFor="erc20-supply">{t('label.erc20.supply')}</label>
-      <br />
-      <input
+      <NumericInput
         id="erc20-supply"
-        placeholder="1000.23"
+        label={t('label.erc20.supply')}
+        placeholder={'1000000'}
         onChange={handleErc20DataChange('supply')}
         value={erc20Data.supply.toString()}
       />
-      <br />
       <Button size="small" onClick={handleNext}>
         {t('next')}
       </Button>

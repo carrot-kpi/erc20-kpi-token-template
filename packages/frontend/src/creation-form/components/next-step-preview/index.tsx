@@ -14,6 +14,8 @@ export const NextStepPreview = ({
     <TextMono size="sm" className="font-medium">
       {step}
     </TextMono>
-    <Title size="5xl">{title}</Title>
+    <Title size="5xl" className="font-bold opacity-60">
+      {title}
+    </Title>
   </div>
 )

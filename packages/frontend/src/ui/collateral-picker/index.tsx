@@ -14,6 +14,7 @@ interface CollateralPickerProps {
   onConfirm: ({ address, amount, minimumPayout }: CollateralData) => void
 }
 
+// TODO: add token icons to Select and collateral list
 export const CollateralPicker = ({
   t,
   tokens,
@@ -25,8 +26,8 @@ export const CollateralPicker = ({
   const [collateralAmount, setCollateralAmount] = useState<string>('')
   const [minimumPayout, setMinimumPayout] = useState<string>('')
 
-  const handleCollateralChange = (value: string): void => {
-    setCollateralAddress(value as Address)
+  const handleCollateralChange = (option: unknown | null): void => {
+    setCollateralAddress(option as Address)
   }
 
   const handleColletarlAmountChange = (event: any): void => {
@@ -66,8 +67,10 @@ export const CollateralPicker = ({
                 onChange={handleCollateralChange}
               />
               <NumericInput
-                className="text-right"
                 id="collateral-amount"
+                className="text-right"
+                size="2xl"
+                isBordered={false}
                 value={collateralAmount}
                 onChange={handleColletarlAmountChange}
               />
@@ -89,6 +92,8 @@ export const CollateralPicker = ({
               <NumericInput
                 id="minimum-payout"
                 className="text-right"
+                size="2xl"
+                isBordered={false}
                 value={minimumPayout}
                 onChange={handleMinimumPayoutChange}
               />
