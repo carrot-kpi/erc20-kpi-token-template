@@ -16,19 +16,21 @@ export const Collateral = ({ t, onNext }: CollateralProps): ReactElement => {
 
   const handleCollateraDataConfirm = (collateralData: CollateralData): void => {
     setCollateralsData((previousState) => {
-      const indexToUpdate = previousState.findIndex(
-        (previousState) => previousState.address === collateralData.address
+      const nextCollateralData = [...previousState]
+      const collateralToUpdate = nextCollateralData.find(
+        (nextCollateral) =>
+          collateralData.address.toLowerCase() ===
+          nextCollateral.address.toLowerCase()
       )
 
-      if (indexToUpdate === -1) {
+      if (!collateralToUpdate) {
         return [...previousState, collateralData]
       }
 
-      return [
-        ...previousState.slice(0, indexToUpdate),
-        ...previousState.slice(indexToUpdate + 1, previousState.length),
-        collateralData,
-      ]
+      collateralToUpdate.amount = collateralData.amount
+      collateralToUpdate.minimumPayout = collateralData.minimumPayout
+
+      return nextCollateralData
     })
   }
 

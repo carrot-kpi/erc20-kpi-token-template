@@ -22,11 +22,9 @@ import { Address, useNetwork } from 'wagmi'
 import { Card } from '../ui/card'
 import { CampaignDescription } from './components/campaign-description'
 import { Collateral } from './components/collateral'
-import { Erc20 } from './components/erc-20'
+import { ERC20 } from './components/erc-20'
 import { useTranslation } from 'react-i18next'
 import { NextStepPreview } from './components/next-step-preview'
-
-import './global.css'
 
 const CREATION_PROXY_INTERFACE = new utils.Interface(CREATION_PROXY_ABI)
 
@@ -223,7 +221,7 @@ export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
     },
     {
       title: t('card.token.title'),
-      content: <Erc20 t={t} onNext={handleErc20DataNext} />,
+      content: <ERC20 t={t} onNext={handleErc20DataNext} />,
     },
     {
       title: t('card.oracle.title'),

@@ -11,7 +11,7 @@ interface Erc20Props {
   onNext: (erc20Data: ERC20Data) => void
 }
 
-export const Erc20 = ({ t, onNext }: Erc20Props): ReactElement => {
+export const ERC20 = ({ t, onNext }: Erc20Props): ReactElement => {
   const [erc20Data, setErc20Data] = useState<ERC20Data>({
     name: '',
     symbol: '',
