@@ -26,6 +26,8 @@ import { ERC20 } from './components/erc-20'
 import { useTranslation } from 'react-i18next'
 import { NextStepPreview } from './components/next-step-preview'
 
+import '../global.css'
+
 const CREATION_PROXY_INTERFACE = new utils.Interface(CREATION_PROXY_ABI)
 
 const CREATION_PROXY_ADDRESS: Record<ChainId, Address> = {
