@@ -1,6 +1,5 @@
 import WebpackDevServer from 'webpack-dev-server'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
-import { long as longCommitHash } from 'git-rev-sync'
 import { join } from 'path'
 import webpack from 'webpack'
 import { dirname } from 'path'
@@ -20,8 +19,6 @@ export const startPlayground = async (
 ) => {
   let coreFirstCompilation = true
   let templateFirstCompilation = true
-
-  const commitHash = longCommitHash(join(__dirname, '../'))
 
   // initialize the applications compiler
   const coreApplicationCompiler = webpack({
