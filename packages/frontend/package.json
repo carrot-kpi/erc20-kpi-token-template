@@ -20,7 +20,7 @@
   },
   "scripts": {
     "lint": "eslint --ext .js,.ts,.tsx ./src ./scripts ./.cct ./jest.config.js",
-    "build": "node ./scripts/build.js",
+    "build": "NODE_ENV=production node ./scripts/build.js",
     "test": "jest"
   },
   "dependencies": {
@@ -73,6 +73,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.13",
     "css-loader": "^6.7.2",
+    "cssnano": "^5.1.14",
     "mini-css-extract-plugin": "^2.7.2",
     "postcss": "^8.4.20",
     "postcss-loader": "^7.0.2",
