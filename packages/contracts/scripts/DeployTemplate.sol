@@ -12,9 +12,6 @@ contract DeployTemplate is Script {
     function run() external {
         vm.broadcast();
         ERC20KPIToken _kpiTokenTemplate = new ERC20KPIToken();
-        console2.log(
-            "Template deployed at address",
-            address(_kpiTokenTemplate)
-        );
+        console2.log("Template deployed at address", address(_kpiTokenTemplate));
     }
 }

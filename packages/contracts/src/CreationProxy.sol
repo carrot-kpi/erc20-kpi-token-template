@@ -32,14 +32,11 @@ contract CreationProxy is ICreationProxy {
 
     event Create(address indexed kpiToken);
 
-    constructor(
-        address _factory,
-        address _kpiTokensManager,
-        uint256 _templateId
-    ) {
+    constructor(address _factory, address _kpiTokensManager, uint256 _templateId) {
         if (_factory == address(0)) revert ZeroAddressFactory();
-        if (_kpiTokensManager == address(0))
+        if (_kpiTokensManager == address(0)) {
             revert ZeroAddressKpiTokensManager();
+        }
         if (_templateId == 0) revert InvalidTemplateId();
         factory = _factory;
         templateId = _templateId;
@@ -56,41 +53,20 @@ contract CreationProxy is ICreationProxy {
         bytes memory _oraclesInitializationData
     ) external payable override returns (address) {
         uint256 _templateId = templateId;
-        bytes memory _initializationData = abi.encode(
-            _collaterals,
-            false,
-            _erc20Name,
-            _erc20Symbol,
-            _erc20Supply
+        bytes memory _initializationData = abi.encode(_collaterals, false, _erc20Name, _erc20Symbol, _erc20Supply);
+        address _predictedKpiTokenAddress = IKPITokensManager1(kpiTokensManager).predictInstanceAddress(
+            address(this), _templateId, _description, _expiration, _initializationData, _oraclesInitializationData
         );
-        address _predictedKpiTokenAddress = IKPITokensManager1(kpiTokensManager)
-            .predictInstanceAddress(
-                address(this),
-                _templateId,
-                _description,
-                _expiration,
-                _initializationData,
-                _oraclesInitializationData
-            );
         for (uint8 _i = 0; _i < _collaterals.length; _i++) {
             Collateral memory _collateral = _collaterals[_i];
-            IERC20(_collateral.token).safeTransferFrom(
-                msg.sender,
-                _predictedKpiTokenAddress,
-                _collateral.amount
-            );
+            IERC20(_collateral.token).safeTransferFrom(msg.sender, _predictedKpiTokenAddress, _collateral.amount);
         }
-        address _createdKpiToken = IKPITokensFactory(factory).createToken{
-            value: msg.value
-        }(
-            _templateId,
-            _description,
-            _expiration,
-            _initializationData,
-            _oraclesInitializationData
+        address _createdKpiToken = IKPITokensFactory(factory).createToken{value: msg.value}(
+            _templateId, _description, _expiration, _initializationData, _oraclesInitializationData
         );
-        if (_predictedKpiTokenAddress != _createdKpiToken)
+        if (_predictedKpiTokenAddress != _createdKpiToken) {
             revert InconsistentAddress();
+        }
         IKPIToken(_createdKpiToken).transferOwnership(msg.sender);
         emit Create(_createdKpiToken);
         return _createdKpiToken;

@@ -15,8 +15,7 @@ import {CreationProxy} from "../../src/CreationProxy.sol";
 /// @dev Test hook to set up a base test environment for each test.
 /// @author Federico Luzzi - <federico.luzzi@protonmail.com>
 abstract contract BaseTestSetup is Test {
-    string internal constant ERC20_KPI_TOKEN_SPECIFICATION =
-        "test-specification-erc20";
+    string internal constant ERC20_KPI_TOKEN_SPECIFICATION = "test-specification-erc20";
 
     ERC20PresetMinterPauser internal firstErc20;
     ERC20PresetMinterPauser internal secondErc20;
@@ -36,16 +35,10 @@ abstract contract BaseTestSetup is Test {
 
         erc20KpiTokenTemplate = new ERC20KPIToken();
         kpiTokensManager = new KPITokensManager1(address(factory));
-        kpiTokensManager.addTemplate(
-            address(erc20KpiTokenTemplate),
-            ERC20_KPI_TOKEN_SPECIFICATION
-        );
+        kpiTokensManager.addTemplate(address(erc20KpiTokenTemplate), ERC20_KPI_TOKEN_SPECIFICATION);
 
         oraclesManager = new OraclesManager1(address(factory));
-        oraclesManager.addTemplate(
-            address(new MockOracle()),
-            "test-specification-mock"
-        );
+        oraclesManager.addTemplate(address(new MockOracle()), "test-specification-mock");
 
         creationProxy = new CreationProxy(
             address(factory),
@@ -57,56 +50,29 @@ abstract contract BaseTestSetup is Test {
         factory.setOraclesManager(address(oraclesManager));
     }
 
-    function createKpiToken(string memory _description)
-        public
-        returns (ERC20KPIToken)
-    {
+    function createKpiToken(string memory _description) public returns (ERC20KPIToken) {
         Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({
-            token: address(firstErc20),
-            amount: 2,
-            minimumPayout: 1
-        });
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(
-            _collaterals,
-            true,
-            "Test",
-            "TST",
-            100 ether
-        );
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 1});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] = OracleData({
-            templateId: 1,
-            lowerBound: 0,
-            higherBound: 1,
-            weight: 1,
-            value: 0,
-            data: abi.encode("")
-        });
-        bytes memory _oraclesInitializationData = abi.encode(
-            _oracleDatas,
-            false
-        );
+        _oracleDatas[0] =
+            OracleData({templateId: 1, lowerBound: 0, higherBound: 1, weight: 1, value: 0, data: abi.encode("")});
+        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
         firstErc20.mint(address(this), 2);
-        address _predictedKpiTokenAddress = kpiTokensManager
-            .predictInstanceAddress(
-                address(this),
-                1,
-                _description,
-                block.timestamp + 60,
-                _erc20KpiTokenInitializationData,
-                _oraclesInitializationData
-            );
-        firstErc20.approve(_predictedKpiTokenAddress, 2);
-
-        factory.createToken(
+        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
+            address(this),
             1,
             _description,
             block.timestamp + 60,
             _erc20KpiTokenInitializationData,
             _oraclesInitializationData
+        );
+        firstErc20.approve(_predictedKpiTokenAddress, 2);
+
+        factory.createToken(
+            1, _description, block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
 
         return ERC20KPIToken(_predictedKpiTokenAddress);

@@ -66,7 +66,10 @@
   "devDependencies": {
     "autoprefixer": "^10.4.13",
     "css-loader": "^6.7.2",
+    "eslint-plugin-n": "^15.6.0",
+    "eslint-plugin-promise": "^6.1.1",
     "mini-css-extract-plugin": "^2.7.2",
+    "ora": "^6.1.2",
     "postcss": "^8.4.20",
     "postcss-loader": "^7.0.2",
     "style-loader": "^3.3.1",

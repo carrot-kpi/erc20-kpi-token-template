@@ -1,9 +1,7 @@
 import WebpackDevServer from 'webpack-dev-server'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
-import { long as longCommitHash } from 'git-rev-sync'
-import { join } from 'path'
+import { join, dirname } from 'path'
 import webpack from 'webpack'
-import { dirname } from 'path'
 import { fileURLToPath } from 'url'
 
 import postcssOptions from '../postcss.config.js'
@@ -18,10 +16,8 @@ export const startPlayground = async (
   globals,
   writableStream
 ) => {
-  let coreFirstCompilation = true
-  let templateFirstCompilation = true
-
-  const commitHash = longCommitHash(join(__dirname, '../'))
+  const coreFirstCompilation = true
+  const templateFirstCompilation = true
 
   // initialize the applications compiler
   const coreApplicationCompiler = webpack({
@@ -108,7 +104,7 @@ export const startPlayground = async (
       new webpack.DefinePlugin(globals),
       new webpack.container.ModuleFederationPlugin({
         name: 'creationForm',
-        library: { type: 'window', name: `creationForm` },
+        library: { type: 'window', name: 'creationForm' },
         exposes: {
           './component': join(__dirname, '../src/creation-form/index.tsx'),
           './i18n': join(__dirname, '../src/creation-form/i18n/index.ts'),
@@ -125,7 +121,7 @@ export const startPlayground = async (
       }),
       new webpack.container.ModuleFederationPlugin({
         name: 'page',
-        library: { type: 'window', name: `page` },
+        library: { type: 'window', name: 'page' },
         exposes: {
           './component': join(__dirname, '../src/page/index.tsx'),
           './i18n': join(__dirname, '../src/page/i18n/index.ts'),

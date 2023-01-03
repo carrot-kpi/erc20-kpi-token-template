@@ -7,7 +7,8 @@
     "license": "GPL-3.0-or-later",
     "private": true,
     "scripts": {
-        "lint": "prettier -l src/**/*.sol tests/**/*.sol",
+        "lint": "./fmt.js lint",
+        "format": "./fmt.js format",
         "build": "forge build",
         "test": "forge test",
         "coverage": "forge coverage"
