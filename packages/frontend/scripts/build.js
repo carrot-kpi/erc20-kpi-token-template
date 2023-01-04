@@ -52,7 +52,6 @@ const main = async () => {
             { test: /\.tsx?$/, use: 'ts-loader' },
             {
               test: /\.css$/i,
-              include: join(__dirname, '../src'),
               use: [
                 MiniCssExtractPlugin.loader,
                 'css-loader',
@@ -63,6 +62,10 @@ const main = async () => {
                   },
                 },
               ],
+            },
+            {
+              test: /\.svg/,
+              type: 'asset/resource',
             },
           ],
         },
@@ -94,12 +97,13 @@ const main = async () => {
               './set-public-path': join(__dirname, '../src/set-public-path.ts'),
             },
             shared: {
-              '@carrot-kpi/react': '^0.16.0',
-              '@carrot-kpi/sdk': '^1.9.2',
+              '@carrot-kpi/react': '^0.19.0',
+              '@carrot-kpi/sdk': '^1.12.0',
+              '@carrot-kpi/ui': '^0.7.0',
               ethers: '^5.7.1',
               react: { requiredVersion: '^18.2.0', singleton: true },
               'react-dom': { requiredVersion: '^18.2.0', singleton: true },
-              wagmi: '^0.8.5',
+              wagmi: '^0.9.5',
             },
           }),
           new webpack.container.ModuleFederationPlugin({
@@ -111,12 +115,13 @@ const main = async () => {
               './set-public-path': join(__dirname, '../src/set-public-path.ts'),
             },
             shared: {
-              '@carrot-kpi/react': '^0.16.0',
-              '@carrot-kpi/sdk': '^1.9.2',
+              '@carrot-kpi/react': '^0.19.0',
+              '@carrot-kpi/sdk': '^1.12.0',
+              '@carrot-kpi/ui': '^0.7.0',
               ethers: '^5.7.1',
               react: { requiredVersion: '^18.2.0', singleton: true },
               'react-dom': { requiredVersion: '^18.2.0', singleton: true },
-              wagmi: '^0.8.5',
+              wagmi: '^0.9.5',
             },
           }),
         ],

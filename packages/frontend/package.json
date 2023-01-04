@@ -20,14 +20,21 @@
   },
   "scripts": {
     "lint": "eslint --ext .js,.ts,.tsx ./src ./scripts ./.cct ./jest.config.js",
-    "build": "node ./scripts/build.js",
+    "build": "NODE_ENV=production node ./scripts/build.js",
     "test": "jest"
   },
   "dependencies": {
-    "@carrot-kpi/react": "^0.16.0",
-    "@carrot-kpi/sdk": "^1.9.2",
+    "@carrot-kpi/react": "^0.19.0",
+    "@carrot-kpi/sdk": "^1.12.0",
+    "@carrot-kpi/ui": "^0.7.0",
+    "@fontsource/ibm-plex-mono": "^4.5.13",
+    "@tailwindcss/typography": "^0.5.8",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
+    "@tiptap/extension-heading": "^2.0.0-beta.209",
+    "@tiptap/extension-placeholder": "^2.0.0-beta.209",
+    "@tiptap/react": "^2.0.0-beta.209",
+    "@tiptap/starter-kit": "^2.0.0-beta.209",
     "@types/git-rev-sync": "^2.0.0",
     "@types/jest": "^29.0.3",
     "@types/react": "^18.0.21",
@@ -59,16 +66,18 @@
     "ts-jest": "^29.0.3",
     "ts-loader": "^9.4.1",
     "typescript": "^4.8.3",
-    "wagmi": "^0.8.5",
+    "wagmi": "^0.9.5",
     "webpack": "^5.74.0",
     "webpack-dev-server": "^4.11.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",
     "css-loader": "^6.7.2",
+    "cssnano": "^5.1.14",
     "mini-css-extract-plugin": "^2.7.2",
     "postcss": "^8.4.20",
     "postcss-loader": "^7.0.2",
+    "prettier-plugin-tailwindcss": "^0.2.1",
     "style-loader": "^3.3.1",
     "tailwindcss": "^3.2.4"
   }

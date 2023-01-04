@@ -1,3 +1,4 @@
+import { Button } from '@carrot-kpi/ui'
 import { ReactElement, useCallback } from 'react'
 import {
   usePrepareContractWrite,
@@ -33,10 +34,10 @@ export const CollateralApproval = ({
   }, [write])
 
   return (
-    <button onClick={handleClick} disabled={disabled || isLoading || !data}>
+    <Button onClick={handleClick} disabled={disabled || isLoading || !data}>
       {isLoading || !data
         ? 'Loading...'
         : `Approve ${collateral.amount.toString()} ${data.symbol}`}
-    </button>
+    </Button>
   )
 }

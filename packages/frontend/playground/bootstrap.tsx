@@ -1,23 +1,28 @@
 import {
-  Campaign,
   CarrotCoreProvider,
   CreationForm,
-  useKpiTokens,
   useKpiTokenTemplates,
 } from '@carrot-kpi/react'
+import { CarrotUIProvider } from '@carrot-kpi/ui'
 import { ReactElement, useEffect, useMemo } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Wallet, providers, Signer, BigNumber } from 'ethers'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import {
   Address,
-  chain,
-  Chain,
   Connector,
   ConnectorData,
   useAccount,
   useConnect,
 } from 'wagmi'
+import { Chain } from 'wagmi/chains'
+import * as chains from 'wagmi/chains'
+import i18next from 'i18next'
+import { initReactI18next } from 'react-i18next'
+
+import '@fontsource/ibm-plex-mono/400.css'
+import '@fontsource/ibm-plex-mono/500.css'
+import '@carrot-kpi/ui/styles.css'
 
 import './global.css'
 
@@ -99,7 +104,15 @@ class CarrotConnector extends Connector<
   }
 }
 
-const forkedChain = Object.values(chain).find(
+i18next.use(initReactI18next).init({
+  lng: 'en',
+  fallbackLng: 'en',
+  interpolation: {
+    escapeValue: false,
+  },
+})
+
+const forkedChain = Object.values(chains).find(
   (chain) => chain.id === CCT_CHAIN_ID
 )
 if (!forkedChain) {
@@ -117,7 +130,7 @@ const App = (): ReactElement => {
   })
   const { loading: isLoadingTemplates, templates } =
     useKpiTokenTemplates(cctTemplateIds)
-  const { loading: isLoadingKpiTokens, kpiTokens } = useKpiTokens()
+  // const { loading: isLoadingKpiTokens, kpiTokens } = useKpiTokens()
 
   useEffect(() => {
     if (!isConnected) connect({ connector: connectors[0] })
@@ -128,17 +141,17 @@ const App = (): ReactElement => {
   }
 
   return (
-    <>
-      <h1>Core Application</h1>
-      <h2>Creation form</h2>
+    <div className="h-screen">
       {!isLoadingTemplates && (
         <CreationForm
+          i18n={i18next}
+          fallback={<>Loading...</>}
           template={templates[0]}
           customBaseUrl={'http://localhost:9002/'}
           onDone={handleDone}
         />
       )}
-      <h2 className="text-sky-400">Page</h2>
+      {/* <h2>Page</h2>
       {!isLoadingKpiTokens &&
         Object.values(kpiTokens).map((kpiToken) => (
           <div key={kpiToken.address}>
@@ -147,16 +160,14 @@ const App = (): ReactElement => {
               customBaseUrl={`${CCT_IPFS_GATEWAY_URL}/${kpiToken.template.specification.cid}`}
             />
           </div>
-        ))}
-    </>
+        ))} */}
+    </div>
   )
 }
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 createRoot(document.getElementById('root')!).render(
   <CarrotCoreProvider
-    i18nResources={{}}
-    i18nDefaultNamespace={''}
     supportedChains={supportedChains}
     providers={[
       jsonRpcProvider({
@@ -170,6 +181,8 @@ createRoot(document.getElementById('root')!).render(
     ]}
     ipfsGateway={CCT_IPFS_GATEWAY_URL}
   >
-    <App />
+    <CarrotUIProvider>
+      <App />
+    </CarrotUIProvider>
   </CarrotCoreProvider>
 )

@@ -3,6 +3,7 @@ import { Address, erc20ABI, useAccount, useContractReads } from 'wagmi'
 import { CollateralApproval } from '../collateral-approval'
 import { CollateralData } from '../../types'
 import { BigNumber, constants } from 'ethers'
+import { Button } from '@carrot-kpi/ui'
 
 interface OnchainPreparationsProps {
   collaterals: CollateralData[]
@@ -77,9 +78,9 @@ export const OnchainPreparations = ({
           />
         )
       })}
-      <button disabled={!allApproved} onClick={onCreate}>
+      <Button size="small" onClick={onCreate} disabled={!allApproved}>
         Create
-      </button>
+      </Button>
     </>
   )
 }
