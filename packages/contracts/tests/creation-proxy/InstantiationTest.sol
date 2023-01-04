@@ -17,9 +17,7 @@ contract CreationProxyInstantiationTest is BaseTestSetup {
     }
 
     function testZeroAddressKPITokensManager() external {
-        vm.expectRevert(
-            abi.encodeWithSignature("ZeroAddressKpiTokensManager()")
-        );
+        vm.expectRevert(abi.encodeWithSignature("ZeroAddressKpiTokensManager()"));
         new CreationProxy(address(1), address(0), 1);
     }
 

@@ -17,29 +17,16 @@ contract CreationProxyCreateERC20KPITokenTest is BaseTestSetup {
         uint256 _expiration = block.timestamp + 100;
 
         Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({
-            token: address(firstErc20),
-            amount: 2 ether,
-            minimumPayout: 1 ether
-        });
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 2 ether, minimumPayout: 1 ether});
 
         string memory _erc20Name = "Test token";
         string memory _erc20Symbol = "TST";
         uint256 _erc20Supply = 1_000 ether;
 
         OracleData[] memory _oracleData = new OracleData[](1);
-        _oracleData[0] = OracleData({
-            templateId: 1,
-            lowerBound: 0,
-            higherBound: 1,
-            weight: 1,
-            value: 0,
-            data: abi.encode("")
-        });
-        bytes memory _oraclesInitializationData = abi.encode(
-            _oracleData,
-            false
-        );
+        _oracleData[0] =
+            OracleData({templateId: 1, lowerBound: 0, higherBound: 1, weight: 1, value: 0, data: abi.encode("")});
+        bytes memory _oraclesInitializationData = abi.encode(_oracleData, false);
 
         firstErc20.mint(address(this), 2 ether);
         firstErc20.approve(address(creationProxy), 2 ether);
@@ -61,10 +48,7 @@ contract CreationProxyCreateERC20KPITokenTest is BaseTestSetup {
         assertEq(_templateFromKpiToken.addrezz, address(erc20KpiTokenTemplate));
         assertEq(_templateFromKpiToken.version, 1);
         assertEq(_templateFromKpiToken.id, 1);
-        assertEq(
-            _templateFromKpiToken.specification,
-            ERC20_KPI_TOKEN_SPECIFICATION
-        );
+        assertEq(_templateFromKpiToken.specification, ERC20_KPI_TOKEN_SPECIFICATION);
 
         assertEq(_kpiToken.description(), _description);
         assertEq(_kpiToken.finalized(), false);
@@ -77,25 +61,12 @@ contract CreationProxyCreateERC20KPITokenTest is BaseTestSetup {
             uint256 _initialSupply,
             string memory _name,
             string memory _symbol
-        ) = abi.decode(
-                _kpiToken.data(),
-                (
-                    Collateral[],
-                    FinalizableOracle[],
-                    bool,
-                    uint256,
-                    string,
-                    string
-                )
-            );
+        ) = abi.decode(_kpiToken.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
 
         assertEq(_onchainCollaterals.length, 1);
         assertEq(_onchainCollaterals[0].token, _collaterals[0].token);
         assertEq(_onchainCollaterals[0].amount, 1.994 ether);
-        assertEq(
-            _onchainCollaterals[0].minimumPayout,
-            _collaterals[0].minimumPayout
-        );
+        assertEq(_onchainCollaterals[0].minimumPayout, _collaterals[0].minimumPayout);
 
         assertEq(_finalizableOracles.length, 1);
         assertEq(_finalizableOracles[0].lowerBound, 0);

@@ -6,7 +6,14 @@ import {ReentrancyGuardUpgradeable} from "oz-upgradeable/security/ReentrancyGuar
 import {IOraclesManager1} from "carrot/interfaces/oracles-managers/IOraclesManager1.sol";
 import {IKPITokensManager1} from "carrot/interfaces/kpi-tokens-managers/IKPITokensManager1.sol";
 import {Template, IBaseTemplatesManager} from "carrot/interfaces/IBaseTemplatesManager.sol";
-import {IERC20KPIToken, Collateral, OracleData, CollateralWithoutToken, FinalizableOracle, FinalizableOracleWithoutAddress} from "./interfaces/IERC20KPIToken.sol";
+import {
+    IERC20KPIToken,
+    Collateral,
+    OracleData,
+    CollateralWithoutToken,
+    FinalizableOracle,
+    FinalizableOracleWithoutAddress
+} from "./interfaces/IERC20KPIToken.sol";
 import {TokenAmount, InitializeKPITokenParams} from "carrot/commons/Types.sol";
 
 /// SPDX-License-Identifier: GPL-3.0-or-later
@@ -24,15 +31,10 @@ import {TokenAmount, InitializeKPITokenParams} from "carrot/commons/Types.sol";
 /// KPIs are reached or not), weighted KPIs and multiple detached resolution or all-in-one
 /// reaching of KPIs (explained more in detail later).
 /// @author Federico Luzzi - <federico.luzzi@protonmail.com>
-contract ERC20KPIToken is
-    ERC20Upgradeable,
-    IERC20KPIToken,
-    ReentrancyGuardUpgradeable
-{
+contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgradeable {
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
-    uint256 internal constant INVALID_ANSWER =
-        0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+    uint256 internal constant INVALID_ANSWER = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
     uint256 internal constant MULTIPLIER = 64;
 
     bool internal allOrNone;
@@ -47,8 +49,7 @@ contract ERC20KPIToken is
     uint256 public expiration;
     uint256 internal initialSupply;
     uint256 internal totalWeight;
-    mapping(address => FinalizableOracleWithoutAddress)
-        internal finalizableOracleByAddress;
+    mapping(address => FinalizableOracleWithoutAddress) internal finalizableOracleByAddress;
     mapping(uint256 => address) internal finalizableOracleAddressByIndex;
     mapping(address => CollateralWithoutToken) internal collateral;
     mapping(uint256 => address) internal collateralAddressByIndex;
@@ -83,29 +84,13 @@ contract ERC20KPIToken is
     error NotEnoughValue();
 
     event Initialize();
-    event CollectProtocolFee(
-        address indexed token,
-        uint256 amount,
-        address indexed receiver
-    );
-    event OwnershipTransferred(
-        address indexed oldOwner,
-        address indexed newOwner
-    );
+    event CollectProtocolFee(address indexed token, uint256 amount, address indexed receiver);
+    event OwnershipTransferred(address indexed oldOwner, address indexed newOwner);
     event Finalize(address indexed oracle, uint256 result);
-    event RecoverERC20(
-        address indexed token,
-        uint256 amount,
-        address indexed receiver
-    );
+    event RecoverERC20(address indexed token, uint256 amount, address indexed receiver);
     event Redeem(address indexed account, uint256 burned);
     event RegisterRedemption(address indexed account, uint256 burned);
-    event RedeemCollateral(
-        address indexed account,
-        address indexed receiver,
-        address token,
-        uint256 amount
-    );
+    event RedeemCollateral(address indexed account, address indexed receiver, address token, uint256 amount);
 
     /// @dev Initializes the template through the passed in data. This function is
     /// generally invoked by the KPI tokens manager, in turn invoked by the factory,
@@ -156,12 +141,7 @@ contract ERC20KPIToken is
     ///   - `bool _allOrNone`: Whether all KPIs should be at least partly reached in
     ///     order to unlock collaterals for KPI token holders to redeem (minus the minimum
     ///     payout amount, which is unlocked under any circumstance).
-    function initialize(InitializeKPITokenParams memory _params)
-        external
-        payable
-        override
-        initializer
-    {
+    function initialize(InitializeKPITokenParams memory _params) external payable override initializer {
         initializeState(
             _params.creator,
             _params.kpiTokensManager,
@@ -172,23 +152,11 @@ contract ERC20KPIToken is
             _params.kpiTokenData
         );
 
-        (Collateral[] memory _collaterals, bool _takeFromCreator, , , ) = abi
-            .decode(
-                _params.kpiTokenData,
-                (Collateral[], bool, string, string, uint256)
-            );
+        (Collateral[] memory _collaterals, bool _takeFromCreator,,,) =
+            abi.decode(_params.kpiTokenData, (Collateral[], bool, string, string, uint256));
 
-        collectCollateralsAndFees(
-            _params.creator,
-            _collaterals,
-            _takeFromCreator,
-            _params.feeReceiver
-        );
-        initializeOracles(
-            _params.creator,
-            _params.oraclesManager,
-            _params.oraclesData
-        );
+        collectCollateralsAndFees(_params.creator, _collaterals, _takeFromCreator, _params.feeReceiver);
+        initializeOracles(_params.creator, _params.oraclesManager, _params.oraclesData);
 
         emit Initialize();
     }
@@ -215,13 +183,8 @@ contract ERC20KPIToken is
         if (bytes(_description).length == 0) revert InvalidDescription();
         if (_expiration <= block.timestamp) revert InvalidExpiration();
 
-        (
-            ,
-            ,
-            string memory _erc20Name,
-            string memory _erc20Symbol,
-            uint256 _erc20Supply
-        ) = abi.decode(_data, (Collateral[], bool, string, string, uint256));
+        (,, string memory _erc20Name, string memory _erc20Symbol, uint256 _erc20Supply) =
+            abi.decode(_data, (Collateral[], bool, string, string, uint256));
 
         if (bytes(_erc20Name).length == 0) revert InvalidName();
         if (bytes(_erc20Symbol).length == 0) revert InvalidSymbol();
@@ -262,43 +225,38 @@ contract ERC20KPIToken is
             Collateral memory _collateral = _collaterals[_i];
             uint256 _collateralAmountBeforeFee = _collateral.amount;
             if (
-                _collateral.token == address(0) ||
-                _collateralAmountBeforeFee == 0 ||
-                _collateral.minimumPayout >= _collateralAmountBeforeFee
+                _collateral.token == address(0) || _collateralAmountBeforeFee == 0
+                    || _collateral.minimumPayout >= _collateralAmountBeforeFee
             ) revert InvalidCollateral();
-            for (uint8 _j = _i + 1; _j < _collaterals.length; _j++)
-                if (_collateral.token == _collaterals[_j].token)
+            for (uint8 _j = _i + 1; _j < _collaterals.length; _j++) {
+                if (_collateral.token == _collaterals[_j].token) {
                     revert DuplicatedCollateral();
+                }
+            }
             uint256 _fee = (_collateralAmountBeforeFee * 3_000) / 1_000_000;
             uint256 _amountMinusFees;
             unchecked {
                 _amountMinusFees = _collateralAmountBeforeFee - _fee;
             }
-            if (_amountMinusFees <= _collateral.minimumPayout)
+            if (_amountMinusFees <= _collateral.minimumPayout) {
                 revert InvalidMinimumPayoutAfterFee();
+            }
             unchecked {
                 _collateral.amount = _amountMinusFees;
             }
             collateral[_collateral.token].amount = _collateral.amount;
-            collateral[_collateral.token].minimumPayout = _collateral
-                .minimumPayout;
+            collateral[_collateral.token].minimumPayout = _collateral.minimumPayout;
             collateral[_collateral.token].postFinalizationAmount = 0;
             collateralAddressByIndex[_i] = _collateral.token;
             if (_takeFromCreator) {
                 IERC20Upgradeable(_collateral.token).safeTransferFrom(
-                    _creator,
-                    address(this),
-                    _collateralAmountBeforeFee
+                    _creator, address(this), _collateralAmountBeforeFee
                 );
-            } else if (
-                IERC20Upgradeable(_collateral.token).balanceOf(address(this)) <
-                _collateralAmountBeforeFee
-            ) revert NotEnoughCollateral();
+            } else if (IERC20Upgradeable(_collateral.token).balanceOf(address(this)) < _collateralAmountBeforeFee) {
+                revert NotEnoughCollateral();
+            }
             if (_fee > 0) {
-                IERC20Upgradeable(_collateral.token).safeTransfer(
-                    _feeReceiver,
-                    _fee
-                );
+                IERC20Upgradeable(_collateral.token).safeTransfer(_feeReceiver, _fee);
                 emit CollectProtocolFee(_collateral.token, _fee, _feeReceiver);
             }
         }
@@ -312,37 +270,33 @@ contract ERC20KPIToken is
     /// the oracles.
     /// @param _data ABI-encoded data used to create and configura the oracles (see
     /// the doc of the `initialize` function for more on this).
-    function initializeOracles(
-        address _creator,
-        address _oraclesManager,
-        bytes memory _data
-    ) internal onlyInitializing {
-        (OracleData[] memory _oracleDatas, bool _allOrNone) = abi.decode(
-            _data,
-            (OracleData[], bool)
-        );
+    function initializeOracles(address _creator, address _oraclesManager, bytes memory _data)
+        internal
+        onlyInitializing
+    {
+        (OracleData[] memory _oracleDatas, bool _allOrNone) = abi.decode(_data, (OracleData[], bool));
 
         if (_oracleDatas.length == 0) revert NoOracles();
         if (_oracleDatas.length > 5) revert TooManyOracles();
         oraclesAmount = uint8(_oracleDatas.length);
 
         uint256 _totalValue = 0;
-        for (uint16 _i = 0; _i < _oracleDatas.length; _i++)
+        for (uint16 _i = 0; _i < _oracleDatas.length; _i++) {
             _totalValue += _oracleDatas[_i].value;
+        }
         if (msg.value < _totalValue) revert NotEnoughValue();
 
         for (uint16 _i = 0; _i < _oracleDatas.length; _i++) {
             OracleData memory _oracleData = _oracleDatas[_i];
-            if (_oracleData.higherBound <= _oracleData.lowerBound)
+            if (_oracleData.higherBound <= _oracleData.lowerBound) {
                 revert InvalidOracleBounds();
+            }
             if (_oracleData.weight == 0) revert InvalidOracleWeights();
             totalWeight += _oracleData.weight;
-            address _instance = IOraclesManager1(_oraclesManager).instantiate{
-                value: _oracleData.value
-            }(_creator, _oracleData.templateId, _oracleData.data);
-            finalizableOracleByAddress[
-                _instance
-            ] = FinalizableOracleWithoutAddress({
+            address _instance = IOraclesManager1(_oraclesManager).instantiate{value: _oracleData.value}(
+                _creator, _oracleData.templateId, _oracleData.data
+            );
+            finalizableOracleByAddress[_instance] = FinalizableOracleWithoutAddress({
                 lowerBound: _oracleData.lowerBound,
                 higherBound: _oracleData.higherBound,
                 finalResult: 0,
@@ -360,15 +314,11 @@ contract ERC20KPIToken is
     /// `FinalizableOracle` struct associated with it. It reverts if
     /// the association does not exists.
     /// @param _address The finalizable oracle address.
-    function finalizableOracle(address _address)
-        internal
-        view
-        returns (FinalizableOracleWithoutAddress storage)
-    {
-        FinalizableOracleWithoutAddress
-            storage _finalizableOracle = finalizableOracleByAddress[_address];
-        if (_finalizableOracle.higherBound == 0 || _finalizableOracle.finalized)
+    function finalizableOracle(address _address) internal view returns (FinalizableOracleWithoutAddress storage) {
+        FinalizableOracleWithoutAddress storage _finalizableOracle = finalizableOracleByAddress[_address];
+        if (_finalizableOracle.higherBound == 0 || _finalizableOracle.finalized) {
             revert Forbidden();
+        }
         return _finalizableOracle;
     }
 
@@ -416,9 +366,7 @@ contract ERC20KPIToken is
     /// finalize, the remaining collateral, if any, becomes redeemable by KPI token holders.
     /// @param _result The oracle end result.
     function finalize(uint256 _result) external override nonReentrant {
-        FinalizableOracleWithoutAddress storage _oracle = finalizableOracle(
-            msg.sender
-        );
+        FinalizableOracleWithoutAddress storage _oracle = finalizableOracle(msg.sender);
         if (_isFinalized() || _isExpired()) {
             _oracle.finalized = true;
             emit Finalize(msg.sender, _result);
@@ -461,24 +409,16 @@ contract ERC20KPIToken is
     /// of collateral to the KPI token owner.
     /// @param _oracle The oracle being finalized.
     /// @param _allOrNone Whether all the oracles are in an "all or none" configuration or not.
-    function handleLowOrInvalidResult(
-        FinalizableOracleWithoutAddress storage _oracle,
-        bool _allOrNone
-    ) internal {
+    function handleLowOrInvalidResult(FinalizableOracleWithoutAddress storage _oracle, bool _allOrNone) internal {
         for (uint256 _i = 0; _i < collateralsAmount; _i++) {
-            CollateralWithoutToken storage _collateral = collateral[
-                collateralAddressByIndex[_i]
-            ];
+            CollateralWithoutToken storage _collateral = collateral[collateralAddressByIndex[_i]];
             uint256 _reimbursement;
             if (_allOrNone) {
                 unchecked {
-                    _reimbursement =
-                        _collateral.amount -
-                        _collateral.minimumPayout;
+                    _reimbursement = _collateral.amount - _collateral.minimumPayout;
                 }
             } else {
-                uint256 _numerator = ((_collateral.amount -
-                    _collateral.minimumPayout) * _oracle.weight) << MULTIPLIER;
+                uint256 _numerator = ((_collateral.amount - _collateral.minimumPayout) * _oracle.weight) << MULTIPLIER;
                 _reimbursement = (_numerator / totalWeight) >> MULTIPLIER;
             }
             unchecked {
@@ -502,31 +442,25 @@ contract ERC20KPIToken is
     /// finalize, the remaining collateral, if any, becomes redeemable by KPI token holders.
     /// @param _oracle The oracle being finalized.
     /// @param _result The result the oracle is reporting.
-    function handleIntermediateOrOverHigherBoundResult(
-        FinalizableOracleWithoutAddress storage _oracle,
-        uint256 _result
-    ) internal {
+    function handleIntermediateOrOverHigherBoundResult(FinalizableOracleWithoutAddress storage _oracle, uint256 _result)
+        internal
+    {
         uint256 _oracleFullRange;
         uint256 _finalOracleProgress;
         unchecked {
             _oracleFullRange = _oracle.higherBound - _oracle.lowerBound;
-            _finalOracleProgress = _result >= _oracle.higherBound
-                ? _oracleFullRange
-                : _result - _oracle.lowerBound;
+            _finalOracleProgress = _result >= _oracle.higherBound ? _oracleFullRange : _result - _oracle.lowerBound;
         }
         _oracle.finalResult = _result;
         if (_finalOracleProgress < _oracleFullRange) {
             for (uint8 _i = 0; _i < collateralsAmount; _i++) {
-                CollateralWithoutToken storage _collateral = collateral[
-                    collateralAddressByIndex[_i]
-                ];
-                uint256 _numerator = ((_collateral.amount -
-                    _collateral.minimumPayout) *
-                    _oracle.weight *
-                    (_oracleFullRange - _finalOracleProgress)) << MULTIPLIER;
+                CollateralWithoutToken storage _collateral = collateral[collateralAddressByIndex[_i]];
+                uint256 _numerator = (
+                    (_collateral.amount - _collateral.minimumPayout) * _oracle.weight
+                        * (_oracleFullRange - _finalOracleProgress)
+                ) << MULTIPLIER;
                 uint256 _denominator = _oracleFullRange * totalWeight;
-                uint256 _reimbursement = (_numerator / _denominator) >>
-                    MULTIPLIER;
+                uint256 _reimbursement = (_numerator / _denominator) >> MULTIPLIER;
                 unchecked {
                     _collateral.amount -= _reimbursement;
                 }
@@ -541,9 +475,7 @@ contract ERC20KPIToken is
     /// the whole campaign).
     function registerPostFinalizationCollateralAmounts() internal {
         for (uint8 _i = 0; _i < collateralsAmount; _i++) {
-            CollateralWithoutToken storage _collateral = collateral[
-                collateralAddressByIndex[_i]
-            ];
+            CollateralWithoutToken storage _collateral = collateral[collateralAddressByIndex[_i]];
             _collateral.postFinalizationAmount = _collateral.amount;
         }
     }
@@ -565,9 +497,7 @@ contract ERC20KPIToken is
         bool _expired = _isExpired();
         CollateralWithoutToken storage _collateral = collateral[_token];
         if (_collateral.amount > 0) {
-            uint256 _balance = IERC20Upgradeable(_token).balanceOf(
-                address(this)
-            );
+            uint256 _balance = IERC20Upgradeable(_token).balanceOf(address(this));
             uint256 _unneededBalance = _balance;
             if (_expired) {
                 _collateral.amount = _collateral.minimumPayout;
@@ -580,9 +510,7 @@ contract ERC20KPIToken is
             emit RecoverERC20(_token, _unneededBalance, _receiver);
             return;
         }
-        uint256 _reimbursement = IERC20Upgradeable(_token).balanceOf(
-            address(this)
-        );
+        uint256 _reimbursement = IERC20Upgradeable(_token).balanceOf(address(this));
         if (_reimbursement == 0) revert NothingToRecover();
         IERC20Upgradeable(_token).safeTransfer(_receiver, _reimbursement);
         emit RecoverERC20(_token, _reimbursement, _receiver);
@@ -606,24 +534,15 @@ contract ERC20KPIToken is
         uint256 _initialSupply = initialSupply;
         for (uint8 _i = 0; _i < collateralsAmount; _i++) {
             address _collateralAddress = collateralAddressByIndex[_i];
-            CollateralWithoutToken storage _collateral = collateral[
-                _collateralAddress
-            ];
+            CollateralWithoutToken storage _collateral = collateral[_collateralAddress];
             uint256 _redeemableAmount = 0;
             unchecked {
-                _redeemableAmount =
-                    ((
-                        _expired
-                            ? _collateral.minimumPayout
-                            : _collateral.postFinalizationAmount
-                    ) * _kpiTokenBalance) /
-                    _initialSupply;
+                _redeemableAmount = (
+                    (_expired ? _collateral.minimumPayout : _collateral.postFinalizationAmount) * _kpiTokenBalance
+                ) / _initialSupply;
                 _collateral.amount -= _redeemableAmount;
             }
-            IERC20Upgradeable(_collateralAddress).safeTransfer(
-                _receiver,
-                _redeemableAmount
-            );
+            IERC20Upgradeable(_collateralAddress).safeTransfer(_receiver, _redeemableAmount);
         }
         emit Redeem(msg.sender, _kpiTokenBalance);
     }
@@ -645,10 +564,7 @@ contract ERC20KPIToken is
     /// KPI tokens through the `registerRedemption` function, this redeems the collateral
     /// token specified as input in the function. The function reverts if either an invalid
     /// collateral is specified or if zero of the given collateral can be redeemed.
-    function redeemCollateral(address _token, address _receiver)
-        external
-        override
-    {
+    function redeemCollateral(address _token, address _receiver) external override {
         if (_token == address(0)) revert ZeroAddressToken();
         if (_receiver == address(0)) revert ZeroAddressReceiver();
         if (!_isFinalized() && block.timestamp < expiration) revert Forbidden();
@@ -658,14 +574,9 @@ contract ERC20KPIToken is
         if (_collateral.amount == 0) revert NothingToRedeem();
         uint256 _redeemableAmount;
         unchecked {
-            _redeemableAmount =
-                ((
-                    _isExpired()
-                        ? _collateral.minimumPayout
-                        : _collateral.postFinalizationAmount
-                ) * _burned) /
-                initialSupply -
-                _collateral.redeemedBy[msg.sender];
+            _redeemableAmount = (
+                (_isExpired() ? _collateral.minimumPayout : _collateral.postFinalizationAmount) * _burned
+            ) / initialSupply - _collateral.redeemedBy[msg.sender];
             if (_redeemableAmount == 0) revert NothingToRedeem();
             _collateral.amount -= _redeemableAmount;
         }
@@ -705,8 +616,9 @@ contract ERC20KPIToken is
     function oracles() external view override returns (address[] memory) {
         if (!_isInitialized()) revert NotInitialized();
         address[] memory _oracleAddresses = new address[](oraclesAmount);
-        for (uint256 _i = 0; _i < _oracleAddresses.length; _i++)
+        for (uint256 _i = 0; _i < _oracleAddresses.length; _i++) {
             _oracleAddresses[_i] = finalizableOracleAddressByIndex[_i];
+        }
         return _oracleAddresses;
     }
 
@@ -715,14 +627,10 @@ contract ERC20KPIToken is
     /// "all-or-none" flag, initial supply of the ERC20 KPI token, along with name and symbol.
     /// @return The ABI-encoded data.
     function data() external view returns (bytes memory) {
-        FinalizableOracle[]
-            memory _finalizableOracles = new FinalizableOracle[](oraclesAmount);
+        FinalizableOracle[] memory _finalizableOracles = new FinalizableOracle[](oraclesAmount);
         for (uint256 _i = 0; _i < _finalizableOracles.length; _i++) {
             address _addrezz = finalizableOracleAddressByIndex[_i];
-            FinalizableOracleWithoutAddress
-                memory _finalizableOracle = finalizableOracleByAddress[
-                    _addrezz
-                ];
+            FinalizableOracleWithoutAddress memory _finalizableOracle = finalizableOracleByAddress[_addrezz];
             _finalizableOracles[_i] = FinalizableOracle({
                 addrezz: _addrezz,
                 lowerBound: _finalizableOracle.lowerBound,
@@ -735,33 +643,19 @@ contract ERC20KPIToken is
         Collateral[] memory _collaterals = new Collateral[](collateralsAmount);
         for (uint256 _i = 0; _i < _collaterals.length; _i++) {
             address _collateralAddress = collateralAddressByIndex[_i];
-            CollateralWithoutToken storage _collateral = collateral[
-                _collateralAddress
-            ];
+            CollateralWithoutToken storage _collateral = collateral[_collateralAddress];
             _collaterals[_i] = Collateral({
                 token: _collateralAddress,
                 amount: _collateral.amount,
                 minimumPayout: _collateral.minimumPayout
             });
         }
-        return
-            abi.encode(
-                _collaterals,
-                _finalizableOracles,
-                allOrNone,
-                initialSupply,
-                name(),
-                symbol()
-            );
+        return abi.encode(_collaterals, _finalizableOracles, allOrNone, initialSupply, name(), symbol());
     }
 
     /// @dev View function returning info about the template used to instantiate this KPI token.
     /// @return The template struct.
     function template() external view override returns (Template memory) {
-        return
-            IBaseTemplatesManager(kpiTokensManager).template(
-                kpiTokenTemplateId,
-                kpiTokenTemplateVersion
-            );
+        return IBaseTemplatesManager(kpiTokensManager).template(kpiTokenTemplateId, kpiTokenTemplateVersion);
     }
 }

@@ -143,4 +143,12 @@ dist
 # Built Visual Studio Code Extensions
 *.vsix
 
+build/
+dist/
+out/
+
+# storybook build
+/packages/ui/storybook-static
+
+# Turbo config
 .turbo

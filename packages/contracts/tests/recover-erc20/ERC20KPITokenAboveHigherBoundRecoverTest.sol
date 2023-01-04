@@ -11,18 +11,8 @@ import {IERC20KPIToken, OracleData, Collateral, FinalizableOracle} from "../../s
 contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
     function testOverHigherBoundAndRelationshipSingleOracle() external {
         Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({
-            token: address(firstErc20),
-            amount: 20 ether,
-            minimumPayout: 10 ether
-        });
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(
-            _collaterals,
-            true,
-            "Test",
-            "TST",
-            100 ether
-        );
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({
@@ -33,36 +23,20 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
             value: 0,
             data: abi.encode("")
         });
-        bytes memory _oraclesInitializationData = abi.encode(
-            _oracleDatas,
-            true
-        );
+        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 20 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager
-            .predictInstanceAddress(
-                address(this),
-                1,
-                "a",
-                block.timestamp + 60,
-                _erc20KpiTokenInitializationData,
-                _oraclesInitializationData
-            );
+        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
+            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
+        );
         firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
 
-        factory.createToken(
-            1,
-            "a",
-            block.timestamp + 60,
-            _erc20KpiTokenInitializationData,
-            _oraclesInitializationData
-        );
+        factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
         uint256 kpiTokensAmount = factory.kpiTokensAmount();
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
             factory.enumerate(
-                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount,
-                kpiTokensAmount > 0 ? kpiTokensAmount : 1
+                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount, kpiTokensAmount > 0 ? kpiTokensAmount : 1
             )[0]
         );
 
@@ -78,18 +52,8 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
 
     function testOverHigherBoundAndRelationshipSingleOracleExpired() external {
         Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({
-            token: address(firstErc20),
-            amount: 20 ether,
-            minimumPayout: 10 ether
-        });
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(
-            _collaterals,
-            true,
-            "Test",
-            "TST",
-            100 ether
-        );
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({
@@ -100,37 +64,21 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
             value: 0,
             data: abi.encode("")
         });
-        bytes memory _oraclesInitializationData = abi.encode(
-            _oracleDatas,
-            true
-        );
+        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 20 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager
-            .predictInstanceAddress(
-                address(this),
-                1,
-                "a",
-                block.timestamp + 60,
-                _erc20KpiTokenInitializationData,
-                _oraclesInitializationData
-            );
+        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
+            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
+        );
         firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
 
         uint256 _expiration = block.timestamp + 60;
-        factory.createToken(
-            1,
-            "a",
-            _expiration,
-            _erc20KpiTokenInitializationData,
-            _oraclesInitializationData
-        );
+        factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
         uint256 kpiTokensAmount = factory.kpiTokensAmount();
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
             factory.enumerate(
-                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount,
-                kpiTokensAmount > 0 ? kpiTokensAmount : 1
+                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount, kpiTokensAmount > 0 ? kpiTokensAmount : 1
             )[0]
         );
 
@@ -149,18 +97,8 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
 
     function testOverHigherBoundAndRelationshipMultipleOracle() external {
         Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({
-            token: address(firstErc20),
-            amount: 20 ether,
-            minimumPayout: 10 ether
-        });
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(
-            _collaterals,
-            true,
-            "Test",
-            "TST",
-            100 ether
-        );
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({
@@ -179,36 +117,20 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
             value: 0,
             data: abi.encode("2")
         });
-        bytes memory _oraclesInitializationData = abi.encode(
-            _oracleDatas,
-            true
-        );
+        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 20 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager
-            .predictInstanceAddress(
-                address(this),
-                1,
-                "a",
-                block.timestamp + 60,
-                _erc20KpiTokenInitializationData,
-                _oraclesInitializationData
-            );
+        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
+            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
+        );
         firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
 
-        factory.createToken(
-            1,
-            "a",
-            block.timestamp + 60,
-            _erc20KpiTokenInitializationData,
-            _oraclesInitializationData
-        );
+        factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
         uint256 kpiTokensAmount = factory.kpiTokensAmount();
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
             factory.enumerate(
-                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount,
-                kpiTokensAmount > 0 ? kpiTokensAmount : 1
+                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount, kpiTokensAmount > 0 ? kpiTokensAmount : 1
             )[0]
         );
 
@@ -222,22 +144,10 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
         assertEq(firstErc20.balanceOf(address(this)), 0 ether);
     }
 
-    function testOverHigherBoundAndRelationshipMultipleOracleExpired()
-        external
-    {
+    function testOverHigherBoundAndRelationshipMultipleOracleExpired() external {
         Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({
-            token: address(firstErc20),
-            amount: 20 ether,
-            minimumPayout: 10 ether
-        });
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(
-            _collaterals,
-            true,
-            "Test",
-            "TST",
-            100 ether
-        );
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({
@@ -256,35 +166,18 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
             value: 0,
             data: abi.encode("2")
         });
-        bytes memory _oraclesInitializationData = abi.encode(
-            _oracleDatas,
-            true
-        );
+        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 20 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager
-            .predictInstanceAddress(
-                address(this),
-                1,
-                "a",
-                block.timestamp + 60,
-                _erc20KpiTokenInitializationData,
-                _oraclesInitializationData
-            );
+        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
+            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
+        );
         firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
 
         uint256 _expiration = block.timestamp + 60;
-        factory.createToken(
-            1,
-            "a",
-            _expiration,
-            _erc20KpiTokenInitializationData,
-            _oraclesInitializationData
-        );
+        factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
-        ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
-            _predictedKpiTokenAddress
-        );
+        ERC20KPIToken kpiTokenInstance = ERC20KPIToken(_predictedKpiTokenAddress);
 
         address _holder = address(1234567876543);
         kpiTokenInstance.transfer(_holder, 50 ether);
@@ -312,18 +205,8 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
 
     function testOverHigherBoundOrRelationshipSingleOracle() external {
         Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({
-            token: address(firstErc20),
-            amount: 20 ether,
-            minimumPayout: 10 ether
-        });
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(
-            _collaterals,
-            true,
-            "Test",
-            "TST",
-            100 ether
-        );
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({
@@ -334,36 +217,20 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
             value: 0,
             data: abi.encode("")
         });
-        bytes memory _oraclesInitializationData = abi.encode(
-            _oracleDatas,
-            false
-        );
+        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
         firstErc20.mint(address(this), 20 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager
-            .predictInstanceAddress(
-                address(this),
-                1,
-                "a",
-                block.timestamp + 60,
-                _erc20KpiTokenInitializationData,
-                _oraclesInitializationData
-            );
+        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
+            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
+        );
         firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
 
-        factory.createToken(
-            1,
-            "a",
-            block.timestamp + 60,
-            _erc20KpiTokenInitializationData,
-            _oraclesInitializationData
-        );
+        factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
         uint256 kpiTokensAmount = factory.kpiTokensAmount();
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
             factory.enumerate(
-                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount,
-                kpiTokensAmount > 0 ? kpiTokensAmount : 1
+                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount, kpiTokensAmount > 0 ? kpiTokensAmount : 1
             )[0]
         );
 
@@ -379,18 +246,8 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
 
     function testOverHigherBoundOrRelationshipSingleOracleExpired() external {
         Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({
-            token: address(firstErc20),
-            amount: 20 ether,
-            minimumPayout: 10 ether
-        });
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(
-            _collaterals,
-            true,
-            "Test",
-            "TST",
-            100 ether
-        );
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({
@@ -401,37 +258,21 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
             value: 0,
             data: abi.encode("")
         });
-        bytes memory _oraclesInitializationData = abi.encode(
-            _oracleDatas,
-            false
-        );
+        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
         firstErc20.mint(address(this), 20 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager
-            .predictInstanceAddress(
-                address(this),
-                1,
-                "a",
-                block.timestamp + 60,
-                _erc20KpiTokenInitializationData,
-                _oraclesInitializationData
-            );
+        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
+            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
+        );
         firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
 
         uint256 _expiration = block.timestamp + 60;
-        factory.createToken(
-            1,
-            "a",
-            _expiration,
-            _erc20KpiTokenInitializationData,
-            _oraclesInitializationData
-        );
+        factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
         uint256 kpiTokensAmount = factory.kpiTokensAmount();
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
             factory.enumerate(
-                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount,
-                kpiTokensAmount > 0 ? kpiTokensAmount : 1
+                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount, kpiTokensAmount > 0 ? kpiTokensAmount : 1
             )[0]
         );
 
@@ -447,22 +288,10 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 10 ether);
     }
 
-    function testOverHigherBoundOrRelationshipMultiOracleExpiredExpired()
-        external
-    {
+    function testOverHigherBoundOrRelationshipMultiOracleExpiredExpired() external {
         Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({
-            token: address(firstErc20),
-            amount: 20 ether,
-            minimumPayout: 10 ether
-        });
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(
-            _collaterals,
-            true,
-            "Test",
-            "TST",
-            100 ether
-        );
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({
@@ -481,37 +310,21 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
             value: 0,
             data: abi.encode("2")
         });
-        bytes memory _oraclesInitializationData = abi.encode(
-            _oracleDatas,
-            false
-        );
+        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
         firstErc20.mint(address(this), 20 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager
-            .predictInstanceAddress(
-                address(this),
-                1,
-                "a",
-                block.timestamp + 60,
-                _erc20KpiTokenInitializationData,
-                _oraclesInitializationData
-            );
+        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
+            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
+        );
         firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
 
         uint256 _expiration = block.timestamp + 60;
-        factory.createToken(
-            1,
-            "a",
-            _expiration,
-            _erc20KpiTokenInitializationData,
-            _oraclesInitializationData
-        );
+        factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
         uint256 kpiTokensAmount = factory.kpiTokensAmount();
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
             factory.enumerate(
-                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount,
-                kpiTokensAmount > 0 ? kpiTokensAmount : 1
+                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount, kpiTokensAmount > 0 ? kpiTokensAmount : 1
             )[0]
         );
 
@@ -529,18 +342,8 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
 
     function testOverHigherBoundOrRelationshipMultipleOracle() external {
         Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({
-            token: address(firstErc20),
-            amount: 20 ether,
-            minimumPayout: 10 ether
-        });
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(
-            _collaterals,
-            true,
-            "Test",
-            "TST",
-            100 ether
-        );
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({
@@ -559,37 +362,21 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
             value: 0,
             data: abi.encode("2")
         });
-        bytes memory _oraclesInitializationData = abi.encode(
-            _oracleDatas,
-            false
-        );
+        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
         firstErc20.mint(address(this), 20 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager
-            .predictInstanceAddress(
-                address(this),
-                1,
-                "a",
-                block.timestamp + 60,
-                _erc20KpiTokenInitializationData,
-                _oraclesInitializationData
-            );
+        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
+            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
+        );
         firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
 
         uint256 _expiration = block.timestamp + 60;
-        factory.createToken(
-            1,
-            "a",
-            _expiration,
-            _erc20KpiTokenInitializationData,
-            _oraclesInitializationData
-        );
+        factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
         uint256 kpiTokensAmount = factory.kpiTokensAmount();
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
             factory.enumerate(
-                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount,
-                kpiTokensAmount > 0 ? kpiTokensAmount : 1
+                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount, kpiTokensAmount > 0 ? kpiTokensAmount : 1
             )[0]
         );
 
@@ -605,18 +392,8 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
 
     function testOverHigherBoundOrRelationshipMultipleOracleExpired() external {
         Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({
-            token: address(firstErc20),
-            amount: 50 ether,
-            minimumPayout: 10 ether
-        });
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(
-            _collaterals,
-            true,
-            "Test",
-            "TST",
-            100 ether
-        );
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 50 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({
@@ -635,37 +412,21 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
             value: 0,
             data: abi.encode("2")
         });
-        bytes memory _oraclesInitializationData = abi.encode(
-            _oracleDatas,
-            false
-        );
+        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
         firstErc20.mint(address(this), 50 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager
-            .predictInstanceAddress(
-                address(this),
-                1,
-                "a",
-                block.timestamp + 60,
-                _erc20KpiTokenInitializationData,
-                _oraclesInitializationData
-            );
+        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
+            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
+        );
         firstErc20.approve(_predictedKpiTokenAddress, 50 ether);
 
         uint256 _expiration = block.timestamp + 60;
-        factory.createToken(
-            1,
-            "a",
-            _expiration,
-            _erc20KpiTokenInitializationData,
-            _oraclesInitializationData
-        );
+        factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
         uint256 kpiTokensAmount = factory.kpiTokensAmount();
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
             factory.enumerate(
-                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount,
-                kpiTokensAmount > 0 ? kpiTokensAmount : 1
+                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount, kpiTokensAmount > 0 ? kpiTokensAmount : 1
             )[0]
         );
 
@@ -680,27 +441,11 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 10 ether);
     }
 
-    function testOverHigherBoundAndRelationshipSingleOracleMultiCollateral()
-        external
-    {
+    function testOverHigherBoundAndRelationshipSingleOracleMultiCollateral() external {
         Collateral[] memory _collaterals = new Collateral[](2);
-        _collaterals[0] = Collateral({
-            token: address(firstErc20),
-            amount: 20 ether,
-            minimumPayout: 10 ether
-        });
-        _collaterals[1] = Collateral({
-            token: address(secondErc20),
-            amount: 35 ether,
-            minimumPayout: 12.2 ether
-        });
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(
-            _collaterals,
-            true,
-            "Test",
-            "TST",
-            100 ether
-        );
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        _collaterals[1] = Collateral({token: address(secondErc20), amount: 35 ether, minimumPayout: 12.2 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({
@@ -711,38 +456,22 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
             value: 0,
             data: abi.encode("")
         });
-        bytes memory _oraclesInitializationData = abi.encode(
-            _oracleDatas,
-            true
-        );
+        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 20 ether);
         secondErc20.mint(address(this), 35 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager
-            .predictInstanceAddress(
-                address(this),
-                1,
-                "a",
-                block.timestamp + 60,
-                _erc20KpiTokenInitializationData,
-                _oraclesInitializationData
-            );
+        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
+            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
+        );
         firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
         secondErc20.approve(_predictedKpiTokenAddress, 35 ether);
 
-        factory.createToken(
-            1,
-            "a",
-            block.timestamp + 60,
-            _erc20KpiTokenInitializationData,
-            _oraclesInitializationData
-        );
+        factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
         uint256 kpiTokensAmount = factory.kpiTokensAmount();
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
             factory.enumerate(
-                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount,
-                kpiTokensAmount > 0 ? kpiTokensAmount : 1
+                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount, kpiTokensAmount > 0 ? kpiTokensAmount : 1
             )[0]
         );
 
@@ -759,27 +488,11 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(this)), 0);
     }
 
-    function testOverHigherBoundAndRelationshipSingleOracleMultiCollateralExpired()
-        external
-    {
+    function testOverHigherBoundAndRelationshipSingleOracleMultiCollateralExpired() external {
         Collateral[] memory _collaterals = new Collateral[](2);
-        _collaterals[0] = Collateral({
-            token: address(firstErc20),
-            amount: 20 ether,
-            minimumPayout: 10 ether
-        });
-        _collaterals[1] = Collateral({
-            token: address(secondErc20),
-            amount: 35 ether,
-            minimumPayout: 12.2 ether
-        });
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(
-            _collaterals,
-            true,
-            "Test",
-            "TST",
-            100 ether
-        );
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        _collaterals[1] = Collateral({token: address(secondErc20), amount: 35 ether, minimumPayout: 12.2 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({
@@ -790,39 +503,23 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
             value: 0,
             data: abi.encode("")
         });
-        bytes memory _oraclesInitializationData = abi.encode(
-            _oracleDatas,
-            true
-        );
+        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 20 ether);
         secondErc20.mint(address(this), 35 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager
-            .predictInstanceAddress(
-                address(this),
-                1,
-                "a",
-                block.timestamp + 60,
-                _erc20KpiTokenInitializationData,
-                _oraclesInitializationData
-            );
+        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
+            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
+        );
         firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
         secondErc20.approve(_predictedKpiTokenAddress, 35 ether);
 
         uint256 _expiration = block.timestamp + 60;
-        factory.createToken(
-            1,
-            "a",
-            _expiration,
-            _erc20KpiTokenInitializationData,
-            _oraclesInitializationData
-        );
+        factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
         uint256 kpiTokensAmount = factory.kpiTokensAmount();
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
             factory.enumerate(
-                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount,
-                kpiTokensAmount > 0 ? kpiTokensAmount : 1
+                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount, kpiTokensAmount > 0 ? kpiTokensAmount : 1
             )[0]
         );
 
@@ -841,27 +538,11 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(kpiTokenInstance)), 12.2 ether);
     }
 
-    function testOverHigherBoundAndRelationshipMultipleOracleMultiCollateral()
-        external
-    {
+    function testOverHigherBoundAndRelationshipMultipleOracleMultiCollateral() external {
         Collateral[] memory _collaterals = new Collateral[](2);
-        _collaterals[0] = Collateral({
-            token: address(firstErc20),
-            amount: 20 ether,
-            minimumPayout: 10 ether
-        });
-        _collaterals[1] = Collateral({
-            token: address(secondErc20),
-            amount: 20.23 ether,
-            minimumPayout: 18.9 ether
-        });
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(
-            _collaterals,
-            true,
-            "Test",
-            "TST",
-            100 ether
-        );
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        _collaterals[1] = Collateral({token: address(secondErc20), amount: 20.23 ether, minimumPayout: 18.9 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({
@@ -880,38 +561,22 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
             value: 0,
             data: abi.encode("2")
         });
-        bytes memory _oraclesInitializationData = abi.encode(
-            _oracleDatas,
-            true
-        );
+        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 20 ether);
         secondErc20.mint(address(this), 20.23 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager
-            .predictInstanceAddress(
-                address(this),
-                1,
-                "a",
-                block.timestamp + 60,
-                _erc20KpiTokenInitializationData,
-                _oraclesInitializationData
-            );
+        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
+            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
+        );
         firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
         secondErc20.approve(_predictedKpiTokenAddress, 20.23 ether);
 
-        factory.createToken(
-            1,
-            "a",
-            block.timestamp + 60,
-            _erc20KpiTokenInitializationData,
-            _oraclesInitializationData
-        );
+        factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
         uint256 kpiTokensAmount = factory.kpiTokensAmount();
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
             factory.enumerate(
-                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount,
-                kpiTokensAmount > 0 ? kpiTokensAmount : 1
+                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount, kpiTokensAmount > 0 ? kpiTokensAmount : 1
             )[0]
         );
 
@@ -928,27 +593,11 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(this)), 0);
     }
 
-    function testOverHigherBoundAndRelationshipMultipleOracleMultiCollateralExpired()
-        external
-    {
+    function testOverHigherBoundAndRelationshipMultipleOracleMultiCollateralExpired() external {
         Collateral[] memory _collaterals = new Collateral[](2);
-        _collaterals[0] = Collateral({
-            token: address(firstErc20),
-            amount: 20 ether,
-            minimumPayout: 10 ether
-        });
-        _collaterals[1] = Collateral({
-            token: address(secondErc20),
-            amount: 20.23 ether,
-            minimumPayout: 18.9 ether
-        });
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(
-            _collaterals,
-            true,
-            "Test",
-            "TST",
-            100 ether
-        );
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        _collaterals[1] = Collateral({token: address(secondErc20), amount: 20.23 ether, minimumPayout: 18.9 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({
@@ -967,39 +616,23 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
             value: 0,
             data: abi.encode("2")
         });
-        bytes memory _oraclesInitializationData = abi.encode(
-            _oracleDatas,
-            true
-        );
+        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 20 ether);
         secondErc20.mint(address(this), 20.23 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager
-            .predictInstanceAddress(
-                address(this),
-                1,
-                "a",
-                block.timestamp + 60,
-                _erc20KpiTokenInitializationData,
-                _oraclesInitializationData
-            );
+        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
+            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
+        );
         firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
         secondErc20.approve(_predictedKpiTokenAddress, 20.23 ether);
 
         uint256 _expiration = block.timestamp + 60;
-        factory.createToken(
-            1,
-            "a",
-            _expiration,
-            _erc20KpiTokenInitializationData,
-            _oraclesInitializationData
-        );
+        factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
         uint256 kpiTokensAmount = factory.kpiTokensAmount();
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
             factory.enumerate(
-                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount,
-                kpiTokensAmount > 0 ? kpiTokensAmount : 1
+                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount, kpiTokensAmount > 0 ? kpiTokensAmount : 1
             )[0]
         );
 
@@ -1018,27 +651,11 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(kpiTokenInstance)), 18.9 ether);
     }
 
-    function testOverHigherBoundOrRelationshipSingleOracleMultiCollateral()
-        external
-    {
+    function testOverHigherBoundOrRelationshipSingleOracleMultiCollateral() external {
         Collateral[] memory _collaterals = new Collateral[](2);
-        _collaterals[0] = Collateral({
-            token: address(firstErc20),
-            amount: 20 ether,
-            minimumPayout: 10 ether
-        });
-        _collaterals[1] = Collateral({
-            token: address(secondErc20),
-            amount: 29 ether,
-            minimumPayout: 28 ether
-        });
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(
-            _collaterals,
-            true,
-            "Test",
-            "TST",
-            100 ether
-        );
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        _collaterals[1] = Collateral({token: address(secondErc20), amount: 29 ether, minimumPayout: 28 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({
@@ -1049,38 +666,22 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
             value: 0,
             data: abi.encode("")
         });
-        bytes memory _oraclesInitializationData = abi.encode(
-            _oracleDatas,
-            false
-        );
+        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
         firstErc20.mint(address(this), 20 ether);
         secondErc20.mint(address(this), 29 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager
-            .predictInstanceAddress(
-                address(this),
-                1,
-                "a",
-                block.timestamp + 60,
-                _erc20KpiTokenInitializationData,
-                _oraclesInitializationData
-            );
+        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
+            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
+        );
         firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
         secondErc20.approve(_predictedKpiTokenAddress, 29 ether);
 
-        factory.createToken(
-            1,
-            "a",
-            block.timestamp + 60,
-            _erc20KpiTokenInitializationData,
-            _oraclesInitializationData
-        );
+        factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
         uint256 kpiTokensAmount = factory.kpiTokensAmount();
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
             factory.enumerate(
-                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount,
-                kpiTokensAmount > 0 ? kpiTokensAmount : 1
+                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount, kpiTokensAmount > 0 ? kpiTokensAmount : 1
             )[0]
         );
 
@@ -1097,27 +698,11 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(this)), 0);
     }
 
-    function testOverHigherBoundOrRelationshipSingleOracleMultiCollateralExpired()
-        external
-    {
+    function testOverHigherBoundOrRelationshipSingleOracleMultiCollateralExpired() external {
         Collateral[] memory _collaterals = new Collateral[](2);
-        _collaterals[0] = Collateral({
-            token: address(firstErc20),
-            amount: 20 ether,
-            minimumPayout: 10 ether
-        });
-        _collaterals[1] = Collateral({
-            token: address(secondErc20),
-            amount: 29 ether,
-            minimumPayout: 28 ether
-        });
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(
-            _collaterals,
-            true,
-            "Test",
-            "TST",
-            100 ether
-        );
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        _collaterals[1] = Collateral({token: address(secondErc20), amount: 29 ether, minimumPayout: 28 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({
@@ -1128,39 +713,23 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
             value: 0,
             data: abi.encode("")
         });
-        bytes memory _oraclesInitializationData = abi.encode(
-            _oracleDatas,
-            false
-        );
+        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
         firstErc20.mint(address(this), 20 ether);
         secondErc20.mint(address(this), 29 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager
-            .predictInstanceAddress(
-                address(this),
-                1,
-                "a",
-                block.timestamp + 60,
-                _erc20KpiTokenInitializationData,
-                _oraclesInitializationData
-            );
+        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
+            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
+        );
         firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
         secondErc20.approve(_predictedKpiTokenAddress, 29 ether);
 
         uint256 _expiration = block.timestamp + 60;
-        factory.createToken(
-            1,
-            "a",
-            _expiration,
-            _erc20KpiTokenInitializationData,
-            _oraclesInitializationData
-        );
+        factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
         uint256 kpiTokensAmount = factory.kpiTokensAmount();
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
             factory.enumerate(
-                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount,
-                kpiTokensAmount > 0 ? kpiTokensAmount : 1
+                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount, kpiTokensAmount > 0 ? kpiTokensAmount : 1
             )[0]
         );
 
@@ -1179,27 +748,11 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(kpiTokenInstance)), 28 ether);
     }
 
-    function testOverHigherBoundOrRelationshipMultipleOracleMultiCollateral()
-        external
-    {
+    function testOverHigherBoundOrRelationshipMultipleOracleMultiCollateral() external {
         Collateral[] memory _collaterals = new Collateral[](2);
-        _collaterals[0] = Collateral({
-            token: address(firstErc20),
-            amount: 20 ether,
-            minimumPayout: 10 ether
-        });
-        _collaterals[1] = Collateral({
-            token: address(secondErc20),
-            amount: 12.65 ether,
-            minimumPayout: 10 ether
-        });
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(
-            _collaterals,
-            true,
-            "Test",
-            "TST",
-            100 ether
-        );
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        _collaterals[1] = Collateral({token: address(secondErc20), amount: 12.65 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({
@@ -1218,38 +771,22 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
             value: 0,
             data: abi.encode("2")
         });
-        bytes memory _oraclesInitializationData = abi.encode(
-            _oracleDatas,
-            false
-        );
+        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
         firstErc20.mint(address(this), 20 ether);
         secondErc20.mint(address(this), 12.65 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager
-            .predictInstanceAddress(
-                address(this),
-                1,
-                "a",
-                block.timestamp + 60,
-                _erc20KpiTokenInitializationData,
-                _oraclesInitializationData
-            );
+        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
+            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
+        );
         firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
         secondErc20.approve(_predictedKpiTokenAddress, 12.65 ether);
 
-        factory.createToken(
-            1,
-            "a",
-            block.timestamp + 60,
-            _erc20KpiTokenInitializationData,
-            _oraclesInitializationData
-        );
+        factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
         uint256 kpiTokensAmount = factory.kpiTokensAmount();
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
             factory.enumerate(
-                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount,
-                kpiTokensAmount > 0 ? kpiTokensAmount : 1
+                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount, kpiTokensAmount > 0 ? kpiTokensAmount : 1
             )[0]
         );
 
@@ -1266,27 +803,11 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(this)), 0);
     }
 
-    function testOverHigherBoundOrRelationshipMultipleOracleMultiCollateralExpired()
-        external
-    {
+    function testOverHigherBoundOrRelationshipMultipleOracleMultiCollateralExpired() external {
         Collateral[] memory _collaterals = new Collateral[](2);
-        _collaterals[0] = Collateral({
-            token: address(firstErc20),
-            amount: 20 ether,
-            minimumPayout: 10 ether
-        });
-        _collaterals[1] = Collateral({
-            token: address(secondErc20),
-            amount: 12.65 ether,
-            minimumPayout: 10 ether
-        });
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(
-            _collaterals,
-            true,
-            "Test",
-            "TST",
-            100 ether
-        );
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        _collaterals[1] = Collateral({token: address(secondErc20), amount: 12.65 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({
@@ -1305,39 +826,23 @@ contract ERC20KPITokenAboveHigherBoundRecoverTest is BaseTestSetup {
             value: 0,
             data: abi.encode("2")
         });
-        bytes memory _oraclesInitializationData = abi.encode(
-            _oracleDatas,
-            false
-        );
+        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
         firstErc20.mint(address(this), 20 ether);
         secondErc20.mint(address(this), 12.65 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager
-            .predictInstanceAddress(
-                address(this),
-                1,
-                "a",
-                block.timestamp + 60,
-                _erc20KpiTokenInitializationData,
-                _oraclesInitializationData
-            );
+        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
+            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
+        );
         firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
         secondErc20.approve(_predictedKpiTokenAddress, 12.65 ether);
 
         uint256 _expiration = block.timestamp + 60;
-        factory.createToken(
-            1,
-            "a",
-            _expiration,
-            _erc20KpiTokenInitializationData,
-            _oraclesInitializationData
-        );
+        factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
         uint256 kpiTokensAmount = factory.kpiTokensAmount();
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
             factory.enumerate(
-                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount,
-                kpiTokensAmount > 0 ? kpiTokensAmount : 1
+                kpiTokensAmount > 0 ? kpiTokensAmount - 1 : kpiTokensAmount, kpiTokensAmount > 0 ? kpiTokensAmount : 1
             )[0]
         );
 

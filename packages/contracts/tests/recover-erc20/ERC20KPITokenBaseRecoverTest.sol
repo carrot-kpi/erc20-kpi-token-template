@@ -12,18 +12,14 @@ import {Clones} from "oz/proxy/Clones.sol";
 /// @author Federico Luzzi - <federico.luzzi@protonmail.com>
 contract ERC20KPITokenBaseRecoverTest is BaseTestSetup {
     function testNotOwner() external {
-        ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
-            Clones.clone(address(erc20KpiTokenTemplate))
-        );
+        ERC20KPIToken kpiTokenInstance = ERC20KPIToken(Clones.clone(address(erc20KpiTokenTemplate)));
         vm.expectRevert(abi.encodeWithSignature("Forbidden()"));
         vm.prank(address(123));
         kpiTokenInstance.recoverERC20(address(33333), address(this));
     }
 
     function testZeroAddressReceiver() external {
-        ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
-            Clones.clone(address(erc20KpiTokenTemplate))
-        );
+        ERC20KPIToken kpiTokenInstance = ERC20KPIToken(Clones.clone(address(erc20KpiTokenTemplate)));
         vm.expectRevert(abi.encodeWithSignature("ZeroAddressReceiver()"));
         kpiTokenInstance.recoverERC20(address(33333), address(0));
     }
@@ -31,10 +27,8 @@ contract ERC20KPITokenBaseRecoverTest is BaseTestSetup {
     function testNothingToRecoverCollateral() external {
         IERC20KPIToken kpiTokenInstance = createKpiToken("a");
 
-        (Collateral[] memory _collaterals, , , , , ) = abi.decode(
-            kpiTokenInstance.data(),
-            (Collateral[], FinalizableOracle[], bool, uint256, string, string)
-        );
+        (Collateral[] memory _collaterals,,,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
 
         vm.expectRevert(abi.encodeWithSignature("NothingToRecover()"));
         kpiTokenInstance.recoverERC20(_collaterals[0].token, address(1));

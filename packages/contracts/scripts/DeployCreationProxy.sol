@@ -9,20 +9,13 @@ import {CreationProxy} from "../src/CreationProxy.sol";
 /// @dev Deploys the creation proxy on a target network.
 /// @author Federico Luzzi - <federico.luzzi@protonmail.com>
 contract DeployCreationProxy is Script {
-    function run(
-        address _factory,
-        address _kpiTokensManager,
-        uint256 _templateId
-    ) external {
+    function run(address _factory, address _kpiTokensManager, uint256 _templateId) external {
         vm.broadcast();
         CreationProxy _creationProxy = new CreationProxy(
             _factory,
             _kpiTokensManager,
             _templateId
         );
-        console2.log(
-            "Creation proxy deployed at address",
-            address(_creationProxy)
-        );
+        console2.log("Creation proxy deployed at address", address(_creationProxy));
     }
 }

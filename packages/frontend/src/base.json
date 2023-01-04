@@ -1,6 +1,6 @@
 {
-  "name": "KPI Token template",
-  "description": "A Carrot v1 KPI token template.",
-  "tags": ["test"],
-  "repository": "https://github.com/foo/bar"
+    "name": "KPI Token template",
+    "description": "A Carrot v1 KPI token template.",
+    "tags": ["test"],
+    "repository": "https://github.com/foo/bar"
 }
