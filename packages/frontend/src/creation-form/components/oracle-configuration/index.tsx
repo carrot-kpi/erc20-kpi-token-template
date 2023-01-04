@@ -1,6 +1,7 @@
 import { BigNumber } from 'ethers'
 import { ChangeEvent, ReactElement, useCallback, useState } from 'react'
 import { NamespacedTranslateFunction } from '@carrot-kpi/react'
+import { Button } from '@carrot-kpi/ui'
 
 interface OracleConfigurationProps {
   t: NamespacedTranslateFunction
@@ -53,7 +54,9 @@ export const OracleConfiguration = ({
           value={higherBound.toString()}
         />
         <br />
-        <button onClick={handleNext}>{t('next')}</button>
+        <Button size="small" onClick={handleNext}>
+          {t('next')}
+        </Button>
       </div>
     </>
   )

@@ -1,5 +1,10 @@
 {
-  "include": ["./src/**/*.tsx", "./src/**/*.ts", "./playground/*.tsx"],
+  "include": [
+    "./src/**/*.tsx",
+    "./src/**/*.ts",
+    "./custom.d.ts",
+    "./playground/*.tsx"
+  ],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "outDir": "./dist",

@@ -2,6 +2,8 @@ import { KpiToken } from '@carrot-kpi/sdk'
 import { ReactElement } from 'react'
 import { NamespacedTranslateFunction } from '@carrot-kpi/react'
 
+import '../global.css'
+
 interface PageProps {
   t: NamespacedTranslateFunction
   kpiToken: KpiToken

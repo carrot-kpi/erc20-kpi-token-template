@@ -1,3 +1,4 @@
+import { TextMono } from '@carrot-kpi/ui'
 import {
   CreationForm,
   NamespacedTranslateFunction,
@@ -7,7 +8,6 @@ import { ChainId, Template } from '@carrot-kpi/sdk'
 import { BigNumber, constants, utils } from 'ethers'
 import { defaultAbiCoder } from 'ethers/lib/utils'
 import { ReactElement, useCallback, useMemo, useState } from 'react'
-import { BaseData } from './components/base-data'
 import { OracleConfiguration } from './components/oracle-configuration'
 import { OraclesPicker } from './components/oracles-picker'
 import { OnchainPreparations } from './components/onchain-preparations'
@@ -19,6 +19,14 @@ import {
 } from './types'
 import CREATION_PROXY_ABI from '../abis/creation-proxy.json'
 import { Address, useNetwork } from 'wagmi'
+import { Card } from '../ui/card'
+import { CampaignDescription } from './components/campaign-description'
+import { Collateral } from './components/collateral'
+import { ERC20 } from './components/erc-20'
+import { useTranslation } from 'react-i18next'
+import { NextStepPreview } from './components/next-step-preview'
+
+import '../global.css'
 
 const CREATION_PROXY_INTERFACE = new utils.Interface(CREATION_PROXY_ABI)
 
@@ -36,6 +44,7 @@ interface CreationFormProps {
 // proxy address is 0 for more than x time
 export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
   const { chain } = useNetwork()
+  const { i18n } = useTranslation()
   const uploadToDecentralizeStorage = useDecentralizedStorageUploader(
     __DEV__ ? 'playground' : 'ipfs'
   )
@@ -47,6 +56,7 @@ export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
   }, [chain])
 
   const [data, setData] = useState<CreationData>({
+    step: 0,
     specification: {
       title: '',
       description: '',
@@ -62,67 +72,80 @@ export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
   })
   const [specificationCid, setSpecificationCid] = useState('')
 
-  const handleBaseDataNext = useCallback(
-    (
-      specificationData: SpecificationData,
-      collateralsData: CollateralData[],
-      erc20Data: ERC20Data
-    ) => {
+  const handleCampaignDescriptionDataNext = useCallback(
+    (specificationData: SpecificationData) => {
       setData({
         ...data,
+        step: 1,
         specification: specificationData,
-        collaterals: collateralsData,
-        erc20: erc20Data,
       })
     },
     [data]
   )
 
-  const handleOraclePick = useCallback(
-    (oracleTemplate: Template) => {
-      if (data.oracles.length === 0)
-        setData({
-          ...data,
-          oracles: [
-            {
-              template: oracleTemplate,
-              initializationData: '',
-              value: BigNumber.from('0'),
-              lowerBound: BigNumber.from('0'),
-              higherBound: BigNumber.from('0'),
-              weight: BigNumber.from('0'),
-            },
-          ],
-        })
-      else
-        setData({
-          ...data,
-          oracles: [{ ...data.oracles[0], template: oracleTemplate }],
-        })
-    },
-    [data]
-  )
+  const handleCollateralDataNext = (
+    collateralsData: CollateralData[]
+  ): void => {
+    setData({
+      ...data,
+      step: 2,
+      collaterals: collateralsData,
+    })
+  }
 
-  const handleOracleDataNext = useCallback(
-    (initializationData: string, value: BigNumber) => {
+  const handleErc20DataNext = (erc20Data: ERC20Data): void => {
+    setData({
+      ...data,
+      step: 3,
+      erc20: erc20Data,
+    })
+  }
+
+  const handleOraclePick = (oracleTemplate: Template): void => {
+    if (data.oracles.length === 0)
       setData({
         ...data,
+        step: 4,
         oracles: [
           {
-            ...data.oracles[0],
-            initializationData,
-            value,
+            template: oracleTemplate,
+            initializationData: '',
+            value: BigNumber.from('0'),
+            lowerBound: BigNumber.from('0'),
+            higherBound: BigNumber.from('0'),
+            weight: BigNumber.from('0'),
           },
         ],
       })
-    },
-    [data]
-  )
+    else
+      setData({
+        ...data,
+        step: 4,
+        oracles: [{ ...data.oracles[0], template: oracleTemplate }],
+      })
+  }
+
+  const handleOracleDataNext = (
+    initializationData: string,
+    value: BigNumber
+  ): void => {
+    setData({
+      ...data,
+      oracles: [
+        {
+          ...data.oracles[0],
+          initializationData,
+          value,
+        },
+      ],
+    })
+  }
 
   const handleOracleConfigurationSubmit = useCallback(
     (lowerBound: BigNumber, higherBound: BigNumber) => {
       setData({
         ...data,
+        step: 5,
         oracles: [
           {
             ...data.oracles[0],
@@ -187,31 +210,91 @@ export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
     specificationCid,
   ])
 
-  if (data.collaterals.length === 0)
-    return <BaseData t={t} onNext={handleBaseDataNext} />
-  if (data.collaterals.length > 0 && data.oracles.length === 0)
-    return <OraclesPicker t={t} onPick={handleOraclePick} />
-  if (data.oracles.length > 0 && !specificationCid) {
-    if (!data.oracles[0].initializationData)
-      return (
-        <>
+  const steps = [
+    {
+      title: t('card.campaing.title'),
+      content: (
+        <CampaignDescription t={t} onNext={handleCampaignDescriptionDataNext} />
+      ),
+    },
+    {
+      title: t('card.collateral.title'),
+      content: <Collateral t={t} onNext={handleCollateralDataNext} />,
+    },
+    {
+      title: t('card.token.title'),
+      content: <ERC20 t={t} onNext={handleErc20DataNext} />,
+    },
+    {
+      title: t('card.oracle.title'),
+      content: <OraclesPicker t={t} onPick={handleOraclePick} />,
+    },
+    {
+      title: t('card.question.title'),
+      content: (
+        <div>
           <h3>Base oracle data</h3>
-          <CreationForm
-            template={data.oracles[0].template}
-            onDone={handleOracleDataNext}
+          {data.oracles && data.oracles.length > 0 && (
+            <CreationForm
+              i18n={i18n}
+              fallback={<>Loading...</>}
+              template={data.oracles[0].template}
+              onDone={handleOracleDataNext}
+            />
+          )}
+          <OracleConfiguration
+            t={t}
+            onSubmit={handleOracleConfigurationSubmit}
           />
-        </>
-      )
-    else
-      return (
-        <OracleConfiguration t={t} onSubmit={handleOracleConfigurationSubmit} />
-      )
-  }
+        </div>
+      ),
+    },
+    {
+      title: t('card.deploy.title'),
+      content: (
+        <OnchainPreparations
+          collaterals={data.collaterals}
+          creationProxyAddress={creationProxyAddress}
+          onCreate={handleCreate}
+        />
+      ),
+    },
+  ]
+
   return (
-    <OnchainPreparations
-      collaterals={data.collaterals}
-      creationProxyAddress={creationProxyAddress}
-      onCreate={handleCreate}
-    />
+    <div className="flex h-full flex-col items-center justify-between gap-24 overflow-y-hidden bg-carrot-green pt-10">
+      <div className="square-list absolute left-20 top-1/3 hidden flex-col gap-8 lg:flex">
+        {steps.map((step, index) => (
+          <div key={index} className="flex items-center gap-4">
+            <div
+              className={`${
+                index === data.step ? 'bg-carrot-orange' : 'bg-black'
+              } h-2.5 w-2.5`}
+            />
+            <TextMono>{step.title}</TextMono>
+          </div>
+        ))}
+      </div>
+      <Card
+        step={t('card.step.label', { number: data.step + 1 })}
+        title={steps[data.step].title}
+      >
+        {steps[data.step].content}
+      </Card>
+      <div className="min-h-fit w-full max-w-xl">
+        {!!steps[data.step + 1] && (
+          <NextStepPreview
+            step={t('card.step.label', { number: data.step + 2 })}
+            title={steps[data.step + 1].title}
+          />
+        )}
+        {!!steps[data.step + 2] && (
+          <NextStepPreview
+            step={t('card.step.label', { number: data.step + 3 })}
+            title={steps[data.step + 2].title}
+          />
+        )}
+      </div>
+    </div>
   )
 }
