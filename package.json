@@ -1,22 +1,22 @@
 {
-  "name": "erc20-kpi-token-template",
-  "version": "0.1.0",
-  "description": "A Carrot template.",
-  "license": "GPL-3.0",
-  "templateType": "kpi-token",
-  "scripts": {
-    "lint": "turbo run lint",
-    "test": "turbo run test",
-    "build": "turbo run build",
-    "prepare": "husky install",
-    "start": "carrot-scripts start",
-    "lint:commit-message": "commitlint -e"
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^17.3.0",
-    "@commitlint/config-conventional": "^17.3.0",
-    "carrot-scripts": "^0.7.1",
-    "husky": "^8.0.3",
-    "turbo": "^1.6.3"
-  }
+    "name": "erc20-kpi-token-template",
+    "version": "0.1.0",
+    "description": "A Carrot template.",
+    "license": "GPL-3.0",
+    "templateType": "kpi-token",
+    "scripts": {
+        "lint": "turbo run lint",
+        "test": "turbo run test",
+        "build": "turbo run build",
+        "prepare": "husky install",
+        "start": "carrot-scripts start",
+        "lint:commit-message": "commitlint -e"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^17.3.0",
+        "@commitlint/config-conventional": "^17.3.0",
+        "carrot-scripts": "^0.11.0",
+        "husky": "^8.0.3",
+        "turbo": "^1.6.3"
+    }
 }
