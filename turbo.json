@@ -3,7 +3,7 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", "build/**"]
+      "outputs": ["dist/**", "build/**", "out/**"]
     },
     "test": {
       "inputs": [
@@ -11,9 +11,11 @@
         "tests/**/*.{ts,tsx}",
         "src/**/*.test.{ts,tsx}",
         "src/**/*.sol",
-        "tests/**/*.sol"
+        "tests/**/*.sol",
+        "babel.config.json"
       ]
     },
-    "lint": {}
+    "lint": {},
+    "format": {}
   }
 }

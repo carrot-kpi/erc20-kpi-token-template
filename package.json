@@ -5,12 +5,14 @@
     "license": "GPL-3.0",
     "templateType": "kpi-token",
     "scripts": {
-        "lint": "turbo run lint",
-        "test": "turbo run test",
-        "build": "turbo run build",
-        "prepare": "husky install",
-        "start": "carrot-scripts start",
-        "lint:commit-message": "commitlint -e"
+      "build": "turbo run build",
+      "build:contracts": "pnpm build --filter contracts",
+      "lint": "turbo run lint",
+      "format": "turbo run format",
+      "start": "carrot-scripts start",
+      "test": "turbo run test",
+      "commitlint": "commitlint -e",
+      "prepare": "husky install"
     },
     "devDependencies": {
         "@commitlint/cli": "^17.3.0",
