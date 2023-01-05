@@ -25,7 +25,7 @@
     "oracles.picker.template.id": "Id",
     "oracles.picker.template.description": "Description",
     "oracles.picker.template.address": "Address",
-    "oracles.picker.template.use": "Use",
+    "oracles.picker.selected": "Selected:",
     "loading": "Loading",
     "next": "NEXT"
 }

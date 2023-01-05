@@ -105,28 +105,21 @@ export const Component = ({
         });
     };
 
-    const handleOraclePick = (oracleTemplate: Template): void => {
-        if (data.oracles.length === 0)
-            setData({
-                ...data,
-                step: 4,
-                oracles: [
-                    {
-                        template: oracleTemplate,
-                        initializationData: "",
-                        value: BigNumber.from("0"),
-                        lowerBound: BigNumber.from("0"),
-                        higherBound: BigNumber.from("0"),
-                        weight: BigNumber.from("0"),
-                    },
-                ],
-            });
-        else
-            setData({
-                ...data,
-                step: 4,
-                oracles: [{ ...data.oracles[0], template: oracleTemplate }],
-            });
+    const handleOracleNext = (oracleTemplates: Template[]): void => {
+        const oracles = oracleTemplates.map((oracleTemplate) => ({
+            template: oracleTemplate,
+            initializationData: "",
+            value: BigNumber.from("0"),
+            lowerBound: BigNumber.from("0"),
+            higherBound: BigNumber.from("0"),
+            weight: BigNumber.from("0"),
+        }));
+
+        setData({
+            ...data,
+            step: 4,
+            oracles,
+        });
     };
 
     const handleOracleDataNext = (
@@ -234,7 +227,7 @@ export const Component = ({
         },
         {
             title: t("card.oracle.title"),
-            content: <OraclesPicker t={t} onPick={handleOraclePick} />,
+            content: <OraclesPicker t={t} onNext={handleOracleNext} />,
         },
         {
             title: t("card.question.title"),
