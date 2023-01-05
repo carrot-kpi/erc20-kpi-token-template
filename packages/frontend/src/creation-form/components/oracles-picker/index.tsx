@@ -67,7 +67,8 @@ export const OraclesPicker = ({
     };
 
     if (loading) {
-        return <>{t("loading")}...</>;
+        // TODO: think about a standard loading component
+        return <p>{t("loading")}...</p>;
     }
 
     return (
