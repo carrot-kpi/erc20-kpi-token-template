@@ -1,8 +1,8 @@
 export default {
     testEnvironment: "jest-environment-jsdom",
-    roots: ["<rootDir>/src"],
+    roots: ["<rootDir>/tests"],
     transform: {
         "^.+\\.(ts|tsx)?$": "ts-jest",
     },
-    testRegex: "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$",
+    testRegex: "(.*|(test|spec))\\.tsx?$",
 };
