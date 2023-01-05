@@ -23,10 +23,10 @@ import { Card } from "../ui/card";
 import { CampaignDescription } from "./components/campaign-description";
 import { Collateral } from "./components/collateral";
 import { ERC20 } from "./components/erc-20";
-import { useTranslation } from "react-i18next";
 import { NextStepPreview } from "./components/next-step-preview";
 
 import "../global.css";
+import { i18n } from "i18next";
 
 const CREATION_PROXY_INTERFACE = new utils.Interface(CREATION_PROXY_ABI);
 
@@ -36,15 +36,19 @@ const CREATION_PROXY_ADDRESS: Record<ChainId, Address> = {
 };
 
 interface CreationFormProps {
+    i18n: i18n;
     t: NamespacedTranslateFunction;
     onDone: (to: Address, data: string, value: BigNumber) => void;
 }
 
 // TODO: add a check that displays an error message if the creation
 // proxy address is 0 for more than x time
-export const Component = ({ t, onDone }: CreationFormProps): ReactElement => {
+export const Component = ({
+    i18n,
+    t,
+    onDone,
+}: CreationFormProps): ReactElement => {
     const { chain } = useNetwork();
-    const { i18n } = useTranslation();
     const uploadToDecentralizeStorage = useDecentralizedStorageUploader(
         __DEV__ ? "playground" : "ipfs"
     );
