@@ -57,7 +57,7 @@ export const OraclesPicker = ({
             );
 
             if (!pickedOracle) {
-                return nextOracleTemplates;
+                return previousState;
             }
 
             pickedOracle.isPicked = !pickedOracle.isPicked;
