@@ -1,9 +1,7 @@
 import { ChangeEvent, ReactElement, useCallback, useState } from "react";
 import { SpecificationData } from "../../types";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import { TextInput } from "../../../ui/text-input";
-import { MarkdownInput } from "../../../ui/markdown-input";
-import { Button } from "@carrot-kpi/ui";
+import { Button, TextInput, MarkdownInput } from "@carrot-kpi/ui";
 
 interface CampaignDescriptionProps {
     t: NamespacedTranslateFunction;
@@ -33,6 +31,7 @@ export const CampaignDescription = ({
                 placeholder={"Enter campaign title"}
                 onChange={handleTitleChange}
                 value={title}
+                className="w-full"
             />
             <MarkdownInput
                 id="description"

@@ -262,15 +262,13 @@ export const Component = ({
     ];
 
     return (
-        <div className="bg-carrot-green flex h-full flex-col items-center justify-between gap-24 overflow-y-hidden pt-10">
+        <div className="bg-green flex h-full flex-col items-center justify-between gap-24 overflow-y-hidden pt-10">
             <div className="square-list absolute left-20 top-1/3 hidden flex-col gap-8 lg:flex">
                 {steps.map((step, index) => (
                     <div key={index} className="flex items-center gap-4">
                         <div
                             className={`${
-                                index === data.step
-                                    ? "bg-carrot-orange"
-                                    : "bg-black"
+                                index === data.step ? "bg-orange" : "bg-black"
                             } h-2.5 w-2.5`}
                         />
                         <TextMono>{step.title}</TextMono>

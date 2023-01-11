@@ -27,7 +27,7 @@
     "dependencies": {
         "@carrot-kpi/react": "^0.20.1",
         "@carrot-kpi/sdk": "^1.12.0",
-        "@carrot-kpi/ui": "^0.7.0",
+        "@carrot-kpi/ui": "^0.8.4",
         "@fontsource/ibm-plex-mono": "^4.5.13",
         "@tailwindcss/typography": "^0.5.8",
         "@testing-library/jest-dom": "^5.16.5",
@@ -69,6 +69,7 @@
         "eslint-plugin-react": "^7.31.11",
         "eslint-plugin-react-hooks": "^4.6.0",
         "mini-css-extract-plugin": "^2.7.2",
+        "ora": "^6.1.2",
         "postcss": "^8.4.20",
         "postcss-loader": "^7.0.2",
         "style-loader": "^3.3.1",
