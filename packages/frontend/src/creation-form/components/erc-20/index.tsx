@@ -2,9 +2,7 @@ import { BigNumber } from "ethers";
 import { ChangeEvent, ReactElement, useCallback, useState } from "react";
 import { ERC20Data } from "../../types";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import { TextInput } from "../../../ui/text-input";
-import { Button } from "@carrot-kpi/ui";
-import { NumericInput } from "../../../ui/numeric-input";
+import { Button, NumberInput, TextInput } from "@carrot-kpi/ui";
 
 interface Erc20Props {
     t: NamespacedTranslateFunction;
@@ -40,6 +38,7 @@ export const ERC20 = ({ t, onNext }: Erc20Props): ReactElement => {
                 placeholder={"Ethereum"}
                 onChange={handleErc20DataChange("name")}
                 value={erc20Data.name}
+                className="w-full"
             />
             <TextInput
                 id="erc20-symbol"
@@ -47,13 +46,15 @@ export const ERC20 = ({ t, onNext }: Erc20Props): ReactElement => {
                 placeholder={"ETH"}
                 onChange={handleErc20DataChange("symbol")}
                 value={erc20Data.symbol}
+                className="w-full"
             />
-            <NumericInput
+            <NumberInput
                 id="erc20-supply"
                 label={t("label.erc20.supply")}
-                placeholder={"1000000"}
+                placeholder={"1,000,000"}
                 onChange={handleErc20DataChange("supply")}
                 value={erc20Data.supply.toString()}
+                className="w-full"
             />
             <Button size="small" onClick={handleNext}>
                 {t("next")}

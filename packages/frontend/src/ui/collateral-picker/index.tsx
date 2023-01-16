@@ -1,12 +1,16 @@
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Token } from "@carrot-kpi/sdk";
-import { Button, TextMono } from "@carrot-kpi/ui";
+import {
+    Button,
+    TextMono,
+    Select,
+    SelectOption,
+    NumberInput,
+} from "@carrot-kpi/ui";
 import { BigNumber } from "ethers";
 import { ChangeEvent, ReactElement, useMemo, useState } from "react";
 import { Address } from "wagmi";
 import { CollateralData } from "../../creation-form/types";
-import { NumericInput } from "../numeric-input";
-import { Select } from "../select";
 
 interface CollateralPickerProps {
     t: NamespacedTranslateFunction;
@@ -20,14 +24,13 @@ export const CollateralPicker = ({
     tokens,
     onConfirm,
 }: CollateralPickerProps): ReactElement => {
-    const [collateralAddress, setCollateralAddress] = useState<Address>(
-        tokens[0].address as Address
-    );
+    const [collateralActive, setCollateralActive] =
+        useState<SelectOption | null>(null);
     const [collateralAmount, setCollateralAmount] = useState<string>("");
     const [minimumPayout, setMinimumPayout] = useState<string>("");
 
-    const handleCollateralChange = (option: unknown | null): void => {
-        setCollateralAddress(option as Address);
+    const handleCollateralChange = (option: SelectOption): void => {
+        setCollateralActive(option);
     };
 
     const handleColletarlAmountChange = (
@@ -44,7 +47,7 @@ export const CollateralPicker = ({
 
     const handleOnConfirm = (): void => {
         onConfirm({
-            address: collateralAddress,
+            address: collateralActive?.value as Address,
             amount: BigNumber.from(collateralAmount),
             minimumPayout: BigNumber.from(minimumPayout),
         });
@@ -61,20 +64,24 @@ export const CollateralPicker = ({
 
     return (
         <div className="flex flex-col gap-3">
-            <div className="rounded-2xl border border-black p-4">
+            <div className="rounded-xxl border border-black p-4">
                 <div className="flex flex-col gap-3">
                     <div className="flex flex-col gap-2">
                         <div className="flex justify-between">
                             <Select
+                                id="collaterla-select"
+                                label=""
+                                placeholder="Pick a token"
                                 options={collateralOptions}
-                                value={collateralAddress}
+                                value={collateralActive}
                                 onChange={handleCollateralChange}
                             />
-                            <NumericInput
+                            <NumberInput
                                 id="collateral-amount"
-                                className="text-right"
-                                size="2xl"
-                                isBordered={false}
+                                label=""
+                                placeholder="0.0"
+                                className="text-right border-none"
+                                size="xl"
                                 value={collateralAmount}
                                 onChange={handleColletarlAmountChange}
                             />
@@ -95,11 +102,12 @@ export const CollateralPicker = ({
                                 {t("label.collateral.picker.minimum.payout")}
                             </TextMono>
 
-                            <NumericInput
+                            <NumberInput
                                 id="minimum-payout"
-                                className="text-right"
-                                size="2xl"
-                                isBordered={false}
+                                label=""
+                                placeholder="0.0"
+                                className="text-right border-none"
+                                size="xl"
                                 value={minimumPayout}
                                 onChange={handleMinimumPayoutChange}
                             />
