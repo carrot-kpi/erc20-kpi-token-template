@@ -76,12 +76,13 @@ export const OraclesPicker = ({
             <TextMono size="md" weight="medium">
                 {t("oracles.picker.label")}
             </TextMono>
-            <div className="overflow-x-auto flex gap-7 scrollbar">
+            <div className="scrollbar flex gap-7 overflow-x-auto">
                 {oracleTemplates.map(({ isPicked, template }) => {
                     return (
                         <div
                             key={template.id}
-                            className="flex flex-col gap-3 items-center p-2"
+                            id={template.specification.cid}
+                            className="flex flex-col items-center gap-3 p-2"
                         >
                             <OracleTemplate
                                 key={template.id}
@@ -91,7 +92,7 @@ export const OraclesPicker = ({
                                 address={template.address}
                             />
                             <input
-                                className="h-6 w-6 accent-black cursor-pointer outline-none"
+                                className="h-6 w-6 cursor-pointer accent-black outline-none"
                                 type="checkbox"
                                 checked={isPicked}
                                 onChange={() => {
