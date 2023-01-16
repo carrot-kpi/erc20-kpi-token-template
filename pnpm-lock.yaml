@@ -67,6 +67,7 @@ importers:
       '@types/react-dom': ^18.0.6
       autoprefixer: ^10.4.13
       chalk: ^5.0.1
+      class-variance-authority: ^0.4.0
       css-loader: ^6.7.2
       cssnano: ^5.1.14
       eslint-config-custom: workspace:*
@@ -135,6 +136,7 @@ importers:
       webpack-dev-server: 4.11.1_webpack@5.75.0
     devDependencies:
       autoprefixer: 10.4.13_postcss@8.4.20
+      class-variance-authority: 0.4.0_typescript@4.9.4
       css-loader: 6.7.3_webpack@5.75.0
       cssnano: 5.1.14_postcss@8.4.20
       eslint-plugin-react: 7.31.11_eslint@7.32.0
@@ -5228,6 +5230,17 @@ packages:
   /cjs-module-lexer/1.2.2:
     resolution: {integrity: sha512-cOU9usZw8/dXIXKtwa8pM0OTJQuJkxMN6w30csNRUerHfeQ5R6U3kkU/FtJeIf3M202OHfY2U8ccInBG7/xogA==}
     dev: false
+
+  /class-variance-authority/0.4.0_typescript@4.9.4:
+    resolution: {integrity: sha512-74enNN8O9ZNieycac/y8FxqgyzZhZbxmCitAtAeUrLPlxjSd5zA7LfpprmxEcOmQBnaGs5hYhiSGnJ0mqrtBLQ==}
+    peerDependencies:
+      typescript: '>= 4.5.5 < 5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      typescript: 4.9.4
+    dev: true
 
   /classic-level/1.2.0:
     resolution: {integrity: sha512-qw5B31ANxSluWz9xBzklRWTUAJ1SXIdaVKTVS7HcTGKOAmExx65Wo5BUICW+YGORe2FOUaDghoI9ZDxj82QcFg==}

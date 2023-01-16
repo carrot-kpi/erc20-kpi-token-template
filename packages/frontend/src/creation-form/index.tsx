@@ -1,3 +1,5 @@
+import "../global.css";
+
 import { TextMono } from "@carrot-kpi/ui";
 import {
     CreationForm,
@@ -24,8 +26,8 @@ import { CampaignDescription } from "./components/campaign-description";
 import { Collateral } from "./components/collateral";
 import { ERC20 } from "./components/erc-20";
 import { NextStepPreview } from "./components/next-step-preview";
+import { cva } from "class-variance-authority";
 
-import "../global.css";
 import { i18n } from "i18next";
 
 const CREATION_PROXY_INTERFACE = new utils.Interface(CREATION_PROXY_ABI);
@@ -34,6 +36,15 @@ const CREATION_PROXY_ADDRESS: Record<ChainId, Address> = {
     [ChainId.GOERLI]: constants.AddressZero,
     [ChainId.SEPOLIA]: "0x4300d4C410f87c7c1824Cbc2eF67431030106604",
 };
+
+const stepsListSquareStyles = cva(["relative", "h-3", "w-3"], {
+    variants: {
+        active: {
+            true: ["bg-orange", "z-10"],
+            false: ["bg-black"],
+        },
+    },
+});
 
 interface CreationFormProps {
     i18n: i18n;
@@ -268,10 +279,14 @@ export const Component = ({
                 {steps.map((step, index) => (
                     <div key={index} className="flex items-center gap-4">
                         <div
-                            className={`${
-                                index === data.step ? "bg-orange" : "bg-black"
-                            } h-2.5 w-2.5`}
-                        />
+                            className={stepsListSquareStyles({
+                                active: index === data.step,
+                            })}
+                        >
+                            {index > 0 && (
+                                <div className="absolute left-1.5 bottom-3 h-12 w-[1px] -translate-x-[0.5px] transform bg-black" />
+                            )}
+                        </div>
                         <TextMono>{step.title}</TextMono>
                     </div>
                 ))}
