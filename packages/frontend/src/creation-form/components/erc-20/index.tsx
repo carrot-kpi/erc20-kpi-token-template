@@ -1,34 +1,25 @@
-import { BigNumber } from "ethers";
-import { ChangeEvent, ReactElement, useCallback, useState } from "react";
+import { ChangeEvent, ReactElement } from "react";
 import { ERC20Data } from "../../types";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Button, NumberInput, TextInput } from "@carrot-kpi/ui";
 
 interface Erc20Props {
     t: NamespacedTranslateFunction;
-    onNext: (erc20Data: ERC20Data) => void;
+    erc20: ERC20Data;
+    onFieldChange: (field: "name" | "symbol" | "supply", value: string) => void;
+    onNext: () => void;
 }
 
-export const ERC20 = ({ t, onNext }: Erc20Props): ReactElement => {
-    const [erc20Data, setErc20Data] = useState<ERC20Data>({
-        name: "",
-        symbol: "",
-        supply: BigNumber.from("0"),
-    });
-
-    const handleErc20DataChange = useCallback(
+export const ERC20 = ({
+    t,
+    erc20,
+    onFieldChange,
+    onNext,
+}: Erc20Props): ReactElement => {
+    const handleNameChange =
         (field: keyof ERC20Data) => (event: ChangeEvent<HTMLInputElement>) => {
-            setErc20Data({
-                ...erc20Data,
-                [field]: event.target.value,
-            });
-        },
-        [erc20Data]
-    );
-
-    const handleNext = useCallback(() => {
-        onNext(erc20Data);
-    }, [erc20Data, onNext]);
+            onFieldChange(field, event.target.value);
+        };
 
     return (
         <div className="flex flex-col gap-6">
@@ -36,27 +27,27 @@ export const ERC20 = ({ t, onNext }: Erc20Props): ReactElement => {
                 id="erc20-name"
                 label={t("label.erc20.name")}
                 placeholder={"Ethereum"}
-                onChange={handleErc20DataChange("name")}
-                value={erc20Data.name}
+                onChange={handleNameChange("name")}
+                value={erc20.name}
                 className="w-full"
             />
             <TextInput
                 id="erc20-symbol"
                 label={t("label.erc20.symbol")}
                 placeholder={"ETH"}
-                onChange={handleErc20DataChange("symbol")}
-                value={erc20Data.symbol}
+                onChange={handleNameChange("symbol")}
+                value={erc20.symbol}
                 className="w-full"
             />
             <NumberInput
                 id="erc20-supply"
                 label={t("label.erc20.supply")}
                 placeholder={"1,000,000"}
-                onChange={handleErc20DataChange("supply")}
-                value={erc20Data.supply.toString()}
+                onChange={handleNameChange("supply")}
+                value={erc20.supply.toString()}
                 className="w-full"
             />
-            <Button size="small" onClick={handleNext}>
+            <Button size="small" onClick={onNext}>
                 {t("next")}
             </Button>
         </div>

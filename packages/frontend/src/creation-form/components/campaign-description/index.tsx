@@ -1,27 +1,28 @@
-import { ChangeEvent, ReactElement, useCallback, useState } from "react";
+import { ChangeEvent, ReactElement } from "react";
 import { SpecificationData } from "../../types";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Button, TextInput, MarkdownInput } from "@carrot-kpi/ui";
 
 interface CampaignDescriptionProps {
     t: NamespacedTranslateFunction;
-    onNext: (specificationData: SpecificationData) => void;
+    specification: SpecificationData;
+    onFieldChange: (field: keyof SpecificationData, value: string) => void;
+    onNext: () => void;
 }
 
 export const CampaignDescription = ({
     t,
+    specification,
+    onFieldChange,
     onNext,
 }: CampaignDescriptionProps): ReactElement => {
-    const [title, setTitle] = useState<string>("");
-    const [description, setDescription] = useState<string>("");
-
     const handleTitleChange = (event: ChangeEvent<HTMLInputElement>): void => {
-        setTitle(event.target.value);
+        onFieldChange("title", event.target.value);
     };
 
-    const handleNext = useCallback(() => {
-        onNext({ description, title, tags: [] });
-    }, [onNext, description, title]);
+    const handleDescriptionChange = (value: string) => {
+        onFieldChange("description", value);
+    };
 
     return (
         <div className="flex flex-col gap-6">
@@ -30,17 +31,17 @@ export const CampaignDescription = ({
                 label={t("label.title")}
                 placeholder={"Enter campaign title"}
                 onChange={handleTitleChange}
-                value={title}
+                value={specification.title}
                 className="w-full"
             />
             <MarkdownInput
                 id="description"
                 label={t("label.description")}
                 placeholder={"Enter campaign description"}
-                onChange={setDescription}
-                value={description}
+                onChange={handleDescriptionChange}
+                value={specification.description}
             />
-            <Button size="small" onClick={handleNext}>
+            <Button size="small" onClick={onNext}>
                 {t("next")}
             </Button>
         </div>

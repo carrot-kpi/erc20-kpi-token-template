@@ -1,6 +1,6 @@
 import { Button, TextMono } from "@carrot-kpi/ui";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import { ReactElement, useCallback, useState } from "react";
+import { ReactElement } from "react";
 
 import { CollateralData } from "../../types";
 import { CollateralPicker } from "../../../ui/collateral-picker";
@@ -8,39 +8,25 @@ import { Token } from "@carrot-kpi/sdk";
 
 interface CollateralProps {
     t: NamespacedTranslateFunction;
-    onNext: (collateralsData: CollateralData[]) => void;
+    collaterals: CollateralData[];
+    onFieldChange: (
+        field: "collaterals",
+        collateralData: CollateralData
+    ) => void;
+    onNext: () => void;
 }
 
-export const Collateral = ({ t, onNext }: CollateralProps): ReactElement => {
-    const [collateralsData, setCollateralsData] = useState<CollateralData[]>(
-        []
-    );
-
-    const handleCollateraDataConfirm = (
+export const Collateral = ({
+    t,
+    collaterals,
+    onFieldChange,
+    onNext,
+}: CollateralProps): ReactElement => {
+    const handleCollateraDataChange = (
         collateralData: CollateralData
     ): void => {
-        setCollateralsData((previousState) => {
-            const nextCollateralData = [...previousState];
-            const collateralToUpdate = nextCollateralData.find(
-                (nextCollateral) =>
-                    collateralData.address.toLowerCase() ===
-                    nextCollateral.address.toLowerCase()
-            );
-
-            if (!collateralToUpdate) {
-                return [...previousState, collateralData];
-            }
-
-            collateralToUpdate.amount = collateralData.amount;
-            collateralToUpdate.minimumPayout = collateralData.minimumPayout;
-
-            return nextCollateralData;
-        });
+        onFieldChange("collaterals", collateralData);
     };
-
-    const handleNext = useCallback(() => {
-        onNext(collateralsData);
-    }, [collateralsData, onNext]);
 
     // TODO: where should we get this data?
     const colleteralTokens = [
@@ -64,7 +50,7 @@ export const Collateral = ({ t, onNext }: CollateralProps): ReactElement => {
         <div className="flex flex-col gap-6">
             <CollateralPicker
                 t={t}
-                onConfirm={handleCollateraDataConfirm}
+                onConfirm={handleCollateraDataChange}
                 tokens={colleteralTokens}
             />
 
@@ -81,7 +67,7 @@ export const Collateral = ({ t, onNext }: CollateralProps): ReactElement => {
                     </TextMono>
                 </div>
                 <div className="scrollbar max-h-48 overflow-y-auto rounded-xxl border border-black p-4">
-                    {collateralsData.map((collateral) => (
+                    {collaterals.map((collateral) => (
                         <div
                             key={collateral.address}
                             className="grid grid-cols-3"
@@ -98,7 +84,7 @@ export const Collateral = ({ t, onNext }: CollateralProps): ReactElement => {
                 </div>
             </div>
 
-            <Button size="small" onClick={handleNext}>
+            <Button size="small" onClick={onNext}>
                 {t("next")}
             </Button>
         </div>
