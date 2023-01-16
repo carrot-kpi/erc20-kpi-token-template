@@ -232,14 +232,16 @@ export const Component = ({
         {
             title: t("card.question.title"),
             content: (
-                <div className="flex content-center">
+                <div>
                     {data.oracles && data.oracles.length > 0 && (
-                        <CreationForm
-                            i18n={i18n}
-                            fallback={<>Loading...</>}
-                            template={data.oracles[0].template}
-                            onDone={handleOracleDataNext}
-                        />
+                        <div className="flex justify-center">
+                            <CreationForm
+                                i18n={i18n}
+                                fallback={<>Loading...</>}
+                                template={data.oracles[0].template}
+                                onDone={handleOracleDataNext}
+                            />
+                        </div>
                     )}
                     <OracleConfiguration
                         t={t}
