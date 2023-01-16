@@ -153,7 +153,7 @@ export const Component = ({
                 ],
             });
 
-            uploadToDecentralizeStorage(data.specification)
+            uploadToDecentralizeStorage(JSON.stringify(data.specification))
                 .then(setSpecificationCid)
                 .catch(console.error);
         },

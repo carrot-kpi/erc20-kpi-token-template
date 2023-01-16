@@ -25,11 +25,10 @@
         "test": "jest"
     },
     "dependencies": {
-        "@carrot-kpi/react": "^0.20.1",
+        "@carrot-kpi/react": "^0.21.0",
         "@carrot-kpi/sdk": "^1.12.0",
-        "@carrot-kpi/ui": "^0.8.4",
+        "@carrot-kpi/ui": "^0.9.1",
         "@fontsource/ibm-plex-mono": "^4.5.13",
-        "@tailwindcss/typography": "^0.5.8",
         "@testing-library/jest-dom": "^5.16.5",
         "@testing-library/react": "^13.4.0",
         "@tiptap/extension-heading": "^2.0.0-beta.209",

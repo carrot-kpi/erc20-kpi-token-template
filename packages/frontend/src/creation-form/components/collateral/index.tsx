@@ -80,7 +80,7 @@ export const Collateral = ({ t, onNext }: CollateralProps): ReactElement => {
                         {t("label.collateral.table.minimum.payout")}
                     </TextMono>
                 </div>
-                <div className="scrollbar max-h-48 overflow-y-auto rounded-2xl border border-black p-4">
+                <div className="scrollbar max-h-48 overflow-y-auto rounded-xxl border border-black p-4">
                     {collateralsData.map((collateral) => (
                         <div
                             key={collateral.address}
