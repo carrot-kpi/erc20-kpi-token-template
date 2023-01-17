@@ -2,11 +2,10 @@ import "../global.css";
 
 import { TextMono } from "@carrot-kpi/ui";
 import {
-    CreationForm,
     NamespacedTranslateFunction,
     useDecentralizedStorageUploader,
 } from "@carrot-kpi/react";
-import { ChainId, Template } from "@carrot-kpi/sdk";
+import { ChainId } from "@carrot-kpi/sdk";
 import { BigNumber, constants, utils } from "ethers";
 import { defaultAbiCoder } from "ethers/lib/utils";
 import { ReactElement, useCallback, useMemo, useState } from "react";
@@ -17,6 +16,7 @@ import {
     CollateralData,
     CreationData,
     ERC20Data,
+    OracleData,
     SpecificationData,
 } from "./types";
 import CREATION_PROXY_ABI from "../abis/creation-proxy.json";
@@ -87,89 +87,130 @@ export const Component = ({
     });
     const [specificationCid, setSpecificationCid] = useState("");
 
-    const handleCampaignDescriptionDataNext = useCallback(
-        (specificationData: SpecificationData) => {
-            setData({
-                ...data,
-                step: 1,
-                specification: specificationData,
-            });
-        },
-        [data]
-    );
+    const handleNext = useCallback(() => {
+        setData((prevState) => ({ ...prevState, step: prevState.step + 1 }));
+    }, []);
 
-    const handleCollateralDataNext = (
-        collateralsData: CollateralData[]
-    ): void => {
-        setData({
-            ...data,
-            step: 2,
-            collaterals: collateralsData,
-        });
-    };
-
-    const handleErc20DataNext = (erc20Data: ERC20Data): void => {
-        setData({
-            ...data,
-            step: 3,
-            erc20: erc20Data,
-        });
-    };
-
-    const handleOracleNext = (oracleTemplates: Template[]): void => {
-        const oracles = oracleTemplates.map((oracleTemplate) => ({
-            template: oracleTemplate,
-            initializationData: "",
-            value: BigNumber.from("0"),
-            lowerBound: BigNumber.from("0"),
-            higherBound: BigNumber.from("0"),
-            weight: BigNumber.from("0"),
-        }));
-
-        setData({
-            ...data,
-            step: 4,
-            oracles,
-        });
-    };
-
-    const handleOracleDataNext = (
-        initializationData: string,
-        value: BigNumber
-    ): void => {
-        setData({
-            ...data,
-            oracles: [
-                {
-                    ...data.oracles[0],
-                    initializationData,
-                    value,
+    const handleCampaignSpecificationChange = useCallback(
+        (field: keyof SpecificationData, value: string) => {
+            setData((prevState) => ({
+                ...prevState,
+                specification: {
+                    ...prevState.specification,
+                    [field]: value,
                 },
-            ],
-        });
-    };
-
-    const handleOracleConfigurationSubmit = useCallback(
-        (lowerBound: BigNumber, higherBound: BigNumber) => {
-            setData({
-                ...data,
-                step: 5,
-                oracles: [
-                    {
-                        ...data.oracles[0],
-                        lowerBound,
-                        higherBound,
-                        weight: BigNumber.from("1"),
-                    },
-                ],
-            });
-
-            uploadToDecentralizeStorage(JSON.stringify(data.specification))
-                .then(setSpecificationCid)
-                .catch(console.error);
+            }));
         },
-        [data, uploadToDecentralizeStorage]
+        []
     );
+
+    const handleCollateralDataChange = useCallback(
+        (
+            field: keyof Pick<CreationData, "collaterals">,
+            collateralData: CollateralData
+        ) => {
+            setData((prevState) => {
+                const nextCollateralData = [...prevState.collaterals];
+                const collateralToUpdate = nextCollateralData.find(
+                    (nextCollateral) =>
+                        collateralData.address.toLowerCase() ===
+                        nextCollateral.address.toLowerCase()
+                );
+
+                if (!collateralToUpdate) {
+                    return {
+                        ...prevState,
+                        [field]: [...prevState.collaterals, collateralData],
+                    };
+                }
+
+                collateralToUpdate.amount = collateralData.amount;
+                collateralToUpdate.minimumPayout = collateralData.minimumPayout;
+
+                return { ...prevState, [field]: nextCollateralData };
+            });
+        },
+        []
+    );
+
+    const handleERC20DataChange = useCallback(
+        (field: keyof ERC20Data, value: string) => {
+            setData((prevState) => ({
+                ...prevState,
+                erc20: {
+                    ...prevState.erc20,
+                    [field]: value,
+                },
+            }));
+        },
+        []
+    );
+
+    const handleOracleChange = useCallback(
+        (
+            field: keyof Pick<CreationData, "oracles">,
+            oraclesData: OracleData[]
+        ) => {
+            setData((prevState) => ({
+                ...prevState,
+                [field]: oraclesData,
+            }));
+        },
+        []
+    );
+
+    const handleOraclePick = useCallback((oracleTemplateId: number) => {
+        setData((prevState) => {
+            const nextOracleTemplates = [...prevState.oracles];
+
+            const pickedOracle = nextOracleTemplates.find(
+                (oracle) => oracle.template.id === oracleTemplateId
+            );
+
+            if (!pickedOracle) {
+                return prevState;
+            }
+
+            pickedOracle.isPicked = !pickedOracle.isPicked;
+
+            return { ...prevState, oracles: nextOracleTemplates };
+        });
+    }, []);
+
+    const handleOracleConfigurationChange = useCallback(
+        (
+            field: keyof Pick<OracleData, "higherBound" | "lowerBound">,
+            value: BigNumber,
+            oracleTemplateId: number
+        ) => {
+            setData((prevState) => {
+                const nextOracleTemplatesConfiguration = [...prevState.oracles];
+
+                const configuredOracleTemplate =
+                    nextOracleTemplatesConfiguration.find(
+                        (oracle) => oracle.template.id === oracleTemplateId
+                    );
+
+                if (!configuredOracleTemplate) {
+                    return prevState;
+                }
+
+                configuredOracleTemplate[field] = value;
+
+                return {
+                    ...prevState,
+                    oracles: nextOracleTemplatesConfiguration,
+                };
+            });
+        },
+        []
+    );
+
+    const handleOracleConfigurationSubmit = useCallback(() => {
+        uploadToDecentralizeStorage(JSON.stringify(data.specification))
+            .then(setSpecificationCid)
+            .catch(console.error);
+    }, [data.specification, uploadToDecentralizeStorage]);
 
     const handleCreate = useCallback(() => {
         onDone(
@@ -224,41 +265,57 @@ export const Component = ({
             content: (
                 <CampaignDescription
                     t={t}
-                    onNext={handleCampaignDescriptionDataNext}
+                    specification={data.specification}
+                    onFieldChange={handleCampaignSpecificationChange}
+                    onNext={handleNext}
                 />
             ),
         },
         {
             title: t("card.collateral.title"),
-            content: <Collateral t={t} onNext={handleCollateralDataNext} />,
+            content: (
+                <Collateral
+                    t={t}
+                    collaterals={data.collaterals}
+                    onFieldChange={handleCollateralDataChange}
+                    onNext={handleNext}
+                />
+            ),
         },
         {
             title: t("card.token.title"),
-            content: <ERC20 t={t} onNext={handleErc20DataNext} />,
+            content: (
+                <ERC20
+                    t={t}
+                    erc20={data.erc20}
+                    onFieldChange={handleERC20DataChange}
+                    onNext={handleNext}
+                />
+            ),
         },
         {
             title: t("card.oracle.title"),
-            content: <OraclesPicker t={t} onNext={handleOracleNext} />,
+            content: (
+                <OraclesPicker
+                    t={t}
+                    oracles={data.oracles}
+                    handlePick={handleOraclePick}
+                    onFieldChange={handleOracleChange}
+                    onNext={handleNext}
+                />
+            ),
         },
         {
             title: t("card.question.title"),
             content: (
-                <div>
-                    {data.oracles && data.oracles.length > 0 && (
-                        <div className="flex justify-center">
-                            <CreationForm
-                                i18n={i18n}
-                                fallback={<>Loading...</>}
-                                template={data.oracles[0].template}
-                                onDone={handleOracleDataNext}
-                            />
-                        </div>
-                    )}
-                    <OracleConfiguration
-                        t={t}
-                        onSubmit={handleOracleConfigurationSubmit}
-                    />
-                </div>
+                <OracleConfiguration
+                    t={t}
+                    i18n={i18n}
+                    oracles={data.oracles}
+                    onFieldChange={handleOracleConfigurationChange}
+                    onOracleConfiguration={handleOracleConfigurationSubmit}
+                    onNext={handleNext}
+                />
             ),
         },
         {

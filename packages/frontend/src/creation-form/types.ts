@@ -21,6 +21,7 @@ export interface ERC20Data {
 }
 
 export interface OracleData {
+    isPicked: boolean;
     template: Template;
     initializationData: string;
     value: BigNumber;
