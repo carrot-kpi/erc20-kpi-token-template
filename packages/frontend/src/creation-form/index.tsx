@@ -27,8 +27,8 @@ import { Collateral } from "./components/collateral";
 import { ERC20 } from "./components/erc-20";
 import { NextStepPreview } from "./components/next-step-preview";
 import { cva } from "class-variance-authority";
-
 import { i18n } from "i18next";
+import a from "../assets/square.svg";
 
 const CREATION_PROXY_INTERFACE = new utils.Interface(CREATION_PROXY_ABI);
 
@@ -275,7 +275,13 @@ export const Component = ({
 
     return (
         <div className="bg-green flex h-full flex-col items-center justify-between gap-24 overflow-y-hidden pt-10">
-            <div className="square-list absolute left-20 top-1/3 hidden flex-col gap-8 lg:flex">
+            <div className="fixed top-1/2 left-1/2 h-[65%] w-[90%] -translate-x-1/2 -translate-y-1/2 transform md:w-[50%]">
+                <div
+                    style={{ background: `url(${a}) center` }}
+                    className="bg-square h-full w-full text-black dark:text-white"
+                />
+            </div>
+            <div className="square-list absolute left-20 top-1/3 z-10 hidden flex-col gap-8 lg:flex">
                 {steps.map((step, index) => (
                     <div key={index} className="flex items-center gap-4">
                         <div
@@ -291,13 +297,15 @@ export const Component = ({
                     </div>
                 ))}
             </div>
-            <Card
-                step={t("card.step.label", { number: data.step + 1 })}
-                title={steps[data.step].title}
-            >
-                {steps[data.step].content}
-            </Card>
-            <div className="min-h-fit w-full max-w-xl">
+            <div className="z-10 w-full max-w-xl">
+                <Card
+                    step={t("card.step.label", { number: data.step + 1 })}
+                    title={steps[data.step].title}
+                >
+                    {steps[data.step].content}
+                </Card>
+            </div>
+            <div className="z-10 min-h-fit w-full max-w-xl">
                 {!!steps[data.step + 1] && (
                     <NextStepPreview
                         step={t("card.step.label", { number: data.step + 2 })}
