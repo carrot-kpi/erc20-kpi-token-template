@@ -28,7 +28,7 @@ import { ERC20 } from "./components/erc-20";
 import { NextStepPreview } from "./components/next-step-preview";
 import { cva } from "class-variance-authority";
 import { i18n } from "i18next";
-import a from "../assets/square.svg";
+import square from "../assets/square.svg";
 
 const CREATION_PROXY_INTERFACE = new utils.Interface(CREATION_PROXY_ABI);
 
@@ -277,7 +277,7 @@ export const Component = ({
         <div className="bg-green flex h-full flex-col items-center justify-between gap-24 overflow-y-hidden pt-10">
             <div className="fixed top-1/2 left-1/2 h-[65%] w-[90%] -translate-x-1/2 -translate-y-1/2 transform md:w-[50%]">
                 <div
-                    style={{ background: `url(${a}) center` }}
+                    style={{ background: `url(${square}) center` }}
                     className="bg-square h-full w-full text-black dark:text-white"
                 />
             </div>
