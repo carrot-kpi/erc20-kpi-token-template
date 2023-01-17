@@ -87,61 +87,70 @@ export const Component = ({
     });
     const [specificationCid, setSpecificationCid] = useState("");
 
-    const handleNext = () => {
+    const handleNext = useCallback(() => {
         setData((prevState) => ({ ...prevState, step: prevState.step + 1 }));
-    };
+    }, []);
 
-    const handleCampaignSpecificationChange = (
-        field: keyof SpecificationData,
-        value: string
-    ) => {
-        setData((prevState) => ({
-            ...prevState,
-            specification: {
-                ...prevState.specification,
-                [field]: value,
-            },
-        }));
-    };
+    const handleCampaignSpecificationChange = useCallback(
+        (field: keyof SpecificationData, value: string) => {
+            setData((prevState) => ({
+                ...prevState,
+                specification: {
+                    ...prevState.specification,
+                    [field]: value,
+                },
+            }));
+        },
+        []
+    );
 
-    const handleCollateralDataChange = (
-        field: "collaterals",
-        collateralData: CollateralData
-    ) => {
-        setData((prevState) => {
-            const nextCollateralData = [...prevState.collaterals];
-            const collateralToUpdate = nextCollateralData.find(
-                (nextCollateral) =>
-                    collateralData.address.toLowerCase() ===
-                    nextCollateral.address.toLowerCase()
-            );
+    const handleCollateralDataChange = useCallback(
+        (
+            field: keyof Pick<CreationData, "collaterals">,
+            collateralData: CollateralData
+        ) => {
+            setData((prevState) => {
+                const nextCollateralData = [...prevState.collaterals];
+                const collateralToUpdate = nextCollateralData.find(
+                    (nextCollateral) =>
+                        collateralData.address.toLowerCase() ===
+                        nextCollateral.address.toLowerCase()
+                );
 
-            if (!collateralToUpdate) {
-                return {
-                    ...prevState,
-                    [field]: [...prevState.collaterals, collateralData],
-                };
-            }
+                if (!collateralToUpdate) {
+                    return {
+                        ...prevState,
+                        [field]: [...prevState.collaterals, collateralData],
+                    };
+                }
 
-            collateralToUpdate.amount = collateralData.amount;
-            collateralToUpdate.minimumPayout = collateralData.minimumPayout;
+                collateralToUpdate.amount = collateralData.amount;
+                collateralToUpdate.minimumPayout = collateralData.minimumPayout;
 
-            return { ...prevState, [field]: nextCollateralData };
-        });
-    };
+                return { ...prevState, [field]: nextCollateralData };
+            });
+        },
+        []
+    );
 
-    const handleERC20DataChange = (field: keyof ERC20Data, value: string) => {
-        setData((prevState) => ({
-            ...prevState,
-            erc20: {
-                ...prevState.erc20,
-                [field]: value,
-            },
-        }));
-    };
+    const handleERC20DataChange = useCallback(
+        (field: keyof ERC20Data, value: string) => {
+            setData((prevState) => ({
+                ...prevState,
+                erc20: {
+                    ...prevState.erc20,
+                    [field]: value,
+                },
+            }));
+        },
+        []
+    );
 
     const handleOracleChange = useCallback(
-        (field: "oracles", oraclesData: OracleData[]) => {
+        (
+            field: keyof Pick<CreationData, "oracles">,
+            oraclesData: OracleData[]
+        ) => {
             setData((prevState) => ({
                 ...prevState,
                 [field]: oraclesData,
@@ -150,7 +159,7 @@ export const Component = ({
         []
     );
 
-    const handleOraclePick = (oracleTemplateId: number) => {
+    const handleOraclePick = useCallback((oracleTemplateId: number) => {
         setData((prevState) => {
             const nextOracleTemplates = [...prevState.oracles];
 
@@ -166,30 +175,36 @@ export const Component = ({
 
             return { ...prevState, oracles: nextOracleTemplates };
         });
-    };
+    }, []);
 
-    const handleOracleConfigurationChange = (
-        field: "higherBound" | "lowerBound",
-        value: BigNumber,
-        oracleTemplateId: number
-    ) => {
-        setData((prevState) => {
-            const nextOracleTemplatesConfiguration = [...prevState.oracles];
+    const handleOracleConfigurationChange = useCallback(
+        (
+            field: keyof Pick<OracleData, "higherBound" | "lowerBound">,
+            value: BigNumber,
+            oracleTemplateId: number
+        ) => {
+            setData((prevState) => {
+                const nextOracleTemplatesConfiguration = [...prevState.oracles];
 
-            const configuredOracleTemplate =
-                nextOracleTemplatesConfiguration.find(
-                    (oracle) => oracle.template.id === oracleTemplateId
-                );
+                const configuredOracleTemplate =
+                    nextOracleTemplatesConfiguration.find(
+                        (oracle) => oracle.template.id === oracleTemplateId
+                    );
 
-            if (!configuredOracleTemplate) {
-                return prevState;
-            }
+                if (!configuredOracleTemplate) {
+                    return prevState;
+                }
 
-            configuredOracleTemplate[field] = value;
+                configuredOracleTemplate[field] = value;
 
-            return { ...prevState, oracles: nextOracleTemplatesConfiguration };
-        });
-    };
+                return {
+                    ...prevState,
+                    oracles: nextOracleTemplatesConfiguration,
+                };
+            });
+        },
+        []
+    );
 
     const handleOracleConfigurationSubmit = useCallback(() => {
         uploadToDecentralizeStorage(JSON.stringify(data.specification))

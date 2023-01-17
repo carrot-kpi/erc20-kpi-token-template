@@ -1,8 +1,8 @@
 import { Button, TextMono } from "@carrot-kpi/ui";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import { ReactElement } from "react";
+import { ReactElement, useCallback } from "react";
 
-import { CollateralData } from "../../types";
+import { CollateralData, CreationData } from "../../types";
 import { CollateralPicker } from "../../../ui/collateral-picker";
 import { Token } from "@carrot-kpi/sdk";
 
@@ -10,7 +10,7 @@ interface CollateralProps {
     t: NamespacedTranslateFunction;
     collaterals: CollateralData[];
     onFieldChange: (
-        field: "collaterals",
+        field: keyof Pick<CreationData, "collaterals">,
         collateralData: CollateralData
     ) => void;
     onNext: () => void;
@@ -22,11 +22,12 @@ export const Collateral = ({
     onFieldChange,
     onNext,
 }: CollateralProps): ReactElement => {
-    const handleCollateraDataChange = (
-        collateralData: CollateralData
-    ): void => {
-        onFieldChange("collaterals", collateralData);
-    };
+    const handleCollateraDataChange = useCallback(
+        (collateralData: CollateralData): void => {
+            onFieldChange("collaterals", collateralData);
+        },
+        [onFieldChange]
+    );
 
     // TODO: where should we get this data?
     const colleteralTokens = [

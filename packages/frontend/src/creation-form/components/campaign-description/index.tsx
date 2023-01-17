@@ -1,4 +1,4 @@
-import { ChangeEvent, ReactElement } from "react";
+import { ChangeEvent, ReactElement, useCallback } from "react";
 import { SpecificationData } from "../../types";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Button, TextInput, MarkdownInput } from "@carrot-kpi/ui";
@@ -16,13 +16,19 @@ export const CampaignDescription = ({
     onFieldChange,
     onNext,
 }: CampaignDescriptionProps): ReactElement => {
-    const handleTitleChange = (event: ChangeEvent<HTMLInputElement>): void => {
-        onFieldChange("title", event.target.value);
-    };
+    const handleTitleChange = useCallback(
+        (event: ChangeEvent<HTMLInputElement>): void => {
+            onFieldChange("title", event.target.value);
+        },
+        [onFieldChange]
+    );
 
-    const handleDescriptionChange = (value: string) => {
-        onFieldChange("description", value);
-    };
+    const handleDescriptionChange = useCallback(
+        (value: string) => {
+            onFieldChange("description", value);
+        },
+        [onFieldChange]
+    );
 
     return (
         <div className="flex flex-col gap-6">

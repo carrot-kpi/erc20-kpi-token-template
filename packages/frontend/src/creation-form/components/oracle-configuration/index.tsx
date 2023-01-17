@@ -17,7 +17,7 @@ interface OracleConfigurationProps {
     t: NamespacedTranslateFunction;
     oracles: OracleData[];
     onFieldChange: (
-        field: "higherBound" | "lowerBound",
+        field: keyof Pick<OracleData, "higherBound" | "lowerBound">,
         value: BigNumber,
         oracleTemplateId: number
     ) => void;

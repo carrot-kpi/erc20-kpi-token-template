@@ -6,12 +6,15 @@ import { Button, TextMono } from "@carrot-kpi/ui";
 import { BigNumber } from "ethers";
 import { ReactElement, useEffect, useMemo } from "react";
 import { OracleTemplate } from "../../../ui/oracle-template";
-import { OracleData } from "../../types";
+import { CreationData, OracleData } from "../../types";
 
 interface OraclesPickerProps {
     t: NamespacedTranslateFunction;
     oracles: OracleData[];
-    onFieldChange: (field: "oracles", oraclesData: OracleData[]) => void;
+    onFieldChange: (
+        field: keyof Pick<CreationData, "oracles">,
+        oraclesData: OracleData[]
+    ) => void;
     handlePick: (oracleId: number) => void;
     onNext: () => void;
 }
