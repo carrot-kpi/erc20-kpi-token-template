@@ -2,9 +2,10 @@ import {
     NamespacedTranslateFunction,
     useOracleTemplates,
 } from "@carrot-kpi/react";
-import { Button, TextMono } from "@carrot-kpi/ui";
+import { TextMono } from "@carrot-kpi/ui";
 import { BigNumber } from "ethers";
 import { ReactElement, useEffect, useMemo } from "react";
+import { Loader } from "../../../ui/loader";
 import { OracleTemplate } from "../../../ui/oracle-template";
 import { CreationData, OracleData } from "../../types";
 
@@ -16,7 +17,6 @@ interface OraclesPickerProps {
         oraclesData: OracleData[]
     ) => void;
     handlePick: (oracleId: number) => void;
-    onNext: () => void;
 }
 
 export const OraclesPicker = ({
@@ -24,7 +24,6 @@ export const OraclesPicker = ({
     oracles,
     onFieldChange,
     handlePick,
-    onNext,
 }: OraclesPickerProps): ReactElement => {
     const { loading, templates } = useOracleTemplates();
 
@@ -53,7 +52,7 @@ export const OraclesPicker = ({
 
     if (loading) {
         // TODO: think about a standard loading component
-        return <p>{t("loading")}...</p>;
+        return <Loader />;
     }
 
     return (
@@ -91,9 +90,6 @@ export const OraclesPicker = ({
             <TextMono size="md" weight="medium">
                 {t("oracles.picker.selected")} {pickedTemplatesCount}
             </TextMono>
-            <Button size="small" onClick={onNext}>
-                {t("next")}
-            </Button>
         </div>
     );
 };

@@ -4,11 +4,18 @@ import { ReactElement, ReactNode } from "react";
 interface CardProps {
     title: string;
     step: string;
+    loading?: boolean;
+    actions?: ReactNode;
     children: ReactNode;
 }
 
-export const Card = ({ title, step, children }: CardProps): ReactElement => (
-    <div className="flex w-full max-w-xl flex-col gap-2 border border-black bg-white">
+export const Card = ({
+    title,
+    step,
+    actions,
+    children,
+}: CardProps): ReactElement => (
+    <div className="flex h-full w-full max-w-xl flex-col gap-2 border border-black bg-white">
         <div className="flex flex-col gap-1 border-b border-black p-6">
             <TextMono size="sm" className="font-medium">
                 {step}
@@ -17,8 +24,9 @@ export const Card = ({ title, step, children }: CardProps): ReactElement => (
                 {title}
             </Title>
         </div>
-        <div className="scrollbar p-6 max-h-[600px] overflow-y-auto">
+        <div className="flex h-full flex-col justify-between gap-6 scrollbar p-6 max-h-[600px] overflow-y-auto">
             {children}
+            {actions}
         </div>
     </div>
 );

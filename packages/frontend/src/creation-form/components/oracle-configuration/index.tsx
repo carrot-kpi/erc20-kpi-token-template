@@ -1,8 +1,7 @@
 import { BigNumber } from "ethers";
 import { ReactElement, useCallback } from "react";
-import { CreationForm, NamespacedTranslateFunction } from "@carrot-kpi/react";
+import { CreationForm } from "@carrot-kpi/react";
 import {
-    Button,
     Accordion,
     AccordionSummary,
     TextMono,
@@ -10,25 +9,22 @@ import {
 } from "@carrot-kpi/ui";
 import { i18n } from "i18next";
 import { OracleData } from "../../types";
+import { Loader } from "../../../ui/loader";
 
 interface OracleConfigurationProps {
     i18n: i18n;
-    t: NamespacedTranslateFunction;
     oracles: OracleData[];
     onOracleConfiguration: (
         initializationData: string,
         value: BigNumber,
         oracleTemplateId: number
     ) => void;
-    onNext: () => void;
 }
 
 export const OracleConfiguration = ({
     i18n,
-    t,
     oracles,
     onOracleConfiguration,
-    onNext,
 }: OracleConfigurationProps): ReactElement => {
     const handleOracleConfigurationDone = useCallback(() => {
         (oracleTemplateId: number) =>
@@ -46,7 +42,7 @@ export const OracleConfiguration = ({
             {oracles.length === 1 ? (
                 <CreationForm
                     i18n={i18n}
-                    fallback={<>Loading...</>}
+                    fallback={<Loader />}
                     template={oracles[0].template}
                     // TODO: what should the onDone function do with the values data and value?
                     onDone={handleOracleConfigurationDone}
@@ -62,7 +58,7 @@ export const OracleConfiguration = ({
                         <AccordionDetails>
                             <CreationForm
                                 i18n={i18n}
-                                fallback={<>Loading...</>}
+                                fallback={<Loader />}
                                 template={oracle.template}
                                 // TODO: what should the onDone function do with the values data and value?
                                 onDone={handleOracleConfigurationDone}
@@ -71,10 +67,6 @@ export const OracleConfiguration = ({
                     </Accordion>
                 ))
             )}
-
-            <Button size="small" onClick={onNext}>
-                {t("next")}
-            </Button>
         </div>
     );
 };
