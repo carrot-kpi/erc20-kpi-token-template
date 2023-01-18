@@ -23,7 +23,7 @@ import CREATION_PROXY_ABI from "../abis/creation-proxy.json";
 import { Address, useNetwork } from "wagmi";
 import { Card } from "../ui/card";
 import { CampaignDescription } from "./components/campaign-description";
-import { Collateral } from "./components/collateral";
+import { Collaterals } from "./components/collaterals";
 import { ERC20 } from "./components/erc-20";
 import { NextStepPreview } from "./components/next-step-preview";
 import { cva } from "class-variance-authority";
@@ -107,27 +107,10 @@ export const Component = ({
     const handleCollateralDataChange = useCallback(
         (
             field: keyof Pick<CreationData, "collaterals">,
-            collateralData: CollateralData
+            collaterals: CollateralData[]
         ) => {
             setData((prevState) => {
-                const nextCollateralData = [...prevState.collaterals];
-                const collateralToUpdate = nextCollateralData.find(
-                    (nextCollateral) =>
-                        collateralData.address.toLowerCase() ===
-                        nextCollateral.address.toLowerCase()
-                );
-
-                if (!collateralToUpdate) {
-                    return {
-                        ...prevState,
-                        [field]: [...prevState.collaterals, collateralData],
-                    };
-                }
-
-                collateralToUpdate.amount = collateralData.amount;
-                collateralToUpdate.minimumPayout = collateralData.minimumPayout;
-
-                return { ...prevState, [field]: nextCollateralData };
+                return { ...prevState, [field]: collaterals };
             });
         },
         []
@@ -274,7 +257,7 @@ export const Component = ({
         {
             title: t("card.collateral.title"),
             content: (
-                <Collateral
+                <Collaterals
                     t={t}
                     collaterals={data.collaterals}
                     onFieldChange={handleCollateralDataChange}

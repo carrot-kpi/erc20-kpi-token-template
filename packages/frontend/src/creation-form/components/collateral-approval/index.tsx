@@ -8,6 +8,7 @@ import {
     Address,
 } from "wagmi";
 import { CollateralData } from "../../types";
+import { BigNumber } from "ethers";
 
 interface CollateralApprovalProps {
     disabled: boolean;
@@ -25,7 +26,8 @@ export const CollateralApproval = ({
         address: collateral.address,
         abi: erc20ABI,
         functionName: "approve",
-        args: [spender, collateral.amount],
+        // TODO: convert this to wei
+        args: [spender, BigNumber.from(collateral.amount.value)],
     });
     const { write } = useContractWrite(config);
 

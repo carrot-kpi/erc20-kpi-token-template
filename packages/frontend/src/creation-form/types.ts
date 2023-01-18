@@ -8,10 +8,18 @@ export interface SpecificationData {
     tags: string[];
 }
 
+export interface NumberFormatValue {
+    floatValue: number | undefined;
+    formattedValue: string;
+    value: string;
+}
+
 export interface CollateralData {
     address: Address;
-    amount: BigNumber;
-    minimumPayout: BigNumber;
+    decimals: number;
+    symbol: string;
+    amount: NumberFormatValue;
+    minimumPayout: NumberFormatValue;
 }
 
 export interface ERC20Data {

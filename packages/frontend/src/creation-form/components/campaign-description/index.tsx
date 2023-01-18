@@ -1,4 +1,10 @@
-import { ChangeEvent, ReactElement, useCallback } from "react";
+import {
+    ChangeEvent,
+    ReactElement,
+    useCallback,
+    useEffect,
+    useState,
+} from "react";
 import { SpecificationData } from "../../types";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Button, TextInput, MarkdownInput } from "@carrot-kpi/ui";
@@ -16,6 +22,17 @@ export const CampaignDescription = ({
     onFieldChange,
     onNext,
 }: CampaignDescriptionProps): ReactElement => {
+    const [nextDisabled, setNextDisabled] = useState(true);
+
+    useEffect(() => {
+        setNextDisabled(
+            !specification.title ||
+                !specification.description ||
+                !specification.title.trim() ||
+                !specification.description.replace(/(<([^>]+)>)/gi, "").trim()
+        );
+    }, [specification.description, specification.title]);
+
     const handleTitleChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>): void => {
             onFieldChange("title", event.target.value);
@@ -47,7 +64,7 @@ export const CampaignDescription = ({
                 onChange={handleDescriptionChange}
                 value={specification.description}
             />
-            <Button size="small" onClick={onNext}>
+            <Button size="small" onClick={onNext} disabled={nextDisabled}>
                 {t("next")}
             </Button>
         </div>
