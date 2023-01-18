@@ -1,9 +1,8 @@
 import { BigNumber } from "ethers";
-import { ChangeEvent, ReactElement, useCallback } from "react";
+import { ReactElement, useCallback } from "react";
 import { CreationForm, NamespacedTranslateFunction } from "@carrot-kpi/react";
 import {
     Button,
-    NumberInput,
     Accordion,
     AccordionSummary,
     TextMono,
@@ -16,11 +15,6 @@ interface OracleConfigurationProps {
     i18n: i18n;
     t: NamespacedTranslateFunction;
     oracles: OracleData[];
-    onFieldChange: (
-        field: keyof Pick<OracleData, "higherBound" | "lowerBound">,
-        value: BigNumber,
-        oracleTemplateId: number
-    ) => void;
     onOracleConfiguration: (
         initializationData: string,
         value: BigNumber,
@@ -33,34 +27,9 @@ export const OracleConfiguration = ({
     i18n,
     t,
     oracles,
-    onFieldChange,
     onOracleConfiguration,
     onNext,
 }: OracleConfigurationProps): ReactElement => {
-    const handleLowerBoundChange = useCallback(
-        (oracleTemplateId: number) =>
-            (event: ChangeEvent<HTMLInputElement>) => {
-                onFieldChange(
-                    "lowerBound",
-                    BigNumber.from(event.target.value),
-                    oracleTemplateId
-                );
-            },
-        [onFieldChange]
-    );
-
-    const handleHigherBoundChange = useCallback(
-        (oracleTemplateId: number) =>
-            (event: ChangeEvent<HTMLInputElement>) => {
-                onFieldChange(
-                    "higherBound",
-                    BigNumber.from(event.target.value),
-                    oracleTemplateId
-                );
-            },
-        [onFieldChange]
-    );
-
     const handleOracleConfigurationDone = useCallback(() => {
         (oracleTemplateId: number) =>
             (initializationData: string, value: BigNumber) => {
@@ -74,15 +43,23 @@ export const OracleConfiguration = ({
 
     return (
         <div className="flex flex-col gap-6">
-            {oracles.map((oracle) => (
-                <Accordion key={oracle.template.id}>
-                    <AccordionSummary>
-                        <TextMono>
-                            {oracle.template.specification.name}
-                        </TextMono>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <>
+            {oracles.length === 1 ? (
+                <CreationForm
+                    i18n={i18n}
+                    fallback={<>Loading...</>}
+                    template={oracles[0].template}
+                    // TODO: what should the onDone function do with the values data and value?
+                    onDone={handleOracleConfigurationDone}
+                />
+            ) : (
+                oracles.map((oracle) => (
+                    <Accordion key={oracle.template.id}>
+                        <AccordionSummary>
+                            <TextMono>
+                                {oracle.template.specification.name}
+                            </TextMono>
+                        </AccordionSummary>
+                        <AccordionDetails>
                             <CreationForm
                                 i18n={i18n}
                                 fallback={<>Loading...</>}
@@ -90,28 +67,10 @@ export const OracleConfiguration = ({
                                 // TODO: what should the onDone function do with the values data and value?
                                 onDone={handleOracleConfigurationDone}
                             />
-                            <NumberInput
-                                id="lower-bound"
-                                label={t("label.lower.bound")}
-                                placeholder="0"
-                                onChange={handleLowerBoundChange(
-                                    oracle.template.id
-                                )}
-                                value={oracle.lowerBound.toString()}
-                            />
-                            <NumberInput
-                                id="higher-bound"
-                                label={t("label.higher.bound")}
-                                placeholder="0"
-                                onChange={handleHigherBoundChange(
-                                    oracle.template.id
-                                )}
-                                value={oracle.higherBound.toString()}
-                            />
-                        </>
-                    </AccordionDetails>
-                </Accordion>
-            ))}
+                        </AccordionDetails>
+                    </Accordion>
+                ))
+            )}
 
             <Button size="small" onClick={onNext}>
                 {t("next")}

@@ -29,6 +29,7 @@ import { NextStepPreview } from "./components/next-step-preview";
 import { cva } from "class-variance-authority";
 import { i18n } from "i18next";
 import square from "../assets/square.svg";
+import { BoundsConfiguration } from "./components/bounds-configuration";
 
 const CREATION_PROXY_INTERFACE = new utils.Interface(CREATION_PROXY_ABI);
 
@@ -306,14 +307,24 @@ export const Component = ({
             ),
         },
         {
-            title: t("card.question.title"),
+            title: t("card.oracle.configuration.title"),
             content: (
                 <OracleConfiguration
                     t={t}
                     i18n={i18n}
                     oracles={data.oracles}
-                    onFieldChange={handleOracleConfigurationChange}
                     onOracleConfiguration={handleOracleConfigurationSubmit}
+                    onNext={handleNext}
+                />
+            ),
+        },
+        {
+            title: t("card.oracle.bound.title"),
+            content: (
+                <BoundsConfiguration
+                    t={t}
+                    oracles={data.oracles}
+                    onFieldChange={handleOracleConfigurationChange}
                     onNext={handleNext}
                 />
             ),
