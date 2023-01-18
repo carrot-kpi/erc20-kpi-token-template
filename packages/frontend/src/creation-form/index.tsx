@@ -1,6 +1,6 @@
 import "../global.css";
 
-import { TextMono } from "@carrot-kpi/ui";
+import { Button, TextMono } from "@carrot-kpi/ui";
 import {
     NamespacedTranslateFunction,
     useDecentralizedStorageUploader,
@@ -268,7 +268,6 @@ export const Component = ({
                     t={t}
                     specification={data.specification}
                     onFieldChange={handleCampaignSpecificationChange}
-                    onNext={handleNext}
                 />
             ),
         },
@@ -279,7 +278,6 @@ export const Component = ({
                     t={t}
                     collaterals={data.collaterals}
                     onFieldChange={handleCollateralDataChange}
-                    onNext={handleNext}
                 />
             ),
         },
@@ -290,7 +288,6 @@ export const Component = ({
                     t={t}
                     erc20={data.erc20}
                     onFieldChange={handleERC20DataChange}
-                    onNext={handleNext}
                 />
             ),
         },
@@ -302,7 +299,6 @@ export const Component = ({
                     oracles={data.oracles}
                     handlePick={handleOraclePick}
                     onFieldChange={handleOracleChange}
-                    onNext={handleNext}
                 />
             ),
         },
@@ -310,11 +306,9 @@ export const Component = ({
             title: t("card.oracle.configuration.title"),
             content: (
                 <OracleConfiguration
-                    t={t}
                     i18n={i18n}
                     oracles={data.oracles}
                     onOracleConfiguration={handleOracleConfigurationSubmit}
-                    onNext={handleNext}
                 />
             ),
         },
@@ -325,7 +319,6 @@ export const Component = ({
                     t={t}
                     oracles={data.oracles}
                     onFieldChange={handleOracleConfigurationChange}
-                    onNext={handleNext}
                 />
             ),
         },
@@ -369,6 +362,13 @@ export const Component = ({
                 <Card
                     step={t("card.step.label", { number: data.step + 1 })}
                     title={steps[data.step].title}
+                    actions={
+                        data.step + 1 !== steps.length ? (
+                            <Button size="small" onClick={handleNext}>
+                                {t("next")}
+                            </Button>
+                        ) : null
+                    }
                 >
                     {steps[data.step].content}
                 </Card>

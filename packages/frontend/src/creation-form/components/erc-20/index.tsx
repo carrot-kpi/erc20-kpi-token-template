@@ -1,20 +1,18 @@
 import { ChangeEvent, ReactElement, useCallback } from "react";
 import { ERC20Data } from "../../types";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import { Button, NumberInput, TextInput } from "@carrot-kpi/ui";
+import { NumberInput, TextInput } from "@carrot-kpi/ui";
 
 interface Erc20Props {
     t: NamespacedTranslateFunction;
     erc20: ERC20Data;
     onFieldChange: (field: keyof ERC20Data, value: string) => void;
-    onNext: () => void;
 }
 
 export const ERC20 = ({
     t,
     erc20,
     onFieldChange,
-    onNext,
 }: Erc20Props): ReactElement => {
     const handleFieldChange = useCallback(
         (field: keyof ERC20Data) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -49,9 +47,6 @@ export const ERC20 = ({
                 value={erc20.supply.toString()}
                 className="w-full"
             />
-            <Button size="small" onClick={onNext}>
-                {t("next")}
-            </Button>
         </div>
     );
 };

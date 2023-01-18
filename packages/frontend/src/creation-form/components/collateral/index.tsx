@@ -1,4 +1,4 @@
-import { Button, TextMono } from "@carrot-kpi/ui";
+import { TextMono } from "@carrot-kpi/ui";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { ReactElement, useCallback } from "react";
 
@@ -13,14 +13,12 @@ interface CollateralProps {
         field: keyof Pick<CreationData, "collaterals">,
         collateralData: CollateralData
     ) => void;
-    onNext: () => void;
 }
 
 export const Collateral = ({
     t,
     collaterals,
     onFieldChange,
-    onNext,
 }: CollateralProps): ReactElement => {
     const handleCollateraDataChange = useCallback(
         (collateralData: CollateralData): void => {
@@ -84,10 +82,6 @@ export const Collateral = ({
                     ))}
                 </div>
             </div>
-
-            <Button size="small" onClick={onNext}>
-                {t("next")}
-            </Button>
         </div>
     );
 };

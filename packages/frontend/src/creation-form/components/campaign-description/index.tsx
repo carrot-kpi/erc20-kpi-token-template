@@ -1,20 +1,18 @@
 import { ChangeEvent, ReactElement, useCallback } from "react";
 import { SpecificationData } from "../../types";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import { Button, TextInput, MarkdownInput } from "@carrot-kpi/ui";
+import { TextInput, MarkdownInput } from "@carrot-kpi/ui";
 
 interface CampaignDescriptionProps {
     t: NamespacedTranslateFunction;
     specification: SpecificationData;
     onFieldChange: (field: keyof SpecificationData, value: string) => void;
-    onNext: () => void;
 }
 
 export const CampaignDescription = ({
     t,
     specification,
     onFieldChange,
-    onNext,
 }: CampaignDescriptionProps): ReactElement => {
     const handleTitleChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>): void => {
@@ -47,9 +45,6 @@ export const CampaignDescription = ({
                 onChange={handleDescriptionChange}
                 value={specification.description}
             />
-            <Button size="small" onClick={onNext}>
-                {t("next")}
-            </Button>
         </div>
     );
 };

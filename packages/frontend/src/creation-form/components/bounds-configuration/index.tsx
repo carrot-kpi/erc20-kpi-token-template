@@ -2,7 +2,6 @@ import { BigNumber } from "ethers";
 import { ChangeEvent, ReactElement, useCallback } from "react";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import {
-    Button,
     NumberInput,
     Accordion,
     AccordionSummary,
@@ -19,14 +18,12 @@ interface BoundsConfigurationProps {
         value: BigNumber,
         oracleTemplateId: number
     ) => void;
-    onNext: () => void;
 }
 
 export const BoundsConfiguration = ({
     t,
     oracles,
     onFieldChange,
-    onNext,
 }: BoundsConfigurationProps): ReactElement => {
     const handleLowerBoundChange = useCallback(
         (oracleTemplateId: number) =>
@@ -112,10 +109,6 @@ export const BoundsConfiguration = ({
                     </Accordion>
                 ))
             )}
-
-            <Button size="small" onClick={onNext}>
-                {t("next")}
-            </Button>
         </div>
     );
 };
