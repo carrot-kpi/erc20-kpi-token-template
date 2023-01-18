@@ -7,60 +7,86 @@ import {
     SelectOption,
     NumberInput,
 } from "@carrot-kpi/ui";
-import { BigNumber } from "ethers";
-import { ChangeEvent, ReactElement, useMemo, useState } from "react";
-import { Address } from "wagmi";
-import { CollateralData } from "../../creation-form/types";
+import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
+import { Address, useBalance, useAccount } from "wagmi";
+import { CollateralData, NumberFormatValue } from "../../creation-form/types";
+
+interface CollateralOption extends SelectOption {
+    decimals: number;
+}
 
 interface CollateralPickerProps {
     t: NamespacedTranslateFunction;
     tokens: Token[];
-    onConfirm: ({ address, amount, minimumPayout }: CollateralData) => void;
+    onAdd: (collateral: CollateralData) => void;
 }
 
 // TODO: add token icons to Select and collateral list
 export const CollateralPicker = ({
     t,
     tokens,
-    onConfirm,
+    onAdd,
 }: CollateralPickerProps): ReactElement => {
-    const [collateralActive, setCollateralActive] =
-        useState<SelectOption | null>(null);
-    const [collateralAmount, setCollateralAmount] = useState<string>("");
-    const [minimumPayout, setMinimumPayout] = useState<string>("");
-
-    const handleCollateralChange = (option: SelectOption): void => {
-        setCollateralActive(option);
-    };
-
-    const handleColletarlAmountChange = (
-        event: ChangeEvent<HTMLInputElement>
-    ): void => {
-        setCollateralAmount(event.target.value);
-    };
-
-    const handleMinimumPayoutChange = (
-        event: ChangeEvent<HTMLInputElement>
-    ): void => {
-        setMinimumPayout(event.target.value);
-    };
-
-    const handleOnConfirm = (): void => {
-        onConfirm({
-            address: collateralActive?.value as Address,
-            amount: BigNumber.from(collateralAmount),
-            minimumPayout: BigNumber.from(minimumPayout),
-        });
-    };
-
-    const collateralOptions = useMemo(
+    const { address } = useAccount();
+    const collateralOptions: CollateralOption[] = useMemo(
         () =>
             tokens.map((token) => ({
-                value: token.address,
                 label: token.symbol,
+                value: token.address,
+                decimals: token.decimals,
             })),
         [tokens]
     );
+
+    const [collateralActive, setCollateralActive] =
+        useState<CollateralOption | null>(null);
+    const [collateralAmount, setCollateralAmount] = useState<NumberFormatValue>(
+        { floatValue: 0, formattedValue: "", value: "" }
+    );
+    const [minimumPayout, setMinimumPayout] = useState<NumberFormatValue>({
+        floatValue: 0,
+        formattedValue: "",
+        value: "",
+    });
+    const [nextDisabled, setNextDisabled] = useState(true);
+
+    const wagmiToken = useMemo(() => {
+        return !!collateralActive
+            ? (collateralActive.value as Address)
+            : undefined;
+    }, [collateralActive]);
+    const wagmiAddress = useMemo(() => {
+        return !!collateralActive ? address : undefined;
+    }, [address, collateralActive]);
+    const { data, isLoading } = useBalance({
+        address: wagmiAddress,
+        token: wagmiToken,
+        enabled: !!collateralActive?.value,
+    });
+
+    useEffect(() => {
+        setNextDisabled(
+            !collateralActive ||
+                !collateralAmount.floatValue ||
+                (!!minimumPayout.floatValue &&
+                    minimumPayout.floatValue >= collateralAmount.floatValue)
+        );
+    }, [
+        collateralActive,
+        collateralAmount.floatValue,
+        minimumPayout.floatValue,
+    ]);
+
+    const handleOnConfirm = useCallback(() => {
+        if (!collateralActive) return;
+        onAdd({
+            address: collateralActive.value as Address,
+            decimals: collateralActive.decimals,
+            symbol: collateralActive.label,
+            amount: collateralAmount,
+            minimumPayout: minimumPayout,
+        });
+    }, [collateralActive, collateralAmount, minimumPayout, onAdd]);
 
     return (
         <div className="flex flex-col gap-3">
@@ -69,30 +95,40 @@ export const CollateralPicker = ({
                     <div className="flex flex-col gap-2">
                         <div className="flex justify-between">
                             <Select
-                                id="collaterla-select"
+                                id="collateral-select"
                                 label=""
                                 placeholder="Pick a token"
                                 options={collateralOptions}
                                 value={collateralActive}
-                                onChange={handleCollateralChange}
+                                onChange={setCollateralActive}
                             />
                             <NumberInput
                                 id="collateral-amount"
                                 label=""
                                 placeholder="0.0"
-                                className="text-right border-none"
+                                className="border-none text-right"
                                 size="xl"
-                                value={collateralAmount}
-                                onChange={handleColletarlAmountChange}
+                                disabled={!!!collateralActive}
+                                value={collateralAmount.formattedValue}
+                                onValueChange={setCollateralAmount}
                             />
                         </div>
-
-                        <div className="flex justify-between">
-                            {/* TODO: where do we get this value? */}
-                            <TextMono size="sm">
-                                Balance: 743.343.57 MAX
-                            </TextMono>
-                            <TextMono size="sm">$ 7,068.31</TextMono>
+                        <div className="flex justify-end">
+                            <div className="flex items-center gap-2">
+                                <TextMono size="sm">
+                                    {t("label.collateral.balance")}:{" "}
+                                </TextMono>
+                                {isLoading ? (
+                                    <span className="inline-block h-4 w-14 animate-pulse rounded-md bg-gray-200 text-sm" />
+                                ) : !!data ? (
+                                    <TextMono size="sm">
+                                        {data.formatted}
+                                    </TextMono>
+                                ) : (
+                                    <TextMono size="sm">-</TextMono>
+                                )}
+                            </div>
+                            {/* <TextMono size="sm">$ 7,068.31</TextMono> */}
                         </div>
 
                         <div className="h-px w-full bg-black" />
@@ -106,10 +142,11 @@ export const CollateralPicker = ({
                                 id="minimum-payout"
                                 label=""
                                 placeholder="0.0"
-                                className="text-right border-none"
+                                className="border-none text-right"
                                 size="xl"
-                                value={minimumPayout}
-                                onChange={handleMinimumPayoutChange}
+                                disabled={!!!collateralActive}
+                                value={minimumPayout.formattedValue}
+                                onValueChange={setMinimumPayout}
                             />
                         </div>
                         <div className="flex justify-end">
@@ -118,8 +155,12 @@ export const CollateralPicker = ({
                     </div>
                 </div>
             </div>
-            <Button size="small" onClick={handleOnConfirm}>
-                {t("label.collateral.picker.apply").toUpperCase()}
+            <Button
+                size="small"
+                onClick={handleOnConfirm}
+                disabled={nextDisabled}
+            >
+                {t("label.collateral.picker.apply")}
             </Button>
         </div>
     );

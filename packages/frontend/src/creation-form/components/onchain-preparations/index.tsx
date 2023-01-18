@@ -2,7 +2,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { Address, erc20ABI, useAccount, useContractReads } from "wagmi";
 import { CollateralApproval } from "../collateral-approval";
 import { CollateralData } from "../../types";
-import { BigNumber, constants } from "ethers";
+import { /* BigNumber, */ constants } from "ethers";
 import { Button } from "@carrot-kpi/ui";
 
 interface OnchainPreparationsProps {
@@ -44,9 +44,10 @@ export const OnchainPreparations = ({
                         accumulator[collateral.address] = false;
                         return accumulator;
                     }
-                    accumulator[collateral.address] = (
-                        data[index] as unknown as BigNumber
-                    ).gte(collateral.amount);
+                    // TODO: handle this
+                    // accumulator[collateral.address] = (
+                    //     data[index] as unknown as BigNumber
+                    // ).gte(collateral.amount);
                     return accumulator;
                 },
                 {}
