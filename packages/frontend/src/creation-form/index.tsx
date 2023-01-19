@@ -15,13 +15,11 @@ import {
 } from "./types";
 import { Address, useNetwork } from "wagmi";
 import { Card } from "../ui/card";
-import { Specification } from "./components/specification";
+import { GenericData } from "./components/generic-data";
 import { Collaterals } from "./components/collaterals";
 import { NextStepPreview } from "./components/next-step-preview";
 import { cva } from "class-variance-authority";
 import { i18n } from "i18next";
-import square from "../assets/square.svg";
-import { TokenData } from "./components/token-data";
 import { OraclesConfiguration } from "./components/oracles-configuration";
 import { OutcomesConfiguration } from "./components/outcomes-configuration";
 import { Deploy } from "./components/deploy";
@@ -90,9 +88,8 @@ export const Component = ({
     }, [chain]);
     const stepTitles = useMemo(
         () => [
-            t("card.specification.title"),
+            t("card.general.title"),
             t("card.collateral.title"),
-            t("card.token.title"),
             t("card.oracle.pick.title"),
             t("card.oracle.configuration.title"),
             t("card.outcome.configuration.title"),
@@ -127,9 +124,10 @@ export const Component = ({
         setStep(step - 1);
     }, [step]);
 
-    const handleSpecificationNext = useCallback(
-        (specificationData: SpecificationData) => {
+    const handleGenericDataNext = useCallback(
+        (specificationData: SpecificationData, tokenData: TokenDataType) => {
             setSpecificationData(specificationData);
+            setTokenData(tokenData);
             setStep(1);
         },
         []
@@ -143,20 +141,15 @@ export const Component = ({
         []
     );
 
-    const handleTokenDataNext = useCallback((tokenData: TokenDataType) => {
-        setTokenData(tokenData);
-        setStep(3);
-    }, []);
-
     const handleOraclesPickerNext = useCallback((templates: Template[]) => {
         setOracleTemplatesData(templates);
-        setStep(4);
+        setStep(3);
     }, []);
 
     const handleOraclesConfigurationNext = useCallback(
         (oracleData: OracleData[]) => {
             setOraclesData(oracleData);
-            setStep(5);
+            setStep(4);
         },
         []
     );
@@ -164,7 +157,7 @@ export const Component = ({
     const handleOutcomesConfigurationNext = useCallback(
         (outcomesData: OutcomeData[]) => {
             setOutcomesData(outcomesData);
-            setStep(6);
+            setStep(5);
         },
         []
     );
@@ -178,129 +171,128 @@ export const Component = ({
     );
 
     return (
-        <div className="bg-green flex h-full flex-col items-center justify-between gap-24 overflow-y-hidden pt-10">
-            <div className="fixed top-1/2 left-1/2 h-[65%] w-[90%] -translate-x-1/2 -translate-y-1/2 transform md:w-[50%]">
-                <div
-                    style={{ background: `url(${square}) center` }}
-                    className="bg-square h-full w-full text-black dark:text-white"
-                />
-            </div>
-            <div className="square-list absolute left-20 top-1/3 z-10 hidden flex-col gap-8 lg:flex">
-                {stepTitles.map((title, index) => {
-                    const currentStep = index === step;
-                    const active = index <= step;
-                    const onClick =
-                        index < step ? handleStepClick(index) : undefined;
-                    return (
-                        <div
-                            key={index}
-                            className={stepsListItemContainerStyles({
-                                clickable: index < step,
-                            })}
-                            onClick={onClick}
-                        >
-                            <div className={stepsListSquareStyles({ active })}>
-                                {index > 0 && (
-                                    <div
-                                        className={stepsListLineStyles({
-                                            active,
-                                        })}
-                                    />
-                                )}
-                            </div>
-                            <TextMono
-                                weight={currentStep ? "medium" : undefined}
+        <div className="bg-green min-h-screen overflow-y-auto">
+            <div className="flex h-screen flex-col items-center justify-between pt-10">
+                {/* <div className="fixed top-1/2 left-1/2 h-[65%] w-[90%] -translate-x-1/2 -translate-y-1/2 transform md:w-[50%]">
+                    <div
+                        style={{ background: `url(${square}) center` }}
+                        className="bg-square h-full w-full text-black dark:text-white"
+                    />
+                </div> */}
+                <div className="square-list fixed left-20 top-1/3 z-10 hidden flex-col gap-8 lg:flex">
+                    {stepTitles.map((title, index) => {
+                        const currentStep = index === step;
+                        const active = index <= step;
+                        const onClick =
+                            index < step ? handleStepClick(index) : undefined;
+                        return (
+                            <div
+                                key={index}
+                                className={stepsListItemContainerStyles({
+                                    clickable: index < step,
+                                })}
+                                onClick={onClick}
                             >
-                                {title}
-                            </TextMono>
-                        </div>
-                    );
-                })}
-            </div>
-            <div className="z-10 w-full max-w-xl">
-                <Card
-                    step={t("card.step.label", { number: step + 1 })}
-                    title={stepTitles[step]}
-                >
-                    {step === 0 && (
-                        <Specification
-                            t={t}
-                            specificationData={specificationData}
-                            onNext={handleSpecificationNext}
+                                <div
+                                    className={stepsListSquareStyles({
+                                        active,
+                                    })}
+                                >
+                                    {index > 0 && (
+                                        <div
+                                            className={stepsListLineStyles({
+                                                active,
+                                            })}
+                                        />
+                                    )}
+                                </div>
+                                <TextMono
+                                    weight={currentStep ? "medium" : undefined}
+                                >
+                                    {title}
+                                </TextMono>
+                            </div>
+                        );
+                    })}
+                </div>
+                <div className="z-10 w-full max-w-xl">
+                    <Card
+                        step={t("card.step.label", { number: step + 1 })}
+                        title={stepTitles[step]}
+                    >
+                        {step === 0 && (
+                            <GenericData
+                                t={t}
+                                specificationData={specificationData}
+                                tokenData={tokenData}
+                                onNext={handleGenericDataNext}
+                            />
+                        )}
+                        {step === 1 && (
+                            <Collaterals
+                                t={t}
+                                collaterals={collateralsData}
+                                onPrevious={handlePrevious}
+                                onNext={handleCollateralsNext}
+                            />
+                        )}
+                        {step === 2 && (
+                            <OraclesPicker
+                                t={t}
+                                oracleTemplatesData={oracleTemplatesData}
+                                onPrevious={handlePrevious}
+                                onNext={handleOraclesPickerNext}
+                            />
+                        )}
+                        {step === 3 && (
+                            <OraclesConfiguration
+                                t={t}
+                                i18n={i18n}
+                                oraclesData={oraclesData}
+                                templates={oracleTemplatesData}
+                                onPrevious={handlePrevious}
+                                onNext={handleOraclesConfigurationNext}
+                            />
+                        )}
+                        {step === 4 && (
+                            <OutcomesConfiguration
+                                t={t}
+                                outcomesData={outcomesData}
+                                templates={oracleTemplatesData}
+                                onPrevious={handlePrevious}
+                                onNext={handleOutcomesConfigurationNext}
+                            />
+                        )}
+                        {step === 5 && !!specificationData && !!tokenData && (
+                            <Deploy
+                                t={t}
+                                targetAddress={creationProxyAddress}
+                                specificationData={specificationData}
+                                tokenData={tokenData}
+                                collateralsData={collateralsData}
+                                oracleTemplatesData={oracleTemplatesData}
+                                outcomesData={outcomesData}
+                                oraclesData={oraclesData}
+                                onPrevious={handlePrevious}
+                                onNext={handleDeployNext}
+                            />
+                        )}
+                    </Card>
+                </div>
+                <div className="z-10 mt-20 min-h-fit w-full max-w-xl">
+                    {!!stepTitles[step + 1] && (
+                        <NextStepPreview
+                            step={t("card.step.label", { number: step + 2 })}
+                            title={stepTitles[step + 1]}
                         />
                     )}
-                    {step === 1 && (
-                        <Collaterals
-                            t={t}
-                            collaterals={collateralsData}
-                            onPrevious={handlePrevious}
-                            onNext={handleCollateralsNext}
+                    {!!stepTitles[step + 2] && (
+                        <NextStepPreview
+                            step={t("card.step.label", { number: step + 3 })}
+                            title={stepTitles[step + 2]}
                         />
                     )}
-                    {step === 2 && (
-                        <TokenData
-                            t={t}
-                            tokenData={tokenData}
-                            onPrevious={handlePrevious}
-                            onNext={handleTokenDataNext}
-                        />
-                    )}
-                    {step === 3 && (
-                        <OraclesPicker
-                            t={t}
-                            oracleTemplatesData={oracleTemplatesData}
-                            onPrevious={handlePrevious}
-                            onNext={handleOraclesPickerNext}
-                        />
-                    )}
-                    {step === 4 && (
-                        <OraclesConfiguration
-                            t={t}
-                            i18n={i18n}
-                            oraclesData={oraclesData}
-                            templates={oracleTemplatesData}
-                            onPrevious={handlePrevious}
-                            onNext={handleOraclesConfigurationNext}
-                        />
-                    )}
-                    {step === 5 && (
-                        <OutcomesConfiguration
-                            t={t}
-                            outcomesData={outcomesData}
-                            templates={oracleTemplatesData}
-                            onPrevious={handlePrevious}
-                            onNext={handleOutcomesConfigurationNext}
-                        />
-                    )}
-                    {step === 6 && !!specificationData && !!tokenData && (
-                        <Deploy
-                            t={t}
-                            targetAddress={creationProxyAddress}
-                            specificationData={specificationData}
-                            tokenData={tokenData}
-                            collateralsData={collateralsData}
-                            oracleTemplatesData={oracleTemplatesData}
-                            outcomesData={outcomesData}
-                            oraclesData={oraclesData}
-                            onPrevious={handlePrevious}
-                            onNext={handleDeployNext}
-                        />
-                    )}
-                </Card>
-            </div>
-            <div className="z-10 min-h-fit w-full max-w-xl">
-                {!!stepTitles[step + 1] && (
-                    <NextStepPreview
-                        step={t("card.step.label", { number: step + 2 })}
-                        title={stepTitles[step + 1]}
-                    />
-                )}
-                {!!stepTitles[step + 2] && (
-                    <NextStepPreview
-                        step={t("card.step.label", { number: step + 3 })}
-                        title={stepTitles[step + 2]}
-                    />
-                )}
+                </div>
             </div>
         </div>
     );

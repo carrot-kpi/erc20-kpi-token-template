@@ -17,8 +17,6 @@ export const Card = ({ title, step, children }: CardProps): ReactElement => (
                 {title}
             </Title>
         </div>
-        <div className="scrollbar p-6 max-h-[556px] overflow-y-auto">
-            {children}
-        </div>
+        <div className="scrollbar p-6">{children}</div>
     </div>
 );
