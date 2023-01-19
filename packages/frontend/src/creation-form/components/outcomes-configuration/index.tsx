@@ -121,38 +121,73 @@ export const OutcomesConfiguration = ({
 
     return (
         <div className="flex flex-col gap-6">
-            {templates.map((template) => {
-                const { id } = template;
-                return (
-                    <Accordion key={template.id}>
-                        <AccordionSummary>
-                            <TextMono>{template.specification.name}</TextMono>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <div className="flex flex-col gap-2">
-                                <NumberInput
-                                    id="lower-bound"
-                                    label={t("label.lower.bound")}
-                                    placeholder={"1,000,000"}
-                                    onValueChange={handleLowerBoundChange(id)}
-                                    value={data[id]?.lowerBound?.formattedValue}
-                                    className="w-full"
-                                />
-                                <NumberInput
-                                    id="higher-bound"
-                                    label={t("label.higher.bound")}
-                                    placeholder={"1,000,000"}
-                                    onValueChange={handleHigherBoundChange(id)}
-                                    value={
-                                        data[id]?.higherBound?.formattedValue
-                                    }
-                                    className="w-full"
-                                />
-                            </div>
-                        </AccordionDetails>
-                    </Accordion>
-                );
-            })}
+            {templates.length === 1 ? (
+                <div className="flex flex-col gap-2">
+                    <NumberInput
+                        id="lower-bound"
+                        label={t("label.lower.bound")}
+                        placeholder={"1,000,000"}
+                        onValueChange={handleLowerBoundChange(templates[0].id)}
+                        value={
+                            data[templates[0].id]?.lowerBound?.formattedValue
+                        }
+                        className="w-full"
+                    />
+                    <NumberInput
+                        id="higher-bound"
+                        label={t("label.higher.bound")}
+                        placeholder={"1,000,000"}
+                        onValueChange={handleHigherBoundChange(templates[0].id)}
+                        value={
+                            data[templates[0].id]?.higherBound?.formattedValue
+                        }
+                        className="w-full"
+                    />
+                </div>
+            ) : (
+                templates.map((template) => {
+                    const { id } = template;
+
+                    return (
+                        <Accordion key={template.id}>
+                            <AccordionSummary>
+                                <TextMono>
+                                    {template.specification.name}
+                                </TextMono>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <div className="flex flex-col gap-2">
+                                    <NumberInput
+                                        id="lower-bound"
+                                        label={t("label.lower.bound")}
+                                        placeholder={"1,000,000"}
+                                        onValueChange={handleLowerBoundChange(
+                                            id
+                                        )}
+                                        value={
+                                            data[id]?.lowerBound?.formattedValue
+                                        }
+                                        className="w-full"
+                                    />
+                                    <NumberInput
+                                        id="higher-bound"
+                                        label={t("label.higher.bound")}
+                                        placeholder={"1,000,000"}
+                                        onValueChange={handleHigherBoundChange(
+                                            id
+                                        )}
+                                        value={
+                                            data[id]?.higherBound
+                                                ?.formattedValue
+                                        }
+                                        className="w-full"
+                                    />
+                                </div>
+                            </AccordionDetails>
+                        </Accordion>
+                    );
+                })
+            )}
             <div className="flex justify-between">
                 <PreviousButton t={t} onClick={onPrevious} />
                 <NextButton t={t} onClick={handleNext} disabled={disabled} />

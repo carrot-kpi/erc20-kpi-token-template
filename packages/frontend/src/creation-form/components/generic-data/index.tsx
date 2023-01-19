@@ -30,13 +30,13 @@ export const GenericData = ({
     tokenData,
     onNext,
 }: GenericDataProps): ReactElement => {
-    const [title, setTitle] = useState(specificationData?.title);
+    const [title, setTitle] = useState(specificationData?.title || "");
     const [description, setDescription] = useState(
-        specificationData?.description
+        specificationData?.description || ""
     );
     const [tags /* setTags */] = useState<string[]>([]);
-    const [erc20Name, setERC20Name] = useState(tokenData?.name);
-    const [erc20Symbol, setERC20Symbol] = useState(tokenData?.symbol);
+    const [erc20Name, setERC20Name] = useState(tokenData?.name || "");
+    const [erc20Symbol, setERC20Symbol] = useState(tokenData?.symbol || "");
     const { defaultValue, defaultFormattedValue } = useMemo(() => {
         const defaultValue =
             !!tokenData && !!tokenData.supply
@@ -82,15 +82,11 @@ export const GenericData = ({
         [t]
     );
 
-    const handleDescriptionChange = useCallback(
-        (value: string) => {
-            setDescription(value);
-            setDescriptionErrorText(
-                !stripHtml(value).trim() ? t("error.description") : ""
-            );
-        },
-        [t]
-    );
+    const handleDescriptionChange = (value: string) => {
+        const trimmedValue = stripHtml(value).trim();
+        setDescription(value);
+        setDescriptionErrorText(!trimmedValue ? t("error.description") : "");
+    };
 
     const handleERC20NameChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {

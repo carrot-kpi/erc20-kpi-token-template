@@ -51,7 +51,7 @@ importers:
 
   packages/frontend:
     specifiers:
-      '@carrot-kpi/react': ^0.21.0
+      '@carrot-kpi/react': ^0.21.1
       '@carrot-kpi/sdk': ^1.12.0
       '@carrot-kpi/ui': ^0.11.1
       '@fontsource/ibm-plex-mono': ^4.5.13
@@ -101,7 +101,7 @@ importers:
       webpack: ^5.74.0
       webpack-dev-server: ^4.11.1
     dependencies:
-      '@carrot-kpi/react': 0.21.0_ev57jke2bverjrniilxjt7pq6a
+      '@carrot-kpi/react': 0.21.1_ev57jke2bverjrniilxjt7pq6a
       '@carrot-kpi/sdk': 1.12.0
       '@carrot-kpi/ui': 0.11.1_vw4w2yebqmo2q3qzachhz5finy
       '@fontsource/ibm-plex-mono': 4.5.13
@@ -1548,8 +1548,8 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: false
 
-  /@carrot-kpi/react/0.21.0_ev57jke2bverjrniilxjt7pq6a:
-    resolution: {integrity: sha512-+56LWwnbwxojSO1A1PYqajkDuNVX8UvqxTR6XgNkmB1sShQxyEAa2A4DifDI+KHbCSRMqv0OC6XPTkKCpUomVg==}
+  /@carrot-kpi/react/0.21.1_ev57jke2bverjrniilxjt7pq6a:
+    resolution: {integrity: sha512-BX4mUQ4EIrVlzayKWWYbpRUqIoSuC/Xf093EknWTLZkOFrZnqUpujv7xOXndqBxhGSk5XAagWhX+orFr1mSqPw==}
     peerDependencies:
       i18next: ^22.0.2
       react: ^18.2.0

@@ -34,7 +34,6 @@
     "oracles.picker.template.description": "Description",
     "oracles.picker.template.address": "Address",
     "oracles.picker.selected": "Selected:",
-    "loading": "Loading",
     "next": "Next",
     "previous": "Previous"
 }

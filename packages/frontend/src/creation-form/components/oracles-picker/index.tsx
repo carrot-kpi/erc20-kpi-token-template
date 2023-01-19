@@ -5,6 +5,7 @@ import {
 import { Template } from "@carrot-kpi/sdk";
 import { TextMono } from "@carrot-kpi/ui";
 import { ReactElement, useCallback, useEffect, useState } from "react";
+import { Loader } from "../../../ui/loader";
 import { OracleTemplate } from "../../../ui/oracle-template";
 import { NextButton } from "../next-button";
 import { PreviousButton } from "../previous-button";
@@ -42,58 +43,66 @@ export const OraclesPicker = ({
         onNext(Object.values(pickedTemplates));
     }, [onNext, pickedTemplates]);
 
-    if (loading) {
-        // TODO: think about a standard loading component
-        return <p>{t("loading")}...</p>;
-    }
     return (
         <div className="flex flex-col gap-6">
-            <TextMono size="md" weight="medium">
-                {t("oracles.picker.label")}
-            </TextMono>
-            <div className="scrollbar flex gap-7 overflow-x-auto">
-                {templates.map((template) => {
-                    const checked = !!pickedTemplates[template.id];
-                    return (
-                        <div
-                            key={template.id}
-                            id={template.specification.cid}
-                            className="flex flex-col items-center gap-3 p-2"
-                        >
-                            <OracleTemplate
-                                key={template.id}
-                                name={template.specification.name}
-                                description={template.specification.description}
-                                version={template.version}
-                                address={template.address}
-                            />
-                            <input
-                                className="h-6 w-6 cursor-pointer accent-black outline-none"
-                                type="checkbox"
-                                checked={checked}
-                                onChange={() => {
-                                    if (checked) {
-                                        const newPickedTemplates = {
-                                            ...pickedTemplates,
-                                        };
-                                        delete newPickedTemplates[template.id];
-                                        setPickedTemplates(newPickedTemplates);
-                                    } else {
-                                        setPickedTemplates({
-                                            ...pickedTemplates,
-                                            [template.id]: template,
-                                        });
-                                    }
-                                }}
-                            />
-                        </div>
-                    );
-                })}
-            </div>
-            <TextMono size="md" weight="medium">
-                {t("oracles.picker.selected")}{" "}
-                {Object.keys(pickedTemplates).length}
-            </TextMono>
+            {loading ? (
+                <Loader />
+            ) : (
+                <>
+                    <TextMono size="md" weight="medium">
+                        {t("oracles.picker.label")}
+                    </TextMono>
+                    <div className="scrollbar flex gap-7 overflow-x-auto">
+                        {templates.map((template) => {
+                            const checked = !!pickedTemplates[template.id];
+                            return (
+                                <div
+                                    key={template.id}
+                                    id={template.specification.cid}
+                                    className="flex flex-col items-center gap-3 p-2"
+                                >
+                                    <OracleTemplate
+                                        key={template.id}
+                                        name={template.specification.name}
+                                        description={
+                                            template.specification.description
+                                        }
+                                        version={template.version}
+                                        address={template.address}
+                                    />
+                                    <input
+                                        className="h-6 w-6 cursor-pointer accent-black outline-none"
+                                        type="checkbox"
+                                        checked={checked}
+                                        onChange={() => {
+                                            if (checked) {
+                                                const newPickedTemplates = {
+                                                    ...pickedTemplates,
+                                                };
+                                                delete newPickedTemplates[
+                                                    template.id
+                                                ];
+                                                setPickedTemplates(
+                                                    newPickedTemplates
+                                                );
+                                            } else {
+                                                setPickedTemplates({
+                                                    ...pickedTemplates,
+                                                    [template.id]: template,
+                                                });
+                                            }
+                                        }}
+                                    />
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <TextMono size="md" weight="medium">
+                        {t("oracles.picker.selected")}{" "}
+                        {Object.keys(pickedTemplates).length}
+                    </TextMono>
+                </>
+            )}
             <div className="flex justify-between">
                 <PreviousButton t={t} onClick={onPrevious} />
                 <NextButton t={t} onClick={handleNext} disabled={disabled} />
