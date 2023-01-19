@@ -16,7 +16,7 @@
     "label.collateral.table.collateral": "Collateral",
     "label.collateral.table.amount": "Total amount",
     "label.collateral.table.minimum.payout": "Minimum payout",
-    "label.collateral.table.empty": "No collateral",
+    "label.collateral.table.empty": "No collaterals",
     "label.collateral.balance": "Balance",
     "label.token.data.name": "ERC20 token name:",
     "label.token.data.symbol": "ERC20 token symbol:",

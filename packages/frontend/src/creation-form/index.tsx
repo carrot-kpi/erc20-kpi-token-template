@@ -31,6 +31,14 @@ const CREATION_PROXY_ADDRESS: Record<ChainId, Address> = {
     [ChainId.SEPOLIA]: "0x4300d4C410f87c7c1824Cbc2eF67431030106604",
 };
 
+const stepsListItemContainerStyles = cva(["flex", "items-center", "gap-4"], {
+    variants: {
+        clickable: {
+            true: ["hover:underline cursor-pointer"],
+        },
+    },
+});
+
 const stepsListSquareStyles = cva(["relative", "h-3", "w-3"], {
     variants: {
         active: {
@@ -39,6 +47,26 @@ const stepsListSquareStyles = cva(["relative", "h-3", "w-3"], {
         },
     },
 });
+
+const stepsListLineStyles = cva(
+    [
+        "absolute",
+        "left-1.5",
+        "bottom-3",
+        "h-12",
+        "w-[1px]",
+        "-translate-x-[0.5px]",
+        "transform",
+    ],
+    {
+        variants: {
+            active: {
+                true: ["bg-orange"],
+                false: ["bg-black"],
+            },
+        },
+    }
+);
 
 interface CreationFormProps {
     i18n: i18n;
@@ -85,6 +113,14 @@ export const Component = ({
     );
     const [oraclesData, setOraclesData] = useState<OracleData[]>([]);
     const [outcomesData, setOutcomesData] = useState<OutcomeData[]>([]);
+
+    const handleStepClick = useCallback(
+        (clickedStep: number) => () => {
+            console.log(clickedStep);
+            setStep(clickedStep);
+        },
+        []
+    );
 
     const handlePrevious = useCallback(() => {
         if (step === 0) return;
@@ -150,20 +186,36 @@ export const Component = ({
                 />
             </div>
             <div className="square-list absolute left-20 top-1/3 z-10 hidden flex-col gap-8 lg:flex">
-                {stepTitles.map((title, index) => (
-                    <div key={index} className="flex items-center gap-4">
+                {stepTitles.map((title, index) => {
+                    const currentStep = index === step;
+                    const active = index <= step;
+                    const onClick =
+                        index < step ? handleStepClick(index) : undefined;
+                    return (
                         <div
-                            className={stepsListSquareStyles({
-                                active: index === step,
+                            key={index}
+                            className={stepsListItemContainerStyles({
+                                clickable: index < step,
                             })}
+                            onClick={onClick}
                         >
-                            {index > 0 && (
-                                <div className="absolute left-1.5 bottom-3 h-12 w-[1px] -translate-x-[0.5px] transform bg-black" />
-                            )}
+                            <div className={stepsListSquareStyles({ active })}>
+                                {index > 0 && (
+                                    <div
+                                        className={stepsListLineStyles({
+                                            active,
+                                        })}
+                                    />
+                                )}
+                            </div>
+                            <TextMono
+                                weight={currentStep ? "medium" : undefined}
+                            >
+                                {title}
+                            </TextMono>
                         </div>
-                        <TextMono>{title}</TextMono>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
             <div className="z-10 w-full max-w-xl">
                 <Card
