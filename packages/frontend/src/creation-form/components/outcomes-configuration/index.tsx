@@ -37,12 +37,18 @@ export const OutcomesConfiguration = ({
 }: OutcomesConfigurationProps): ReactElement => {
     const [data, setData] = useState<RawOutcomeDataMap>(
         outcomesData.reduce((accumulator: RawOutcomeDataMap, data, i) => {
-            const lowerBoundValue = data.higherBound.toString();
+            const lowerBoundValue = utils.formatUnits(
+                data.lowerBound.toString(),
+                18
+            );
             const lowerBoundFormattedValue = !!lowerBoundValue
                 ? utils.commify(lowerBoundValue)
                 : "";
 
-            const higherBoundValue = data.higherBound.toString();
+            const higherBoundValue = utils.formatUnits(
+                data.higherBound.toString(),
+                18
+            );
             const higherBoundFormattedValue = !!higherBoundValue
                 ? utils.commify(higherBoundValue)
                 : "";
@@ -106,8 +112,8 @@ export const OutcomesConfiguration = ({
         onNext(
             Object.values(data).map((value) => {
                 return {
-                    lowerBound: utils.parseUnits(value.lowerBound.value),
-                    higherBound: utils.parseUnits(value.higherBound.value),
+                    lowerBound: utils.parseUnits(value.lowerBound.value, 18),
+                    higherBound: utils.parseUnits(value.higherBound.value, 18),
                 };
             })
         );

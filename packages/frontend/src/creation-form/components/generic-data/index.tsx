@@ -40,7 +40,7 @@ export const GenericData = ({
     const { defaultValue, defaultFormattedValue } = useMemo(() => {
         const defaultValue =
             !!tokenData && !!tokenData.supply
-                ? tokenData.supply.toString()
+                ? utils.formatUnits(tokenData.supply.toString(), 18)
                 : "";
         const defaultFormattedValue = !!defaultValue
             ? utils.commify(defaultValue)
