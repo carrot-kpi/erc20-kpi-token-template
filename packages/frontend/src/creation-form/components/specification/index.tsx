@@ -9,43 +9,44 @@ import { SpecificationData } from "../../types";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Button, TextInput, MarkdownInput } from "@carrot-kpi/ui";
 
-interface CampaignDescriptionProps {
+interface SpecificationProps {
     t: NamespacedTranslateFunction;
-    specification: SpecificationData;
-    onFieldChange: (field: keyof SpecificationData, value: string) => void;
-    onNext: () => void;
+    onNext: (specification: SpecificationData) => void;
 }
 
-export const CampaignDescription = ({
+export const Specification = ({
     t,
-    specification,
-    onFieldChange,
     onNext,
-}: CampaignDescriptionProps): ReactElement => {
-    const [nextDisabled, setNextDisabled] = useState(true);
+}: SpecificationProps): ReactElement => {
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [tags /* setTags */] = useState<string[]>([]);
+    const [disabled, setDisabled] = useState(true);
 
     useEffect(() => {
-        setNextDisabled(
-            !specification.title ||
-                !specification.description ||
-                !specification.title.trim() ||
-                !specification.description.replace(/(<([^>]+)>)/gi, "").trim()
+        setDisabled(
+            !title.trim() || !description.replace(/(<([^>]+)>)/gi, "").trim()
         );
-    }, [specification.description, specification.title]);
+    }, [description, title]);
 
     const handleTitleChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>): void => {
-            onFieldChange("title", event.target.value);
+            setTitle(event.target.value);
         },
-        [onFieldChange]
+        []
     );
 
-    const handleDescriptionChange = useCallback(
-        (value: string) => {
-            onFieldChange("description", value);
-        },
-        [onFieldChange]
-    );
+    const handleDescriptionChange = useCallback((value: string) => {
+        setDescription(value);
+    }, []);
+
+    const handleNext = useCallback(() => {
+        onNext({
+            title,
+            description,
+            tags,
+        });
+    }, [description, onNext, tags, title]);
 
     return (
         <div className="flex flex-col gap-6">
@@ -54,7 +55,7 @@ export const CampaignDescription = ({
                 label={t("label.title")}
                 placeholder={"Enter campaign title"}
                 onChange={handleTitleChange}
-                value={specification.title}
+                value={title}
                 className="w-full"
             />
             <MarkdownInput
@@ -62,9 +63,9 @@ export const CampaignDescription = ({
                 label={t("label.description")}
                 placeholder={"Enter campaign description"}
                 onChange={handleDescriptionChange}
-                value={specification.description}
+                value={description}
             />
-            <Button size="small" onClick={onNext} disabled={nextDisabled}>
+            <Button size="small" onClick={handleNext} disabled={disabled}>
                 {t("next")}
             </Button>
         </div>

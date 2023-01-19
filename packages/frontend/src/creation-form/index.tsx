@@ -1,36 +1,30 @@
 import "../global.css";
 
 import { TextMono } from "@carrot-kpi/ui";
-import {
-    NamespacedTranslateFunction,
-    useDecentralizedStorageUploader,
-} from "@carrot-kpi/react";
-import { ChainId } from "@carrot-kpi/sdk";
-import { BigNumber, constants, utils } from "ethers";
-import { defaultAbiCoder } from "ethers/lib/utils";
+import { NamespacedTranslateFunction } from "@carrot-kpi/react";
+import { ChainId, Template } from "@carrot-kpi/sdk";
+import { BigNumber, constants } from "ethers";
 import { ReactElement, useCallback, useMemo, useState } from "react";
-import { OracleConfiguration } from "./components/oracle-configuration";
 import { OraclesPicker } from "./components/oracles-picker";
-import { OnchainPreparations } from "./components/onchain-preparations";
 import {
     CollateralData,
-    CreationData,
-    ERC20Data,
     OracleData,
+    OutcomeData,
     SpecificationData,
+    TokenData as TokenDataType,
 } from "./types";
-import CREATION_PROXY_ABI from "../abis/creation-proxy.json";
 import { Address, useNetwork } from "wagmi";
 import { Card } from "../ui/card";
-import { CampaignDescription } from "./components/campaign-description";
+import { Specification } from "./components/specification";
 import { Collaterals } from "./components/collaterals";
-import { ERC20 } from "./components/erc-20";
 import { NextStepPreview } from "./components/next-step-preview";
 import { cva } from "class-variance-authority";
 import { i18n } from "i18next";
 import square from "../assets/square.svg";
-
-const CREATION_PROXY_INTERFACE = new utils.Interface(CREATION_PROXY_ABI);
+import { TokenData } from "./components/token-data";
+import { OraclesConfiguration } from "./components/oracles-configuration";
+import { OutcomesConfiguration } from "./components/outcomes-configuration";
+import { Deploy } from "./components/deploy";
 
 const CREATION_PROXY_ADDRESS: Record<ChainId, Address> = {
     [ChainId.GOERLI]: constants.AddressZero,
@@ -60,258 +54,87 @@ export const Component = ({
     onDone,
 }: CreationFormProps): ReactElement => {
     const { chain } = useNetwork();
-    const uploadToDecentralizeStorage = useDecentralizedStorageUploader(
-        __DEV__ ? "playground" : "ipfs"
-    );
     const creationProxyAddress = useMemo(() => {
         if (__DEV__) return CCT_CREATION_PROXY_ADDRESS;
         return chain && chain.id in ChainId
             ? CREATION_PROXY_ADDRESS[chain.id as ChainId]
             : constants.AddressZero;
     }, [chain]);
+    const stepTitles = useMemo(
+        () => [
+            t("card.specification.title"),
+            t("card.collateral.title"),
+            t("card.token.title"),
+            t("card.oracle.pick.title"),
+            t("card.oracle.configuration.title"),
+            t("card.outcome.configuration.title"),
+            t("card.deploy.title"),
+        ],
+        [t]
+    );
 
-    const [data, setData] = useState<CreationData>({
-        step: 0,
-        specification: {
-            title: "",
-            description: "",
-            tags: [],
-        },
-        erc20: {
-            name: "",
-            symbol: "",
-            supply: BigNumber.from("0"),
-        },
-        collaterals: [],
-        oracles: [],
-    });
-    const [specificationCid, setSpecificationCid] = useState("");
+    const [step, setStep] = useState(0);
+    const [specificationData, setSpecificationData] =
+        useState<SpecificationData | null>(null);
+    const [collateralsData, setCollateralsData] = useState<CollateralData[]>(
+        []
+    );
+    const [tokenData, setTokenData] = useState<TokenDataType | null>(null);
+    const [oracleTemplatesData, setOracleTemplatesData] = useState<Template[]>(
+        []
+    );
+    const [oraclesData, setOraclesData] = useState<OracleData[]>([]);
+    const [outcomesData, setOutcomesData] = useState<OutcomeData[]>([]);
 
-    const handleNext = useCallback(() => {
-        setData((prevState) => ({ ...prevState, step: prevState.step + 1 }));
+    const handleSpecificationNext = useCallback(
+        (specificationData: SpecificationData) => {
+            setSpecificationData(specificationData);
+            setStep(1);
+        },
+        []
+    );
+
+    const handleCollateralsNext = useCallback(
+        (collaterals: CollateralData[]) => {
+            setCollateralsData(collaterals);
+            setStep(2);
+        },
+        []
+    );
+
+    const handleTokenDataNext = useCallback((tokenData: TokenDataType) => {
+        setTokenData(tokenData);
+        setStep(3);
     }, []);
 
-    const handleCampaignSpecificationChange = useCallback(
-        (field: keyof SpecificationData, value: string) => {
-            setData((prevState) => ({
-                ...prevState,
-                specification: {
-                    ...prevState.specification,
-                    [field]: value,
-                },
-            }));
-        },
-        []
-    );
-
-    const handleCollateralDataChange = useCallback(
-        (
-            field: keyof Pick<CreationData, "collaterals">,
-            collaterals: CollateralData[]
-        ) => {
-            setData((prevState) => {
-                return { ...prevState, [field]: collaterals };
-            });
-        },
-        []
-    );
-
-    const handleERC20DataChange = useCallback(
-        (field: keyof ERC20Data, value: string) => {
-            setData((prevState) => ({
-                ...prevState,
-                erc20: {
-                    ...prevState.erc20,
-                    [field]: value,
-                },
-            }));
-        },
-        []
-    );
-
-    const handleOracleChange = useCallback(
-        (
-            field: keyof Pick<CreationData, "oracles">,
-            oraclesData: OracleData[]
-        ) => {
-            setData((prevState) => ({
-                ...prevState,
-                [field]: oraclesData,
-            }));
-        },
-        []
-    );
-
-    const handleOraclePick = useCallback((oracleTemplateId: number) => {
-        setData((prevState) => {
-            const nextOracleTemplates = [...prevState.oracles];
-
-            const pickedOracle = nextOracleTemplates.find(
-                (oracle) => oracle.template.id === oracleTemplateId
-            );
-
-            if (!pickedOracle) {
-                return prevState;
-            }
-
-            pickedOracle.isPicked = !pickedOracle.isPicked;
-
-            return { ...prevState, oracles: nextOracleTemplates };
-        });
+    const handleOraclesPickerNext = useCallback((templates: Template[]) => {
+        setOracleTemplatesData(templates);
+        setStep(4);
     }, []);
 
-    const handleOracleConfigurationChange = useCallback(
-        (
-            field: keyof Pick<OracleData, "higherBound" | "lowerBound">,
-            value: BigNumber,
-            oracleTemplateId: number
-        ) => {
-            setData((prevState) => {
-                const nextOracleTemplatesConfiguration = [...prevState.oracles];
-
-                const configuredOracleTemplate =
-                    nextOracleTemplatesConfiguration.find(
-                        (oracle) => oracle.template.id === oracleTemplateId
-                    );
-
-                if (!configuredOracleTemplate) {
-                    return prevState;
-                }
-
-                configuredOracleTemplate[field] = value;
-
-                return {
-                    ...prevState,
-                    oracles: nextOracleTemplatesConfiguration,
-                };
-            });
+    const handleOraclesConfigurationNext = useCallback(
+        (oracleData: OracleData[]) => {
+            setOraclesData(oracleData);
+            setStep(5);
         },
         []
     );
 
-    const handleOracleConfigurationSubmit = useCallback(() => {
-        uploadToDecentralizeStorage(JSON.stringify(data.specification))
-            .then(setSpecificationCid)
-            .catch(console.error);
-    }, [data.specification, uploadToDecentralizeStorage]);
+    const handleOutcomesConfigurationNext = useCallback(
+        (outcomesData: OutcomeData[]) => {
+            setOutcomesData(outcomesData);
+            setStep(6);
+        },
+        []
+    );
 
-    const handleCreate = useCallback(() => {
-        onDone(
-            creationProxyAddress,
-            CREATION_PROXY_INTERFACE.encodeFunctionData("createERC20KPIToken", [
-                specificationCid,
-                BigNumber.from(Math.floor(Date.now() + 86_400_000)),
-                data.collaterals.map((rawCollateral) => ({
-                    token: rawCollateral.address,
-                    amount: BigNumber.from(rawCollateral.amount),
-                    minimumPayout: BigNumber.from(rawCollateral.minimumPayout),
-                })),
-                data.erc20.name,
-                data.erc20.symbol,
-                data.erc20.supply,
-                defaultAbiCoder.encode(
-                    [
-                        "tuple(uint256 templateId,uint256 lowerBound,uint256 higherBound,uint256 weight,uint256 value,bytes data)[]",
-                        "bool",
-                    ],
-                    [
-                        data.oracles.map((oracle) => {
-                            return {
-                                templateId: oracle.template.id,
-                                lowerBound: oracle.lowerBound,
-                                higherBound: oracle.higherBound,
-                                weight: oracle.weight,
-                                value: oracle.value,
-                                data: oracle.initializationData,
-                            };
-                        }),
-                        false,
-                    ]
-                ) as `0x${string}`,
-            ]),
-            BigNumber.from("0")
-        );
-    }, [
-        creationProxyAddress,
-        data.collaterals,
-        data.erc20.name,
-        data.erc20.supply,
-        data.erc20.symbol,
-        data.oracles,
-        onDone,
-        specificationCid,
-    ]);
-
-    const steps = [
-        {
-            title: t("card.campaing.title"),
-            content: (
-                <CampaignDescription
-                    t={t}
-                    specification={data.specification}
-                    onFieldChange={handleCampaignSpecificationChange}
-                    onNext={handleNext}
-                />
-            ),
+    const handleDeployNext = useCallback(
+        (data: string, value: BigNumber) => {
+            onDone(creationProxyAddress, data, value);
+            console.log("done");
         },
-        {
-            title: t("card.collateral.title"),
-            content: (
-                <Collaterals
-                    t={t}
-                    collaterals={data.collaterals}
-                    onFieldChange={handleCollateralDataChange}
-                    onNext={handleNext}
-                />
-            ),
-        },
-        {
-            title: t("card.token.title"),
-            content: (
-                <ERC20
-                    t={t}
-                    erc20={data.erc20}
-                    onFieldChange={handleERC20DataChange}
-                    onNext={handleNext}
-                />
-            ),
-        },
-        {
-            title: t("card.oracle.title"),
-            content: (
-                <OraclesPicker
-                    t={t}
-                    oracles={data.oracles}
-                    handlePick={handleOraclePick}
-                    onFieldChange={handleOracleChange}
-                    onNext={handleNext}
-                />
-            ),
-        },
-        {
-            title: t("card.question.title"),
-            content: (
-                <OracleConfiguration
-                    t={t}
-                    i18n={i18n}
-                    oracles={data.oracles}
-                    onFieldChange={handleOracleConfigurationChange}
-                    onOracleConfiguration={handleOracleConfigurationSubmit}
-                    onNext={handleNext}
-                />
-            ),
-        },
-        {
-            title: t("card.deploy.title"),
-            content: (
-                <OnchainPreparations
-                    collaterals={data.collaterals}
-                    creationProxyAddress={creationProxyAddress}
-                    onCreate={handleCreate}
-                />
-            ),
-        },
-    ];
+        [creationProxyAddress, onDone]
+    );
 
     return (
         <div className="bg-green flex h-full flex-col items-center justify-between gap-24 overflow-y-hidden pt-10">
@@ -322,40 +145,79 @@ export const Component = ({
                 />
             </div>
             <div className="square-list absolute left-20 top-1/3 z-10 hidden flex-col gap-8 lg:flex">
-                {steps.map((step, index) => (
+                {stepTitles.map((title, index) => (
                     <div key={index} className="flex items-center gap-4">
                         <div
                             className={stepsListSquareStyles({
-                                active: index === data.step,
+                                active: index === step,
                             })}
                         >
                             {index > 0 && (
                                 <div className="absolute left-1.5 bottom-3 h-12 w-[1px] -translate-x-[0.5px] transform bg-black" />
                             )}
                         </div>
-                        <TextMono>{step.title}</TextMono>
+                        <TextMono>{title}</TextMono>
                     </div>
                 ))}
             </div>
             <div className="z-10 w-full max-w-xl">
                 <Card
-                    step={t("card.step.label", { number: data.step + 1 })}
-                    title={steps[data.step].title}
+                    step={t("card.step.label", { number: step + 1 })}
+                    title={stepTitles[step]}
                 >
-                    {steps[data.step].content}
+                    {step === 0 && (
+                        <Specification t={t} onNext={handleSpecificationNext} />
+                    )}
+                    {step === 1 && (
+                        <Collaterals t={t} onNext={handleCollateralsNext} />
+                    )}
+                    {step === 2 && (
+                        <TokenData t={t} onNext={handleTokenDataNext} />
+                    )}
+                    {step === 3 && (
+                        <OraclesPicker t={t} onNext={handleOraclesPickerNext} />
+                    )}
+                    {step === 4 && (
+                        <OraclesConfiguration
+                            t={t}
+                            i18n={i18n}
+                            templates={oracleTemplatesData}
+                            onNext={handleOraclesConfigurationNext}
+                        />
+                    )}
+                    {step === 5 && (
+                        <OutcomesConfiguration
+                            t={t}
+                            templates={oracleTemplatesData}
+                            onNext={handleOutcomesConfigurationNext}
+                        />
+                    )}
+                    {step === 6 && !!specificationData && !!tokenData && (
+                        <Deploy
+                            t={t}
+                            targetAddress={creationProxyAddress}
+                            specificationData={specificationData}
+                            tokenData={tokenData}
+                            collateralsData={collateralsData}
+                            oracleTemplatesData={oracleTemplatesData}
+                            outcomesData={outcomesData}
+                            oraclesData={oraclesData}
+                            onNext={handleDeployNext}
+                        />
+                    )}
                 </Card>
             </div>
             <div className="z-10 min-h-fit w-full max-w-xl">
-                {!!steps[data.step + 1] && (
+                {!!stepTitles[step + 1] && (
                     <NextStepPreview
-                        step={t("card.step.label", { number: data.step + 2 })}
-                        title={steps[data.step + 1].title}
+                        step={t("card.step.label", { number: step + 2 })}
+                        title={stepTitles[step + 1]}
                     />
                 )}
-                {!!steps[data.step + 2] && (
+                {!!stepTitles[step + 2] && (
                     <NextStepPreview
-                        step={t("card.step.label", { number: data.step + 3 })}
-                        title={steps[data.step + 2].title}
+                        step={t("card.step.label", { number: step + 3 })}
+                        title={stepTitles[step + 2]}
                     />
                 )}
             </div>

@@ -2,67 +2,47 @@ import {
     NamespacedTranslateFunction,
     useOracleTemplates,
 } from "@carrot-kpi/react";
+import { Template } from "@carrot-kpi/sdk";
 import { Button, TextMono } from "@carrot-kpi/ui";
-import { BigNumber } from "ethers";
-import { ReactElement, useEffect, useMemo } from "react";
+import { ReactElement, useCallback, useEffect, useState } from "react";
 import { OracleTemplate } from "../../../ui/oracle-template";
-import { CreationData, OracleData } from "../../types";
+
+type TemplateMap = { [id: number]: Template };
 
 interface OraclesPickerProps {
     t: NamespacedTranslateFunction;
-    oracles: OracleData[];
-    onFieldChange: (
-        field: keyof Pick<CreationData, "oracles">,
-        oraclesData: OracleData[]
-    ) => void;
-    handlePick: (oracleId: number) => void;
-    onNext: () => void;
+    onNext: (oracleTemplates: Template[]) => void;
 }
 
 export const OraclesPicker = ({
     t,
-    oracles,
-    onFieldChange,
-    handlePick,
     onNext,
 }: OraclesPickerProps): ReactElement => {
     const { loading, templates } = useOracleTemplates();
 
-    useEffect(() => {
-        // initialize the oracles data
-        if (oracles.length === 0) {
-            onFieldChange(
-                "oracles",
-                templates.map((template) => ({
-                    isPicked: false,
-                    template,
-                    initializationData: "",
-                    value: BigNumber.from("0"),
-                    lowerBound: BigNumber.from("0"),
-                    higherBound: BigNumber.from("0"),
-                    weight: BigNumber.from("0"),
-                }))
-            );
-        }
-    }, [oracles, templates, onFieldChange]);
+    const [pickedTemplates, setPickedTemplates] = useState<TemplateMap>({});
+    const [disabled, setDisabled] = useState(true);
 
-    const pickedTemplatesCount = useMemo(
-        () => oracles.filter((oracle) => oracle.isPicked).length,
-        [oracles]
-    );
+    useEffect(() => {
+        setDisabled(Object.keys(pickedTemplates).length === 0);
+    }, [pickedTemplates]);
+
+    const handleNext = useCallback(() => {
+        onNext(Object.values(pickedTemplates));
+    }, [onNext, pickedTemplates]);
 
     if (loading) {
         // TODO: think about a standard loading component
         return <p>{t("loading")}...</p>;
     }
-
     return (
         <div className="flex flex-col gap-6">
             <TextMono size="md" weight="medium">
                 {t("oracles.picker.label")}
             </TextMono>
             <div className="scrollbar flex gap-7 overflow-x-auto">
-                {oracles.map(({ isPicked, template }) => {
+                {templates.map((template) => {
+                    const checked = !!pickedTemplates[template.id];
                     return (
                         <div
                             key={template.id}
@@ -79,9 +59,20 @@ export const OraclesPicker = ({
                             <input
                                 className="h-6 w-6 cursor-pointer accent-black outline-none"
                                 type="checkbox"
-                                checked={isPicked}
+                                checked={checked}
                                 onChange={() => {
-                                    handlePick(template.id);
+                                    if (checked) {
+                                        const newPickedTemplates = {
+                                            ...pickedTemplates,
+                                        };
+                                        delete newPickedTemplates[template.id];
+                                        setPickedTemplates(newPickedTemplates);
+                                    } else {
+                                        setPickedTemplates({
+                                            ...pickedTemplates,
+                                            [template.id]: template,
+                                        });
+                                    }
                                 }}
                             />
                         </div>
@@ -89,9 +80,10 @@ export const OraclesPicker = ({
                 })}
             </div>
             <TextMono size="md" weight="medium">
-                {t("oracles.picker.selected")} {pickedTemplatesCount}
+                {t("oracles.picker.selected")}{" "}
+                {Object.keys(pickedTemplates).length}
             </TextMono>
-            <Button size="small" onClick={onNext}>
+            <Button size="small" onClick={handleNext} disabled={disabled}>
                 {t("next")}
             </Button>
         </div>
