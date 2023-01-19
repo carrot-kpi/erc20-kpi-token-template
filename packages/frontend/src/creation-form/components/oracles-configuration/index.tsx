@@ -71,14 +71,12 @@ export const OraclesConfiguration = ({
                             <TextMono>{template.specification.name}</TextMono>
                         </AccordionSummary>
                         <AccordionDetails>
-                            <>
-                                <CreationForm
-                                    i18n={i18n}
-                                    fallback={<>Loading...</>}
-                                    template={template}
-                                    onDone={handleDone(template.id)}
-                                />
-                            </>
+                            <CreationForm
+                                i18n={i18n}
+                                fallback={<>Loading...</>}
+                                template={template}
+                                onDone={handleDone(template.id)}
+                            />
                         </AccordionDetails>
                     </Accordion>
                 ))

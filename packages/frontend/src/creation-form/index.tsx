@@ -114,7 +114,6 @@ export const Component = ({
 
     const handleStepClick = useCallback(
         (clickedStep: number) => () => {
-            console.log(clickedStep);
             setStep(clickedStep);
         },
         []
