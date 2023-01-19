@@ -227,7 +227,6 @@ export const Collaterals = ({
                                         "label.collateral.picker.minimum.payout"
                                     )}
                                 </TextMono>
-
                                 <NumberInput
                                     id="minimum-payout"
                                     label=""
