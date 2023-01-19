@@ -53,7 +53,7 @@ importers:
     specifiers:
       '@carrot-kpi/react': ^0.21.0
       '@carrot-kpi/sdk': ^1.12.0
-      '@carrot-kpi/ui': ^0.10.2
+      '@carrot-kpi/ui': ^0.11.1
       '@fontsource/ibm-plex-mono': ^4.5.13
       '@svgr/webpack': ^6.5.1
       '@testing-library/jest-dom': ^5.16.5
@@ -103,7 +103,7 @@ importers:
     dependencies:
       '@carrot-kpi/react': 0.21.0_ev57jke2bverjrniilxjt7pq6a
       '@carrot-kpi/sdk': 1.12.0
-      '@carrot-kpi/ui': 0.10.2_vw4w2yebqmo2q3qzachhz5finy
+      '@carrot-kpi/ui': 0.11.1_vw4w2yebqmo2q3qzachhz5finy
       '@fontsource/ibm-plex-mono': 4.5.13
       '@testing-library/jest-dom': 5.16.5
       '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
@@ -1583,8 +1583,8 @@ packages:
       - bufferutil
       - utf-8-validate
 
-  /@carrot-kpi/ui/0.10.2_vw4w2yebqmo2q3qzachhz5finy:
-    resolution: {integrity: sha512-brTcakH1xR2R/mUHf6S8H5iJ4f76PD6ZTBtoM6y4TnRpwnBzm9KVJXknrbxprqA6KdwhtMKfUDFqQLv16zDcNA==}
+  /@carrot-kpi/ui/0.11.1_vw4w2yebqmo2q3qzachhz5finy:
+    resolution: {integrity: sha512-uECAU0/Vzq3n6pzOGe6O+GSGAlTLSRNwwPtqYDtDzAIhGupwlL1Lbrpk3DqMEwtPM0C3Y7bhAD/Klj6QLQCPAQ==}
     peerDependencies:
       '@fontsource/ibm-plex-mono': ^4.5.12
       react: ^18.2.0
