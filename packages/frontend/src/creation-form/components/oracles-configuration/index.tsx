@@ -12,6 +12,7 @@ import { OracleData } from "../../types";
 import { Template } from "@carrot-kpi/sdk";
 import { PreviousButton } from "../previous-button";
 import { NextButton } from "../next-button";
+import { Loader } from "../../../ui/loader";
 
 type OracleDataMap = { [id: number]: OracleData };
 
@@ -60,7 +61,7 @@ export const OraclesConfiguration = ({
             {templates.length === 1 ? (
                 <CreationForm
                     i18n={i18n}
-                    fallback={<>Loading...</>}
+                    fallback={<Loader />}
                     template={templates[0]}
                     onDone={handleDone(templates[0].id)}
                 />
@@ -73,7 +74,7 @@ export const OraclesConfiguration = ({
                         <AccordionDetails>
                             <CreationForm
                                 i18n={i18n}
-                                fallback={<>Loading...</>}
+                                fallback={<Loader />}
                                 template={template}
                                 onDone={handleDone(template.id)}
                             />
