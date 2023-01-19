@@ -11,15 +11,19 @@ import { Button, TextInput, MarkdownInput } from "@carrot-kpi/ui";
 
 interface SpecificationProps {
     t: NamespacedTranslateFunction;
+    specificationData: SpecificationData | null;
     onNext: (specification: SpecificationData) => void;
 }
 
 export const Specification = ({
     t,
+    specificationData,
     onNext,
 }: SpecificationProps): ReactElement => {
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
+    const [title, setTitle] = useState(specificationData?.title || "");
+    const [description, setDescription] = useState(
+        specificationData?.description || ""
+    );
     const [tags /* setTags */] = useState<string[]>([]);
     const [disabled, setDisabled] = useState(true);
 

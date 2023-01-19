@@ -3,6 +3,7 @@ import {
     ReactElement,
     useCallback,
     useEffect,
+    useMemo,
     useState,
 } from "react";
 import { NumberFormatValue, TokenData as TokenDataType } from "../../types";
@@ -12,22 +13,38 @@ import { utils } from "ethers";
 
 interface TokenDataProps {
     t: NamespacedTranslateFunction;
+    tokenData: TokenDataType | null;
     onNext: (tokenData: TokenDataType) => void;
 }
 
-export const TokenData = ({ t, onNext }: TokenDataProps): ReactElement => {
-    const [name, setName] = useState("");
-    const [symbol, setSymbol] = useState("");
+export const TokenData = ({
+    t,
+    tokenData,
+    onNext,
+}: TokenDataProps): ReactElement => {
+    const [name, setName] = useState(tokenData?.name || "");
+    const [symbol, setSymbol] = useState(tokenData?.symbol || "");
+    const { defaultValue, defaultFormattedValue } = useMemo(() => {
+        const defaultValue =
+            !!tokenData && !!tokenData.supply
+                ? tokenData.supply.toString()
+                : "";
+        const defaultFormattedValue = !!defaultValue
+            ? utils.commify(defaultValue)
+            : "";
+        return { defaultValue, defaultFormattedValue };
+    }, [tokenData]);
     const [supply, setSupply] = useState<NumberFormatValue>({
-        floatValue: 0,
-        formattedValue: "",
-        value: "",
+        formattedValue: defaultFormattedValue,
+        value: defaultValue,
     });
     const [disabled, setDisabled] = useState(true);
 
     useEffect(() => {
-        setDisabled(!name || !symbol || !supply.floatValue);
-    }, [name, supply.floatValue, symbol]);
+        setDisabled(
+            !name || !symbol || !supply.value || parseFloat(supply.value) === 0
+        );
+    }, [name, supply.value, symbol]);
 
     const handleNameChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {

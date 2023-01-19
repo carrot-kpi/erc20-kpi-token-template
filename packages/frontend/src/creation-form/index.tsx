@@ -166,21 +166,38 @@ export const Component = ({
                     title={stepTitles[step]}
                 >
                     {step === 0 && (
-                        <Specification t={t} onNext={handleSpecificationNext} />
+                        <Specification
+                            t={t}
+                            specificationData={specificationData}
+                            onNext={handleSpecificationNext}
+                        />
                     )}
                     {step === 1 && (
-                        <Collaterals t={t} onNext={handleCollateralsNext} />
+                        <Collaterals
+                            t={t}
+                            collaterals={collateralsData}
+                            onNext={handleCollateralsNext}
+                        />
                     )}
                     {step === 2 && (
-                        <TokenData t={t} onNext={handleTokenDataNext} />
+                        <TokenData
+                            t={t}
+                            tokenData={tokenData}
+                            onNext={handleTokenDataNext}
+                        />
                     )}
                     {step === 3 && (
-                        <OraclesPicker t={t} onNext={handleOraclesPickerNext} />
+                        <OraclesPicker
+                            t={t}
+                            oracleTemplatesData={oracleTemplatesData}
+                            onNext={handleOraclesPickerNext}
+                        />
                     )}
                     {step === 4 && (
                         <OraclesConfiguration
                             t={t}
                             i18n={i18n}
+                            oraclesData={oraclesData}
                             templates={oracleTemplatesData}
                             onNext={handleOraclesConfigurationNext}
                         />
@@ -188,6 +205,7 @@ export const Component = ({
                     {step === 5 && (
                         <OutcomesConfiguration
                             t={t}
+                            outcomesData={outcomesData}
                             templates={oracleTemplatesData}
                             onNext={handleOutcomesConfigurationNext}
                         />

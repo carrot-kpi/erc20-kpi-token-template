@@ -37,14 +37,19 @@ interface TokenOption extends SelectOption {
 
 interface CollateralProps {
     t: NamespacedTranslateFunction;
+    collaterals: CollateralData[];
     onNext: (collaterals: CollateralData[]) => void;
 }
 
-export const Collaterals = ({ t, onNext }: CollateralProps): ReactElement => {
+export const Collaterals = ({
+    t,
+    collaterals: collateralsData,
+    onNext,
+}: CollateralProps): ReactElement => {
     const { address } = useAccount();
     const { chain } = useNetwork();
 
-    const [collaterals, setCollaterals] = useState<CollateralData[]>([]);
+    const [collaterals, setCollaterals] = useState(collateralsData);
     const [disabled, setDisabled] = useState(true);
 
     // picker state
@@ -64,13 +69,11 @@ export const Collaterals = ({ t, onNext }: CollateralProps): ReactElement => {
     const [pickerTokenOption, setPickerTokenOption] =
         useState<TokenOption | null>(null);
     const [pickerRawAmount, setPickerRawAmount] = useState<NumberFormatValue>({
-        floatValue: 0,
         formattedValue: "",
         value: "",
     });
     const [pickerRawMinimumPayout, setPickerRawMinimumPayout] =
         useState<NumberFormatValue>({
-            floatValue: 0,
             formattedValue: "",
             value: "",
         });
@@ -88,22 +91,35 @@ export const Collaterals = ({ t, onNext }: CollateralProps): ReactElement => {
     }, [collaterals]);
 
     useEffect(() => {
-        setAddDisabled(
+        if (
             !pickerTokenOption ||
-                !pickerRawAmount.floatValue ||
-                (!!pickerRawMinimumPayout.floatValue &&
-                    pickerRawMinimumPayout.floatValue >=
-                        pickerRawAmount.floatValue) ||
-                !!collaterals.find(
-                    (collateral) =>
-                        collateral.amount.currency.address.toLowerCase() ===
-                        (pickerTokenOption.value as string).toLowerCase()
-                )
+            !pickerRawAmount.value ||
+            !pickerRawMinimumPayout.value
+        ) {
+            setAddDisabled(true);
+            return;
+        }
+        const parsedAmount = parseFloat(pickerRawAmount.value);
+        const parsedMinimumAmount = parseFloat(pickerRawMinimumPayout.value);
+        if (
+            parsedAmount === 0 ||
+            parsedMinimumAmount === 0 ||
+            parsedMinimumAmount >= parsedAmount
+        ) {
+            setAddDisabled(true);
+            return;
+        }
+        setAddDisabled(
+            !!collaterals.find(
+                (collateral) =>
+                    collateral.amount.currency.address.toLowerCase() ===
+                    (pickerTokenOption.value as string).toLowerCase()
+            )
         );
     }, [
         collaterals,
-        pickerRawAmount.floatValue,
-        pickerRawMinimumPayout.floatValue,
+        pickerRawAmount.value,
+        pickerRawMinimumPayout.value,
         pickerTokenOption,
     ]);
 
@@ -134,12 +150,10 @@ export const Collaterals = ({ t, onNext }: CollateralProps): ReactElement => {
         ]);
         setPickerTokenOption(null);
         setPickerRawAmount({
-            floatValue: 0,
             formattedValue: "",
             value: "",
         });
         setPickerRawMinimumPayout({
-            floatValue: 0,
             formattedValue: "",
             value: "",
         });
@@ -251,7 +265,13 @@ export const Collaterals = ({ t, onNext }: CollateralProps): ReactElement => {
                 </div>
                 <div className="scrollbar rounded-xxl flex max-h-48 flex-col gap-2 overflow-y-auto border border-black p-4">
                     {collaterals.length === 0 ? (
-                        <div>{t("label.collateral.table.empty")}</div>
+                        <TextMono
+                            size="sm"
+                            className="text-center"
+                            weight="medium"
+                        >
+                            {t("label.collateral.table.empty")}
+                        </TextMono>
                     ) : (
                         collaterals.map((collateral) => {
                             const token = collateral.amount.currency;

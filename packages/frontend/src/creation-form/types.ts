@@ -4,7 +4,6 @@ import { BigNumber } from "ethers";
 export type SpecificationData = Omit<KpiTokenSpecification, "ipfsHash">;
 
 export interface NumberFormatValue {
-    floatValue: number | undefined;
     formattedValue: string;
     value: string;
 }

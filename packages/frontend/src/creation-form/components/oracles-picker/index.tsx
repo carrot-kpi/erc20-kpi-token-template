@@ -11,16 +11,23 @@ type TemplateMap = { [id: number]: Template };
 
 interface OraclesPickerProps {
     t: NamespacedTranslateFunction;
+    oracleTemplatesData: Template[];
     onNext: (oracleTemplates: Template[]) => void;
 }
 
 export const OraclesPicker = ({
     t,
+    oracleTemplatesData,
     onNext,
 }: OraclesPickerProps): ReactElement => {
     const { loading, templates } = useOracleTemplates();
 
-    const [pickedTemplates, setPickedTemplates] = useState<TemplateMap>({});
+    const [pickedTemplates, setPickedTemplates] = useState(
+        oracleTemplatesData.reduce((accumulator: TemplateMap, template) => {
+            accumulator[template.id] = template;
+            return accumulator;
+        }, {})
+    );
     const [disabled, setDisabled] = useState(true);
 
     useEffect(() => {

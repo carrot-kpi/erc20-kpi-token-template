@@ -18,6 +18,7 @@ interface OraclesConfigurationProps {
     t: NamespacedTranslateFunction;
     i18n: i18n;
     templates: Template[];
+    oraclesData: OracleData[];
     onNext: (data: OracleData[]) => void;
 }
 
@@ -25,9 +26,15 @@ export const OraclesConfiguration = ({
     t,
     i18n,
     templates,
+    oraclesData,
     onNext,
 }: OraclesConfigurationProps): ReactElement => {
-    const [data, setData] = useState<OracleDataMap>({});
+    const [data, setData] = useState(
+        oraclesData.reduce((accumulator: OracleDataMap, data, i) => {
+            accumulator[templates[i].id] = data;
+            return accumulator;
+        }, {})
+    );
     const [disabled, setDisabled] = useState(true);
 
     useEffect(() => {

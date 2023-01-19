@@ -22,15 +22,40 @@ type RawOutcomeDataMap = {
 interface OutcomesConfigurationProps {
     t: NamespacedTranslateFunction;
     templates: Template[];
+    outcomesData: OutcomeData[];
     onNext: (data: OutcomeData[]) => void;
 }
 
 export const OutcomesConfiguration = ({
     t,
     templates,
+    outcomesData,
     onNext,
 }: OutcomesConfigurationProps): ReactElement => {
-    const [data, setData] = useState<RawOutcomeDataMap>({});
+    const [data, setData] = useState<RawOutcomeDataMap>(
+        outcomesData.reduce((accumulator: RawOutcomeDataMap, data, i) => {
+            const lowerBoundValue = data.higherBound.toString();
+            const lowerBoundFormattedValue = !!lowerBoundValue
+                ? utils.commify(lowerBoundValue)
+                : "";
+
+            const higherBoundValue = data.higherBound.toString();
+            const higherBoundFormattedValue = !!higherBoundValue
+                ? utils.commify(higherBoundValue)
+                : "";
+            accumulator[templates[i].id] = {
+                lowerBound: {
+                    value: lowerBoundValue,
+                    formattedValue: lowerBoundFormattedValue,
+                },
+                higherBound: {
+                    value: higherBoundValue,
+                    formattedValue: higherBoundFormattedValue,
+                },
+            };
+            return accumulator;
+        }, {})
+    );
     const [disabled, setDisabled] = useState(true);
 
     useEffect(() => {
@@ -38,13 +63,19 @@ export const OutcomesConfiguration = ({
         setDisabled(
             dataValues.length !== templates.length ||
                 dataValues.some((value) => {
+                    if (!value.lowerBound || !value.higherBound) {
+                        return true;
+                    }
+                    const parsedLowerBoundAmount = parseFloat(
+                        value.lowerBound.value
+                    );
+                    const parsedHigherBoundAmount = parseFloat(
+                        value.higherBound.value
+                    );
                     return (
-                        !value.lowerBound ||
-                        !value.lowerBound.floatValue ||
-                        !value.higherBound ||
-                        !value.higherBound.floatValue ||
-                        value.lowerBound.floatValue >=
-                            value.higherBound.floatValue
+                        parsedLowerBoundAmount === 0 ||
+                        parsedLowerBoundAmount === 0 ||
+                        parsedLowerBoundAmount >= parsedHigherBoundAmount
                     );
                 })
         );
