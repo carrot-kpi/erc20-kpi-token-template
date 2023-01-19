@@ -2,7 +2,6 @@ import { BigNumber } from "ethers";
 import { ReactElement, useCallback, useEffect, useState } from "react";
 import { CreationForm, NamespacedTranslateFunction } from "@carrot-kpi/react";
 import {
-    Button,
     Accordion,
     AccordionSummary,
     TextMono,
@@ -11,6 +10,8 @@ import {
 import { i18n } from "i18next";
 import { OracleData } from "../../types";
 import { Template } from "@carrot-kpi/sdk";
+import { PreviousButton } from "../previous-button";
+import { NextButton } from "../next-button";
 
 type OracleDataMap = { [id: number]: OracleData };
 
@@ -19,6 +20,7 @@ interface OraclesConfigurationProps {
     i18n: i18n;
     templates: Template[];
     oraclesData: OracleData[];
+    onPrevious: () => void;
     onNext: (data: OracleData[]) => void;
 }
 
@@ -27,6 +29,7 @@ export const OraclesConfiguration = ({
     i18n,
     templates,
     oraclesData,
+    onPrevious,
     onNext,
 }: OraclesConfigurationProps): ReactElement => {
     const [data, setData] = useState(
@@ -54,26 +57,36 @@ export const OraclesConfiguration = ({
 
     return (
         <div className="flex flex-col gap-6">
-            {templates.map((template) => (
-                <Accordion key={template.id}>
-                    <AccordionSummary>
-                        <TextMono>{template.specification.name}</TextMono>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <>
-                            <CreationForm
-                                i18n={i18n}
-                                fallback={<>Loading...</>}
-                                template={template}
-                                onDone={handleDone(template.id)}
-                            />
-                        </>
-                    </AccordionDetails>
-                </Accordion>
-            ))}
-            <Button size="small" onClick={handleNext} disabled={disabled}>
-                {t("next")}
-            </Button>
+            {templates.length === 1 ? (
+                <CreationForm
+                    i18n={i18n}
+                    fallback={<>Loading...</>}
+                    template={templates[0]}
+                    onDone={handleDone(templates[0].id)}
+                />
+            ) : (
+                templates.map((template) => (
+                    <Accordion key={template.id}>
+                        <AccordionSummary>
+                            <TextMono>{template.specification.name}</TextMono>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <>
+                                <CreationForm
+                                    i18n={i18n}
+                                    fallback={<>Loading...</>}
+                                    template={template}
+                                    onDone={handleDone(template.id)}
+                                />
+                            </>
+                        </AccordionDetails>
+                    </Accordion>
+                ))
+            )}
+            <div className="flex justify-between">
+                <PreviousButton t={t} onClick={onPrevious} />
+                <NextButton t={t} onClick={handleNext} disabled={disabled} />
+            </div>
         </div>
     );
 };

@@ -11,6 +11,8 @@ import { utils } from "ethers";
 import { CollateralData, NumberFormatValue } from "../../types";
 import { Amount, Token } from "@carrot-kpi/sdk";
 import { Address, useAccount, useBalance, useNetwork } from "wagmi";
+import { NextButton } from "../next-button";
+import { PreviousButton } from "../previous-button";
 
 // TODO: where should we get this data?
 const DEV_COLLATERAL_TOKENS = [
@@ -38,12 +40,14 @@ interface TokenOption extends SelectOption {
 interface CollateralProps {
     t: NamespacedTranslateFunction;
     collaterals: CollateralData[];
+    onPrevious: () => void;
     onNext: (collaterals: CollateralData[]) => void;
 }
 
 export const Collaterals = ({
     t,
     collaterals: collateralsData,
+    onPrevious,
     onNext,
 }: CollateralProps): ReactElement => {
     const { address } = useAccount();
@@ -237,9 +241,10 @@ export const Collaterals = ({
                                     onValueChange={setPickerRawMinimumPayout}
                                 />
                             </div>
-                            <div className="flex justify-end">
+                            {/* TODO: implement price fetching */}
+                            {/* <div className="flex justify-end">
                                 <TextMono size="sm">$ 7,068.31</TextMono>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
@@ -299,9 +304,10 @@ export const Collaterals = ({
                     )}
                 </div>
             </div>
-            <Button size="small" onClick={handleNext} disabled={disabled}>
-                {t("next")}
-            </Button>
+            <div className="flex justify-between">
+                <PreviousButton t={t} onClick={onPrevious} />
+                <NextButton t={t} onClick={handleNext} disabled={disabled} />
+            </div>
         </div>
     );
 };

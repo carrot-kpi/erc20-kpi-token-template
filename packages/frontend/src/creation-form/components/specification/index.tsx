@@ -7,7 +7,8 @@ import {
 } from "react";
 import { SpecificationData } from "../../types";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import { Button, TextInput, MarkdownInput } from "@carrot-kpi/ui";
+import { TextInput, MarkdownInput } from "@carrot-kpi/ui";
+import { NextButton } from "../next-button";
 
 interface SpecificationProps {
     t: NamespacedTranslateFunction;
@@ -69,9 +70,9 @@ export const Specification = ({
                 onChange={handleDescriptionChange}
                 value={description}
             />
-            <Button size="small" onClick={handleNext} disabled={disabled}>
-                {t("next")}
-            </Button>
+            <div className="flex justify-end">
+                <NextButton t={t} onClick={handleNext} disabled={disabled} />
+            </div>
         </div>
     );
 };

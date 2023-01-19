@@ -86,6 +86,11 @@ export const Component = ({
     const [oraclesData, setOraclesData] = useState<OracleData[]>([]);
     const [outcomesData, setOutcomesData] = useState<OutcomeData[]>([]);
 
+    const handlePrevious = useCallback(() => {
+        if (step === 0) return;
+        setStep(step - 1);
+    }, [step]);
+
     const handleSpecificationNext = useCallback(
         (specificationData: SpecificationData) => {
             setSpecificationData(specificationData);
@@ -176,6 +181,7 @@ export const Component = ({
                         <Collaterals
                             t={t}
                             collaterals={collateralsData}
+                            onPrevious={handlePrevious}
                             onNext={handleCollateralsNext}
                         />
                     )}
@@ -183,6 +189,7 @@ export const Component = ({
                         <TokenData
                             t={t}
                             tokenData={tokenData}
+                            onPrevious={handlePrevious}
                             onNext={handleTokenDataNext}
                         />
                     )}
@@ -190,6 +197,7 @@ export const Component = ({
                         <OraclesPicker
                             t={t}
                             oracleTemplatesData={oracleTemplatesData}
+                            onPrevious={handlePrevious}
                             onNext={handleOraclesPickerNext}
                         />
                     )}
@@ -199,6 +207,7 @@ export const Component = ({
                             i18n={i18n}
                             oraclesData={oraclesData}
                             templates={oracleTemplatesData}
+                            onPrevious={handlePrevious}
                             onNext={handleOraclesConfigurationNext}
                         />
                     )}
@@ -207,6 +216,7 @@ export const Component = ({
                             t={t}
                             outcomesData={outcomesData}
                             templates={oracleTemplatesData}
+                            onPrevious={handlePrevious}
                             onNext={handleOutcomesConfigurationNext}
                         />
                     )}
@@ -220,6 +230,7 @@ export const Component = ({
                             oracleTemplatesData={oracleTemplatesData}
                             outcomesData={outcomesData}
                             oraclesData={oraclesData}
+                            onPrevious={handlePrevious}
                             onNext={handleDeployNext}
                         />
                     )}

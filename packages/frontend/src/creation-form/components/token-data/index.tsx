@@ -8,18 +8,22 @@ import {
 } from "react";
 import { NumberFormatValue, TokenData as TokenDataType } from "../../types";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import { Button, NumberInput, TextInput } from "@carrot-kpi/ui";
+import { NumberInput, TextInput } from "@carrot-kpi/ui";
 import { utils } from "ethers";
+import { PreviousButton } from "../previous-button";
+import { NextButton } from "../next-button";
 
 interface TokenDataProps {
     t: NamespacedTranslateFunction;
     tokenData: TokenDataType | null;
+    onPrevious: () => void;
     onNext: (tokenData: TokenDataType) => void;
 }
 
 export const TokenData = ({
     t,
     tokenData,
+    onPrevious,
     onNext,
 }: TokenDataProps): ReactElement => {
     const [name, setName] = useState(tokenData?.name || "");
@@ -60,7 +64,7 @@ export const TokenData = ({
         []
     );
 
-    const handeNext = useCallback(() => {
+    const handleNext = useCallback(() => {
         onNext({
             name,
             symbol,
@@ -94,9 +98,10 @@ export const TokenData = ({
                 value={supply.toString()}
                 className="w-full"
             />
-            <Button size="small" onClick={handeNext} disabled={disabled}>
-                {t("next")}
-            </Button>
+            <div className="flex justify-between">
+                <PreviousButton t={t} onClick={onPrevious} />
+                <NextButton t={t} onClick={handleNext} disabled={disabled} />
+            </div>
         </div>
     );
 };

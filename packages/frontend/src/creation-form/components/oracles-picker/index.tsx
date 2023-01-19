@@ -3,21 +3,25 @@ import {
     useOracleTemplates,
 } from "@carrot-kpi/react";
 import { Template } from "@carrot-kpi/sdk";
-import { Button, TextMono } from "@carrot-kpi/ui";
+import { TextMono } from "@carrot-kpi/ui";
 import { ReactElement, useCallback, useEffect, useState } from "react";
 import { OracleTemplate } from "../../../ui/oracle-template";
+import { NextButton } from "../next-button";
+import { PreviousButton } from "../previous-button";
 
 type TemplateMap = { [id: number]: Template };
 
 interface OraclesPickerProps {
     t: NamespacedTranslateFunction;
     oracleTemplatesData: Template[];
+    onPrevious: () => void;
     onNext: (oracleTemplates: Template[]) => void;
 }
 
 export const OraclesPicker = ({
     t,
     oracleTemplatesData,
+    onPrevious,
     onNext,
 }: OraclesPickerProps): ReactElement => {
     const { loading, templates } = useOracleTemplates();
@@ -90,9 +94,10 @@ export const OraclesPicker = ({
                 {t("oracles.picker.selected")}{" "}
                 {Object.keys(pickedTemplates).length}
             </TextMono>
-            <Button size="small" onClick={handleNext} disabled={disabled}>
-                {t("next")}
-            </Button>
+            <div className="flex justify-between">
+                <PreviousButton t={t} onClick={onPrevious} />
+                <NextButton t={t} onClick={handleNext} disabled={disabled} />
+            </div>
         </div>
     );
 };
