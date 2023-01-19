@@ -99,6 +99,7 @@ export const Component = ({
     );
 
     const [step, setStep] = useState(0);
+    const [mostUpdatedStep, setMostUpdatedStep] = useState(0);
     const [specificationData, setSpecificationData] =
         useState<SpecificationData | null>(null);
     const [collateralsData, setCollateralsData] = useState<CollateralData[]>(
@@ -129,37 +130,45 @@ export const Component = ({
             setSpecificationData(specificationData);
             setTokenData(tokenData);
             setStep(1);
+            if (mostUpdatedStep < 1) setMostUpdatedStep(1);
         },
-        []
+        [mostUpdatedStep]
     );
 
     const handleCollateralsNext = useCallback(
         (collaterals: CollateralData[]) => {
             setCollateralsData(collaterals);
             setStep(2);
+            if (mostUpdatedStep < 2) setMostUpdatedStep(2);
         },
-        []
+        [mostUpdatedStep]
     );
 
-    const handleOraclesPickerNext = useCallback((templates: Template[]) => {
-        setOracleTemplatesData(templates);
-        setStep(3);
-    }, []);
+    const handleOraclesPickerNext = useCallback(
+        (templates: Template[]) => {
+            setOracleTemplatesData(templates);
+            setStep(3);
+            if (mostUpdatedStep < 3) setMostUpdatedStep(3);
+        },
+        [mostUpdatedStep]
+    );
 
     const handleOraclesConfigurationNext = useCallback(
         (oracleData: OracleData[]) => {
             setOraclesData(oracleData);
             setStep(4);
+            if (mostUpdatedStep < 4) setMostUpdatedStep(4);
         },
-        []
+        [mostUpdatedStep]
     );
 
     const handleOutcomesConfigurationNext = useCallback(
         (outcomesData: OutcomeData[]) => {
             setOutcomesData(outcomesData);
             setStep(5);
+            if (mostUpdatedStep < 5) setMostUpdatedStep(5);
         },
-        []
+        [mostUpdatedStep]
     );
 
     const handleDeployNext = useCallback(
@@ -182,14 +191,16 @@ export const Component = ({
                 <div className="square-list fixed left-20 top-1/3 z-10 hidden flex-col gap-8 lg:flex">
                     {stepTitles.map((title, index) => {
                         const currentStep = index === step;
-                        const active = index <= step;
+                        const active = index <= mostUpdatedStep;
                         const onClick =
-                            index < step ? handleStepClick(index) : undefined;
+                            index <= mostUpdatedStep
+                                ? handleStepClick(index)
+                                : undefined;
                         return (
                             <div
                                 key={index}
                                 className={stepsListItemContainerStyles({
-                                    clickable: index < step,
+                                    clickable: !!onClick,
                                 })}
                                 onClick={onClick}
                             >
