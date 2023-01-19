@@ -1,5 +1,5 @@
 import { Button } from "@carrot-kpi/ui";
-import { ReactElement, useCallback } from "react";
+import { ReactElement, useCallback, useMemo } from "react";
 import {
     usePrepareContractWrite,
     erc20ABI,
@@ -20,12 +20,16 @@ export const CollateralApproval = ({
     collateral,
     spender,
 }: CollateralApprovalProps): ReactElement => {
-    const { data, isLoading } = useToken({ address: collateral.address });
+    const collateralAddress = useMemo(() => {
+        return collateral.amount.currency.address as Address;
+    }, [collateral.amount.currency.address]);
+    const { data, isLoading } = useToken({ address: collateralAddress });
     const { config } = usePrepareContractWrite({
-        address: collateral.address,
+        address: collateralAddress,
         abi: erc20ABI,
         functionName: "approve",
-        args: [spender, collateral.amount],
+        // TODO: convert this to wei
+        args: [spender, collateral.amount.raw],
     });
     const { write } = useContractWrite(config);
 

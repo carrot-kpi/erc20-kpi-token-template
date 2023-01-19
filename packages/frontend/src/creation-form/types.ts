@@ -1,39 +1,30 @@
-import { Template } from "@carrot-kpi/sdk";
+import { Amount, KpiTokenSpecification, Token } from "@carrot-kpi/sdk";
 import { BigNumber } from "ethers";
-import { Address } from "wagmi";
 
-export interface SpecificationData {
-    title: string;
-    description: string;
-    tags: string[];
+export type SpecificationData = Omit<KpiTokenSpecification, "ipfsHash">;
+
+export interface NumberFormatValue {
+    formattedValue: string;
+    value: string;
 }
 
 export interface CollateralData {
-    address: Address;
-    amount: BigNumber;
-    minimumPayout: BigNumber;
+    amount: Amount<Token>;
+    minimumPayout: Amount<Token>;
 }
 
-export interface ERC20Data {
+export interface TokenData {
     name: string;
     symbol: string;
     supply: BigNumber;
 }
 
 export interface OracleData {
-    isPicked: boolean;
-    template: Template;
-    initializationData: string;
+    data: string;
     value: BigNumber;
-    lowerBound: BigNumber;
-    higherBound: BigNumber;
-    weight: BigNumber;
 }
 
-export interface CreationData {
-    step: number;
-    specification: SpecificationData;
-    erc20: ERC20Data;
-    collaterals: CollateralData[];
-    oracles: OracleData[];
+export interface OutcomeData {
+    lowerBound: BigNumber;
+    higherBound: BigNumber;
 }
