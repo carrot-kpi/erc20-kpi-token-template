@@ -1,12 +1,13 @@
 import {
+    Campaign,
     CarrotCoreProvider,
     CreationForm,
     useKpiTokenTemplates,
 } from "@carrot-kpi/react";
 import { CarrotUIProvider } from "@carrot-kpi/ui";
-import { ReactElement, useEffect, useMemo } from "react";
+import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Wallet, providers, Signer, BigNumber } from "ethers";
+import { Wallet, providers, Signer, BigNumber, utils, constants } from "ethers";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import {
     Address,
@@ -14,6 +15,9 @@ import {
     ConnectorData,
     useAccount,
     useConnect,
+    usePrepareSendTransaction,
+    useProvider,
+    useSendTransaction,
 } from "wagmi";
 import { Chain } from "wagmi/chains";
 import * as chains from "wagmi/chains";
@@ -25,6 +29,7 @@ import "@fontsource/ibm-plex-mono/500.css";
 import "@carrot-kpi/ui/styles.css";
 
 import "./global.css";
+import { Fetcher, KpiToken } from "@carrot-kpi/sdk";
 
 class CarrotConnector extends Connector<
     providers.JsonRpcProvider,
@@ -119,21 +124,71 @@ const supportedChains = [forkedChain];
 const App = (): ReactElement => {
     const cctTemplateIds = useMemo(() => [CCT_TEMPLATE_ID], []);
 
+    const provider = useProvider();
     const { isConnected } = useAccount();
     const { connect, connectors } = useConnect({
         chainId: CCT_CHAIN_ID,
     });
     const { loading: isLoadingTemplates, templates } =
         useKpiTokenTemplates(cctTemplateIds);
-    // const { loading: isLoadingKpiTokens, kpiTokens } = useKpiTokens()
+
+    const [creationTx, setCreationTx] = useState<
+        providers.TransactionRequest & {
+            to: string;
+        }
+    >({
+        to: "",
+        data: "",
+        value: BigNumber.from("0"),
+    });
+    const [kpiToken, setKpiToken] = useState<KpiToken | null>(null);
+
+    const { config } = usePrepareSendTransaction({
+        request: creationTx,
+    });
+    const { sendTransactionAsync } = useSendTransaction(config);
 
     useEffect(() => {
         if (!isConnected) connect({ connector: connectors[0] });
     }, [connect, connectors, isConnected]);
 
-    const handleDone = (to: Address, data: string, value: BigNumber): void => {
-        console.log(to, data, value.toString());
-    };
+    useEffect(() => {
+        let cancelled = false;
+        if (sendTransactionAsync) {
+            const fetch = async (): Promise<void> => {
+                const tx = await sendTransactionAsync();
+                const receipt = await tx.wait();
+                const createTokenEventHash = utils.keccak256(
+                    utils.toUtf8Bytes("CreateToken(address)")
+                );
+                let createdKpiTokenAddress = constants.AddressZero;
+                for (const log of receipt.logs) {
+                    const [hash] = log.topics;
+                    if (hash !== createTokenEventHash) continue;
+                    createdKpiTokenAddress = utils.defaultAbiCoder.decode(
+                        ["address"],
+                        log.data
+                    )[0];
+                    break;
+                }
+                const kpiTokens = await Fetcher.fetchKpiTokens(provider, [
+                    createdKpiTokenAddress,
+                ]);
+                if (!cancelled) setKpiToken(kpiTokens[createdKpiTokenAddress]);
+            };
+            void fetch();
+        }
+        return () => {
+            cancelled = true;
+        };
+    }, [provider, sendTransactionAsync]);
+
+    const handleDone = useCallback(
+        (to: Address, data: string, value: BigNumber) => {
+            setCreationTx({ to, data, value, gasLimit: 10_000_000 });
+        },
+        []
+    );
 
     return (
         <div className="h-screen">
@@ -142,20 +197,23 @@ const App = (): ReactElement => {
                     i18n={i18next}
                     fallback={<>Loading...</>}
                     template={templates[0]}
-                    customBaseUrl={"http://localhost:9002/"}
+                    customBaseUrl="http://localhost:9002/"
                     onDone={handleDone}
                 />
             )}
-            {/* <h2>Page</h2>
-      {!isLoadingKpiTokens &&
-        Object.values(kpiTokens).map((kpiToken) => (
-          <div key={kpiToken.address}>
-            <Campaign
-              address={kpiToken.address}
-              customBaseUrl={`${CCT_IPFS_GATEWAY_URL}/${kpiToken.template.specification.cid}`}
-            />
-          </div>
-        ))} */}
+            {!!kpiToken && (
+                <>
+                    <h2>Page</h2>
+                    <div key={kpiToken.address}>
+                        <Campaign
+                            i18n={i18next}
+                            fallback={<>Loading...</>}
+                            address={kpiToken.address}
+                            customBaseUrl="http://localhost:9002/"
+                        />
+                    </div>
+                </>
+            )}
         </div>
     );
 };
