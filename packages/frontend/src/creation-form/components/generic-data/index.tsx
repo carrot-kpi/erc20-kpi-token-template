@@ -8,9 +8,15 @@ import {
 } from "react";
 import { NumberFormatValue, SpecificationData, TokenData } from "../../types";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import { TextInput, MarkdownInput, NumberInput } from "@carrot-kpi/ui";
+import {
+    TextInput,
+    MarkdownInput,
+    NumberInput,
+    TagsInput,
+} from "@carrot-kpi/ui";
 import { NextButton } from "../next-button";
 import { BigNumber, utils } from "ethers";
+import { usePrevious } from "../../../utils/usePrevious";
 
 const stripHtml = (value: string) => value.replace(/(<([^>]+)>)/gi, "");
 
@@ -34,7 +40,7 @@ export const GenericData = ({
     const [description, setDescription] = useState(
         specificationData?.description || ""
     );
-    const [tags /* setTags */] = useState<string[]>([]);
+    const [tags, setTags] = useState<string[]>(specificationData?.tags || []);
     const [erc20Name, setERC20Name] = useState(tokenData?.name || "");
     const [erc20Symbol, setERC20Symbol] = useState(tokenData?.symbol || "");
     const { defaultValue, defaultFormattedValue } = useMemo(() => {
@@ -53,10 +59,26 @@ export const GenericData = ({
     });
     const [titleErrorText, setTitleErrorText] = useState("");
     const [descriptionErrorText, setDescriptionErrorText] = useState("");
+    const [tagsErrorText, setTagsErrorText] = useState("");
     const [erc20NameErrorText, setERC20NameErrorText] = useState("");
     const [erc20SymbolErrorText, setERC20SymbolErrorText] = useState("");
     const [erc20SupplyErrorText, setERC20SupplyErrorText] = useState("");
+    const [tagsError, setTagsError] = useState(false);
     const [disabled, setDisabled] = useState(true);
+
+    const prevTags = usePrevious<string[]>(tags);
+
+    useEffect(() => {
+        if (prevTags && prevTags.length > 0 && tags.length === 0) {
+            setTagsError(true);
+            return;
+        }
+
+        if (tags.length > 0) {
+            setTagsError(false);
+            return;
+        }
+    }, [prevTags, tags]);
 
     useEffect(() => {
         setDisabled(
@@ -82,11 +104,24 @@ export const GenericData = ({
         [t]
     );
 
-    const handleDescriptionChange = (value: string) => {
-        const trimmedValue = stripHtml(value).trim();
-        setDescription(value);
-        setDescriptionErrorText(!trimmedValue ? t("error.description") : "");
-    };
+    const handleDescriptionChange = useCallback(
+        (value: string) => {
+            const trimmedValue = stripHtml(value).trim();
+            setDescription(value);
+            setDescriptionErrorText(
+                !trimmedValue ? t("error.description") : ""
+            );
+        },
+        [t]
+    );
+
+    const handleTagsChange = useCallback(
+        (value: string[]) => {
+            setTags(value);
+            setTagsErrorText(tagsError ? t("error.tags") : "");
+        },
+        [tagsError, t]
+    );
 
     const handleERC20NameChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {
@@ -164,6 +199,16 @@ export const GenericData = ({
                 error={!!descriptionErrorText}
                 helperText={descriptionErrorText}
                 value={description}
+            />
+            <TagsInput
+                id="description"
+                label={t("label.tags")}
+                placeholder={"Enter campaign description"}
+                onChange={handleTagsChange}
+                value={tags}
+                error={tagsError}
+                helperText={tagsErrorText}
+                className="w-full"
             />
             <TextInput
                 id="token-name"
