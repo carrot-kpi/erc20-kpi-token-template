@@ -22,7 +22,8 @@
         "lint": "eslint --ext .js,.ts,.tsx ./src ./scripts ./.cct ./jest.config.js",
         "format": "eslint --fix --ext .tsx,.ts,.js ./ && prettier --write .",
         "build": "NODE_ENV=production node ./scripts/build.js",
-        "test": "jest"
+        "test": "jest",
+        "size-limit": "size-limit"
     },
     "dependencies": {
         "@carrot-kpi/react": "^0.21.1",
@@ -62,6 +63,7 @@
         "webpack-dev-server": "^4.11.1"
     },
     "devDependencies": {
+        "@size-limit/file": "^8.1.2",
         "@svgr/webpack": "^6.5.1",
         "autoprefixer": "^10.4.13",
         "class-variance-authority": "^0.4.0",
@@ -73,6 +75,7 @@
         "ora": "^6.1.2",
         "postcss": "^8.4.20",
         "postcss-loader": "^7.0.2",
+        "size-limit": "^8.1.2",
         "style-loader": "^3.3.1",
         "tailwindcss": "^3.2.4",
         "url-loader": "^4.1.1"

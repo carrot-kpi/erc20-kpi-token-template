@@ -15,6 +15,9 @@
                 "babel.config.json"
             ]
         },
+        "size-limit": {
+            "dependsOn": ["build"]
+        },
         "lint": {},
         "format": {}
     },

@@ -55,6 +55,7 @@ importers:
       '@carrot-kpi/sdk': ^1.12.0
       '@carrot-kpi/ui': ^0.11.1
       '@fontsource/ibm-plex-mono': ^4.5.13
+      '@size-limit/file': ^8.1.2
       '@svgr/webpack': ^6.5.1
       '@testing-library/jest-dom': ^5.16.5
       '@testing-library/react': ^13.4.0
@@ -90,6 +91,7 @@ importers:
       react-i18next: ^12.0.0
       react-test-renderer: ^18.2.0
       rimraf: ^3.0.2
+      size-limit: ^8.1.2
       style-loader: ^3.3.1
       tailwindcss: ^3.2.4
       terser-webpack-plugin: ^5.3.6
@@ -137,6 +139,7 @@ importers:
       webpack: 5.75.0
       webpack-dev-server: 4.11.1_webpack@5.75.0
     devDependencies:
+      '@size-limit/file': 8.1.2_size-limit@8.1.2
       '@svgr/webpack': 6.5.1
       autoprefixer: 10.4.13_postcss@8.4.20
       class-variance-authority: 0.4.0_typescript@4.9.4
@@ -148,6 +151,7 @@ importers:
       ora: 6.1.2
       postcss: 8.4.20
       postcss-loader: 7.0.2_qxxfhhrl3yknjjmta266mo3u64
+      size-limit: 8.1.2
       style-loader: 3.3.1_webpack@5.75.0
       tailwindcss: 3.2.4_postcss@8.4.20
       url-loader: 4.1.1_webpack@5.75.0
@@ -3776,6 +3780,16 @@ packages:
       '@sinonjs/commons': 1.8.6
     dev: false
 
+  /@size-limit/file/8.1.2_size-limit@8.1.2:
+    resolution: {integrity: sha512-cjtGk1GejrmT+ik3LjXpRe+zrS/U15h+Py3L8sYN0XGat0+Y6pPbli1VuRRRcdXZNegpiW+UcxDxPN1AuZC5qA==}
+    engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
+    peerDependencies:
+      size-limit: 8.1.2
+    dependencies:
+      semver: 7.3.8
+      size-limit: 8.1.2
+    dev: true
+
   /@socket.io/component-emitter/3.1.0:
     resolution: {integrity: sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==}
     dev: true
@@ -6239,6 +6253,11 @@ packages:
     engines: {node: '>=16.0.0', npm: '>=7.0.0'}
     dependencies:
       uint8arraylist: 2.4.3
+    dev: true
+
+  /bytes-iec/3.1.1:
+    resolution: {integrity: sha512-fey6+4jDK7TFtFg/klGSvNKJctyU7n2aQdnM+CO0ruLPbqqMOM8Tio0Pc+deqUeVKX1tL5DQep1zQ7+37aTAsA==}
+    engines: {node: '>= 0.8'}
     dev: true
 
   /bytes/3.0.0:
@@ -11657,6 +11676,12 @@ packages:
     hasBin: true
     dev: true
 
+  /nanospinner/1.1.0:
+    resolution: {integrity: sha512-yFvNYMig4AthKYfHFl1sLj7B2nkHL4lzdig4osvl9/LdGbXwrdFRoqBS98gsEsOakr0yH+r5NZ/1Y9gdVB8trA==}
+    dependencies:
+      picocolors: 1.0.0
+    dev: true
+
   /napi-macros/2.0.0:
     resolution: {integrity: sha512-A0xLykHtARfueITVDernsAWdtIMbOJgKgcluwENp3AlsKN/PloyO10HtmoqnFAQAcxPkgZN7wdfPfEd0zNGxbg==}
     dev: true
@@ -13828,6 +13853,19 @@ packages:
   /sisteransi/1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
     dev: false
+
+  /size-limit/8.1.2:
+    resolution: {integrity: sha512-/EfKz9I/K2ouBN+BcrTX2WiaPTOX5yiCXtM07jYpuVtyzX9r4FDUsuCq13nNmoWqRFYbtH/7wqgRLvF40AGKoQ==}
+    engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
+    hasBin: true
+    dependencies:
+      bytes-iec: 3.1.1
+      chokidar: 3.5.3
+      globby: 11.1.0
+      lilconfig: 2.0.6
+      nanospinner: 1.1.0
+      picocolors: 1.0.0
+    dev: true
 
   /slash/3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
