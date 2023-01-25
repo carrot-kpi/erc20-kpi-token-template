@@ -67,7 +67,6 @@ importers:
       '@types/react': ^18.0.21
       '@types/react-dom': ^18.0.6
       autoprefixer: ^10.4.13
-      buffer: ^6.0.3
       chalk: ^5.0.1
       class-variance-authority: ^0.4.0
       css-loader: ^6.7.2
@@ -140,7 +139,6 @@ importers:
     devDependencies:
       '@svgr/webpack': 6.5.1
       autoprefixer: 10.4.13_postcss@8.4.20
-      buffer: 6.0.3
       class-variance-authority: 0.4.0_typescript@4.9.4
       css-loader: 6.7.3_webpack@5.75.0
       cssnano: 5.1.14_postcss@8.4.20
@@ -13082,9 +13080,9 @@ packages:
   /prosemirror-state/1.4.2:
     resolution: {integrity: sha512-puuzLD2mz/oTdfgd8msFbe0A42j5eNudKAAPDB0+QJRw8cO1ygjLmhLrg9RvDpf87Dkd6D4t93qdef00KKNacQ==}
     dependencies:
-      prosemirror-model: 1.18.3
-      prosemirror-transform: 1.7.0
-      prosemirror-view: 1.29.1
+      prosemirror-model: 1.19.0
+      prosemirror-transform: 1.7.1
+      prosemirror-view: 1.30.0
     dev: false
 
   /prosemirror-transform/1.7.0:
