@@ -6,10 +6,8 @@ import { fileURLToPath } from "url";
 
 import postcssOptions from "../postcss.config.js";
 import { setupCompiler } from "./setup-compiler.js";
-import { createRequire } from "module";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const require = createRequire(import.meta.url);
 
 export const startPlayground = async (
     forkedNetworkChainId,
