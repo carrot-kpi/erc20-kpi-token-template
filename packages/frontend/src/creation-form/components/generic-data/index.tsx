@@ -109,7 +109,6 @@ export const GenericData = ({
 
     const handleTagsChange = useCallback(
         (value: string[]) => {
-            console.log("here");
             if (value.some((tag, i) => value.indexOf(tag) !== i)) {
                 setTagsErrorText(t("error.tags.duplicated"));
                 return;
