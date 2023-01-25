@@ -6,8 +6,10 @@ import { fileURLToPath } from "url";
 
 import postcssOptions from "../postcss.config.js";
 import { setupCompiler } from "./setup-compiler.js";
+import { createRequire } from "module";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
 
 export const startPlayground = async (
     forkedNetworkChainId,
@@ -82,7 +84,6 @@ export const startPlayground = async (
                 shared: {
                     "@carrot-kpi/react": "^0.21.0",
                     "@carrot-kpi/sdk": "^1.12.0",
-                    "@carrot-kpi/ui": "^0.11.1",
                     ethers: "^5.7.1",
                     react: { requiredVersion: "^18.2.0", singleton: true },
                     "react-dom": {
@@ -171,7 +172,6 @@ export const startPlayground = async (
                 shared: {
                     "@carrot-kpi/react": "^0.21.0",
                     "@carrot-kpi/sdk": "^1.12.0",
-                    "@carrot-kpi/ui": "^0.11.1",
                     ethers: "^5.7.1",
                     react: { requiredVersion: "^18.2.0", singleton: true },
                     "react-dom": {
@@ -195,7 +195,6 @@ export const startPlayground = async (
                 shared: {
                     "@carrot-kpi/react": "^0.21.0",
                     "@carrot-kpi/sdk": "^1.12.0",
-                    "@carrot-kpi/ui": "^0.11.1",
                     ethers: "^5.7.1",
                     react: { requiredVersion: "^18.2.0", singleton: true },
                     "react-dom": {
