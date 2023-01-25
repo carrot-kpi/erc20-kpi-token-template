@@ -11,7 +11,7 @@ export const NextStepPreview = ({
     title,
 }: NextStepPreviewProps): ReactElement => (
     <div className="flex w-full max-w-xl flex-col gap-1 border border-l-black border-t-black border-r-black border-b-white bg-white p-4">
-        <TextMono size="sm" className="font-medium">
+        <TextMono size="sm" weight="medium">
             {step}
         </TextMono>
         <Title size="5xl" className="font-bold opacity-60">

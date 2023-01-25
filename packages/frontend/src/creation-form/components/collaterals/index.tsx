@@ -194,7 +194,9 @@ export const Collaterals = ({
                                     id="collateral-amount"
                                     label=""
                                     placeholder="0.0"
-                                    className="border-none text-right"
+                                    className={{
+                                        input: "border-none text-right",
+                                    }}
                                     size="xl"
                                     disabled={!!!pickerTokenOption}
                                     value={pickerRawAmount.formattedValue}
@@ -231,7 +233,9 @@ export const Collaterals = ({
                                     id="minimum-payout"
                                     label=""
                                     placeholder="0.0"
-                                    className="border-none text-right"
+                                    className={{
+                                        input: "border-none text-right",
+                                    }}
                                     size="xl"
                                     disabled={!!!pickerTokenOption}
                                     value={
@@ -257,13 +261,21 @@ export const Collaterals = ({
             </div>
             <div className="flex flex-col gap-2">
                 <div className="grid grid-cols-3">
-                    <TextMono className="font-medium" size="sm">
+                    <TextMono weight="medium" size="sm">
                         {t("label.collateral.table.collateral")}
                     </TextMono>
-                    <TextMono className="text-center font-medium" size="sm">
+                    <TextMono
+                        weight="medium"
+                        className={{ root: "text-center" }}
+                        size="sm"
+                    >
                         {t("label.collateral.table.amount")}
                     </TextMono>
-                    <TextMono className="text-right font-medium" size="sm">
+                    <TextMono
+                        weight="medium"
+                        className={{ root: "text-right" }}
+                        size="sm"
+                    >
                         {t("label.collateral.table.minimum.payout")}
                     </TextMono>
                 </div>
@@ -271,7 +283,7 @@ export const Collaterals = ({
                     {collaterals.length === 0 ? (
                         <TextMono
                             size="sm"
-                            className="text-center"
+                            className={{ root: "text-center" }}
                             weight="medium"
                         >
                             {t("label.collateral.table.empty")}
@@ -284,15 +296,21 @@ export const Collaterals = ({
                                     key={token.address}
                                     className="grid grid-cols-3"
                                 >
-                                    <TextMono className="text-" size="md">
+                                    <TextMono size="md">
                                         {token.symbol}
                                     </TextMono>
-                                    <TextMono className="text-center" size="md">
+                                    <TextMono
+                                        className={{ root: "text-center" }}
+                                        size="md"
+                                    >
                                         {utils.commify(
                                             collateral.amount.toFixed(4)
                                         )}
                                     </TextMono>
-                                    <TextMono className="text-right" size="md">
+                                    <TextMono
+                                        className={{ root: "text-right" }}
+                                        size="md"
+                                    >
                                         {utils.commify(
                                             collateral.minimumPayout.toFixed(4)
                                         )}
