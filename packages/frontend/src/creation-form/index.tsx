@@ -187,7 +187,7 @@ export const Component = ({
                         className="bg-square h-full w-full text-black dark:text-white"
                     />
                 </div> */}
-                <div className="square-list fixed left-20 top-1/3 z-10 hidden flex-col gap-8 lg:flex">
+                <div className="square-list fixed left-20 top-1/3 hidden flex-col gap-8 lg:flex">
                     {stepTitles.map((title, index) => {
                         const currentStep = index === step;
                         const active = index <= mostUpdatedStep;
@@ -225,7 +225,7 @@ export const Component = ({
                         );
                     })}
                 </div>
-                <div className="z-10 w-full max-w-xl">
+                <div className="w-full max-w-xl">
                     <Card
                         step={t("card.step.label", { number: step + 1 })}
                         title={stepTitles[step]}
@@ -289,7 +289,7 @@ export const Component = ({
                         )}
                     </Card>
                 </div>
-                <div className="z-10 mt-20 min-h-fit w-full max-w-xl">
+                <div className="mt-20 min-h-fit w-full max-w-xl">
                     {!!stepTitles[step + 1] && (
                         <NextStepPreview
                             step={t("card.step.label", { number: step + 2 })}
