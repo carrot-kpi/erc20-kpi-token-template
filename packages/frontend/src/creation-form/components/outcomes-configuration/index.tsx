@@ -131,7 +131,7 @@ export const OutcomesConfiguration = ({
                         value={
                             data[templates[0].id]?.lowerBound?.formattedValue
                         }
-                        className="w-full"
+                        className={{ root: "w-full", input: "w-full" }}
                     />
                     <NumberInput
                         id="higher-bound"
@@ -141,7 +141,7 @@ export const OutcomesConfiguration = ({
                         value={
                             data[templates[0].id]?.higherBound?.formattedValue
                         }
-                        className="w-full"
+                        className={{ root: "w-full", input: "w-full" }}
                     />
                 </div>
             ) : (
@@ -167,7 +167,10 @@ export const OutcomesConfiguration = ({
                                         value={
                                             data[id]?.lowerBound?.formattedValue
                                         }
-                                        className="w-full"
+                                        className={{
+                                            root: "w-full",
+                                            input: "w-full",
+                                        }}
                                     />
                                     <NumberInput
                                         id="higher-bound"
@@ -180,7 +183,10 @@ export const OutcomesConfiguration = ({
                                             data[id]?.higherBound
                                                 ?.formattedValue
                                         }
-                                        className="w-full"
+                                        className={{
+                                            root: "w-full",
+                                            input: "w-full",
+                                        }}
                                     />
                                 </div>
                             </AccordionDetails>
