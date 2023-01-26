@@ -149,7 +149,7 @@ const App = (): ReactElement => {
         "latest-kpi-token",
         null
     );
-    const [activeView, setActiveView] = useState<View>("creation");
+    const [activeView, setActiveView] = useState<View>("view");
 
     const { config } = usePrepareSendTransaction({
         request: creationTx,
@@ -205,7 +205,7 @@ const App = (): ReactElement => {
 
     return (
         <div className="scrollbar h-screen w-screen overflow-x-hidden">
-            <div className="absolute rounded-xl top-0 left-0 p-1 z-10 flex gap-1 bg-gray-100 bg-opacity-50">
+            <div className="absolute rounded-xl top-0 left-0 p-1 z-20 flex gap-1 bg-gray-100 bg-opacity-50">
                 <Button
                     size="xsmall"
                     onClick={() => handleViewChange("creation")}
