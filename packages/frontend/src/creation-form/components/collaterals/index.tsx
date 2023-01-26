@@ -176,8 +176,6 @@ export const Collaterals = ({
         onNext(collaterals);
     }, [collaterals, onNext]);
 
-    console.log(tokenLists);
-
     return (
         <>
             <ERC20TokenPicker
