@@ -25,16 +25,12 @@
         "test": "jest"
     },
     "dependencies": {
-        "@carrot-kpi/react": "^0.22.0",
-        "@carrot-kpi/sdk": "^1.12.0",
+        "@carrot-kpi/react": "^0.22.1",
+        "@carrot-kpi/sdk": "^1.13.2",
         "@carrot-kpi/ui": "^0.14.0",
         "@fontsource/ibm-plex-mono": "^4.5.13",
         "@testing-library/jest-dom": "^5.16.5",
         "@testing-library/react": "^13.4.0",
-        "@tiptap/extension-heading": "^2.0.0-beta.209",
-        "@tiptap/extension-placeholder": "^2.0.0-beta.209",
-        "@tiptap/react": "^2.0.0-beta.209",
-        "@tiptap/starter-kit": "^2.0.0-beta.209",
         "@types/git-rev-sync": "^2.0.0",
         "@types/jest": "^29.0.3",
         "@types/react": "^18.0.21",
