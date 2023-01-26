@@ -1,6 +1,6 @@
 import "../global.css";
 
-import { TextMono } from "@carrot-kpi/ui";
+import { Typography } from "@carrot-kpi/ui";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { ChainId, Template } from "@carrot-kpi/sdk";
 import { BigNumber, constants } from "ethers";
@@ -216,11 +216,11 @@ export const Component = ({
                                         />
                                     )}
                                 </div>
-                                <TextMono
+                                <Typography
                                     weight={currentStep ? "medium" : undefined}
                                 >
                                     {title}
-                                </TextMono>
+                                </Typography>
                             </div>
                         );
                     })}

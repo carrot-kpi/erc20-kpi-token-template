@@ -3,9 +3,9 @@ import {
     ERC20TokenPicker,
     NumberInput,
     TextInput,
-    TextMono,
-    TokenListWithBalance,
+    Typography,
     TokenInfoWithBalance,
+    TokenListWithBalance,
 } from "@carrot-kpi/ui";
 import { NamespacedTranslateFunction, useTokenLists } from "@carrot-kpi/react";
 import { ReactElement, useCallback, useEffect, useState } from "react";
@@ -86,7 +86,7 @@ export const Collaterals = ({
                 symbol: "TST2",
             });
         }
-        setSelectedTokenList(defaultSelectedList);
+        setSelectedTokenList(defaultSelectedList as TokenListWithBalance);
     }, [selectedTokenList, tokenLists]);
 
     useEffect(() => {
@@ -185,11 +185,23 @@ export const Collaterals = ({
                 onDismiss={handleERC20TokenPickerDismiss}
                 selectedToken={pickerToken}
                 onSelectedTokenChange={setPickerToken}
-                lists={tokenLists}
+                lists={tokenLists as TokenListWithBalance[]}
                 /* TODO: define */
                 selectedList={selectedTokenList}
                 onSelectedListChange={setSelectedTokenList}
                 chainId={chain?.id}
+                messages={{
+                    search: {
+                        title: t("erc20.picker.search.title"),
+                        inputPlaceholder: t("erc20.picker.search.placeholder"),
+                        noTokens: t("erc20.picker.search.no.token"),
+                        manageLists: t("erc20.picker.search.manage.lists"),
+                    },
+                    manageLists: {
+                        title: t("erc20.picker.manage.lists.title"),
+                        noTokens: t("erc20.picker.manage.lists.no.lists"),
+                    },
+                }}
             />
             <div className="flex flex-col gap-6">
                 <div className="flex flex-col gap-3">
@@ -220,7 +232,7 @@ export const Collaterals = ({
                                         className={{
                                             input: "border-none text-right",
                                         }}
-                                        size="xl"
+                                        variant="xl"
                                         disabled={!!!pickerToken}
                                         value={pickerRawAmount.formattedValue}
                                         onValueChange={setPickerRawAmount}
@@ -228,30 +240,32 @@ export const Collaterals = ({
                                 </div>
                                 <div className="flex justify-end">
                                     <div className="flex items-center gap-2">
-                                        <TextMono size="sm">
+                                        <Typography variant="sm">
                                             {t("label.collateral.balance")}:{" "}
-                                        </TextMono>
+                                        </Typography>
                                         {isLoading ? (
                                             <span className="inline-block h-4 w-14 animate-pulse rounded-md bg-gray-200 text-sm" />
                                         ) : !!data ? (
-                                            <TextMono size="sm">
+                                            <Typography variant="sm">
                                                 {data.formatted}
-                                            </TextMono>
+                                            </Typography>
                                         ) : (
-                                            <TextMono size="sm">-</TextMono>
+                                            <Typography variant="sm">
+                                                -
+                                            </Typography>
                                         )}
                                     </div>
-                                    {/* <TextMono size="sm">$ 7,068.31</TextMono> */}
+                                    {/* <Typography size="sm">$ 7,068.31</Typography> */}
                                 </div>
 
                                 <div className="h-px w-full bg-black" />
 
                                 <div className="flex items-center justify-between">
-                                    <TextMono size="md">
+                                    <Typography>
                                         {t(
                                             "label.collateral.picker.minimum.payout"
                                         )}
-                                    </TextMono>
+                                    </Typography>
                                     <NumberInput
                                         id="minimum-payout"
                                         label=""
@@ -259,7 +273,7 @@ export const Collaterals = ({
                                         className={{
                                             input: "border-none text-right",
                                         }}
-                                        size="xl"
+                                        variant="xl"
                                         disabled={!!!pickerToken}
                                         value={
                                             pickerRawMinimumPayout.formattedValue
@@ -271,7 +285,7 @@ export const Collaterals = ({
                                 </div>
                                 {/* TODO: implement price fetching */}
                                 {/* <div className="flex justify-end">
-                                <TextMono size="sm">$ 7,068.31</TextMono>
+                                <Typography size="sm">$ 7,068.31</Typography>
                             </div> */}
                             </div>
                         </div>
@@ -287,33 +301,33 @@ export const Collaterals = ({
                 </div>
                 <div className="flex flex-col gap-2">
                     <div className="grid grid-cols-3">
-                        <TextMono weight="medium" size="sm">
+                        <Typography weight="medium" variant="sm">
                             {t("label.collateral.table.collateral")}
-                        </TextMono>
-                        <TextMono
+                        </Typography>
+                        <Typography
                             weight="medium"
                             className={{ root: "text-center" }}
-                            size="sm"
+                            variant="sm"
                         >
                             {t("label.collateral.table.amount")}
-                        </TextMono>
-                        <TextMono
+                        </Typography>
+                        <Typography
                             weight="medium"
                             className={{ root: "text-right" }}
-                            size="sm"
+                            variant="sm"
                         >
                             {t("label.collateral.table.minimum.payout")}
-                        </TextMono>
+                        </Typography>
                     </div>
                     <div className="scrollbar rounded-xxl flex max-h-48 flex-col gap-2 overflow-y-auto border border-black p-4">
                         {collaterals.length === 0 ? (
-                            <TextMono
-                                size="sm"
+                            <Typography
+                                variant="sm"
                                 className={{ root: "text-center" }}
                                 weight="medium"
                             >
                                 {t("label.collateral.table.empty")}
-                            </TextMono>
+                            </Typography>
                         ) : (
                             collaterals.map((collateral) => {
                                 const token = collateral.amount.currency;
@@ -322,27 +336,23 @@ export const Collaterals = ({
                                         key={token.address}
                                         className="grid grid-cols-3"
                                     >
-                                        <TextMono size="md">
-                                            {token.symbol}
-                                        </TextMono>
-                                        <TextMono
+                                        <Typography>{token.symbol}</Typography>
+                                        <Typography
                                             className={{ root: "text-center" }}
-                                            size="md"
                                         >
                                             {utils.commify(
                                                 collateral.amount.toFixed(4)
                                             )}
-                                        </TextMono>
-                                        <TextMono
+                                        </Typography>
+                                        <Typography
                                             className={{ root: "text-right" }}
-                                            size="md"
                                         >
                                             {utils.commify(
                                                 collateral.minimumPayout.toFixed(
                                                     4
                                                 )
                                             )}
-                                        </TextMono>
+                                        </Typography>
                                     </div>
                                 );
                             })

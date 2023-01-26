@@ -1,4 +1,4 @@
-import { Title, TextMono } from "@carrot-kpi/ui";
+import { Typography } from "@carrot-kpi/ui";
 import { ReactElement, ReactNode } from "react";
 
 interface CardProps {
@@ -10,12 +10,10 @@ interface CardProps {
 export const Card = ({ title, step, children }: CardProps): ReactElement => (
     <div className="flex h-full w-full max-w-xl flex-col gap-2 border border-black bg-white">
         <div className="flex flex-col gap-1 border-b border-black p-6">
-            <TextMono size="sm" weight="medium">
+            <Typography variant="sm" weight="medium">
                 {step}
-            </TextMono>
-            <Title size="5xl" className="font-bold">
-                {title}
-            </Title>
+            </Typography>
+            <Typography variant="h2">{title}</Typography>
         </div>
         <div className="scrollbar p-6">{children}</div>
     </div>
