@@ -40,6 +40,7 @@
         "@types/react": "^18.0.21",
         "@types/react-dom": "^18.0.6",
         "chalk": "^5.0.1",
+        "dompurify": "^2.4.3",
         "eslint-config-custom": "workspace:*",
         "ethers": "^5.7.1",
         "fork-ts-checker-webpack-plugin": "^7.2.13",
@@ -52,6 +53,7 @@
         "react-dom": "^18.2.0",
         "react-i18next": "^12.0.0",
         "react-test-renderer": "^18.2.0",
+        "react-use": "^17.4.0",
         "rimraf": "^3.0.2",
         "terser-webpack-plugin": "^5.3.6",
         "ts-jest": "^29.0.3",
@@ -63,6 +65,7 @@
     },
     "devDependencies": {
         "@svgr/webpack": "^6.5.1",
+        "@types/dompurify": "^2.4.0",
         "autoprefixer": "^10.4.13",
         "class-variance-authority": "^0.4.0",
         "css-loader": "^6.7.2",

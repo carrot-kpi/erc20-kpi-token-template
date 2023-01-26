@@ -1,10 +1,12 @@
+import { Fetcher, KpiToken } from "@carrot-kpi/sdk";
+import { useLocalStorage } from "react-use";
 import {
     Campaign,
     CarrotCoreProvider,
     CreationForm,
     useKpiTokenTemplates,
 } from "@carrot-kpi/react";
-import { CarrotUIProvider } from "@carrot-kpi/ui";
+import { Button, CarrotUIProvider } from "@carrot-kpi/ui";
 import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Wallet, providers, Signer, BigNumber, utils, constants } from "ethers";
@@ -23,13 +25,15 @@ import { Chain } from "wagmi/chains";
 import * as chains from "wagmi/chains";
 import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
+import { Loader } from "../src/ui/loader";
 
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import "@carrot-kpi/ui/styles.css";
 
 import "./global.css";
-import { Fetcher, KpiToken } from "@carrot-kpi/sdk";
+
+type View = "creation" | "view";
 
 class CarrotConnector extends Connector<
     providers.JsonRpcProvider,
@@ -141,7 +145,11 @@ const App = (): ReactElement => {
         data: "",
         value: BigNumber.from("0"),
     });
-    const [kpiToken, setKpiToken] = useState<KpiToken | null>(null);
+    const [kpiToken, setKpiToken] = useLocalStorage<KpiToken | null>(
+        "latest-kpi-token",
+        null
+    );
+    const [activeView, setActiveView] = useState<View>("creation");
 
     const { config } = usePrepareSendTransaction({
         request: creationTx,
@@ -181,6 +189,7 @@ const App = (): ReactElement => {
         return () => {
             cancelled = true;
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [provider, sendTransactionAsync]);
 
     const handleDone = useCallback(
@@ -190,29 +199,39 @@ const App = (): ReactElement => {
         []
     );
 
+    const handleViewChange = useCallback((view: View) => {
+        setActiveView(view);
+    }, []);
+
     return (
-        <div className="h-screen">
-            {!isLoadingTemplates && (
+        <div className="scrollbar h-screen w-screen overflow-x-hidden">
+            <div className="absolute rounded-xl top-0 left-0 p-1 z-10 flex gap-1 bg-gray-100 bg-opacity-50">
+                <Button
+                    size="xsmall"
+                    onClick={() => handleViewChange("creation")}
+                >
+                    Creation
+                </Button>
+                <Button size="xsmall" onClick={() => handleViewChange("view")}>
+                    View
+                </Button>
+            </div>
+            {activeView === "creation" && !isLoadingTemplates && (
                 <CreationForm
                     i18n={i18next}
-                    fallback={<>Loading...</>}
+                    fallback={<Loader />}
                     template={templates[0]}
                     customBaseUrl="http://localhost:9002/"
                     onDone={handleDone}
                 />
             )}
-            {!!kpiToken && (
-                <>
-                    <h2>Page</h2>
-                    <div key={kpiToken.address}>
-                        <Campaign
-                            i18n={i18next}
-                            fallback={<>Loading...</>}
-                            address={kpiToken.address}
-                            customBaseUrl="http://localhost:9002/"
-                        />
-                    </div>
-                </>
+            {activeView === "view" && !!kpiToken && (
+                <Campaign
+                    i18n={i18next}
+                    fallback={<Loader />}
+                    address={kpiToken.address}
+                    customBaseUrl="http://localhost:9002/"
+                />
             )}
         </div>
     );
