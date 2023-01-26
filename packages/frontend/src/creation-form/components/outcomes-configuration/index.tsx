@@ -4,7 +4,7 @@ import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import {
     Accordion,
     AccordionSummary,
-    TextMono,
+    Typography,
     AccordionDetails,
     NumberInput,
 } from "@carrot-kpi/ui";
@@ -151,9 +151,9 @@ export const OutcomesConfiguration = ({
                     return (
                         <Accordion key={template.id}>
                             <AccordionSummary>
-                                <TextMono>
+                                <Typography>
                                     {template.specification.name}
-                                </TextMono>
+                                </Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <div className="flex flex-col gap-2">
