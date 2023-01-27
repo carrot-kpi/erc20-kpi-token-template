@@ -1,5 +1,6 @@
 import {
     ChangeEvent,
+    FocusEvent,
     ReactElement,
     useCallback,
     useEffect,
@@ -87,11 +88,20 @@ export const GenericData = ({
         title,
     ]);
 
+    const handleOnBlur = useCallback(
+        (stateUpdater: (value: string) => void) =>
+            (event: FocusEvent<HTMLInputElement>) => {
+                stateUpdater(event.target.value.trim());
+            },
+        []
+    );
+
     const handleTitleChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>): void => {
-            const trimmedValue = event.target.value.trim();
-            setTitle(trimmedValue);
-            setTitleErrorText(!trimmedValue ? t("error.title.empty") : "");
+            setTitle(event.target.value);
+            setTitleErrorText(
+                !event.target.value ? t("error.title.empty") : ""
+            );
         },
         [t]
     );
@@ -121,10 +131,9 @@ export const GenericData = ({
 
     const handleERC20NameChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {
-            const trimmedValue = event.target.value.trim();
-            setERC20Name(trimmedValue);
+            setERC20Name(event.target.value);
             setERC20NameErrorText(
-                !trimmedValue ? t("error.erc20.name.empty") : ""
+                !event.target.value ? t("error.erc20.name.empty") : ""
             );
         },
         [t]
@@ -184,6 +193,7 @@ export const GenericData = ({
                 label={t("general.label.title")}
                 placeholder={t("general.placeholder.title")}
                 onChange={handleTitleChange}
+                onBlur={handleOnBlur(setTitle)}
                 value={title}
                 error={!!titleErrorText}
                 helperText={titleErrorText}
@@ -213,6 +223,7 @@ export const GenericData = ({
                 label={t("general.label.token.name")}
                 placeholder={"Example"}
                 onChange={handleERC20NameChange}
+                onBlur={handleOnBlur(setERC20Name)}
                 value={erc20Name}
                 error={!!erc20NameErrorText}
                 helperText={erc20NameErrorText}
