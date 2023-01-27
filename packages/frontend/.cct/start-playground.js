@@ -1,5 +1,6 @@
 import WebpackDevServer from "webpack-dev-server";
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 import { join, dirname } from "path";
 import webpack from "webpack";
 import { fileURLToPath } from "url";
@@ -90,6 +91,9 @@ export const startPlayground = async (
                     },
                     wagmi: "^0.9.5",
                 },
+            }),
+            new NodePolyfillPlugin({
+                includeAliases: ["buffer"],
             }),
         ],
     });
@@ -201,6 +205,9 @@ export const startPlayground = async (
                     },
                     wagmi: "^0.9.5",
                 },
+            }),
+            new NodePolyfillPlugin({
+                includeAliases: ["buffer"],
             }),
         ],
     });
