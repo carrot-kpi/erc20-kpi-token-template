@@ -205,7 +205,7 @@ const App = (): ReactElement => {
 
     return (
         <div className="scrollbar h-screen w-screen overflow-x-hidden">
-            <div className="absolute rounded-xl top-0 left-0 p-1 z-20 flex gap-1 bg-gray-100 bg-opacity-50">
+            <div className="absolute rounded-xl bottom-0 right-0 p-1 z-20 flex gap-1 bg-gray-100 bg-opacity-50">
                 <Button
                     size="xsmall"
                     onClick={() => handleViewChange("creation")}
