@@ -1,5 +1,4 @@
 import { Fetcher, KpiToken } from "@carrot-kpi/sdk";
-import { useLocalStorage } from "react-use";
 import {
     Campaign,
     CarrotCoreProvider,
@@ -32,6 +31,7 @@ import "@fontsource/ibm-plex-mono/500.css";
 import "@carrot-kpi/ui/styles.css";
 
 import "./global.css";
+import { usePersistantState } from "../src/utils/localStorage";
 
 type View = "creation" | "view";
 
@@ -145,7 +145,7 @@ const App = (): ReactElement => {
         data: "",
         value: BigNumber.from("0"),
     });
-    const [kpiToken, setKpiToken] = useLocalStorage<KpiToken | null>(
+    const [kpiToken, setKpiToken] = usePersistantState<KpiToken | null>(
         "latest-kpi-token",
         null
     );
