@@ -1,6 +1,6 @@
 import { KpiToken } from "@carrot-kpi/sdk";
 import { Chip, Typography } from "@carrot-kpi/ui";
-import DOMPurify from "dompurify";
+import sanitazeHtml from "sanitize-html";
 import { ReactElement, ReactNode } from "react";
 
 interface CampaignCardExpandedProps {
@@ -27,7 +27,7 @@ export const CampaignCardExpanded = ({
             <div
                 className="prose prose-sm max-w-none prose-pre:scrollbar scrollbar overflow-y-auto max-h-[300px]"
                 dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(description),
+                    __html: sanitazeHtml(description),
                 }}
             />
             <div className="flex flex-wrap gap-3">

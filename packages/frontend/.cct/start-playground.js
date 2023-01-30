@@ -1,7 +1,6 @@
 import WebpackDevServer from "webpack-dev-server";
 import HtmlWebpackPlugin from "html-webpack-plugin";
-import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
-import { join, dirname } from "path";
+import path, { join, dirname } from "path";
 import webpack from "webpack";
 import { fileURLToPath } from "url";
 
@@ -29,6 +28,9 @@ export const startPlayground = async (
         stats: "none",
         entry: join(__dirname, "../playground/index.tsx"),
         resolve: {
+            fallback: {
+                buffer: join(__dirname, "./utils/buffer.js"),
+            },
             extensions: [".ts", ".tsx", "..."],
         },
         module: {
@@ -92,9 +94,6 @@ export const startPlayground = async (
                     wagmi: "^0.9.5",
                 },
             }),
-            new NodePolyfillPlugin({
-                includeAliases: ["buffer"],
-            }),
         ],
     });
     const templateApplicationCompiler = webpack({
@@ -108,6 +107,9 @@ export const startPlayground = async (
         },
         stats: "none",
         resolve: {
+            fallback: {
+                buffer: join(__dirname, "./utils/buffer.js"),
+            },
             extensions: [".ts", ".tsx", "..."],
         },
         module: {
@@ -205,9 +207,6 @@ export const startPlayground = async (
                     },
                     wagmi: "^0.9.5",
                 },
-            }),
-            new NodePolyfillPlugin({
-                includeAliases: ["buffer"],
             }),
         ],
     });
