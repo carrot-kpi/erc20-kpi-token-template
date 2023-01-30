@@ -20,7 +20,7 @@ interface PageProps {
     kpiToken: KpiToken;
 }
 
-export const Component = ({ t, kpiToken }: PageProps): ReactElement => {
+export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
     return (
         <div className="overflow-x-hidden">
             <div className="bg-grid-orange bg-orange items-center md:items-start px-2 py-3 sm:px-9 sm:py-5 md:px-36 md:py-24 flex flex-col gap-6">
@@ -132,8 +132,29 @@ export const Component = ({ t, kpiToken }: PageProps): ReactElement => {
                     </InfoSection>
                 </CampaignCardExpanded>
             </div>
-            <div className="bg-white bg-grid-white dark:bg-black m-5 px-2 py-3 sm:px-9 sm:py-5 md:px-36 md:py-24">
-                <Typography variant="h2">{t("account.title")}</Typography>
+            <div className="flex flex-col gap-[124px] bg-white bg-grid-white dark:bg-black m-5 px-2 py-3 sm:px-9 sm:py-5 md:px-36 md:py-24">
+                <div className="flex flex-col gap-12">
+                    <Typography variant="h2">{t("account.title")}</Typography>
+                    <div className="flex items-center justify-center h-96 w-full max-w-6xl bg-gray-200">
+                        <Button onClick={() => console.log("connect")}>
+                            {t("account.connect")}
+                        </Button>
+                    </div>
+                </div>
+                <div className="flex flex-col gap-12">
+                    <Typography variant="h2">{t("oracle.title")}</Typography>
+                    {/*TODO: add oracle view component*/}
+                    {/* <Campaign
+                        i18n={i18n}
+                        fallback={<Loader />}
+                        address={kpiToken.oracles[0].address}
+                        customBaseUrl="http://localhost:9002/"
+                    /> */}
+                </div>
+                <div className="flex flex-col gap-12">
+                    <Typography variant="h2">{t("widgets.title")}</Typography>
+                    {/*TODO: add campaign widgets*/}
+                </div>
             </div>
         </div>
     );

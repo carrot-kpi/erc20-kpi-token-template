@@ -11,5 +11,8 @@
     "overview.participants.label": "Participants",
     "overview.resolution.label": "Resolution",
     "overview.reward.label": "Reward type",
-    "account.title": "My Account"
+    "account.title": "My Account",
+    "account.connect": "Connect wallet",
+    "oracle.title": "Oracle",
+    "widgets.title": "Widgets"
 }
