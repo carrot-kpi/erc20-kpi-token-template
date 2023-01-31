@@ -26,7 +26,8 @@ export const CollateralRow = (collateral: CollateralData) => {
                 onMouseLeave={handleMouseLeave}
             >
                 <ERC20TokenLogo
-                    chainId={chain?.id}
+                    // TODO: update the UI lib to accept undefined
+                    chainId={chain?.id || 1}
                     address={address}
                     size="sm"
                 />

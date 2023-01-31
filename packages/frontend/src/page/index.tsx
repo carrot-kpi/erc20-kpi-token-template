@@ -21,7 +21,7 @@ import { commify, defaultAbiCoder, formatUnits } from "ethers/lib/utils.js";
 import { CollateralData } from "../creation-form/types";
 import { FinalizableOracle } from "./types";
 import { BigNumber } from "ethers";
-import { useNetwork, useProvider } from "wagmi";
+import { useProvider } from "wagmi";
 import { CollateralRow } from "./components/collateral-row";
 
 interface PageProps {
@@ -33,16 +33,15 @@ interface PageProps {
 
 export const Component = ({ t, kpiToken }: PageProps): ReactElement => {
     const provider = useProvider();
-    const { chain } = useNetwork();
 
-    const { loading: loadingData, data } = useWatchData(kpiToken.address);
-    const { loading: loadingOwner, owner } = useWatchKPITokenOwner(
+    const { /* loading: loadingData, */ data } = useWatchData(kpiToken.address);
+    const { /* loading: loadingOwner, */ owner } = useWatchKPITokenOwner(
         kpiToken.address
     );
 
-    const [unrecoverableError, setUnrecoverableError] = useState(false);
+    const [, /* unrecoverableError */ setUnrecoverableError] = useState(false);
     const [collaterals, setCollaterals] = useState<CollateralData[]>([]);
-    const [finalizableOracles, setFinalizableOracles] = useState<
+    const [, /* finalizableOracles */ setFinalizableOracles] = useState<
         FinalizableOracle[]
     >([]);
     const [allOrNone, setAllOrNone] = useState(false);
