@@ -53,7 +53,7 @@ importers:
     specifiers:
       '@carrot-kpi/react': ^0.23.0
       '@carrot-kpi/sdk': ^1.14.0
-      '@carrot-kpi/ui': ^0.16.0
+      '@carrot-kpi/ui': ^0.16.2
       '@fontsource/ibm-plex-mono': ^4.5.13
       '@fontsource/inter': ^4.5.15
       '@svgr/webpack': ^6.5.1
@@ -103,7 +103,7 @@ importers:
     dependencies:
       '@carrot-kpi/react': 0.23.0_ev57jke2bverjrniilxjt7pq6a
       '@carrot-kpi/sdk': 1.14.0
-      '@carrot-kpi/ui': 0.16.0_4cesnpzsxmobuaf6wbwmgc7m6e
+      '@carrot-kpi/ui': 0.16.2_4cesnpzsxmobuaf6wbwmgc7m6e
       '@fontsource/ibm-plex-mono': 4.5.13
       '@testing-library/jest-dom': 5.16.5
       '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
@@ -1613,8 +1613,8 @@ packages:
       - bufferutil
       - utf-8-validate
 
-  /@carrot-kpi/ui/0.16.0_4cesnpzsxmobuaf6wbwmgc7m6e:
-    resolution: {integrity: sha512-qeost400UNhBMuAy1+tj/M5Xn7C3+doy+Pjkgya2Btw4mfG7HSZEbuuSQvyem1r4qD815W7SINPODzls4Tra4A==}
+  /@carrot-kpi/ui/0.16.2_4cesnpzsxmobuaf6wbwmgc7m6e:
+    resolution: {integrity: sha512-5EyQ4Cr1Q4YbhLFl9WSdaKt4TEoe/JZ7ECVdC+X5aIuLebIGW0aknn8r+t2bk0jpn0/uXb7ZE9hD7iBaZVNTRg==}
     peerDependencies:
       '@fontsource/ibm-plex-mono': ^4.5.12
       '@fontsource/inter': ^4.5.15
@@ -5823,7 +5823,7 @@ packages:
   /async-mutex/0.2.6:
     resolution: {integrity: sha512-Hs4R+4SPgamu6rSGW8C7cV9gaWUKEHykfzCCvIRuaVv636Ju10ZdeUbvb4TBEW0INuq2DHZqXbK4Nd3yG4RaRw==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.5.0
     dev: false
 
   /async/2.6.4:
@@ -6381,7 +6381,7 @@ packages:
     resolution: {integrity: sha512-gxGWBrTT1JuMx6R+o5PTXMmUnhnVzLQ9SNutD4YqKtI6ap897t3tKECYla6gCWEkplXnlNybEkZg9GEGxKFCgw==}
     dependencies:
       pascal-case: 3.1.2
-      tslib: 2.4.1
+      tslib: 2.5.0
 
   /camelcase-css/2.0.1:
     resolution: {integrity: sha512-QOSvevhslijgYwRx6Rv7zKdMF8lbRmx+uQGx2+vDc+KI/eBnsy9kit5aj23AgGu3pa4t9AgwbnXWqS+iOY+2aA==}
@@ -7507,7 +7507,7 @@ packages:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.5.0
 
   /dot-prop/5.3.0:
     resolution: {integrity: sha512-QM8q3zDe58hqUqjraQOmzZ1LIH9SWQJTlEKCH4kJ2oQvLZk7RbQXvtDM2XEq3fwkV9CCvvH4LA0AV+ogFsBM2Q==}
@@ -11597,7 +11597,7 @@ packages:
   /lower-case/2.0.2:
     resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.5.0
 
   /lru-cache/4.1.5:
     resolution: {integrity: sha512-sWZlbEP2OsHNkXrMl5GYk/jKk70MBng6UU4YI/qGDYbgf6YbP4EvmqISbXCoJiRKs+1bSpFHVgQxvJ17F2li5g==}
@@ -12390,7 +12390,7 @@ packages:
     resolution: {integrity: sha512-RXlj7zCYokReqWpOPH9oYivUzLYZ5vAPIfEmCTNViosC78F8F0H9y7T7gG2M39ymgutxF5gcFEsyZQSph9Bp3A==}
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.5.0
 
   /parent-module/1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
@@ -12430,7 +12430,7 @@ packages:
     resolution: {integrity: sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.5.0
 
   /path-case/3.0.4:
     resolution: {integrity: sha512-qO4qCFjXqVTrcbPt/hQfhTQ+VhFsqNKOPtytgNKkKxSoEp3XPUQ8ObFuePylOIok5gjn69ry8XiULxCwot3Wfg==}
@@ -13511,14 +13511,14 @@ packages:
       scheduler: 0.23.0
     dev: false
 
-  /react-universal-interface/0.6.2_react@18.2.0+tslib@2.4.1:
+  /react-universal-interface/0.6.2_react@18.2.0+tslib@2.5.0:
     resolution: {integrity: sha512-dg8yXdcQmvgR13RIlZbTRQOoUrDciFVoSBZILwjE2LFISxZZ8loVJKAkuzswl5js8BHda79bIb2b84ehU8IjXw==}
     peerDependencies:
       react: '*'
       tslib: '*'
     dependencies:
       react: 18.2.0
-      tslib: 2.4.1
+      tslib: 2.5.0
     dev: false
 
   /react-use/17.4.0_biqbaboplfbrettd7655fr4n2y:
@@ -13536,13 +13536,13 @@ packages:
       nano-css: 5.3.5_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-universal-interface: 0.6.2_react@18.2.0+tslib@2.4.1
+      react-universal-interface: 0.6.2_react@18.2.0+tslib@2.5.0
       resize-observer-polyfill: 1.5.1
       screenfull: 5.2.0
       set-harmonic-interval: 1.0.1
       throttle-debounce: 3.0.1
       ts-easing: 0.2.0
-      tslib: 2.4.1
+      tslib: 2.5.0
     dev: false
 
   /react-virtualized-auto-sizer/1.0.7_biqbaboplfbrettd7655fr4n2y:
@@ -15063,9 +15063,6 @@ packages:
 
   /tslib/1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
-
-  /tslib/2.4.1:
-    resolution: {integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==}
 
   /tslib/2.5.0:
     resolution: {integrity: sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==}
