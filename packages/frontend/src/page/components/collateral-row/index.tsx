@@ -35,7 +35,7 @@ export const CollateralRow = (collateral: CollateralData) => {
                         root: "inline-block",
                     }}
                 >
-                    {collateral.amount.toString()}{" "}
+                    {collateral.amount.toString()}
                 </Typography>
             </div>
             <Popover anchor={anchor} open={open} placement="bottom">
