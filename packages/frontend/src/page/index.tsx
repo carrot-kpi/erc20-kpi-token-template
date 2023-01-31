@@ -263,18 +263,11 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                 </div>
                 <div className="flex flex-col gap-12">
                     <Typography variant="h2">{t("oracle.title")}</Typography>
-                    {/*TODO: add oracle view component*/}
                     <OraclePage
                         i18n={i18n}
                         fallback={<Loader />}
                         address={kpiToken.oracles[0].address}
                     />
-                    {/* <Campaign
-                        i18n={i18n}
-                        fallback={<Loader />}
-                        address={kpiToken.oracles[0].address}
-                        customBaseUrl="http://localhost:9002/"
-                    /> */}
                 </div>
                 <div className="flex flex-col gap-12">
                     <Typography variant="h2">{t("widgets.title")}</Typography>
