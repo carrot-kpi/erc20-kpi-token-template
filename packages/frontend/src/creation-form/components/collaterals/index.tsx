@@ -6,16 +6,22 @@ import {
     Typography,
     TokenInfoWithBalance,
     TokenListWithBalance,
+    RemoteLogo,
 } from "@carrot-kpi/ui";
 import { NamespacedTranslateFunction, useTokenLists } from "@carrot-kpi/react";
 import { ReactElement, useCallback, useEffect, useState } from "react";
 import { utils } from "ethers";
-import { CollateralData, NumberFormatValue } from "../../types";
-import { Amount, Token } from "@carrot-kpi/sdk";
+import {
+    CollateralData,
+    NumberFormatValue,
+    TokenWithLogoURI,
+} from "../../types";
+import { Amount, IpfsService } from "@carrot-kpi/sdk";
 import { Address, useAccount, useBalance, useNetwork } from "wagmi";
 import { NextButton } from "../next-button";
 import { PreviousButton } from "../previous-button";
 import { TOKEN_LIST_URLS } from "../../constants";
+import { getDefaultERC20TokenLogoURL } from "../../../utils/erc20";
 
 interface CollateralProps {
     t: NamespacedTranslateFunction;
@@ -132,12 +138,13 @@ export const Collaterals = ({
 
     const handleCollateralAdd = useCallback((): void => {
         if (!chain || !pickedToken) return;
-        const token = new Token(
+        const token = new TokenWithLogoURI(
             chain.id,
             pickedToken.address,
             pickedToken.decimals,
             pickedToken.symbol,
-            pickedToken.name
+            pickedToken.name,
+            pickedToken.logoURI
         );
         setCollaterals([
             ...collaterals,
@@ -336,7 +343,23 @@ export const Collaterals = ({
                                         key={token.address}
                                         className="grid grid-cols-3"
                                     >
-                                        <Typography>{token.symbol}</Typography>
+                                        <div className="flex gap-2">
+                                            <RemoteLogo
+                                                src={token.logoURI}
+                                                size="sm"
+                                                defaultSrcs={getDefaultERC20TokenLogoURL(
+                                                    token.chainId,
+                                                    token.address
+                                                )}
+                                                defaultText={token.symbol}
+                                                ipfsGatewayURL={
+                                                    IpfsService.gateway
+                                                }
+                                            />
+                                            <Typography>
+                                                {token.symbol}
+                                            </Typography>
+                                        </div>
                                         <Typography
                                             className={{ root: "text-center" }}
                                         >
