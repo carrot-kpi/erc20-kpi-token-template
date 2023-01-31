@@ -1,3 +1,18 @@
 {
-    "main": "Page for example KPI token"
+    "main": "Page for example KPI token",
+    "share": "Share",
+    "report": "Report",
+    "overview.rewards.label": "Rewards",
+    "overview.creator.label": "Creator",
+    "overview.contract.label": "Contract",
+    "overview.time.label": "Time left",
+    "overview.token.label": "Carrot token",
+    "overview.supply.label": "Total supply",
+    "overview.participants.label": "Participants",
+    "overview.resolution.label": "Resolution",
+    "overview.reward.label": "Reward type",
+    "account.title": "My Account",
+    "account.connect": "Connect wallet",
+    "oracle.title": "Oracle",
+    "widgets.title": "Widgets"
 }

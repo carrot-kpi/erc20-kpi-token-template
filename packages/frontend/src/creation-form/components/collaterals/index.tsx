@@ -204,7 +204,7 @@ export const Collaterals = ({
                     },
                     manageLists: {
                         title: t("erc20.picker.manage.lists.title"),
-                        noTokens: t("erc20.picker.manage.lists.no.lists"),
+                        noLists: t("erc20.picker.manage.lists.no.lists"),
                     },
                 }}
             />
@@ -221,12 +221,14 @@ export const Collaterals = ({
                                         <TextInput
                                             id="collateral-select"
                                             label=""
+                                            autoComplete="off"
                                             placeholder={t(
                                                 "label.collateral.picker.token.pick"
                                             )}
                                             className={{
                                                 root: "cursor-pointer",
                                             }}
+                                            readOnly
                                             value={pickedToken?.symbol || ""}
                                         />
                                     </div>
@@ -235,7 +237,7 @@ export const Collaterals = ({
                                         label=""
                                         placeholder="0.0"
                                         className={{
-                                            input: "border-none text-right",
+                                            input: "w-full border-none text-right",
                                         }}
                                         variant="xl"
                                         disabled={!!!pickedToken}

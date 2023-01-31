@@ -1,10 +1,11 @@
+import { Fetcher, KPIToken } from "@carrot-kpi/sdk";
 import {
-    Campaign,
+    KPITokenPage,
     CarrotCoreProvider,
     CreationForm,
-    useKpiTokenTemplates,
+    useKPITokenTemplates,
 } from "@carrot-kpi/react";
-import { CarrotUIProvider } from "@carrot-kpi/ui";
+import { Button, CarrotUIProvider } from "@carrot-kpi/ui";
 import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Wallet, providers, Signer, BigNumber, utils, constants } from "ethers";
@@ -23,6 +24,7 @@ import { Chain } from "wagmi/chains";
 import * as chains from "wagmi/chains";
 import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
+import { Loader } from "../src/ui/loader";
 
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
@@ -33,7 +35,8 @@ import "@fontsource/inter/700.css";
 import "@carrot-kpi/ui/styles.css";
 
 import "./global.css";
-import { Fetcher, KpiToken } from "@carrot-kpi/sdk";
+
+type View = "creation" | "view";
 
 class CarrotConnector extends Connector<
     providers.JsonRpcProvider,
@@ -134,7 +137,7 @@ const App = (): ReactElement => {
         chainId: CCT_CHAIN_ID,
     });
     const { loading: isLoadingTemplates, templates } =
-        useKpiTokenTemplates(cctTemplateIds);
+        useKPITokenTemplates(cctTemplateIds);
 
     const [creationTx, setCreationTx] = useState<
         providers.TransactionRequest & {
@@ -145,12 +148,19 @@ const App = (): ReactElement => {
         data: "",
         value: BigNumber.from("0"),
     });
-    const [kpiToken, setKpiToken] = useState<KpiToken | null>(null);
+    const [kpiToken, setKPIToken] = useState<KPIToken | null>(null);
+    const [activeView, setActiveView] = useState<View>("view");
 
     const { config } = usePrepareSendTransaction({
         request: creationTx,
     });
     const { sendTransactionAsync } = useSendTransaction(config);
+
+    useEffect(() => {
+        const value = localStorage.getItem("latest-kpi-token");
+        if (!value) return;
+        setKPIToken(JSON.parse(value));
+    }, []);
 
     useEffect(() => {
         if (!isConnected) connect({ connector: connectors[0] });
@@ -165,26 +175,35 @@ const App = (): ReactElement => {
                 const createTokenEventHash = utils.keccak256(
                     utils.toUtf8Bytes("CreateToken(address)")
                 );
-                let createdKpiTokenAddress = constants.AddressZero;
+                let createdKPITokenAddress = constants.AddressZero;
                 for (const log of receipt.logs) {
                     const [hash] = log.topics;
                     if (hash !== createTokenEventHash) continue;
-                    createdKpiTokenAddress = utils.defaultAbiCoder.decode(
+                    createdKPITokenAddress = utils.defaultAbiCoder.decode(
                         ["address"],
                         log.data
                     )[0];
                     break;
                 }
-                const kpiTokens = await Fetcher.fetchKpiTokens(provider, [
-                    createdKpiTokenAddress,
-                ]);
-                if (!cancelled) setKpiToken(kpiTokens[createdKpiTokenAddress]);
+                const kpiToken = (
+                    await Fetcher.fetchKPITokens(provider, true, [
+                        createdKPITokenAddress,
+                    ])
+                )[createdKPITokenAddress];
+                if (!kpiToken) return;
+                if (!cancelled) setKPIToken(kpiToken);
+                if (!cancelled)
+                    localStorage.setItem(
+                        "latest-kpi-token",
+                        JSON.stringify(kpiToken)
+                    );
             };
             void fetch();
         }
         return () => {
             cancelled = true;
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [provider, sendTransactionAsync]);
 
     const handleDone = useCallback(
@@ -194,29 +213,39 @@ const App = (): ReactElement => {
         []
     );
 
+    const handleViewChange = useCallback((view: View) => {
+        setActiveView(view);
+    }, []);
+
     return (
-        <div className="h-screen">
-            {!isLoadingTemplates && (
+        <div className="scrollbar h-screen w-screen overflow-x-hidden">
+            <div className="absolute bottom-0 right-0 z-20 flex gap-1 rounded-xl bg-gray-100 bg-opacity-50 p-1">
+                <Button
+                    size="xsmall"
+                    onClick={() => handleViewChange("creation")}
+                >
+                    Creation
+                </Button>
+                <Button size="xsmall" onClick={() => handleViewChange("view")}>
+                    View
+                </Button>
+            </div>
+            {activeView === "creation" && !isLoadingTemplates && (
                 <CreationForm
                     i18n={i18next}
-                    fallback={<>Loading...</>}
+                    fallback={<Loader />}
                     template={templates[0]}
                     customBaseUrl="http://localhost:9002/"
                     onDone={handleDone}
                 />
             )}
-            {!!kpiToken && (
-                <>
-                    <h2>Page</h2>
-                    <div key={kpiToken.address}>
-                        <Campaign
-                            i18n={i18next}
-                            fallback={<>Loading...</>}
-                            address={kpiToken.address}
-                            customBaseUrl="http://localhost:9002/"
-                        />
-                    </div>
-                </>
+            {activeView === "view" && !!kpiToken && (
+                <KPITokenPage
+                    i18n={i18next}
+                    fallback={<Loader />}
+                    address={kpiToken.address}
+                    customBaseUrl="http://localhost:9002/"
+                />
             )}
         </div>
     );
