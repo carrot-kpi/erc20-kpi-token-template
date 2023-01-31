@@ -132,8 +132,8 @@ const main = async () => {
                             ),
                         },
                         shared: {
-                            "@carrot-kpi/react": "^0.23.0",
-                            "@carrot-kpi/sdk": "^1.14.0",
+                            "@carrot-kpi/react": "^0.24.0",
+                            "@carrot-kpi/sdk": "^1.15.0",
                             ethers: "^5.7.1",
                             react: {
                                 requiredVersion: "^18.2.0",
@@ -164,8 +164,8 @@ const main = async () => {
                             ),
                         },
                         shared: {
-                            "@carrot-kpi/react": "^0.23.0",
-                            "@carrot-kpi/sdk": "^1.14.0",
+                            "@carrot-kpi/react": "^0.24.0",
+                            "@carrot-kpi/sdk": "^1.15.0",
                             ethers: "^5.7.1",
                             react: {
                                 requiredVersion: "^18.2.0",

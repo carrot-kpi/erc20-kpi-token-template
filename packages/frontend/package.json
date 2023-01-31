@@ -25,8 +25,8 @@
         "test": "jest"
     },
     "dependencies": {
-        "@carrot-kpi/react": "^0.23.0",
-        "@carrot-kpi/sdk": "^1.14.0",
+        "@carrot-kpi/react": "^0.24.0",
+        "@carrot-kpi/sdk": "^1.15.0",
         "@carrot-kpi/ui": "^0.17.0",
         "@fontsource/ibm-plex-mono": "^4.5.13",
         "@testing-library/jest-dom": "^5.16.5",
