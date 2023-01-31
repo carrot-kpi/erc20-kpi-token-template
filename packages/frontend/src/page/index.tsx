@@ -5,6 +5,7 @@ import {
     NamespacedTranslateFunction,
     useWatchData,
     useWatchKPITokenOwner,
+    OraclePage,
 } from "@carrot-kpi/react";
 import { i18n } from "i18next";
 import { ReactComponent as ShareIcon } from "../assets/share.svg";
@@ -23,6 +24,7 @@ import { FinalizableOracle } from "./types";
 import { BigNumber } from "ethers";
 import { useProvider } from "wagmi";
 import { CollateralRow } from "./components/collateral-row";
+import { Loader } from "../ui/loader";
 
 interface PageProps {
     i18n: i18n;
@@ -31,7 +33,7 @@ interface PageProps {
     data: string;
 }
 
-export const Component = ({ t, kpiToken }: PageProps): ReactElement => {
+export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
     const provider = useProvider();
 
     const { /* loading: loadingData, */ data } = useWatchData(kpiToken.address);
@@ -262,6 +264,11 @@ export const Component = ({ t, kpiToken }: PageProps): ReactElement => {
                 <div className="flex flex-col gap-12">
                     <Typography variant="h2">{t("oracle.title")}</Typography>
                     {/*TODO: add oracle view component*/}
+                    <OraclePage
+                        i18n={i18n}
+                        fallback={<Loader />}
+                        address={kpiToken.oracles[0].address}
+                    />
                     {/* <Campaign
                         i18n={i18n}
                         fallback={<Loader />}

@@ -132,7 +132,7 @@ const main = async () => {
                             ),
                         },
                         shared: {
-                            "@carrot-kpi/react": "^0.24.0",
+                            "@carrot-kpi/react": "^0.24.1",
                             "@carrot-kpi/sdk": "^1.15.0",
                             ethers: "^5.7.1",
                             react: {
@@ -164,7 +164,7 @@ const main = async () => {
                             ),
                         },
                         shared: {
-                            "@carrot-kpi/react": "^0.24.0",
+                            "@carrot-kpi/react": "^0.24.1",
                             "@carrot-kpi/sdk": "^1.15.0",
                             ethers: "^5.7.1",
                             react: {
