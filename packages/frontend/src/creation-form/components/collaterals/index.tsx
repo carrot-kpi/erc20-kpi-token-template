@@ -16,7 +16,7 @@ import {
     NumberFormatValue,
     TokenWithLogoURI,
 } from "../../types";
-import { Amount, IpfsService } from "@carrot-kpi/sdk";
+import { Amount, IPFSService } from "@carrot-kpi/sdk";
 import { Address, useAccount, useBalance, useNetwork } from "wagmi";
 import { NextButton } from "../next-button";
 import { PreviousButton } from "../previous-button";
@@ -347,13 +347,13 @@ export const Collaterals = ({
                                             <RemoteLogo
                                                 src={token.logoURI}
                                                 size="sm"
-                                                defaultSrcs={getDefaultERC20TokenLogoURL(
+                                                defaultSrc={getDefaultERC20TokenLogoURL(
                                                     token.chainId,
                                                     token.address
                                                 )}
                                                 defaultText={token.symbol}
                                                 ipfsGatewayURL={
-                                                    IpfsService.gateway
+                                                    IPFSService.gateway
                                                 }
                                             />
                                             <Typography>

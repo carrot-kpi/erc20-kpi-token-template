@@ -3,7 +3,8 @@ import { Button, Typography } from "@carrot-kpi/ui";
 import { ReactElement, useEffect, useState } from "react";
 import {
     NamespacedTranslateFunction,
-    useWatchKPITokenData,
+    useWatchData,
+    useWatchKPITokenOwner,
 } from "@carrot-kpi/react";
 import { i18n } from "i18next";
 import { ReactComponent as ShareIcon } from "../assets/share.svg";
@@ -16,11 +17,12 @@ import { InfoSection } from "../ui/campaign-card-expanded/info-section";
 import { Header } from "../ui/campaign-card-expanded/info-section/header";
 import { Content } from "../ui/campaign-card-expanded/info-section/content";
 import { formatDate } from "../utils/dates";
-import { defaultAbiCoder } from "ethers/lib/utils.js";
+import { commify, defaultAbiCoder, formatUnits } from "ethers/lib/utils.js";
 import { CollateralData } from "../creation-form/types";
 import { FinalizableOracle } from "./types";
 import { BigNumber } from "ethers";
-import { useProvider } from "wagmi";
+import { useNetwork, useProvider } from "wagmi";
+import { CollateralRow } from "./components/collateral-row";
 
 interface PageProps {
     i18n: i18n;
@@ -31,7 +33,12 @@ interface PageProps {
 
 export const Component = ({ t, kpiToken }: PageProps): ReactElement => {
     const provider = useProvider();
-    const { loading, data } = useWatchKPITokenData(kpiToken.address);
+    const { chain } = useNetwork();
+
+    const { loading: loadingData, data } = useWatchData(kpiToken.address);
+    const { loading: loadingOwner, owner } = useWatchKPITokenOwner(
+        kpiToken.address
+    );
 
     const [unrecoverableError, setUnrecoverableError] = useState(false);
     const [collaterals, setCollaterals] = useState<CollateralData[]>([]);
@@ -150,25 +157,20 @@ export const Component = ({ t, kpiToken }: PageProps): ReactElement => {
                 >
                     <InfoSection>
                         <Header>
-                            <div className="flex justify-between">
+                            <div className="flex items-center justify-between">
                                 <Typography variant="sm" uppercase>
                                     {t("overview.rewards.label")}
                                 </Typography>
                                 <div className="flex flex-col gap-2">
                                     {collaterals.map((collateral) => {
-                                        const { address, symbol } =
-                                            collateral.amount.currency;
                                         return (
-                                            <div key={address}>
-                                                <div className="mr-2 inline-block">
-                                                    <Typography>
-                                                        {collateral.amount.toString()}
-                                                    </Typography>
-                                                </div>
-                                                <Typography>
-                                                    {symbol}
-                                                </Typography>
-                                            </div>
+                                            <CollateralRow
+                                                key={
+                                                    collateral.amount.currency
+                                                        .address
+                                                }
+                                                {...collateral}
+                                            />
                                         );
                                     })}
                                 </div>
@@ -185,9 +187,11 @@ export const Component = ({ t, kpiToken }: PageProps): ReactElement => {
                             </div>
                             <div className="flex justify-between">
                                 <Typography variant="sm" uppercase>
-                                    {t("overview.creator.label")}
+                                    {t("overview.owner.label")}
                                 </Typography>
-                                <Typography variant="sm">{"..."}</Typography>
+                                <Typography variant="sm">
+                                    {shortenAddress(owner)}
+                                </Typography>
                             </div>
                         </Content>
                     </InfoSection>
@@ -198,20 +202,24 @@ export const Component = ({ t, kpiToken }: PageProps): ReactElement => {
                             </Typography>
                         </Header>
                         <Content>
-                            <div className="flex justify-between">
+                            <div className="flex items-center justify-between">
                                 <Typography variant="sm" uppercase>
                                     {t("overview.token.label")}
                                 </Typography>
-                                <Typography variant="sm" uppercase>
-                                    {"..."}
+                                <Typography variant="sm">
+                                    {name} ({symbol})
                                 </Typography>
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex items-center justify-between">
                                 <Typography variant="sm" uppercase>
                                     {t("overview.supply.label")}
                                 </Typography>
                                 <Typography variant="sm" uppercase>
-                                    {"..."}
+                                    {initialSupply
+                                        ? commify(
+                                              formatUnits(initialSupply, 18)
+                                          )
+                                        : "Loading..."}
                                 </Typography>
                             </div>
                         </Content>
@@ -225,7 +233,7 @@ export const Component = ({ t, kpiToken }: PageProps): ReactElement => {
                         <Content>
                             <div className="flex justify-between">
                                 <Typography variant="sm" uppercase>
-                                    {t("overview.resolution.label")}
+                                    {t("overview.expiration.label")}
                                 </Typography>
                                 <Typography variant="sm">
                                     {formatDate(new Date(kpiToken.expiration))}
@@ -233,10 +241,10 @@ export const Component = ({ t, kpiToken }: PageProps): ReactElement => {
                             </div>
                             <div className="flex justify-between">
                                 <Typography variant="sm" uppercase>
-                                    {t("overview.reward.label")}
+                                    {t("overview.condition.type.label")}
                                 </Typography>
                                 <Typography variant="sm" uppercase>
-                                    {"..."}
+                                    {allOrNone ? "All or none" : "Classic"}
                                 </Typography>
                             </div>
                         </Content>

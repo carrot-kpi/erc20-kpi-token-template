@@ -1,6 +1,6 @@
 import { KPIToken } from "@carrot-kpi/sdk";
 import { Chip, Typography } from "@carrot-kpi/ui";
-import sanitazeHtml from "sanitize-html";
+import sanitizeHtml from "sanitize-html";
 import { ReactElement, ReactNode } from "react";
 
 interface CampaignCardExpandedProps {
@@ -14,20 +14,20 @@ export const CampaignCardExpanded = ({
     tags,
     children,
 }: CampaignCardExpandedProps): ReactElement => (
-    <div className="rounded-xxl bg-white dark:bg-black w-full max-w-6xl border-black border">
-        <div className="flex border-black border-b">
+    <div className="rounded-xxl w-full max-w-6xl border border-black bg-white dark:bg-black">
+        <div className="flex border-b border-black">
             <div className="p-3">
-                <div className="rounded-full bg-blue h-6 w-6" />
+                <div className="bg-blue h-6 w-6 rounded-full" />
             </div>
-            <div className="p-3 border-black border-l">
+            <div className="border-l border-black p-3">
                 <Typography>DXDAO</Typography>
             </div>
         </div>
-        <div className="flex flex-col gap-8 p-3 border-b border-black">
+        <div className="flex flex-col gap-8 border-b border-black p-3">
             <div
-                className="prose prose-sm max-w-none prose-pre:scrollbar scrollbar overflow-y-auto max-h-[300px]"
+                className="prose prose-sm prose-pre:scrollbar scrollbar max-h-[300px] max-w-none overflow-y-auto"
                 dangerouslySetInnerHTML={{
-                    __html: sanitazeHtml(description),
+                    __html: sanitizeHtml(description),
                 }}
             />
             <div className="flex flex-wrap gap-3">
