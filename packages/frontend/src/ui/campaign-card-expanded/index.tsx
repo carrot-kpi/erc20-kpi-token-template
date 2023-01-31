@@ -1,11 +1,11 @@
-import { KpiToken } from "@carrot-kpi/sdk";
+import { KPIToken } from "@carrot-kpi/sdk";
 import { Chip, Typography } from "@carrot-kpi/ui";
 import sanitazeHtml from "sanitize-html";
 import { ReactElement, ReactNode } from "react";
 
 interface CampaignCardExpandedProps {
-    description: KpiToken["specification"]["description"];
-    tags: KpiToken["specification"]["tags"];
+    description: KPIToken["specification"]["description"];
+    tags: KPIToken["specification"]["tags"];
     children: ReactNode[];
 }
 

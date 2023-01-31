@@ -1,9 +1,9 @@
-import { Fetcher, KpiToken } from "@carrot-kpi/sdk";
+import { Fetcher, KPIToken } from "@carrot-kpi/sdk";
 import {
-    Campaign,
+    KPITokenPage,
     CarrotCoreProvider,
     CreationForm,
-    useKpiTokenTemplates,
+    useKPITokenTemplates,
 } from "@carrot-kpi/react";
 import { Button, CarrotUIProvider } from "@carrot-kpi/ui";
 import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
@@ -28,10 +28,13 @@ import { Loader } from "../src/ui/loader";
 
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
+import "@fontsource/ibm-plex-mono/700.css";
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/500.css";
+import "@fontsource/inter/700.css";
 import "@carrot-kpi/ui/styles.css";
 
 import "./global.css";
-import { usePersistantState } from "../src/utils/localStorage";
 
 type View = "creation" | "view";
 
@@ -134,7 +137,7 @@ const App = (): ReactElement => {
         chainId: CCT_CHAIN_ID,
     });
     const { loading: isLoadingTemplates, templates } =
-        useKpiTokenTemplates(cctTemplateIds);
+        useKPITokenTemplates(cctTemplateIds);
 
     const [creationTx, setCreationTx] = useState<
         providers.TransactionRequest & {
@@ -145,16 +148,19 @@ const App = (): ReactElement => {
         data: "",
         value: BigNumber.from("0"),
     });
-    const [kpiToken, setKpiToken] = usePersistantState<KpiToken | null>(
-        "latest-kpi-token",
-        null
-    );
+    const [kpiToken, setKPIToken] = useState<KPIToken | null>(null);
     const [activeView, setActiveView] = useState<View>("view");
 
     const { config } = usePrepareSendTransaction({
         request: creationTx,
     });
     const { sendTransactionAsync } = useSendTransaction(config);
+
+    useEffect(() => {
+        const value = localStorage.getItem("latest-kpi-token");
+        if (!value) return;
+        setKPIToken(JSON.parse(value));
+    }, []);
 
     useEffect(() => {
         if (!isConnected) connect({ connector: connectors[0] });
@@ -169,20 +175,28 @@ const App = (): ReactElement => {
                 const createTokenEventHash = utils.keccak256(
                     utils.toUtf8Bytes("CreateToken(address)")
                 );
-                let createdKpiTokenAddress = constants.AddressZero;
+                let createdKPITokenAddress = constants.AddressZero;
                 for (const log of receipt.logs) {
                     const [hash] = log.topics;
                     if (hash !== createTokenEventHash) continue;
-                    createdKpiTokenAddress = utils.defaultAbiCoder.decode(
+                    createdKPITokenAddress = utils.defaultAbiCoder.decode(
                         ["address"],
                         log.data
                     )[0];
                     break;
                 }
-                const kpiTokens = await Fetcher.fetchKpiTokens(provider, [
-                    createdKpiTokenAddress,
-                ]);
-                if (!cancelled) setKpiToken(kpiTokens[createdKpiTokenAddress]);
+                const kpiToken = (
+                    await Fetcher.fetchKPITokens(provider, true, [
+                        createdKPITokenAddress,
+                    ])
+                )[createdKPITokenAddress];
+                if (!kpiToken) return;
+                if (!cancelled) setKPIToken(kpiToken);
+                if (!cancelled)
+                    localStorage.setItem(
+                        "latest-kpi-token",
+                        JSON.stringify(kpiToken)
+                    );
             };
             void fetch();
         }
@@ -205,7 +219,7 @@ const App = (): ReactElement => {
 
     return (
         <div className="scrollbar h-screen w-screen overflow-x-hidden">
-            <div className="absolute rounded-xl bottom-0 right-0 p-1 z-20 flex gap-1 bg-gray-100 bg-opacity-50">
+            <div className="absolute bottom-0 right-0 z-20 flex gap-1 rounded-xl bg-gray-100 bg-opacity-50 p-1">
                 <Button
                     size="xsmall"
                     onClick={() => handleViewChange("creation")}
@@ -226,7 +240,7 @@ const App = (): ReactElement => {
                 />
             )}
             {activeView === "view" && !!kpiToken && (
-                <Campaign
+                <KPITokenPage
                     i18n={i18next}
                     fallback={<Loader />}
                     address={kpiToken.address}

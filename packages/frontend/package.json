@@ -25,9 +25,9 @@
         "test": "jest"
     },
     "dependencies": {
-        "@carrot-kpi/react": "^0.22.1",
-        "@carrot-kpi/sdk": "^1.13.2",
-        "@carrot-kpi/ui": "^0.14.0",
+        "@carrot-kpi/react": "^0.23.0",
+        "@carrot-kpi/sdk": "^1.14.0",
+        "@carrot-kpi/ui": "^0.16.0",
         "@fontsource/ibm-plex-mono": "^4.5.13",
         "@testing-library/jest-dom": "^5.16.5",
         "@testing-library/react": "^13.4.0",
@@ -59,6 +59,7 @@
         "webpack-dev-server": "^4.11.1"
     },
     "devDependencies": {
+        "@fontsource/inter": "^4.5.15",
         "@svgr/webpack": "^6.5.1",
         "@types/sanitize-html": "^2.8.0",
         "autoprefixer": "^10.4.13",
