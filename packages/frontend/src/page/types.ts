@@ -14,3 +14,12 @@ export interface FinalizableOracle {
     weight: BigNumber;
     finalized: boolean;
 }
+
+export interface KpiTokenData {
+    address: string;
+    symbol: string;
+    name: string;
+    initialSupply: BigNumber | null;
+    expiration: number;
+    allOrNone: boolean;
+}

@@ -12,19 +12,13 @@ import { ReactComponent as ShareIcon } from "../assets/share.svg";
 import { ReactComponent as ReportIcon } from "../assets/report.svg";
 
 import "../global.css";
-import { CampaignCardExpanded } from "../ui/campaign-card-expanded";
-import { shortenAddress } from "../utils/address";
-import { InfoSection } from "../ui/campaign-card-expanded/info-section";
-import { Header } from "../ui/campaign-card-expanded/info-section/header";
-import { Content } from "../ui/campaign-card-expanded/info-section/content";
-import { formatDate } from "../utils/dates";
-import { commify, defaultAbiCoder, formatUnits } from "ethers/lib/utils.js";
+import { defaultAbiCoder } from "ethers/lib/utils.js";
 import { CollateralData } from "../creation-form/types";
 import { FinalizableOracle } from "./types";
 import { BigNumber } from "ethers";
 import { useProvider } from "wagmi";
-import { CollateralRow } from "./components/collateral-row";
 import { Loader } from "../ui/loader";
+import { CampaignCard } from "./components/campaign-card";
 
 interface PageProps {
     i18n: i18n;
@@ -89,6 +83,7 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                 provider,
                 rawCollaterals.map((collateral) => collateral.token)
             );
+
             const transformedCollaterals = rawCollaterals.map(
                 (rawCollateral) => {
                     const token = erc20Tokens[rawCollateral.token];
@@ -152,105 +147,20 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                         {t("report")}
                     </Button>
                 </div>
-                <CampaignCardExpanded
-                    description={kpiToken.specification.description}
-                    tags={kpiToken.specification.tags}
-                >
-                    <InfoSection>
-                        <Header>
-                            <div className="flex items-center justify-between">
-                                <Typography variant="sm" uppercase>
-                                    {t("overview.rewards.label")}
-                                </Typography>
-                                <div className="flex flex-col gap-2">
-                                    {collaterals.map((collateral) => {
-                                        return (
-                                            <CollateralRow
-                                                key={
-                                                    collateral.amount.currency
-                                                        .address
-                                                }
-                                                {...collateral}
-                                            />
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        </Header>
-                        <Content>
-                            <div className="flex justify-between">
-                                <Typography variant="sm" uppercase>
-                                    {t("overview.contract.label")}
-                                </Typography>
-                                <Typography variant="sm">
-                                    {shortenAddress(kpiToken.address)}
-                                </Typography>
-                            </div>
-                            <div className="flex justify-between">
-                                <Typography variant="sm" uppercase>
-                                    {t("overview.owner.label")}
-                                </Typography>
-                                <Typography variant="sm">
-                                    {shortenAddress(owner)}
-                                </Typography>
-                            </div>
-                        </Content>
-                    </InfoSection>
-                    <InfoSection>
-                        <Header>
-                            <Typography variant="sm" uppercase>
-                                {t("overview.time.label")}
-                            </Typography>
-                        </Header>
-                        <Content>
-                            <div className="flex items-center justify-between">
-                                <Typography variant="sm" uppercase>
-                                    {t("overview.token.label")}
-                                </Typography>
-                                <Typography variant="sm">
-                                    {name} ({symbol})
-                                </Typography>
-                            </div>
-                            <div className="flex items-center justify-between">
-                                <Typography variant="sm" uppercase>
-                                    {t("overview.supply.label")}
-                                </Typography>
-                                <Typography variant="sm" uppercase>
-                                    {initialSupply
-                                        ? commify(
-                                              formatUnits(initialSupply, 18)
-                                          )
-                                        : "Loading..."}
-                                </Typography>
-                            </div>
-                        </Content>
-                    </InfoSection>
-                    <InfoSection>
-                        <Header>
-                            <Typography variant="sm" uppercase>
-                                {t("overview.participants.label")}
-                            </Typography>
-                        </Header>
-                        <Content>
-                            <div className="flex justify-between">
-                                <Typography variant="sm" uppercase>
-                                    {t("overview.expiration.label")}
-                                </Typography>
-                                <Typography variant="sm">
-                                    {formatDate(new Date(kpiToken.expiration))}
-                                </Typography>
-                            </div>
-                            <div className="flex justify-between">
-                                <Typography variant="sm" uppercase>
-                                    {t("overview.condition.type.label")}
-                                </Typography>
-                                <Typography variant="sm" uppercase>
-                                    {allOrNone ? "All or none" : "Classic"}
-                                </Typography>
-                            </div>
-                        </Content>
-                    </InfoSection>
-                </CampaignCardExpanded>
+                <CampaignCard
+                    t={t}
+                    specification={kpiToken.specification}
+                    collaterals={collaterals}
+                    kpiTokenData={{
+                        address: kpiToken.address,
+                        name,
+                        symbol,
+                        initialSupply,
+                        expiration: kpiToken.expiration,
+                        allOrNone,
+                    }}
+                    owner={owner}
+                />
             </div>
             <div className="bg-grid-white m-5 flex flex-col gap-[124px] bg-white px-2 py-3 dark:bg-black sm:px-9 sm:py-5 md:px-36 md:py-24">
                 <div className="flex flex-col gap-12">
