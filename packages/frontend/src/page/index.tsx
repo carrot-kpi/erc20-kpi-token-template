@@ -19,6 +19,7 @@ import { BigNumber } from "ethers";
 import { useProvider } from "wagmi";
 import { Loader } from "../ui/loader";
 import { CampaignCard } from "./components/campaign-card";
+import { Account } from "./components/account";
 
 interface PageProps {
     i18n: i18n;
@@ -165,19 +166,25 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
             <div className="bg-grid-white m-5 flex flex-col gap-[124px] bg-white px-2 py-3 dark:bg-black sm:px-9 sm:py-5 md:px-36 md:py-24">
                 <div className="flex flex-col gap-12">
                     <Typography variant="h2">{t("account.title")}</Typography>
-                    <div className="flex h-96 w-full max-w-6xl items-center justify-center bg-gray-200">
-                        <Button onClick={() => console.log("connect")}>
-                            {t("account.connect")}
-                        </Button>
-                    </div>
-                </div>
-                <div className="flex flex-col gap-12">
-                    <Typography variant="h2">{t("oracle.title")}</Typography>
-                    <OraclePage
-                        i18n={i18n}
-                        fallback={<Loader />}
-                        address={kpiToken.oracles[0].address}
+                    <Account
+                        t={t}
+                        kpiTokenData={{
+                            address: kpiToken.address,
+                            symbol,
+                            initialSupply,
+                        }}
+                        collaterals={collaterals}
                     />
+                </div>
+                <div className="flex flex-col gap-12 ">
+                    <Typography variant="h2">{t("oracle.title")}</Typography>
+                    <div className="w-full max-w-6xl p-10 border bg-white dark:bg-black border-black dark:border-white">
+                        <OraclePage
+                            i18n={i18n}
+                            fallback={<Loader />}
+                            address={kpiToken.oracles[0].address}
+                        />
+                    </div>
                 </div>
                 <div className="flex flex-col gap-12">
                     <Typography variant="h2">{t("widgets.title")}</Typography>

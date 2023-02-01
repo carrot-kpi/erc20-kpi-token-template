@@ -2,8 +2,9 @@ import { cva } from "class-variance-authority";
 import { ReactElement, ReactNode } from "react";
 
 const rootStyles = cva([
+    "border-r-0",
     "w-full",
-    "border-r",
+    "sm:border-r",
     "border-t",
     "border-black",
     "[&:last-of-type]:border-r-0",

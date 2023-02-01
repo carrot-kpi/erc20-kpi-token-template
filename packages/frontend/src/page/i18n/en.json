@@ -14,6 +14,10 @@
     "overview.condition.allOrNone.label": "All or none",
     "overview.condition.classic.label": "Classic",
     "account.title": "My Account",
+    "account.supply.label": "Total supply",
+    "account.balance.label": "My balance",
+    "account.totalRewards.label": "Total rewards",
+    "account.remaninng.label": "Remaining",
     "account.connect": "Connect wallet",
     "oracle.title": "Oracle",
     "widgets.title": "Widgets"
