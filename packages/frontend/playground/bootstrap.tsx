@@ -149,7 +149,7 @@ const App = (): ReactElement => {
         value: BigNumber.from("0"),
     });
     const [kpiToken, setKPIToken] = useState<KPIToken | null>(null);
-    const [activeView, setActiveView] = useState<View>("view");
+    const [activeView, setActiveView] = useState<View>("creation");
 
     const { config } = usePrepareSendTransaction({
         request: creationTx,
@@ -218,7 +218,7 @@ const App = (): ReactElement => {
     }, []);
 
     return (
-        <div className="scrollbar w-screen overflow-x-hidden">
+        <div className="w-screen overflow-x-hidden">
             <div className="fixed bottom-0 right-0 z-20 flex gap-1 rounded-xl bg-gray-100 bg-opacity-50 p-1">
                 <Button
                     size="xsmall"

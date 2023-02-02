@@ -15,6 +15,6 @@ export const Card = ({ title, step, children }: CardProps): ReactElement => (
             </Typography>
             <Typography variant="h2">{title}</Typography>
         </div>
-        <div className="scrollbar p-6">{children}</div>
+        <div className="p-6">{children}</div>
     </div>
 );

@@ -179,8 +179,8 @@ export const Component = ({
     );
 
     return (
-        <div className="scrollbar bg-green min-h-screen overflow-y-auto">
-            <div className="flex h-screen flex-col items-center justify-between pt-10">
+        <div className="bg-green">
+            <div className="flex flex-col items-center justify-between pt-10">
                 {/* <div className="fixed top-1/2 left-1/2 h-[65%] w-[90%] -translate-x-1/2 -translate-y-1/2 transform md:w-[50%]">
                     <div
                         style={{ background: `url(${square}) center` }}
