@@ -94,10 +94,6 @@ export const startPlayground = async (
         infrastructureLogging: {
             level: "none",
         },
-        entry: {
-            creationForm: join(__dirname, "../src/set-public-path.ts"),
-            page: join(__dirname, "../src/set-public-path.ts"),
-        },
         stats: "none",
         resolve: {
             fallback: {
@@ -161,10 +157,6 @@ export const startPlayground = async (
                         __dirname,
                         "../src/creation-form/i18n/index.ts"
                     ),
-                    "./set-public-path": join(
-                        __dirname,
-                        "../src/set-public-path.ts"
-                    ),
                 },
                 shared,
             }),
@@ -174,10 +166,6 @@ export const startPlayground = async (
                 exposes: {
                     "./component": join(__dirname, "../src/page/index.tsx"),
                     "./i18n": join(__dirname, "../src/page/i18n/index.ts"),
-                    "./set-public-path": join(
-                        __dirname,
-                        "../src/set-public-path.ts"
-                    ),
                 },
                 shared,
             }),
