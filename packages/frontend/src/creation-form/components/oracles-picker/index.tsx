@@ -3,7 +3,7 @@ import {
     useOracleTemplates,
 } from "@carrot-kpi/react";
 import { Template } from "@carrot-kpi/sdk";
-import { TextMono } from "@carrot-kpi/ui";
+import { Typography } from "@carrot-kpi/ui";
 import { ReactElement, useCallback, useEffect, useState } from "react";
 import { Loader } from "../../../ui/loader";
 import { OracleTemplate } from "../../../ui/oracle-template";
@@ -49,9 +49,9 @@ export const OraclesPicker = ({
                 <Loader />
             ) : (
                 <>
-                    <TextMono size="md" weight="medium">
+                    <Typography weight="medium">
                         {t("oracles.picker.label")}
-                    </TextMono>
+                    </Typography>
                     <div className="scrollbar flex gap-7 overflow-x-auto">
                         {templates.map((template) => {
                             const checked = !!pickedTemplates[template.id];
@@ -97,10 +97,10 @@ export const OraclesPicker = ({
                             );
                         })}
                     </div>
-                    <TextMono size="md" weight="medium">
+                    <Typography weight="medium">
                         {t("oracles.picker.selected")}{" "}
                         {Object.keys(pickedTemplates).length}
-                    </TextMono>
+                    </Typography>
                 </>
             )}
             <div className="flex justify-between">

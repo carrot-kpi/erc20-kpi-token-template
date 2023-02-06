@@ -1,5 +1,6 @@
 import {
     ChangeEvent,
+    FocusEvent,
     ReactElement,
     useCallback,
     useEffect,
@@ -8,7 +9,12 @@ import {
 } from "react";
 import { NumberFormatValue, SpecificationData, TokenData } from "../../types";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import { TextInput, MarkdownInput, NumberInput } from "@carrot-kpi/ui";
+import {
+    TextInput,
+    MarkdownInput,
+    NumberInput,
+    TagsInput,
+} from "@carrot-kpi/ui";
 import { NextButton } from "../next-button";
 import { BigNumber, utils } from "ethers";
 
@@ -34,7 +40,7 @@ export const GenericData = ({
     const [description, setDescription] = useState(
         specificationData?.description || ""
     );
-    const [tags /* setTags */] = useState<string[]>([]);
+    const [tags, setTags] = useState<string[]>(specificationData?.tags || []);
     const [erc20Name, setERC20Name] = useState(tokenData?.name || "");
     const [erc20Symbol, setERC20Symbol] = useState(tokenData?.symbol || "");
     const { defaultValue, defaultFormattedValue } = useMemo(() => {
@@ -53,6 +59,7 @@ export const GenericData = ({
     });
     const [titleErrorText, setTitleErrorText] = useState("");
     const [descriptionErrorText, setDescriptionErrorText] = useState("");
+    const [tagsErrorText, setTagsErrorText] = useState("");
     const [erc20NameErrorText, setERC20NameErrorText] = useState("");
     const [erc20SymbolErrorText, setERC20SymbolErrorText] = useState("");
     const [erc20SupplyErrorText, setERC20SupplyErrorText] = useState("");
@@ -66,33 +73,68 @@ export const GenericData = ({
                 !erc20Symbol ||
                 !title.trim() ||
                 !stripHtml(description).trim() ||
+                tags.length === 0 ||
                 !erc20Name.trim() ||
                 !erc20Symbol.trim() ||
                 !erc20Supply.value ||
                 parseFloat(erc20Supply.value) === 0
         );
-    }, [description, erc20Name, erc20Supply.value, erc20Symbol, title]);
+    }, [
+        description,
+        erc20Name,
+        erc20Supply.value,
+        erc20Symbol,
+        tags.length,
+        title,
+    ]);
+
+    const handleOnBlur = useCallback(
+        (stateUpdater: (value: string) => void) =>
+            (event: FocusEvent<HTMLInputElement>) => {
+                stateUpdater(event.target.value.trim());
+            },
+        []
+    );
 
     const handleTitleChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>): void => {
-            const trimmedValue = event.target.value.trim();
-            setTitle(trimmedValue);
-            setTitleErrorText(!trimmedValue ? t("error.title") : "");
+            setTitle(event.target.value);
+            setTitleErrorText(
+                !event.target.value ? t("error.title.empty") : ""
+            );
         },
         [t]
     );
 
-    const handleDescriptionChange = (value: string) => {
-        const trimmedValue = stripHtml(value).trim();
-        setDescription(value);
-        setDescriptionErrorText(!trimmedValue ? t("error.description") : "");
-    };
+    const handleDescriptionChange = useCallback(
+        (value: string) => {
+            const trimmedValue = stripHtml(value).trim();
+            setDescription(value);
+            setDescriptionErrorText(
+                !trimmedValue ? t("error.description.empty") : ""
+            );
+        },
+        [t]
+    );
+
+    const handleTagsChange = useCallback(
+        (value: string[]) => {
+            if (value.some((tag, i) => value.indexOf(tag) !== i)) {
+                setTagsErrorText(t("error.tags.duplicated"));
+                return;
+            }
+            setTags(value);
+            setTagsErrorText(value.length === 0 ? t("error.tags.empty") : "");
+        },
+        [t]
+    );
 
     const handleERC20NameChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {
-            const trimmedValue = event.target.value.trim();
-            setERC20Name(trimmedValue);
-            setERC20NameErrorText(!trimmedValue ? t("error.erc20.name") : "");
+            setERC20Name(event.target.value);
+            setERC20NameErrorText(
+                !event.target.value ? t("error.erc20.name.empty") : ""
+            );
         },
         [t]
     );
@@ -102,7 +144,7 @@ export const GenericData = ({
             const trimmedValue = event.target.value.trim();
             setERC20Symbol(trimmedValue);
             setERC20SymbolErrorText(
-                !trimmedValue ? t("error.erc20.symbol") : ""
+                !trimmedValue ? t("error.erc20.symbol.empty") : ""
             );
         },
         [t]
@@ -113,7 +155,7 @@ export const GenericData = ({
             setERC20Supply(value);
             setERC20SupplyErrorText(
                 !value || !value.value || BigNumber.from(value.value).isZero()
-                    ? t("error.erc20.supply")
+                    ? t("error.erc20.supply.zero")
                     : ""
             );
         },
@@ -148,52 +190,64 @@ export const GenericData = ({
         <div className="flex flex-col gap-6">
             <TextInput
                 id="title"
-                label={t("label.title")}
-                placeholder={"Enter campaign title"}
+                label={t("general.label.title")}
+                placeholder={t("general.placeholder.title")}
                 onChange={handleTitleChange}
+                onBlur={handleOnBlur(setTitle)}
                 value={title}
                 error={!!titleErrorText}
                 helperText={titleErrorText}
-                className="w-full"
+                className={{ root: "w-full", input: "w-full" }}
             />
             <MarkdownInput
                 id="description"
-                label={t("label.description")}
-                placeholder={"Enter campaign description"}
+                label={t("general.label.description")}
+                placeholder={t("general.placeholder.description")}
                 onChange={handleDescriptionChange}
                 error={!!descriptionErrorText}
                 helperText={descriptionErrorText}
                 value={description}
             />
+            <TagsInput
+                id="tags"
+                label={t("general.label.tags")}
+                placeholder={t("general.placeholder.tags")}
+                onChange={handleTagsChange}
+                value={tags}
+                error={!!tagsErrorText}
+                helperText={tagsErrorText}
+                className={{ root: "w-full", input: "w-full" }}
+            />
             <TextInput
                 id="token-name"
-                label={t("label.token.data.name")}
+                label={t("general.label.token.name")}
                 placeholder={"Example"}
                 onChange={handleERC20NameChange}
+                onBlur={handleOnBlur(setERC20Name)}
                 value={erc20Name}
                 error={!!erc20NameErrorText}
                 helperText={erc20NameErrorText}
-                className="w-full"
+                className={{ root: "w-full", input: "w-full" }}
             />
             <TextInput
                 id="token-symbol"
-                label={t("label.token.data.symbol")}
+                label={t("general.label.token.symbol")}
                 placeholder={"XMPL"}
                 onChange={handleERC20SymbolChange}
                 value={erc20Symbol}
                 error={!!erc20SymbolErrorText}
                 helperText={erc20SymbolErrorText}
-                className="w-full"
+                className={{ root: "w-full", input: "w-full" }}
             />
             <NumberInput
                 id="token-supply"
-                label={t("label.token.data.supply")}
+                label={t("general.label.token.supply")}
                 placeholder={"1,000,000"}
                 onValueChange={handleERC20SupplyChange}
                 value={erc20Supply.formattedValue}
                 error={!!erc20SupplyErrorText}
                 helperText={erc20SupplyErrorText}
-                className="w-full"
+                className={{ root: "w-full", input: "w-full" }}
             />
             <div className="flex justify-end">
                 <NextButton t={t} onClick={handleNext} disabled={disabled} />

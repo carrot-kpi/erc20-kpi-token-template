@@ -4,7 +4,7 @@ import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import {
     Accordion,
     AccordionSummary,
-    TextMono,
+    Typography,
     AccordionDetails,
     NumberInput,
 } from "@carrot-kpi/ui";
@@ -131,7 +131,7 @@ export const OutcomesConfiguration = ({
                         value={
                             data[templates[0].id]?.lowerBound?.formattedValue
                         }
-                        className="w-full"
+                        className={{ root: "w-full", input: "w-full" }}
                     />
                     <NumberInput
                         id="higher-bound"
@@ -141,7 +141,7 @@ export const OutcomesConfiguration = ({
                         value={
                             data[templates[0].id]?.higherBound?.formattedValue
                         }
-                        className="w-full"
+                        className={{ root: "w-full", input: "w-full" }}
                     />
                 </div>
             ) : (
@@ -151,9 +151,9 @@ export const OutcomesConfiguration = ({
                     return (
                         <Accordion key={template.id}>
                             <AccordionSummary>
-                                <TextMono>
+                                <Typography>
                                     {template.specification.name}
-                                </TextMono>
+                                </Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <div className="flex flex-col gap-2">
@@ -167,7 +167,10 @@ export const OutcomesConfiguration = ({
                                         value={
                                             data[id]?.lowerBound?.formattedValue
                                         }
-                                        className="w-full"
+                                        className={{
+                                            root: "w-full",
+                                            input: "w-full",
+                                        }}
                                     />
                                     <NumberInput
                                         id="higher-bound"
@@ -180,7 +183,10 @@ export const OutcomesConfiguration = ({
                                             data[id]?.higherBound
                                                 ?.formattedValue
                                         }
-                                        className="w-full"
+                                        className={{
+                                            root: "w-full",
+                                            input: "w-full",
+                                        }}
                                     />
                                 </div>
                             </AccordionDetails>

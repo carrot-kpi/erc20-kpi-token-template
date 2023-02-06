@@ -4,7 +4,7 @@ import { CreationForm, NamespacedTranslateFunction } from "@carrot-kpi/react";
 import {
     Accordion,
     AccordionSummary,
-    TextMono,
+    Typography,
     AccordionDetails,
 } from "@carrot-kpi/ui";
 import { i18n } from "i18next";
@@ -69,7 +69,9 @@ export const OraclesConfiguration = ({
                 templates.map((template) => (
                     <Accordion key={template.id}>
                         <AccordionSummary>
-                            <TextMono>{template.specification.name}</TextMono>
+                            <Typography>
+                                {template.specification.name}
+                            </Typography>
                         </AccordionSummary>
                         <AccordionDetails>
                             <CreationForm

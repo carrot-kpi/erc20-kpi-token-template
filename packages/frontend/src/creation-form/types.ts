@@ -1,16 +1,32 @@
-import { Amount, KpiTokenSpecification, Token } from "@carrot-kpi/sdk";
+import { Amount, KPITokenSpecification, Token } from "@carrot-kpi/sdk";
 import { BigNumber } from "ethers";
 
-export type SpecificationData = Omit<KpiTokenSpecification, "ipfsHash">;
+export type SpecificationData = Omit<KPITokenSpecification, "ipfsHash">;
 
 export interface NumberFormatValue {
     formattedValue: string;
     value: string;
 }
 
+export class TokenWithLogoURI extends Token {
+    public readonly logoURI?: string;
+
+    constructor(
+        chainId: number,
+        address: string,
+        decimals: number,
+        symbol: string,
+        name: string,
+        logoURI?: string
+    ) {
+        super(chainId, address, decimals, symbol, name);
+        this.logoURI = logoURI;
+    }
+}
+
 export interface CollateralData {
-    amount: Amount<Token>;
-    minimumPayout: Amount<Token>;
+    amount: Amount<TokenWithLogoURI>;
+    minimumPayout: Amount<TokenWithLogoURI>;
 }
 
 export interface TokenData {

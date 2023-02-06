@@ -15,6 +15,7 @@ export const PreviousButton = ({
 }: PreviousButtonProps) => {
     return (
         <Button
+            variant="secondary"
             size="small"
             onClick={onClick}
             disabled={disabled}

@@ -1,41 +1,27 @@
 import {
     Button,
+    ERC20TokenPicker,
     NumberInput,
-    Select,
-    SelectOption,
-    TextMono,
+    TextInput,
+    Typography,
+    TokenInfoWithBalance,
+    TokenListWithBalance,
+    RemoteLogo,
 } from "@carrot-kpi/ui";
-import { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
+import { NamespacedTranslateFunction, useTokenLists } from "@carrot-kpi/react";
+import { ReactElement, useCallback, useEffect, useState } from "react";
 import { utils } from "ethers";
-import { CollateralData, NumberFormatValue } from "../../types";
-import { Amount, Token } from "@carrot-kpi/sdk";
+import {
+    CollateralData,
+    NumberFormatValue,
+    TokenWithLogoURI,
+} from "../../types";
+import { Amount, IPFSService } from "@carrot-kpi/sdk";
 import { Address, useAccount, useBalance, useNetwork } from "wagmi";
 import { NextButton } from "../next-button";
 import { PreviousButton } from "../previous-button";
-
-// TODO: where should we get this data?
-const DEV_COLLATERAL_TOKENS = [
-    new Token(
-        CCT_CHAIN_ID,
-        CCT_ERC20_1_ADDRESS,
-        18,
-        "TST_1",
-        "Collateral test token 1"
-    ),
-    new Token(
-        CCT_CHAIN_ID,
-        CCT_ERC20_2_ADDRESS,
-        18,
-        "TST_2",
-        "Collateral test token 2"
-    ),
-];
-
-interface TokenOption extends SelectOption {
-    name: string;
-    decimals: string;
-}
+import { TOKEN_LIST_URLS } from "../../constants";
+import { getDefaultERC20TokenLogoURL } from "../../../utils/erc20";
 
 interface CollateralProps {
     t: NamespacedTranslateFunction;
@@ -52,26 +38,21 @@ export const Collaterals = ({
 }: CollateralProps): ReactElement => {
     const { address } = useAccount();
     const { chain } = useNetwork();
+    // TODO: handle loading state
+    const { lists: tokenLists } = useTokenLists(TOKEN_LIST_URLS);
 
     const [collaterals, setCollaterals] = useState(collateralsData);
+    const [selectedTokenList, setSelectedTokenList] = useState<
+        TokenListWithBalance | undefined
+    >();
     const [disabled, setDisabled] = useState(true);
 
     // picker state
-    const pickerTokenOptions: TokenOption[] = useMemo(() => {
-        return __DEV__
-            ? DEV_COLLATERAL_TOKENS.map((token) => {
-                  return {
-                      label: token.symbol,
-                      value: token.address,
-                      name: token.name,
-                      decimals: token.decimals.toString(),
-                  };
-              })
-            : [];
-    }, []);
+    const [tokenPickerOpen, setTokenPickerOpen] = useState(false);
     const [addDisabled, setAddDisabled] = useState(true);
-    const [pickerTokenOption, setPickerTokenOption] =
-        useState<TokenOption | null>(null);
+    const [pickedToken, setPickedToken] = useState<TokenInfoWithBalance | null>(
+        null
+    );
     const [pickerRawAmount, setPickerRawAmount] = useState<NumberFormatValue>({
         formattedValue: "",
         value: "",
@@ -84,10 +65,8 @@ export const Collaterals = ({
 
     // fetch picked erc20 token balance
     const { data, isLoading } = useBalance({
-        address: !!pickerTokenOption ? address : undefined,
-        token: !!pickerTokenOption
-            ? (pickerTokenOption.value as Address)
-            : undefined,
+        address: !!pickedToken ? address : undefined,
+        token: !!pickedToken ? (pickedToken.address as Address) : undefined,
     });
 
     useEffect(() => {
@@ -95,8 +74,30 @@ export const Collaterals = ({
     }, [collaterals]);
 
     useEffect(() => {
+        if (!!selectedTokenList || tokenLists.length === 0) return;
+        const defaultSelectedList = tokenLists[0];
+        if (__DEV__) {
+            defaultSelectedList.tokens.push({
+                chainId: CCT_CHAIN_ID,
+                address: CCT_ERC20_1_ADDRESS,
+                name: "Collateral test token 1",
+                decimals: 18,
+                symbol: "TST1",
+            });
+            defaultSelectedList.tokens.push({
+                chainId: CCT_CHAIN_ID,
+                address: CCT_ERC20_2_ADDRESS,
+                name: "Collateral test token 2",
+                decimals: 18,
+                symbol: "TST2",
+            });
+        }
+        setSelectedTokenList(defaultSelectedList as TokenListWithBalance);
+    }, [selectedTokenList, tokenLists]);
+
+    useEffect(() => {
         if (
-            !pickerTokenOption ||
+            !pickedToken ||
             !pickerRawAmount.value ||
             !pickerRawMinimumPayout.value
         ) {
@@ -117,24 +118,33 @@ export const Collaterals = ({
             !!collaterals.find(
                 (collateral) =>
                     collateral.amount.currency.address.toLowerCase() ===
-                    (pickerTokenOption.value as string).toLowerCase()
+                    pickedToken.address.toLowerCase()
             )
         );
     }, [
         collaterals,
         pickerRawAmount.value,
         pickerRawMinimumPayout.value,
-        pickerTokenOption,
+        pickedToken,
     ]);
 
+    const handleOpenERC20TokenPicker = useCallback((): void => {
+        setTokenPickerOpen(true);
+    }, []);
+
+    const handleERC20TokenPickerDismiss = useCallback((): void => {
+        setTokenPickerOpen(false);
+    }, []);
+
     const handleCollateralAdd = useCallback((): void => {
-        if (!chain || !pickerTokenOption) return;
-        const token = new Token(
+        if (!chain || !pickedToken) return;
+        const token = new TokenWithLogoURI(
             chain.id,
-            pickerTokenOption.value as string,
-            parseInt(pickerTokenOption.decimals),
-            pickerTokenOption.label,
-            pickerTokenOption.name
+            pickedToken.address,
+            pickedToken.decimals,
+            pickedToken.symbol,
+            pickedToken.name,
+            pickedToken.logoURI
         );
         setCollaterals([
             ...collaterals,
@@ -152,7 +162,7 @@ export const Collaterals = ({
                 ),
             },
         ]);
-        setPickerTokenOption(null);
+        setPickedToken(null);
         setPickerRawAmount({
             formattedValue: "",
             value: "",
@@ -166,7 +176,7 @@ export const Collaterals = ({
         collaterals,
         pickerRawAmount.value,
         pickerRawMinimumPayout.value,
-        pickerTokenOption,
+        pickedToken,
     ]);
 
     const handleNext = useCallback((): void => {
@@ -174,139 +184,213 @@ export const Collaterals = ({
     }, [collaterals, onNext]);
 
     return (
-        <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-3">
-                <div className="rounded-xxl border border-black p-4">
-                    <div className="flex flex-col gap-3">
-                        <div className="flex flex-col gap-2">
-                            <div className="flex justify-between">
-                                <Select
-                                    id="collateral-select"
-                                    label=""
-                                    placeholder={t(
-                                        "label.collateral.picker.token.pick"
-                                    )}
-                                    options={pickerTokenOptions}
-                                    value={pickerTokenOption}
-                                    onChange={setPickerTokenOption}
-                                />
-                                <NumberInput
-                                    id="collateral-amount"
-                                    label=""
-                                    placeholder="0.0"
-                                    className="border-none text-right"
-                                    size="xl"
-                                    disabled={!!!pickerTokenOption}
-                                    value={pickerRawAmount.formattedValue}
-                                    onValueChange={setPickerRawAmount}
-                                />
-                            </div>
-                            <div className="flex justify-end">
-                                <div className="flex items-center gap-2">
-                                    <TextMono size="sm">
-                                        {t("label.collateral.balance")}:{" "}
-                                    </TextMono>
-                                    {isLoading ? (
-                                        <span className="inline-block h-4 w-14 animate-pulse rounded-md bg-gray-200 text-sm" />
-                                    ) : !!data ? (
-                                        <TextMono size="sm">
-                                            {data.formatted}
-                                        </TextMono>
-                                    ) : (
-                                        <TextMono size="sm">-</TextMono>
-                                    )}
+        <>
+            <ERC20TokenPicker
+                open={tokenPickerOpen}
+                onDismiss={handleERC20TokenPickerDismiss}
+                selectedToken={pickedToken}
+                onSelectedTokenChange={setPickedToken}
+                lists={tokenLists as TokenListWithBalance[]}
+                /* TODO: define */
+                selectedList={selectedTokenList}
+                onSelectedListChange={setSelectedTokenList}
+                chainId={chain?.id}
+                messages={{
+                    search: {
+                        title: t("erc20.picker.search.title"),
+                        inputPlaceholder: t("erc20.picker.search.placeholder"),
+                        noTokens: t("erc20.picker.search.no.token"),
+                        manageLists: t("erc20.picker.search.manage.lists"),
+                    },
+                    manageLists: {
+                        title: t("erc20.picker.manage.lists.title"),
+                        noLists: t("erc20.picker.manage.lists.no.lists"),
+                    },
+                }}
+            />
+            <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-3">
+                    <div className="rounded-xxl border border-black p-4">
+                        <div className="flex flex-col gap-3">
+                            <div className="flex flex-col gap-2">
+                                <div className="flex justify-between">
+                                    <div
+                                        onClick={handleOpenERC20TokenPicker}
+                                        className="cursor-pointer"
+                                    >
+                                        <TextInput
+                                            id="collateral-select"
+                                            label=""
+                                            autoComplete="off"
+                                            placeholder={t(
+                                                "label.collateral.picker.token.pick"
+                                            )}
+                                            className={{
+                                                root: "cursor-pointer",
+                                            }}
+                                            readOnly
+                                            value={pickedToken?.symbol || ""}
+                                        />
+                                    </div>
+                                    <NumberInput
+                                        id="collateral-amount"
+                                        label=""
+                                        placeholder="0.0"
+                                        className={{
+                                            input: "w-full border-none text-right",
+                                        }}
+                                        variant="xl"
+                                        disabled={!!!pickedToken}
+                                        value={pickerRawAmount.formattedValue}
+                                        onValueChange={setPickerRawAmount}
+                                    />
                                 </div>
-                                {/* <TextMono size="sm">$ 7,068.31</TextMono> */}
-                            </div>
+                                <div className="flex justify-end">
+                                    <div className="flex items-center gap-2">
+                                        <Typography variant="sm">
+                                            {t("label.collateral.balance")}:{" "}
+                                        </Typography>
+                                        {isLoading ? (
+                                            <span className="inline-block h-4 w-14 animate-pulse rounded-md bg-gray-200 text-sm" />
+                                        ) : !!data ? (
+                                            <Typography variant="sm">
+                                                {data.formatted}
+                                            </Typography>
+                                        ) : (
+                                            <Typography variant="sm">
+                                                -
+                                            </Typography>
+                                        )}
+                                    </div>
+                                    {/* <Typography size="sm">$ 7,068.31</Typography> */}
+                                </div>
 
-                            <div className="h-px w-full bg-black" />
+                                <div className="h-px w-full bg-black" />
 
-                            <div className="flex items-center justify-between">
-                                <TextMono size="md">
-                                    {t(
-                                        "label.collateral.picker.minimum.payout"
-                                    )}
-                                </TextMono>
-                                <NumberInput
-                                    id="minimum-payout"
-                                    label=""
-                                    placeholder="0.0"
-                                    className="border-none text-right"
-                                    size="xl"
-                                    disabled={!!!pickerTokenOption}
-                                    value={
-                                        pickerRawMinimumPayout.formattedValue
-                                    }
-                                    onValueChange={setPickerRawMinimumPayout}
-                                />
-                            </div>
-                            {/* TODO: implement price fetching */}
-                            {/* <div className="flex justify-end">
-                                <TextMono size="sm">$ 7,068.31</TextMono>
+                                <div className="flex items-center justify-between">
+                                    <Typography>
+                                        {t(
+                                            "label.collateral.picker.minimum.payout"
+                                        )}
+                                    </Typography>
+                                    <NumberInput
+                                        id="minimum-payout"
+                                        label=""
+                                        placeholder="0.0"
+                                        className={{
+                                            input: "border-none text-right",
+                                        }}
+                                        variant="xl"
+                                        disabled={!!!pickedToken}
+                                        value={
+                                            pickerRawMinimumPayout.formattedValue
+                                        }
+                                        onValueChange={
+                                            setPickerRawMinimumPayout
+                                        }
+                                    />
+                                </div>
+                                {/* TODO: implement price fetching */}
+                                {/* <div className="flex justify-end">
+                                <Typography size="sm">$ 7,068.31</Typography>
                             </div> */}
+                            </div>
                         </div>
                     </div>
+                    <Button
+                        size="small"
+                        onClick={handleCollateralAdd}
+                        disabled={addDisabled}
+                        className={{ root: "cui-w-full" }}
+                    >
+                        {t("label.collateral.picker.apply")}
+                    </Button>
                 </div>
-                <Button
-                    size="small"
-                    onClick={handleCollateralAdd}
-                    disabled={addDisabled}
-                >
-                    {t("label.collateral.picker.apply")}
-                </Button>
-            </div>
-            <div className="flex flex-col gap-2">
-                <div className="grid grid-cols-3">
-                    <TextMono className="font-medium" size="sm">
-                        {t("label.collateral.table.collateral")}
-                    </TextMono>
-                    <TextMono className="text-center font-medium" size="sm">
-                        {t("label.collateral.table.amount")}
-                    </TextMono>
-                    <TextMono className="text-right font-medium" size="sm">
-                        {t("label.collateral.table.minimum.payout")}
-                    </TextMono>
-                </div>
-                <div className="scrollbar rounded-xxl flex max-h-48 flex-col gap-2 overflow-y-auto border border-black p-4">
-                    {collaterals.length === 0 ? (
-                        <TextMono
-                            size="sm"
-                            className="text-center"
+                <div className="flex flex-col gap-2">
+                    <div className="grid grid-cols-3">
+                        <Typography weight="medium" variant="sm">
+                            {t("label.collateral.table.collateral")}
+                        </Typography>
+                        <Typography
                             weight="medium"
+                            className={{ root: "text-center" }}
+                            variant="sm"
                         >
-                            {t("label.collateral.table.empty")}
-                        </TextMono>
-                    ) : (
-                        collaterals.map((collateral) => {
-                            const token = collateral.amount.currency;
-                            return (
-                                <div
-                                    key={token.address}
-                                    className="grid grid-cols-3"
-                                >
-                                    <TextMono className="text-" size="md">
-                                        {token.symbol}
-                                    </TextMono>
-                                    <TextMono className="text-center" size="md">
-                                        {utils.commify(
-                                            collateral.amount.toFixed(4)
-                                        )}
-                                    </TextMono>
-                                    <TextMono className="text-right" size="md">
-                                        {utils.commify(
-                                            collateral.minimumPayout.toFixed(4)
-                                        )}
-                                    </TextMono>
-                                </div>
-                            );
-                        })
-                    )}
+                            {t("label.collateral.table.amount")}
+                        </Typography>
+                        <Typography
+                            weight="medium"
+                            className={{ root: "text-right" }}
+                            variant="sm"
+                        >
+                            {t("label.collateral.table.minimum.payout")}
+                        </Typography>
+                    </div>
+                    <div className="scrollbar rounded-xxl flex max-h-48 flex-col gap-2 overflow-y-auto border border-black p-4">
+                        {collaterals.length === 0 ? (
+                            <Typography
+                                variant="sm"
+                                className={{ root: "text-center" }}
+                                weight="medium"
+                            >
+                                {t("label.collateral.table.empty")}
+                            </Typography>
+                        ) : (
+                            collaterals.map((collateral) => {
+                                const token = collateral.amount.currency;
+                                return (
+                                    <div
+                                        key={token.address}
+                                        className="grid grid-cols-3"
+                                    >
+                                        <div className="flex gap-2">
+                                            <RemoteLogo
+                                                src={token.logoURI}
+                                                size="sm"
+                                                defaultSrc={getDefaultERC20TokenLogoURL(
+                                                    token.chainId,
+                                                    token.address
+                                                )}
+                                                defaultText={token.symbol}
+                                                ipfsGatewayURL={
+                                                    IPFSService.gateway
+                                                }
+                                            />
+                                            <Typography>
+                                                {token.symbol}
+                                            </Typography>
+                                        </div>
+                                        <Typography
+                                            className={{ root: "text-center" }}
+                                        >
+                                            {utils.commify(
+                                                collateral.amount.toFixed(4)
+                                            )}
+                                        </Typography>
+                                        <Typography
+                                            className={{ root: "text-right" }}
+                                        >
+                                            {utils.commify(
+                                                collateral.minimumPayout.toFixed(
+                                                    4
+                                                )
+                                            )}
+                                        </Typography>
+                                    </div>
+                                );
+                            })
+                        )}
+                    </div>
+                </div>
+                <div className="flex justify-between">
+                    <PreviousButton t={t} onClick={onPrevious} />
+                    <NextButton
+                        t={t}
+                        onClick={handleNext}
+                        disabled={disabled}
+                    />
                 </div>
             </div>
-            <div className="flex justify-between">
-                <PreviousButton t={t} onClick={onPrevious} />
-                <NextButton t={t} onClick={handleNext} disabled={disabled} />
-            </div>
-        </div>
+        </>
     );
 };

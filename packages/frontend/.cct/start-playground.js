@@ -6,8 +6,11 @@ import { fileURLToPath } from "url";
 
 import postcssOptions from "../postcss.config.js";
 import { setupCompiler } from "./setup-compiler.js";
+import { createRequire } from "module";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
+const shared = require("@carrot-kpi/frontend/shared-dependencies.json");
 
 export const startPlayground = async (
     forkedNetworkChainId,
@@ -28,6 +31,9 @@ export const startPlayground = async (
         stats: "none",
         entry: join(__dirname, "../playground/index.tsx"),
         resolve: {
+            fallback: {
+                buffer: join(__dirname, "./utils/buffer.js"),
+            },
             extensions: [".ts", ".tsx", "..."],
         },
         module: {
@@ -79,18 +85,7 @@ export const startPlayground = async (
             new webpack.DefinePlugin(globals),
             new webpack.container.ModuleFederationPlugin({
                 name: "host",
-                shared: {
-                    "@carrot-kpi/react": "^0.21.0",
-                    "@carrot-kpi/sdk": "^1.12.0",
-                    "@carrot-kpi/ui": "^0.11.1",
-                    ethers: "^5.7.1",
-                    react: { requiredVersion: "^18.2.0", singleton: true },
-                    "react-dom": {
-                        requiredVersion: "^18.2.0",
-                        singleton: true,
-                    },
-                    wagmi: "^0.9.5",
-                },
+                shared,
             }),
         ],
     });
@@ -105,6 +100,9 @@ export const startPlayground = async (
         },
         stats: "none",
         resolve: {
+            fallback: {
+                buffer: join(__dirname, "./utils/buffer.js"),
+            },
             extensions: [".ts", ".tsx", "..."],
         },
         module: {
@@ -168,18 +166,7 @@ export const startPlayground = async (
                         "../src/set-public-path.ts"
                     ),
                 },
-                shared: {
-                    "@carrot-kpi/react": "^0.21.0",
-                    "@carrot-kpi/sdk": "^1.12.0",
-                    "@carrot-kpi/ui": "^0.11.1",
-                    ethers: "^5.7.1",
-                    react: { requiredVersion: "^18.2.0", singleton: true },
-                    "react-dom": {
-                        requiredVersion: "^18.2.0",
-                        singleton: true,
-                    },
-                    wagmi: "^0.9.5",
-                },
+                shared,
             }),
             new webpack.container.ModuleFederationPlugin({
                 name: "page",
@@ -192,18 +179,7 @@ export const startPlayground = async (
                         "../src/set-public-path.ts"
                     ),
                 },
-                shared: {
-                    "@carrot-kpi/react": "^0.21.0",
-                    "@carrot-kpi/sdk": "^1.12.0",
-                    "@carrot-kpi/ui": "^0.11.1",
-                    ethers: "^5.7.1",
-                    react: { requiredVersion: "^18.2.0", singleton: true },
-                    "react-dom": {
-                        requiredVersion: "^18.2.0",
-                        singleton: true,
-                    },
-                    wagmi: "^0.9.5",
-                },
+                shared,
             }),
         ],
     });
