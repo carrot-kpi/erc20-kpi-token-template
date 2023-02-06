@@ -3,9 +3,14 @@ import { Typography, ERC20TokenLogo, Popover } from "@carrot-kpi/ui";
 import { CollateralData } from "../../../creation-form/types";
 import { useNetwork } from "wagmi";
 
-export const CollateralRow = (collateral: CollateralData) => {
+interface CollateralRowProps {
+    collateral: CollateralData;
+    display: keyof Pick<CollateralData, "amount" | "minimumPayout">;
+}
+
+export const CollateralRow = ({ collateral, display }: CollateralRowProps) => {
     const { chain } = useNetwork();
-    const { address, symbol, name } = collateral.amount.currency;
+    const { address, symbol, name } = collateral[display].currency;
     const [open, setOpen] = useState(false);
     const [anchor, setAnchor] = useState<HTMLDivElement | null>(null);
 
@@ -36,7 +41,7 @@ export const CollateralRow = (collateral: CollateralData) => {
                         root: "inline-block",
                     }}
                 >
-                    {collateral.amount.toString()}
+                    {collateral[display].toString()}
                 </Typography>
             </div>
             <Popover anchor={anchor} open={open} placement="bottom">

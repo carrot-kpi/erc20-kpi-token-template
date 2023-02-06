@@ -1,25 +1,9 @@
 @tailwind components;
 @tailwind utilities;
+@tailwind base;
 
 /* TODO: standardize and move to the monorepo UI */
 @layer utilities {
-    .scrollbar {
-        scroll-behavior: smooth;
-        overflow-y: overlay;
-    }
-
-    .scrollbar::-webkit-scrollbar {
-        width: 14px;
-        height: 14px;
-    }
-
-    .scrollbar::-webkit-scrollbar-thumb {
-        background: #e0cbcb;
-        border-radius: 100vh;
-        border: 3px solid transparent;
-        background-clip: padding-box;
-    }
-
     .bg-grid-orange {
         background-size: 64px 64px;
         background-image: linear-gradient(
@@ -38,5 +22,24 @@
                 transparent 1px
             ),
             linear-gradient(to bottom, #e9e9e9 1px, transparent 1px);
+    }
+}
+
+@layer base {
+    body {
+        overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar {
+        scroll-behavior: smooth;
+        width: 14px;
+        height: 14px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #e0cbcb;
+        border-radius: 100vh;
+        border: 3px solid transparent;
+        background-clip: padding-box;
     }
 }

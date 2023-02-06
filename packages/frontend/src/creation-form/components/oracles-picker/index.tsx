@@ -52,7 +52,7 @@ export const OraclesPicker = ({
                     <Typography weight="medium">
                         {t("oracles.picker.label")}
                     </Typography>
-                    <div className="scrollbar flex gap-7 overflow-x-auto">
+                    <div className="flex gap-7 overflow-x-auto">
                         {templates.map((template) => {
                             const checked = !!pickedTemplates[template.id];
                             return (

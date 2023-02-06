@@ -326,7 +326,7 @@ export const Collaterals = ({
                             {t("label.collateral.table.minimum.payout")}
                         </Typography>
                     </div>
-                    <div className="scrollbar rounded-xxl flex max-h-48 flex-col gap-2 overflow-y-auto border border-black p-4">
+                    <div className="rounded-xxl flex max-h-48 flex-col gap-2 overflow-y-auto border border-black p-4">
                         {collaterals.length === 0 ? (
                             <Typography
                                 variant="sm"
