@@ -4,24 +4,28 @@
 
 /* TODO: standardize and move to the monorepo UI */
 @layer utilities {
-    .bg-grid-orange {
+    .bg-grid-dark {
         background-size: 64px 64px;
         background-image: linear-gradient(
                 to right,
-                #d6602a 1px,
+                rgba(0, 0, 0, 0.1) 1px,
                 transparent 1px
             ),
-            linear-gradient(to bottom, #d6602a 1px, transparent 1px);
+            linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
     }
 
-    .bg-grid-white {
+    .bg-grid-light {
         background-size: 64px 64px;
         background-image: linear-gradient(
                 to right,
-                #e9e9e9 1px,
+                rgba(255, 255, 255, 0.1) 1px,
                 transparent 1px
             ),
-            linear-gradient(to bottom, #e9e9e9 1px, transparent 1px);
+            linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.1) 1px,
+                transparent 1px
+            );
     }
 }
 
