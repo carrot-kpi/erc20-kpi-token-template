@@ -1069,10 +1069,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@carrot-kpi/frontend@^1.0.0-rc.21":
-  version "1.0.0-rc.21"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/frontend/-/frontend-1.0.0-rc.21.tgz#e3bc8eee586a4ba14b1e9f2b60765608e15bf7c7"
-  integrity sha512-+8MPOxiHDH8n0lWTeKV4IEpb0x1JakoTcn1M940JW57V3XCgt8Lt9WWKpdkpAGnrri0ZdnuuB8aT7p5tWGs/qA==
+"@carrot-kpi/frontend@^1.0.0-rc.23":
+  version "1.0.0-rc.23"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/frontend/-/frontend-1.0.0-rc.23.tgz#37397d0e0df71b3c5ec336a47de1bd6ab90ef80c"
+  integrity sha512-BblNlUGW4NWqHXcrawUpyxB3WCSgu/AydAL0mEWgvoE6+gXZWeyvHkap9Qec3KZRRMobElDP/evTND4DOORBzw==
   dependencies:
     "@carrot-kpi/react" "*"
     "@carrot-kpi/sdk" "*"
