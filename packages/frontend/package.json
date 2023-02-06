@@ -36,7 +36,7 @@
         "@types/react": "^18.0.21",
         "@types/react-dom": "^18.0.6",
         "chalk": "^5.0.1",
-        "eslint-config-custom": "workspace:*",
+        "eslint-config-custom": "*",
         "ethers": "^5.7.1",
         "fork-ts-checker-webpack-plugin": "^7.2.13",
         "git-rev-sync": "^3.0.2",
@@ -59,6 +59,7 @@
         "webpack-dev-server": "^4.11.1"
     },
     "devDependencies": {
+        "@carrot-kpi/frontend": "^1.0.0-rc.20",
         "@fontsource/inter": "^4.5.15",
         "@svgr/webpack": "^6.5.1",
         "@types/sanitize-html": "^2.8.0",

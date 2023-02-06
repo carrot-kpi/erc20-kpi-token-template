@@ -1,12 +1,16 @@
 {
+    "private": true,
     "name": "erc20-kpi-token-template",
     "version": "0.1.0",
     "description": "A Carrot template.",
     "license": "GPL-3.0",
     "templateType": "kpi-token",
+    "workspaces": [
+        "packages/*"
+    ],
     "scripts": {
         "build": "turbo run build",
-        "build:contracts": "pnpm build --filter contracts",
+        "build:contracts": "yarn workspace erc20-kpi-token-template-contracts build",
         "lint": "turbo run lint",
         "format": "turbo run format",
         "start": "carrot-scripts start",
