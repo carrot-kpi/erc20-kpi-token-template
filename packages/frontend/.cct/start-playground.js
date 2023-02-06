@@ -1,6 +1,6 @@
 import WebpackDevServer from "webpack-dev-server";
 import HtmlWebpackPlugin from "html-webpack-plugin";
-import path, { join, dirname } from "path";
+import { join, dirname } from "path";
 import webpack from "webpack";
 import { fileURLToPath } from "url";
 
