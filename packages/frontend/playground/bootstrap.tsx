@@ -1,3 +1,11 @@
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
+import "@fontsource/ibm-plex-mono/700.css";
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/500.css";
+import "@fontsource/inter/700.css";
+import "@carrot-kpi/ui/styles.css";
+import "@carrot-kpi/frontend/styles.css";
 import "./global.css";
 
 import { Root } from "@carrot-kpi/frontend";
@@ -9,15 +17,6 @@ import { Chain } from "wagmi/chains";
 import * as chains from "wagmi/chains";
 import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
-
-import "@fontsource/ibm-plex-mono/400.css";
-import "@fontsource/ibm-plex-mono/500.css";
-import "@fontsource/ibm-plex-mono/700.css";
-import "@fontsource/inter/400.css";
-import "@fontsource/inter/500.css";
-import "@fontsource/inter/700.css";
-import "@carrot-kpi/ui/styles.css";
-import "@carrot-kpi/frontend/styles.css";
 
 class CarrotConnector extends Connector<
     providers.JsonRpcProvider,
