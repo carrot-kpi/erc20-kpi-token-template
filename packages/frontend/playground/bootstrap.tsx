@@ -1,31 +1,3 @@
-import { Fetcher, KPIToken } from "@carrot-kpi/sdk";
-import {
-    KPITokenPage,
-    CarrotCoreProvider,
-    CreationForm,
-    useKPITokenTemplates,
-} from "@carrot-kpi/react";
-import { Button, CarrotUIProvider } from "@carrot-kpi/ui";
-import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
-import { createRoot } from "react-dom/client";
-import { Wallet, providers, Signer, BigNumber, utils, constants } from "ethers";
-import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
-import {
-    Address,
-    Connector,
-    ConnectorData,
-    useAccount,
-    useConnect,
-    usePrepareSendTransaction,
-    useProvider,
-    useSendTransaction,
-} from "wagmi";
-import { Chain } from "wagmi/chains";
-import * as chains from "wagmi/chains";
-import i18next from "i18next";
-import { initReactI18next } from "react-i18next";
-import { Loader } from "../src/ui/loader";
-
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import "@fontsource/ibm-plex-mono/700.css";
@@ -33,10 +5,18 @@ import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";
 import "@fontsource/inter/700.css";
 import "@carrot-kpi/ui/styles.css";
-
+import "@carrot-kpi/frontend/styles.css";
 import "./global.css";
 
-type View = "creation" | "view";
+import { Root } from "@carrot-kpi/frontend";
+import { createRoot } from "react-dom/client";
+import { Wallet, providers, Signer } from "ethers";
+import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
+import { Address, Connector, ConnectorData } from "wagmi";
+import { Chain } from "wagmi/chains";
+import * as chains from "wagmi/chains";
+import i18next from "i18next";
+import { initReactI18next } from "react-i18next";
 
 class CarrotConnector extends Connector<
     providers.JsonRpcProvider,
@@ -128,132 +108,9 @@ if (!forkedChain) {
 }
 const supportedChains = [forkedChain];
 
-const App = (): ReactElement => {
-    const cctTemplateIds = useMemo(() => [CCT_TEMPLATE_ID], []);
-
-    const provider = useProvider();
-    const { isConnected } = useAccount();
-    const { connect, connectors } = useConnect({
-        chainId: CCT_CHAIN_ID,
-    });
-    const { loading: isLoadingTemplates, templates } =
-        useKPITokenTemplates(cctTemplateIds);
-
-    const [creationTx, setCreationTx] = useState<
-        providers.TransactionRequest & {
-            to: string;
-        }
-    >({
-        to: "",
-        data: "",
-        value: BigNumber.from("0"),
-    });
-    const [kpiToken, setKPIToken] = useState<KPIToken | null>(null);
-    const [activeView, setActiveView] = useState<View>("creation");
-
-    const { config } = usePrepareSendTransaction({
-        request: creationTx,
-    });
-    const { sendTransactionAsync } = useSendTransaction(config);
-
-    useEffect(() => {
-        const value = localStorage.getItem("latest-kpi-token");
-        if (!value) return;
-        setKPIToken(JSON.parse(value));
-    }, []);
-
-    useEffect(() => {
-        if (!isConnected) connect({ connector: connectors[0] });
-    }, [connect, connectors, isConnected]);
-
-    useEffect(() => {
-        let cancelled = false;
-        if (sendTransactionAsync) {
-            const fetch = async (): Promise<void> => {
-                const tx = await sendTransactionAsync();
-                const receipt = await tx.wait();
-                const createTokenEventHash = utils.keccak256(
-                    utils.toUtf8Bytes("CreateToken(address)")
-                );
-                let createdKPITokenAddress = constants.AddressZero;
-                for (const log of receipt.logs) {
-                    const [hash] = log.topics;
-                    if (hash !== createTokenEventHash) continue;
-                    createdKPITokenAddress = utils.defaultAbiCoder.decode(
-                        ["address"],
-                        log.data
-                    )[0];
-                    break;
-                }
-                const kpiToken = (
-                    await Fetcher.fetchKPITokens(provider, true, [
-                        createdKPITokenAddress,
-                    ])
-                )[createdKPITokenAddress];
-                if (!kpiToken) return;
-                if (!cancelled) setKPIToken(kpiToken);
-                if (!cancelled)
-                    localStorage.setItem(
-                        "latest-kpi-token",
-                        JSON.stringify(kpiToken)
-                    );
-            };
-            void fetch();
-        }
-        return () => {
-            cancelled = true;
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [provider, sendTransactionAsync]);
-
-    const handleDone = useCallback(
-        (to: Address, data: string, value: BigNumber) => {
-            setCreationTx({ to, data, value, gasLimit: 10_000_000 });
-        },
-        []
-    );
-
-    const handleViewChange = useCallback((view: View) => {
-        setActiveView(view);
-    }, []);
-
-    return (
-        <div className="w-screen overflow-x-hidden">
-            <div className="fixed bottom-0 right-0 z-20 flex gap-1 rounded-xl bg-gray-100 bg-opacity-50 p-1">
-                <Button
-                    size="xsmall"
-                    onClick={() => handleViewChange("creation")}
-                >
-                    Creation
-                </Button>
-                <Button size="xsmall" onClick={() => handleViewChange("view")}>
-                    View
-                </Button>
-            </div>
-            {activeView === "creation" && !isLoadingTemplates && (
-                <CreationForm
-                    i18n={i18next}
-                    fallback={<Loader />}
-                    template={templates[0]}
-                    customBaseUrl="http://localhost:9002/"
-                    onDone={handleDone}
-                />
-            )}
-            {activeView === "view" && !!kpiToken && (
-                <KPITokenPage
-                    i18n={i18next}
-                    fallback={<Loader />}
-                    address={kpiToken.address}
-                    customBaseUrl="http://localhost:9002/"
-                />
-            )}
-        </div>
-    );
-};
-
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 createRoot(document.getElementById("root")!).render(
-    <CarrotCoreProvider
+    <Root
         supportedChains={supportedChains}
         providers={[
             jsonRpcProvider({
@@ -262,13 +119,14 @@ createRoot(document.getElementById("root")!).render(
                 }),
             }),
         ]}
-        getConnectors={(chains: Chain[]) => [
-            new CarrotConnector({ chains, options: {} }) as Connector,
+        connectors={() => [
+            new CarrotConnector({
+                chains: supportedChains,
+                options: {},
+            }) as Connector,
         ]}
-        ipfsGateway={CCT_IPFS_GATEWAY_URL}
-    >
-        <CarrotUIProvider>
-            <App />
-        </CarrotUIProvider>
-    </CarrotCoreProvider>
+        ipfsGatewayURL={CCT_IPFS_GATEWAY_URL}
+        customBaseURL="http://localhost:9002"
+        templateId={CCT_TEMPLATE_ID as unknown as number}
+    />
 );
