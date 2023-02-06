@@ -179,15 +179,15 @@ export const Component = ({
     );
 
     return (
-        <div className="scrollbar bg-green min-h-screen overflow-y-auto">
-            <div className="flex h-screen flex-col items-center justify-between pt-10">
+        <div className="scrollbar bg-green overflow-y-auto">
+            <div className="flex flex-col items-center justify-between pt-10">
                 {/* <div className="fixed top-1/2 left-1/2 h-[65%] w-[90%] -translate-x-1/2 -translate-y-1/2 transform md:w-[50%]">
                     <div
                         style={{ background: `url(${square}) center` }}
                         className="bg-square h-full w-full text-black dark:text-white"
                     />
                 </div> */}
-                <div className="square-list fixed left-20 top-1/3 hidden flex-col gap-8 lg:flex">
+                <div className="square-list absolute left-20 top-1/3 hidden flex-col gap-8 lg:flex">
                     {stepTitles.map((title, index) => {
                         const currentStep = index === step;
                         const active = index <= mostUpdatedStep;
