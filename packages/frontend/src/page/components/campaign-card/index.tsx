@@ -5,7 +5,7 @@ import {
     CardContent,
     CardTitle,
     Chip,
-    MarkdownContent,
+    Markdown,
     Typography,
 } from "@carrot-kpi/ui";
 import { commify, formatUnits } from "ethers/lib/utils.js";
@@ -39,7 +39,7 @@ export const CampaignCard = ({
     <Card className={{ root: "w-full max-w-6xl" }}>
         <CardTitle>{specification.title}</CardTitle>
         <CardContent>
-            <MarkdownContent
+            <Markdown
                 className={{
                     root: "p-3 max-h-[300px] max-w-none overflow-y-auto",
                 }}
@@ -49,7 +49,7 @@ export const CampaignCard = ({
                         __html: sanitizeHtml(specification.description),
                     }}
                 />
-            </MarkdownContent>
+            </Markdown>
             <div className="p-3 flex flex-wrap gap-3">
                 {specification.tags.map((tag) => (
                     <Chip key={tag}>{tag}</Chip>
