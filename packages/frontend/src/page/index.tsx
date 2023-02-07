@@ -118,7 +118,7 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
 
     return (
         <div className="overflow-x-hidden">
-            <div className="bg-grid-orange bg-orange flex flex-col items-center gap-6 px-2 py-3 sm:px-9 sm:py-5 md:items-start md:px-36 md:py-24">
+            <div className="bg-grid-dark dark:bg-grid-light bg-orange flex flex-col items-center gap-6 px-2 py-3 sm:px-9 sm:py-5 md:items-start md:px-36 md:py-24">
                 <Typography variant="h2">
                     {kpiToken.specification.title}
                 </Typography>
@@ -163,7 +163,7 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                     owner={owner}
                 />
             </div>
-            <div className="bg-grid-white m-5 flex flex-col gap-[124px] bg-white px-2 py-3 dark:bg-black sm:px-9 sm:py-5 md:px-36 md:py-24">
+            <div className="bg-grid-dark dark:bg-grid-light m-5 flex flex-col gap-[124px] bg-white px-2 py-3 dark:bg-black sm:px-9 sm:py-5 md:px-36 md:py-24">
                 <div className="flex flex-col gap-12">
                     <Typography variant="h2">{t("account.title")}</Typography>
                     <Account
