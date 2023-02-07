@@ -9,6 +9,7 @@
         "plugin:react/recommended",
         "plugin:react-hooks/recommended"
     ],
+    "ignorePatterns": ["tailwind.config.cjs"],
     "plugins": ["react"],
     "settings": {
         "react": {
