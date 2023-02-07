@@ -1,6 +1,5 @@
 @tailwind components;
 @tailwind utilities;
-@tailwind base;
 
 /* TODO: standardize and move to the monorepo UI */
 @layer utilities {
@@ -26,24 +25,5 @@
                 rgba(255, 255, 255, 0.1) 1px,
                 transparent 1px
             );
-    }
-}
-
-@layer base {
-    body {
-        overflow-x: hidden;
-    }
-
-    ::-webkit-scrollbar {
-        scroll-behavior: smooth;
-        width: 14px;
-        height: 14px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-        background: #e0cbcb;
-        border-radius: 100vh;
-        border: 3px solid transparent;
-        background-clip: padding-box;
     }
 }

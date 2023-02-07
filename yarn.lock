@@ -5842,15 +5842,16 @@ capital-case@^1.0.4:
     tslib "^2.0.3"
     upper-case-first "^2.0.2"
 
-carrot-scripts@^0.12.0:
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/carrot-scripts/-/carrot-scripts-0.12.0.tgz#127d97b78ce8ad437ee72e40db5bb64504f43288"
-  integrity sha512-ze1E/rimi+WBx66MPJUBPsKm3MH8IOsWry1XRejjS06ElNioyOr6JRKYhEQa8UiRJO8ZbJN3PjYELMIhlV15Kg==
+carrot-scripts@^0.13.0:
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/carrot-scripts/-/carrot-scripts-0.13.0.tgz#beeab0b963f9476959f13ba1d64304aecdb70f48"
+  integrity sha512-a++5FQ8svslv4Gr6uxR+5bn5YbBIDlSEwNmNaqqcJ8D984Ur8CVxBilLOpITRxt2JBjYU4jrp997PLN+Pl/FMA==
   dependencies:
     "@carrot-kpi/sdk" "^1.9.2"
     chalk "^4.1.2"
     ethers "^5.7.1"
     ganache "^7.4.4"
+    git-rev-sync "^3.0.2"
     ipfs-daemon "^0.15.0"
     ora "^6.1.2"
 
