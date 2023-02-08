@@ -22,6 +22,7 @@ import { NextButton } from "../next-button";
 import { PreviousButton } from "../previous-button";
 import { TOKEN_LIST_URLS } from "../../constants";
 import { getDefaultERC20TokenLogoURL } from "../../../utils/erc20";
+import { ReactComponent as X } from "../../../assets/x.svg";
 
 interface CollateralProps {
     t: NamespacedTranslateFunction;
@@ -183,6 +184,18 @@ export const Collaterals = ({
         onNext(collaterals);
     }, [collaterals, onNext]);
 
+    const handleRemoveCollateral = useCallback(
+        (event: React.MouseEvent<HTMLDivElement>) => {
+            if (!event.target) return;
+            const rawIndex = (event.target as HTMLDivElement).dataset.index;
+            if (!rawIndex) return;
+            const index = parseInt(rawIndex);
+            if (isNaN(index)) return;
+            setCollaterals(collaterals.filter((_, i) => i !== index));
+        },
+        [collaterals]
+    );
+
     return (
         <>
             <ERC20TokenPicker
@@ -336,14 +349,20 @@ export const Collaterals = ({
                                 {t("label.collateral.table.empty")}
                             </Typography>
                         ) : (
-                            collaterals.map((collateral) => {
+                            collaterals.map((collateral, index) => {
                                 const token = collateral.amount.currency;
                                 return (
                                     <div
                                         key={token.address}
                                         className="grid grid-cols-3"
                                     >
-                                        <div className="flex gap-2">
+                                        <div className="flex gap-2 items-center">
+                                            <div
+                                                onClick={handleRemoveCollateral}
+                                                data-index={index}
+                                            >
+                                                <X className="stroke-gray-500 dark:stroke-gray-700 cursor-pointer" />
+                                            </div>
                                             <RemoteLogo
                                                 src={token.logoURI}
                                                 size="sm"
