@@ -20,7 +20,6 @@ const shared = require("@carrot-kpi/frontend/shared-dependencies.json");
 // TODO: support different React versions
 const main = async () => {
     const __dirname = dirname(fileURLToPath(import.meta.url));
-    const require = createRequire(import.meta.url);
 
     const outDir = join(__dirname, "../dist");
     let spinner = ora();
@@ -36,6 +35,7 @@ const main = async () => {
             {
                 mode: "production",
                 devtool: false,
+                entry: join(__dirname, "../src"),
                 output: {
                     filename: "[name].js",
                     path: join(__dirname, "../dist"),
