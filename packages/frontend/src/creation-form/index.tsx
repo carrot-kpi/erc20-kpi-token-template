@@ -181,7 +181,7 @@ export const Component = ({
     return (
         <div className="relative bg-grid-dark dark:bg-grid-light scrollbar bg-green overflow-y-auto">
             <div className="flex flex-col items-center justify-between pt-10">
-                <div className="square-list absolute left-20 top-1/3 hidden flex-col gap-8 lg:flex">
+                <div className="square-list absolute left-20 top-40 hidden flex-col gap-8 lg:flex">
                     {stepTitles.map((title, index) => {
                         const currentStep = index === step;
                         const active = index <= mostUpdatedStep;
