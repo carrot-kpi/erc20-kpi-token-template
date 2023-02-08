@@ -14,7 +14,7 @@
         "coverage": "forge coverage"
     },
     "devDependencies": {
-        "ethers": "^6.0.2",
+        "ethers": "^5.7.1",
         "prettier": "^2.8.4",
         "prettier-plugin-solidity": "^1.0.0-beta.19",
         "solhint-plugin-prettier": "^0.0.5"
