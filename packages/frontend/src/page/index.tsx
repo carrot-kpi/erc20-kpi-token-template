@@ -1,6 +1,6 @@
 import { Amount, Fetcher, KPIToken } from "@carrot-kpi/sdk";
-import { Button, Typography } from "@carrot-kpi/ui";
-import { ReactElement, useEffect, useState } from "react";
+import { Button, ResponsiveHeader } from "@carrot-kpi/ui";
+import { ReactElement, useCallback, useEffect, useState } from "react";
 import {
     NamespacedTranslateFunction,
     useWatchData,
@@ -116,32 +116,37 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
         };
     }, [data, provider]);
 
+    // TODO: what to copy to the clipboard?
+    const handleShare = useCallback(() => {
+        navigator.clipboard.writeText("");
+    }, []);
+
     return (
         <div className="overflow-x-hidden">
             <div className="bg-grid-dark dark:bg-grid-light bg-orange flex flex-col items-center gap-6 px-2 py-3 sm:px-9 sm:py-5 md:items-start md:px-36 md:py-24">
-                <Typography variant="h2">
+                <ResponsiveHeader autoAlign variant="h2">
                     {kpiToken.specification.title}
-                </Typography>
+                </ResponsiveHeader>
                 <div className="flex gap-6">
                     <Button
-                        variant="secondary"
                         size="small"
+                        iconPlacement="left"
                         icon={ShareIcon}
                         className={{
-                            icon: "stroke-black",
-                            root: "[&>svg]:hover:stroke-white",
+                            icon: "stroke-white",
+                            root: "[&>svg]:hover:stroke-black",
                         }}
-                        onClick={() => console.log("share")}
+                        onClick={handleShare}
                     >
                         {t("share")}
                     </Button>
                     <Button
-                        variant="secondary"
                         size="small"
+                        iconPlacement="left"
                         icon={ReportIcon}
                         className={{
-                            icon: "stroke-black",
-                            root: "[&>svg]:hover:stroke-white",
+                            icon: "stroke-white",
+                            root: "[&>svg]:hover:stroke-black",
                         }}
                         onClick={() => console.log("report")}
                     >
@@ -165,7 +170,9 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
             </div>
             <div className="bg-grid-dark dark:bg-grid-light m-5 flex flex-col gap-[124px] bg-white px-2 py-3 dark:bg-black sm:px-9 sm:py-5 md:px-36 md:py-24">
                 <div className="flex flex-col gap-12">
-                    <Typography variant="h2">{t("account.title")}</Typography>
+                    <ResponsiveHeader autoAlign variant="h2">
+                        {t("account.title")}
+                    </ResponsiveHeader>
                     <Account
                         t={t}
                         kpiTokenData={{
@@ -177,7 +184,9 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                     />
                 </div>
                 <div className="flex flex-col gap-12 ">
-                    <Typography variant="h2">{t("oracle.title")}</Typography>
+                    <ResponsiveHeader autoAlign variant="h2">
+                        {t("oracle.title")}
+                    </ResponsiveHeader>
                     <div className="w-full max-w-6xl p-10 border bg-white dark:bg-black border-black dark:border-white">
                         <OraclePage
                             i18n={i18n}
@@ -187,7 +196,9 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                     </div>
                 </div>
                 <div className="flex flex-col gap-12">
-                    <Typography variant="h2">{t("widgets.title")}</Typography>
+                    <ResponsiveHeader autoAlign variant="h2">
+                        {t("widgets.title")}
+                    </ResponsiveHeader>
                     {/*TODO: add campaign widgets*/}
                 </div>
             </div>
