@@ -47,6 +47,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     uint256 internal kpiTokenTemplateId;
     string public description;
     uint256 public expiration;
+    uint256 public creationTimestamp;
     uint256 internal initialSupply;
     uint256 internal totalWeight;
     mapping(address => FinalizableOracleWithoutAddress) internal finalizableOracleByAddress;
@@ -198,6 +199,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
         owner = _creator;
         description = _description;
         expiration = _expiration;
+        creationTimestamp = block.timestamp;
         kpiTokensManager = _kpiTokensManager;
         kpiTokenTemplateId = _kpiTokenTemplateId;
         kpiTokenTemplateVersion = _kpiTokenTemplateVersion;
