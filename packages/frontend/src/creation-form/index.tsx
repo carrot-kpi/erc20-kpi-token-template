@@ -1,6 +1,6 @@
 import "../global.css";
 
-import { Typography } from "@carrot-kpi/ui";
+import { MultiStepCards, StepCard, Typography } from "@carrot-kpi/ui";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { ChainId, Template } from "@carrot-kpi/sdk";
 import { BigNumber, constants } from "ethers";
@@ -14,10 +14,8 @@ import {
     TokenData as TokenDataType,
 } from "./types";
 import { Address, useNetwork } from "wagmi";
-import { Card } from "../ui/card";
 import { GenericData } from "./components/generic-data";
 import { Collaterals } from "./components/collaterals";
-import { NextStepPreview } from "./components/next-step-preview";
 import { cva } from "class-variance-authority";
 import { i18n } from "i18next";
 import { OraclesConfiguration } from "./components/oracles-configuration";
@@ -219,55 +217,58 @@ export const Component = ({
                         );
                     })}
                 </div>
-                <div className="w-full max-w-xl">
-                    <Card
-                        step={t("card.step.label", { number: step + 1 })}
-                        title={stepTitles[step]}
+                <MultiStepCards activeStep={step}>
+                    <StepCard title={t("card.general.title")} step={1}>
+                        <GenericData
+                            t={t}
+                            specificationData={specificationData}
+                            tokenData={tokenData}
+                            onNext={handleGenericDataNext}
+                        />
+                    </StepCard>
+                    <StepCard title={t("card.collateral.title")} step={2}>
+                        <Collaterals
+                            t={t}
+                            collaterals={collateralsData}
+                            onPrevious={handlePrevious}
+                            onNext={handleCollateralsNext}
+                        />
+                    </StepCard>
+                    <StepCard title={t("card.oracle.pick.title")} step={3}>
+                        <OraclesPicker
+                            t={t}
+                            oracleTemplatesData={oracleTemplatesData}
+                            onPrevious={handlePrevious}
+                            onNext={handleOraclesPickerNext}
+                        />
+                    </StepCard>
+                    <StepCard
+                        title={t("card.oracle.configuration.title")}
+                        step={4}
                     >
-                        {step === 0 && (
-                            <GenericData
-                                t={t}
-                                specificationData={specificationData}
-                                tokenData={tokenData}
-                                onNext={handleGenericDataNext}
-                            />
-                        )}
-                        {step === 1 && (
-                            <Collaterals
-                                t={t}
-                                collaterals={collateralsData}
-                                onPrevious={handlePrevious}
-                                onNext={handleCollateralsNext}
-                            />
-                        )}
-                        {step === 2 && (
-                            <OraclesPicker
-                                t={t}
-                                oracleTemplatesData={oracleTemplatesData}
-                                onPrevious={handlePrevious}
-                                onNext={handleOraclesPickerNext}
-                            />
-                        )}
-                        {step === 3 && (
-                            <OraclesConfiguration
-                                t={t}
-                                i18n={i18n}
-                                oraclesData={oraclesData}
-                                templates={oracleTemplatesData}
-                                onPrevious={handlePrevious}
-                                onNext={handleOraclesConfigurationNext}
-                            />
-                        )}
-                        {step === 4 && (
-                            <OutcomesConfiguration
-                                t={t}
-                                outcomesData={outcomesData}
-                                templates={oracleTemplatesData}
-                                onPrevious={handlePrevious}
-                                onNext={handleOutcomesConfigurationNext}
-                            />
-                        )}
-                        {step === 5 && !!specificationData && !!tokenData && (
+                        <OraclesConfiguration
+                            t={t}
+                            i18n={i18n}
+                            oraclesData={oraclesData}
+                            templates={oracleTemplatesData}
+                            onPrevious={handlePrevious}
+                            onNext={handleOraclesConfigurationNext}
+                        />
+                    </StepCard>
+                    <StepCard
+                        title={t("card.outcome.configuration.title")}
+                        step={5}
+                    >
+                        <OutcomesConfiguration
+                            t={t}
+                            outcomesData={outcomesData}
+                            templates={oracleTemplatesData}
+                            onPrevious={handlePrevious}
+                            onNext={handleOutcomesConfigurationNext}
+                        />
+                    </StepCard>
+                    {!!specificationData && !!tokenData && (
+                        <StepCard title={t("card.deploy.title")} step={6}>
                             <Deploy
                                 t={t}
                                 targetAddress={creationProxyAddress}
@@ -280,23 +281,9 @@ export const Component = ({
                                 onPrevious={handlePrevious}
                                 onNext={handleDeployNext}
                             />
-                        )}
-                    </Card>
-                </div>
-                <div className="mt-20 min-h-fit w-full max-w-xl">
-                    {!!stepTitles[step + 1] && (
-                        <NextStepPreview
-                            step={t("card.step.label", { number: step + 2 })}
-                            title={stepTitles[step + 1]}
-                        />
+                        </StepCard>
                     )}
-                    {!!stepTitles[step + 2] && (
-                        <NextStepPreview
-                            step={t("card.step.label", { number: step + 3 })}
-                            title={stepTitles[step + 2]}
-                        />
-                    )}
-                </div>
+                </MultiStepCards>
             </div>
         </div>
     );
