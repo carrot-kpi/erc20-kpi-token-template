@@ -240,6 +240,7 @@ export const Collaterals = ({
                                             )}
                                             className={{
                                                 root: "cursor-pointer",
+                                                input: "w-full",
                                             }}
                                             readOnly
                                             value={pickedToken?.symbol || ""}
@@ -291,7 +292,7 @@ export const Collaterals = ({
                                         label=""
                                         placeholder="0.0"
                                         className={{
-                                            input: "border-none text-right",
+                                            input: "border-none text-right w-full",
                                         }}
                                         variant="xl"
                                         disabled={!!!pickedToken}

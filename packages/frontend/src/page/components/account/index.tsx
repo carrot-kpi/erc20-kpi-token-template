@@ -38,7 +38,14 @@ export const Account = ({
             ) : (
                 <>
                     <div className="w-full p-6 bg-gray-200 border-b border-black">
-                        <Typography weight="medium">{address}</Typography>
+                        <Typography
+                            weight="medium"
+                            className={{
+                                root: "text-ellipsis overflow-hidden ...",
+                            }}
+                        >
+                            {address}
+                        </Typography>
                     </div>
                     <div className="w-full p-6 flex flex-col sm:flex-row justify-between gap-4">
                         <div className="flex-col">

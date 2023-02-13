@@ -26,15 +26,16 @@
         "size-limit": "size-limit"
     },
     "dependencies": {
-        "@carrot-kpi/react": "^0.25.2",
-        "@carrot-kpi/sdk": "^1.15.0",
-        "@carrot-kpi/ui": "^0.20.0",
+        "@carrot-kpi/react": "^0.26.0",
+        "@carrot-kpi/sdk": "^1.16.0",
+        "@carrot-kpi/ui": "^0.22.0",
         "@fontsource/ibm-plex-mono": "^4.5.13",
+        "@tailwindcss/line-clamp": "^0.4.2",
         "@testing-library/jest-dom": "^5.16.5",
         "@testing-library/react": "^13.4.0",
         "@types/git-rev-sync": "^2.0.0",
         "@types/jest": "^29.0.3",
-        "@types/react": "^18.0.21",
+        "@types/react": "^18.0.28",
         "@types/react-dom": "^18.0.6",
         "chalk": "^5.0.1",
         "eslint-config-custom": "*",
@@ -60,9 +61,9 @@
         "webpack-dev-server": "^4.11.1"
     },
     "devDependencies": {
-        "@carrot-kpi/frontend": "^1.0.0-rc.26",
+        "@carrot-kpi/frontend": "^1.0.0-rc.27",
         "@fontsource/inter": "^4.5.15",
-        "@size-limit/file": "^8.1.2",
+        "@size-limit/file": "^8.2.4",
         "@svgr/webpack": "^6.5.1",
         "@types/sanitize-html": "^2.8.0",
         "autoprefixer": "^10.4.13",
@@ -76,9 +77,9 @@
         "ora": "^6.1.2",
         "postcss": "^8.4.20",
         "postcss-loader": "^7.0.2",
-        "size-limit": "^8.1.2",
+        "size-limit": "^8.2.4",
         "style-loader": "^3.3.1",
-        "tailwindcss": "^3.2.4",
+        "tailwindcss": "^3.2.6",
         "url-loader": "^4.1.1"
     }
 }
