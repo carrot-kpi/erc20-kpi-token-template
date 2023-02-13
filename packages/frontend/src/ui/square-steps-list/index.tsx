@@ -23,7 +23,7 @@ const stepStyles = cva(["flex", "items-center", "gap-4"], {
     },
 });
 
-const squareStyles = cva(["relative", "h-3", "w-3"], {
+const squareStyles = cva(["relative", "h-3", "w-3", "z-10"], {
     variants: {
         active: {
             true: ["bg-orange", "z-10"],
@@ -35,7 +35,14 @@ const squareStyles = cva(["relative", "h-3", "w-3"], {
 const lineStyles = cva(["absolute"], {
     variants: {
         layout: {
-            vertical: ["left-1/2", "h-14", "w-[1px]", "-translate-x-[0.5px]"],
+            vertical: [
+                "left-1/2",
+                "top-3",
+                "h-12",
+                "w-[1px]",
+                "-translate-x-[0.5px]",
+                "z-0",
+            ],
             horizontal: [
                 "absolute",
                 "top-1/2",
@@ -86,7 +93,8 @@ export const SquareStepsList = ({
         <div className={rootStyles({ layout, className: className?.root })}>
             {stepTitles.map((title, index) => {
                 const currentStep = index === activeStep;
-                const active = index <= mostUpdatedStep;
+                const squareActive = index <= mostUpdatedStep;
+                const lineActive = index < mostUpdatedStep;
                 const handleOnClick =
                     index <= mostUpdatedStep
                         ? handleStepClick(index)
@@ -104,7 +112,7 @@ export const SquareStepsList = ({
                     >
                         <div
                             className={squareStyles({
-                                active,
+                                active: squareActive,
                                 className: className?.square,
                             })}
                         >
@@ -112,7 +120,7 @@ export const SquareStepsList = ({
                                 <div
                                     className={lineStyles({
                                         layout,
-                                        active,
+                                        active: lineActive,
                                         className: className?.line,
                                     })}
                                 />
