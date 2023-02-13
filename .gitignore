@@ -144,3 +144,4 @@ dist
 *.vsix
 
 .turbo
+.env*
