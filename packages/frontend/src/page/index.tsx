@@ -1,6 +1,6 @@
 import { Amount, Fetcher, KPIToken } from "@carrot-kpi/sdk";
 import { Button, Typography } from "@carrot-kpi/ui";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useCallback, useEffect, useState } from "react";
 import {
     NamespacedTranslateFunction,
     useWatchData,
@@ -80,10 +80,10 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                 string
             ];
 
-            const erc20Tokens = await Fetcher.fetchERC20Tokens(
+            const erc20Tokens = await Fetcher.fetchERC20Tokens({
                 provider,
-                rawCollaterals.map((collateral) => collateral.token)
-            );
+                addresses: rawCollaterals.map((collateral) => collateral.token),
+            });
 
             const transformedCollaterals = rawCollaterals.map(
                 (rawCollateral) => {
@@ -116,6 +116,11 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
         };
     }, [data, provider]);
 
+    // TODO: what to copy to the clipboard?
+    const handleShare = useCallback(() => {
+        navigator.clipboard.writeText("");
+    }, []);
+
     return (
         <div className="overflow-x-hidden">
             <div className="bg-grid-dark dark:bg-grid-light bg-orange flex flex-col items-center gap-6 px-2 py-3 sm:px-9 sm:py-5 md:items-start md:px-36 md:py-24">
@@ -124,24 +129,24 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                 </Typography>
                 <div className="flex gap-6">
                     <Button
-                        variant="secondary"
                         size="small"
+                        iconPlacement="left"
                         icon={ShareIcon}
                         className={{
-                            icon: "stroke-black",
-                            root: "[&>svg]:hover:stroke-white",
+                            icon: "stroke-white",
+                            root: "[&>svg]:hover:stroke-black",
                         }}
-                        onClick={() => console.log("share")}
+                        onClick={handleShare}
                     >
                         {t("share")}
                     </Button>
                     <Button
-                        variant="secondary"
                         size="small"
+                        iconPlacement="left"
                         icon={ReportIcon}
                         className={{
-                            icon: "stroke-black",
-                            root: "[&>svg]:hover:stroke-white",
+                            icon: "stroke-white",
+                            root: "[&>svg]:hover:stroke-black",
                         }}
                         onClick={() => console.log("report")}
                     >
