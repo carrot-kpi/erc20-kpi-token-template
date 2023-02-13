@@ -20,8 +20,8 @@
         "prepare": "husky install"
     },
     "devDependencies": {
-        "@commitlint/cli": "^17.4.2",
-        "@commitlint/config-conventional": "^17.4.2",
+        "@commitlint/cli": "^17.4.3",
+        "@commitlint/config-conventional": "^17.4.3",
         "carrot-scripts": "^0.13.0",
         "husky": "^8.0.3",
         "turbo": "^1.7.4"

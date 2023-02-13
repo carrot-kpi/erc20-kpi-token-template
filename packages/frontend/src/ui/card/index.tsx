@@ -1,4 +1,4 @@
-import { ResponsiveHeader, Typography } from "@carrot-kpi/ui";
+import { Typography } from "@carrot-kpi/ui";
 import { ReactElement, ReactNode } from "react";
 
 interface CardProps {
@@ -13,7 +13,7 @@ export const Card = ({ title, step, children }: CardProps): ReactElement => (
             <Typography variant="sm" weight="medium">
                 {step}
             </Typography>
-            <ResponsiveHeader variant="h2">{title}</ResponsiveHeader>
+            <Typography variant="h2">{title}</Typography>
         </div>
         <div className="p-6">{children}</div>
     </div>
