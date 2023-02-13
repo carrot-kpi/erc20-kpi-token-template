@@ -1094,7 +1094,7 @@
     "@ethersproject/bignumber" "^5.7.0"
     "@uniswap/token-lists" "1.0.0-beta.31"
 
-"@carrot-kpi/sdk@*", "@carrot-kpi/sdk@^1.9.2":
+"@carrot-kpi/sdk@*":
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.15.0.tgz#06351110f85bbfe857ff5f8b4817f6d4aacd41e4"
   integrity sha512-SKGhN7m4wHHNXACe8sBRs+3l/gnnY5zKVWMGEE6eH1ZeC4BrcVHzM5Txmjtdz0UcouoPXtFB8zxH9FJhHoyeiQ==
@@ -6042,12 +6042,12 @@ capital-case@^1.0.4:
     tslib "^2.0.3"
     upper-case-first "^2.0.2"
 
-carrot-scripts@^0.13.0:
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/carrot-scripts/-/carrot-scripts-0.13.0.tgz#beeab0b963f9476959f13ba1d64304aecdb70f48"
-  integrity sha512-a++5FQ8svslv4Gr6uxR+5bn5YbBIDlSEwNmNaqqcJ8D984Ur8CVxBilLOpITRxt2JBjYU4jrp997PLN+Pl/FMA==
+carrot-scripts@^0.13.1:
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/carrot-scripts/-/carrot-scripts-0.13.1.tgz#a582cb5b67110ac572adf35e6348c6290df5a3f6"
+  integrity sha512-08YITTkCgc7bgiTWPff0a9D+xIicOX55YymWD8PaZ1A78Qn8t9iDvoJYo4jTvHurXLOQW1ZPTtl63cWYq6ScCg==
   dependencies:
-    "@carrot-kpi/sdk" "^1.9.2"
+    "@carrot-kpi/sdk" "^1.16.0"
     chalk "^4.1.2"
     ethers "^5.7.1"
     ganache "^7.4.4"
