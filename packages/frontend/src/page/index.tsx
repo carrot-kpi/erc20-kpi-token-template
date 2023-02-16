@@ -187,7 +187,7 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                         <OraclePage
                             i18n={i18n}
                             fallback={<Loader />}
-                            address={kpiToken.oracles[0].address}
+                            oracle={kpiToken.oracles[0]}
                         />
                     </div>
                 </div>
