@@ -1062,10 +1062,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@carrot-kpi/frontend@^1.0.0-rc.28":
-  version "1.0.0-rc.28"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/frontend/-/frontend-1.0.0-rc.28.tgz#8196731ccbc3e25c54b6fcab541962bfc3b0fc4b"
-  integrity sha512-WHf7fk0nLx3yxvCFnzu2Uy9suUwl4kYT4PhVOOgxEPuJKMHfTyM2V6vrFvvlHvh+3MapUdSQVfTu7whJZOLhKg==
+"@carrot-kpi/frontend@^1.0.0-rc.30":
+  version "1.0.0-rc.30"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/frontend/-/frontend-1.0.0-rc.30.tgz#f1582449aa3d6280803f9639dc594ff33ec8a624"
+  integrity sha512-6+MelDCUOoBDNsBDHrLTOl26GzCsjB1kwA5vtDlwfE1GWXW8E50B89NJp/Fv+waHO4xYVayywZgcKqIuMb8spg==
   dependencies:
     "@carrot-kpi/react" "*"
     "@carrot-kpi/sdk" "*"
@@ -1085,10 +1085,10 @@
     "@ethersproject/bignumber" "^5.7.0"
     "@uniswap/token-lists" "1.0.0-beta.31"
 
-"@carrot-kpi/react@^0.26.0":
-  version "0.26.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.26.0.tgz#473be5adff1ffa54ed7d0eecc262a4b870691102"
-  integrity sha512-3XQNw7DNG6Q5r9rXYn2ZSDA/NwPUPTwz/RoL2LTqNKaHxiKcmBvc6ZAcjrZtd5gRgVhIyEjCVJT3UpFcqQwHKw==
+"@carrot-kpi/react@^0.26.1":
+  version "0.26.1"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.26.1.tgz#d7f143112f243e112c379f8240a25a037b4007b5"
+  integrity sha512-StQclYW4O2vMNjnlrYqxgOYP+WvUFKCJL51pQlFW5L99avjd4Ca1j7FVbnZDHaL7EzVIZAET0RqtMw6poqwSGg==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@ethersproject/bignumber" "^5.7.0"
@@ -1136,10 +1136,10 @@
     decimal.js-light "^2.5.1"
     multiformats "^9.9.0"
 
-"@carrot-kpi/sdk@^1.16.1":
-  version "1.16.1"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.16.1.tgz#7f2e1c6b7d8cfbbf2c3ea81fc02f8281f95d78b1"
-  integrity sha512-TbN5559D0ako6zp/DzLx5zDlDem4uW2TTYpshlurR7mCH2vTlmj7yeXvwj9HKixA/Uk3INpvZK4fNSmHJr5Qfw==
+"@carrot-kpi/sdk@^1.16.3":
+  version "1.16.3"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.16.3.tgz#3b835f8bacd7d7f1378ec8eda39eaeda62c9d5cd"
+  integrity sha512-L9Gh4W2C1e/RhrokrXetrmrAN2PaoqK2t0v5zYXFlGQ5Ug7TmsgtHZW0sHVTyMPOlF4KgGmFYDTj30rtLhqEZA==
   dependencies:
     "@ethersproject/address" "^5.7.0"
     "@ethersproject/bignumber" "^5.7.0"
@@ -1170,10 +1170,10 @@
     react-virtualized-auto-sizer "^1.0.7"
     react-window "^1.8.8"
 
-"@carrot-kpi/ui@^0.22.0":
-  version "0.22.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.22.0.tgz#97db2f4196de247cfb583c19f1803b9dcfd7c729"
-  integrity sha512-qC+LN3fvxsZS4eUEoW4q1X964QGmUplfGTx/KjIrLEmtbwaPa244cEWbiYfSeTDN8nLquxBpYp7RdAtUmpoeSg==
+"@carrot-kpi/ui@^0.22.1":
+  version "0.22.1"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.22.1.tgz#92d44f2d74646f5f055d88d1fd53846d0ba55df5"
+  integrity sha512-mNK6YI4OweHceQJ6WKdFbUjVfeF+IBthCS/LM4xTsXqTvGJT8kwWYEQdT5JDn/jeqExJ8ca3Bodo2QySBdAJfw==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@ethersproject/bignumber" "^5.7.0"
