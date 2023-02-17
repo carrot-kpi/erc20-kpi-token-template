@@ -133,7 +133,7 @@ export const Component = ({
 
     return (
         <div className="relative h-full w-full bg-grid-dark dark:bg-grid-light scrollbar bg-green overflow-y-auto px-2">
-            <div className="flex flex-col items-center justify-between pt-10">
+            <div className="h-full flex flex-col items-center justify-between pt-10">
                 <div className="absolute left-20 top-40 hidden lg:flex">
                     <SquareStepsList
                         layout="vertical"
@@ -155,6 +155,7 @@ export const Component = ({
                 <MultiStepCards
                     activeStep={step}
                     messages={{ step: t("step") }}
+                    className={{ root: "h-full justify-between" }}
                 >
                     <StepCard
                         title={t("card.general.title")}
