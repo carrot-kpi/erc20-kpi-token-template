@@ -16,7 +16,6 @@ import {
 } from "@carrot-kpi/react";
 import CREATION_PROXY_ABI from "../../../abis/creation-proxy.json";
 import { Template } from "@carrot-kpi/sdk";
-import { PreviousButton } from "../previous-button";
 
 const CREATION_PROXY_INTERFACE = new utils.Interface(CREATION_PROXY_ABI);
 
@@ -29,7 +28,6 @@ interface DeployProps {
     oracleTemplatesData: Template[];
     outcomesData: OutcomeData[];
     oraclesData: OracleData[];
-    onPrevious: () => void;
     onNext: (data: string, value: BigNumber) => void;
 }
 
@@ -38,7 +36,6 @@ interface ApprovalStatusMap {
 }
 
 export const Deploy = ({
-    t,
     targetAddress,
     specificationData,
     tokenData,
@@ -46,7 +43,6 @@ export const Deploy = ({
     oracleTemplatesData,
     outcomesData,
     oraclesData,
-    onPrevious,
     onNext,
 }: DeployProps): ReactElement => {
     const { address } = useAccount();
@@ -188,7 +184,6 @@ export const Deploy = ({
                 );
             })}
             <div className="flex justify-between">
-                <PreviousButton t={t} onClick={onPrevious} />
                 <Button
                     size="small"
                     onClick={handleCreate}

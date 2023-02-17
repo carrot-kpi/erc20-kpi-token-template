@@ -14,8 +14,8 @@ import {
     MarkdownInput,
     NumberInput,
     TagsInput,
+    NextStepButton,
 } from "@carrot-kpi/ui";
-import { NextButton } from "../next-button";
 import { BigNumber, utils } from "ethers";
 
 const stripHtml = (value: string) => value.replace(/(<([^>]+)>)/gi, "");
@@ -218,27 +218,29 @@ export const GenericData = ({
                 helperText={tagsErrorText}
                 className={{ root: "w-full", input: "w-full" }}
             />
-            <TextInput
-                id="token-name"
-                label={t("general.label.token.name")}
-                placeholder={"Example"}
-                onChange={handleERC20NameChange}
-                onBlur={handleOnBlur(setERC20Name)}
-                value={erc20Name}
-                error={!!erc20NameErrorText}
-                helperText={erc20NameErrorText}
-                className={{ root: "w-full", input: "w-full" }}
-            />
-            <TextInput
-                id="token-symbol"
-                label={t("general.label.token.symbol")}
-                placeholder={"XMPL"}
-                onChange={handleERC20SymbolChange}
-                value={erc20Symbol}
-                error={!!erc20SymbolErrorText}
-                helperText={erc20SymbolErrorText}
-                className={{ root: "w-full", input: "w-full" }}
-            />
+            <div className="flex gap-4">
+                <TextInput
+                    id="token-name"
+                    label={t("general.label.token.name")}
+                    placeholder={"Example"}
+                    onChange={handleERC20NameChange}
+                    onBlur={handleOnBlur(setERC20Name)}
+                    value={erc20Name}
+                    error={!!erc20NameErrorText}
+                    helperText={erc20NameErrorText}
+                    className={{ root: "w-full", input: "w-full" }}
+                />
+                <TextInput
+                    id="token-symbol"
+                    label={t("general.label.token.symbol")}
+                    placeholder={"XMPL"}
+                    onChange={handleERC20SymbolChange}
+                    value={erc20Symbol}
+                    error={!!erc20SymbolErrorText}
+                    helperText={erc20SymbolErrorText}
+                    className={{ root: "w-full", input: "w-full" }}
+                />
+            </div>
             <NumberInput
                 id="token-supply"
                 label={t("general.label.token.supply")}
@@ -249,9 +251,9 @@ export const GenericData = ({
                 helperText={erc20SupplyErrorText}
                 className={{ root: "w-full", input: "w-full" }}
             />
-            <div className="flex justify-end">
-                <NextButton t={t} onClick={handleNext} disabled={disabled} />
-            </div>
+            <NextStepButton onClick={handleNext} disabled={disabled}>
+                {t("next")}
+            </NextStepButton>
         </div>
     );
 };

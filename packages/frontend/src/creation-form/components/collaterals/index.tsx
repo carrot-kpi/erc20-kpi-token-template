@@ -7,6 +7,7 @@ import {
     TokenInfoWithBalance,
     TokenListWithBalance,
     RemoteLogo,
+    NextStepButton,
 } from "@carrot-kpi/ui";
 import { NamespacedTranslateFunction, useTokenLists } from "@carrot-kpi/react";
 import { ReactElement, useCallback, useEffect, useState } from "react";
@@ -18,8 +19,6 @@ import {
 } from "../../types";
 import { Amount, IPFSService } from "@carrot-kpi/sdk";
 import { Address, useAccount, useBalance, useNetwork } from "wagmi";
-import { NextButton } from "../next-button";
-import { PreviousButton } from "../previous-button";
 import { TOKEN_LIST_URLS } from "../../constants";
 import { getDefaultERC20TokenLogoURL } from "../../../utils/erc20";
 import { ReactComponent as X } from "../../../assets/x.svg";
@@ -27,14 +26,12 @@ import { ReactComponent as X } from "../../../assets/x.svg";
 interface CollateralProps {
     t: NamespacedTranslateFunction;
     collaterals: CollateralData[];
-    onPrevious: () => void;
     onNext: (collaterals: CollateralData[]) => void;
 }
 
 export const Collaterals = ({
     t,
     collaterals: collateralsData,
-    onPrevious,
     onNext,
 }: CollateralProps): ReactElement => {
     const { address } = useAccount();
@@ -402,15 +399,10 @@ export const Collaterals = ({
                         )}
                     </div>
                 </div>
-                <div className="flex justify-between">
-                    <PreviousButton t={t} onClick={onPrevious} />
-                    <NextButton
-                        t={t}
-                        onClick={handleNext}
-                        disabled={disabled}
-                    />
-                </div>
             </div>
+            <NextStepButton onClick={handleNext} disabled={disabled}>
+                {t("next")}
+            </NextStepButton>
         </>
     );
 };

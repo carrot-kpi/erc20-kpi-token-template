@@ -7,11 +7,10 @@ import {
     Typography,
     AccordionDetails,
     NumberInput,
+    NextStepButton,
 } from "@carrot-kpi/ui";
 import { NumberFormatValue, OutcomeData } from "../../types";
 import { Template } from "@carrot-kpi/sdk";
-import { PreviousButton } from "../previous-button";
-import { NextButton } from "../next-button";
 
 type RawOutcomeDataMap = {
     [id: number]: {
@@ -24,7 +23,6 @@ interface OutcomesConfigurationProps {
     t: NamespacedTranslateFunction;
     templates: Template[];
     outcomesData: OutcomeData[];
-    onPrevious: () => void;
     onNext: (data: OutcomeData[]) => void;
 }
 
@@ -32,7 +30,6 @@ export const OutcomesConfiguration = ({
     t,
     templates,
     outcomesData,
-    onPrevious,
     onNext,
 }: OutcomesConfigurationProps): ReactElement => {
     const [data, setData] = useState<RawOutcomeDataMap>(
@@ -194,10 +191,9 @@ export const OutcomesConfiguration = ({
                     );
                 })
             )}
-            <div className="flex justify-between">
-                <PreviousButton t={t} onClick={onPrevious} />
-                <NextButton t={t} onClick={handleNext} disabled={disabled} />
-            </div>
+            <NextStepButton onClick={handleNext} disabled={disabled}>
+                {t("next")}
+            </NextStepButton>
         </div>
     );
 };
