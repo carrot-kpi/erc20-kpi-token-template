@@ -1062,10 +1062,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@carrot-kpi/frontend@^1.0.0-rc.31":
-  version "1.0.0-rc.31"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/frontend/-/frontend-1.0.0-rc.31.tgz#bb9222f10fb2216a15d3caef6fe342c8062edd0c"
-  integrity sha512-ze9ireYRxphfw2ddrM4BT1+zPerH+l+4+1eOUXlJTMHKt8/2vWZAm7SGL7mr3sI5iU6C7BipGOhzAmo1ilHzOw==
+"@carrot-kpi/frontend@^1.0.0-rc.32":
+  version "1.0.0-rc.32"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/frontend/-/frontend-1.0.0-rc.32.tgz#dd5a6984f65ebd39dd7a80484503bbaed4a26c95"
+  integrity sha512-DylAtpn0Rg787SRM6XY4lknA4RW+CZEtHt+ANbAM2o4BoomKWCLCgZeKyxQL/IGUShn75xaYWw69hZMUiHiebA==
   dependencies:
     "@carrot-kpi/react" "*"
     "@carrot-kpi/sdk" "*"
@@ -1085,10 +1085,10 @@
     "@ethersproject/bignumber" "^5.7.0"
     "@uniswap/token-lists" "1.0.0-beta.31"
 
-"@carrot-kpi/react@^0.26.1":
-  version "0.26.1"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.26.1.tgz#d7f143112f243e112c379f8240a25a037b4007b5"
-  integrity sha512-StQclYW4O2vMNjnlrYqxgOYP+WvUFKCJL51pQlFW5L99avjd4Ca1j7FVbnZDHaL7EzVIZAET0RqtMw6poqwSGg==
+"@carrot-kpi/react@^0.27.0":
+  version "0.27.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.27.0.tgz#e6f18e5fe31fa484821cd6592dee8add41208b29"
+  integrity sha512-Xi+dECc44dXBkZ5a7h1DamSV6BysoVb4r70wsmjdhyPwHehibqPHNBLo4Xl54BjpkEPS5H9pxRN1Ey8m9js6Eg==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@ethersproject/bignumber" "^5.7.0"
@@ -1170,10 +1170,10 @@
     react-virtualized-auto-sizer "^1.0.7"
     react-window "^1.8.8"
 
-"@carrot-kpi/ui@^0.22.1":
-  version "0.22.1"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.22.1.tgz#92d44f2d74646f5f055d88d1fd53846d0ba55df5"
-  integrity sha512-mNK6YI4OweHceQJ6WKdFbUjVfeF+IBthCS/LM4xTsXqTvGJT8kwWYEQdT5JDn/jeqExJ8ca3Bodo2QySBdAJfw==
+"@carrot-kpi/ui@^0.23.0":
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.23.0.tgz#159cd363aff28d79af7766f7f236d1ad507d5dbe"
+  integrity sha512-Sq7dgS4k9hhEO2nRctqtFrwYA/pgP2n4yL6V36IAgiimjswrKxJx+qfRQtk9JTIJbdPacVu4jxOQKEHSkhfhTQ==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@ethersproject/bignumber" "^5.7.0"
