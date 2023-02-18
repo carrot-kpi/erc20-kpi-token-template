@@ -77,11 +77,6 @@ export const Component = ({
         setStep(clickedStep);
     }, []);
 
-    const handlePrevious = useCallback(() => {
-        if (step === 0) return;
-        setStep(step - 1);
-    }, [step]);
-
     const handleGenericDataNext = useCallback(
         (specificationData: SpecificationData, tokenData: TokenDataType) => {
             setSpecificationData(specificationData);
@@ -138,7 +133,7 @@ export const Component = ({
 
     return (
         <div className="relative h-full w-full bg-grid-dark dark:bg-grid-light scrollbar bg-green overflow-y-auto px-2">
-            <div className="flex flex-col items-center justify-between pt-10">
+            <div className="h-full flex flex-col items-center justify-between pt-10">
                 <div className="absolute left-20 top-40 hidden lg:flex">
                     <SquareStepsList
                         layout="vertical"
@@ -157,8 +152,17 @@ export const Component = ({
                         onClick={handleStepClick}
                     />
                 </div>
-                <MultiStepCards activeStep={step}>
-                    <StepCard title={t("card.general.title")} step={1}>
+                <MultiStepCards
+                    activeStep={step}
+                    messages={{ step: t("step") }}
+                    className={{ root: "h-full justify-between" }}
+                >
+                    <StepCard
+                        title={t("card.general.title")}
+                        step={1}
+                        className={{ root: "relative pb-10" }}
+                        messages={{ step: t("step") }}
+                    >
                         <GenericData
                             t={t}
                             specificationData={specificationData}
@@ -166,49 +170,64 @@ export const Component = ({
                             onNext={handleGenericDataNext}
                         />
                     </StepCard>
-                    <StepCard title={t("card.collateral.title")} step={2}>
+                    <StepCard
+                        title={t("card.collateral.title")}
+                        step={2}
+                        className={{ root: "relative pb-10" }}
+                        messages={{ step: t("step") }}
+                    >
                         <Collaterals
                             t={t}
                             collaterals={collateralsData}
-                            onPrevious={handlePrevious}
                             onNext={handleCollateralsNext}
                         />
                     </StepCard>
-                    <StepCard title={t("card.oracle.pick.title")} step={3}>
+                    <StepCard
+                        title={t("card.oracle.pick.title")}
+                        step={3}
+                        className={{ root: "relative pb-10" }}
+                        messages={{ step: t("step") }}
+                    >
                         <OraclesPicker
                             t={t}
                             oracleTemplatesData={oracleTemplatesData}
-                            onPrevious={handlePrevious}
                             onNext={handleOraclesPickerNext}
                         />
                     </StepCard>
                     <StepCard
                         title={t("card.oracle.configuration.title")}
                         step={4}
+                        className={{ root: "relative pb-10" }}
+                        messages={{ step: t("step") }}
                     >
                         <OraclesConfiguration
                             t={t}
                             i18n={i18n}
                             oraclesData={oraclesData}
                             templates={oracleTemplatesData}
-                            onPrevious={handlePrevious}
                             onNext={handleOraclesConfigurationNext}
                         />
                     </StepCard>
                     <StepCard
                         title={t("card.outcome.configuration.title")}
                         step={5}
+                        className={{ root: "relative pb-10" }}
+                        messages={{ step: t("step") }}
                     >
                         <OutcomesConfiguration
                             t={t}
                             outcomesData={outcomesData}
                             templates={oracleTemplatesData}
-                            onPrevious={handlePrevious}
                             onNext={handleOutcomesConfigurationNext}
                         />
                     </StepCard>
                     {!!specificationData && !!tokenData && (
-                        <StepCard title={t("card.deploy.title")} step={6}>
+                        <StepCard
+                            title={t("card.deploy.title")}
+                            step={6}
+                            className={{ root: "relative pb-10" }}
+                            messages={{ step: t("step") }}
+                        >
                             <Deploy
                                 t={t}
                                 targetAddress={creationProxyAddress}
@@ -218,7 +237,6 @@ export const Component = ({
                                 oracleTemplatesData={oracleTemplatesData}
                                 outcomesData={outcomesData}
                                 oraclesData={oraclesData}
-                                onPrevious={handlePrevious}
                                 onNext={handleDeployNext}
                             />
                         </StepCard>

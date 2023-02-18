@@ -6,12 +6,11 @@ import {
     AccordionSummary,
     Typography,
     AccordionDetails,
+    NextStepButton,
 } from "@carrot-kpi/ui";
 import { i18n } from "i18next";
 import { OracleData } from "../../types";
 import { Template } from "@carrot-kpi/sdk";
-import { PreviousButton } from "../previous-button";
-import { NextButton } from "../next-button";
 import { Loader } from "../../../ui/loader";
 
 type OracleDataMap = { [id: number]: OracleData };
@@ -21,7 +20,6 @@ interface OraclesConfigurationProps {
     i18n: i18n;
     templates: Template[];
     oraclesData: OracleData[];
-    onPrevious: () => void;
     onNext: (data: OracleData[]) => void;
 }
 
@@ -30,7 +28,6 @@ export const OraclesConfiguration = ({
     i18n,
     templates,
     oraclesData,
-    onPrevious,
     onNext,
 }: OraclesConfigurationProps): ReactElement => {
     const [data, setData] = useState(
@@ -84,10 +81,9 @@ export const OraclesConfiguration = ({
                     </Accordion>
                 ))
             )}
-            <div className="flex justify-between">
-                <PreviousButton t={t} onClick={onPrevious} />
-                <NextButton t={t} onClick={handleNext} disabled={disabled} />
-            </div>
+            <NextStepButton onClick={handleNext} disabled={disabled}>
+                {t("next")}
+            </NextStepButton>
         </div>
     );
 };
