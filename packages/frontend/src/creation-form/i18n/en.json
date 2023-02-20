@@ -40,6 +40,7 @@
     "label.collateral.balance": "Balance",
     "label.lower.bound": "Lower bound:",
     "label.higher.bound": "Higher bound:",
+    "label.binary": "Binary:",
     "oracles.picker.label": "Select your Oracle Templates",
     "oracles.picker.template.title": "Title",
     "oracles.picker.template.version": "Version",
