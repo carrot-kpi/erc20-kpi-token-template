@@ -192,7 +192,6 @@ export const Collaterals = ({
 
     const handleMaxClick = useCallback(() => {
         if (!data || !pickedToken) return;
-        console.log(data);
         setPickerRawAmount({
             formattedValue: data.formatted,
             value: utils.formatUnits(
