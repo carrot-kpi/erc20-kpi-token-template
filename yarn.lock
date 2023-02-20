@@ -1067,10 +1067,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@carrot-kpi/frontend@^1.0.0-rc.33":
-  version "1.0.0-rc.33"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/frontend/-/frontend-1.0.0-rc.33.tgz#525dd65bb28b0129f5eae7528122966babc5e063"
-  integrity sha512-gQxN7ZE+vuVIwBvA9qvmaJBAltMi5Hfvbn54WFD7AY3Icb7uthpJf/L0yMKxbecaPyE4IyL7g2mF6tZLvddvWA==
+"@carrot-kpi/frontend@^1.0.0-rc.34":
+  version "1.0.0-rc.34"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/frontend/-/frontend-1.0.0-rc.34.tgz#d5e1626441ca542da0befe1bcab7ed39a067af38"
+  integrity sha512-9N5ynDk57t8+XLDoEaHcst/7F5uAr5UYBeDcMNHqavV6eUraDtCb00dqFPBBjmXvwNO4e+62J5qbpgWhDpGAOA==
   dependencies:
     "@carrot-kpi/react" "*"
     "@carrot-kpi/sdk" "*"
@@ -1090,10 +1090,24 @@
     "@ethersproject/bignumber" "^5.7.0"
     "@uniswap/token-lists" "1.0.0-beta.31"
 
-"@carrot-kpi/sdk@*", "@carrot-kpi/sdk@^1.16.0", "@carrot-kpi/sdk@^1.16.3":
+"@carrot-kpi/sdk@*", "@carrot-kpi/sdk@^1.16.0":
   version "1.16.3"
   resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.16.3.tgz#3b835f8bacd7d7f1378ec8eda39eaeda62c9d5cd"
   integrity sha512-L9Gh4W2C1e/RhrokrXetrmrAN2PaoqK2t0v5zYXFlGQ5Ug7TmsgtHZW0sHVTyMPOlF4KgGmFYDTj30rtLhqEZA==
+  dependencies:
+    "@ethersproject/address" "^5.7.0"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/contracts" "^5.7.0"
+    "@ethersproject/providers" "^5.7.2"
+    "@ethersproject/units" "^5.7.0"
+    "@ethersproject/wallet" "^5.7.0"
+    decimal.js-light "^2.5.1"
+    multiformats "^9.9.0"
+
+"@carrot-kpi/sdk@^1.16.4":
+  version "1.16.4"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.16.4.tgz#e419c8a04802044d6a2cc69c8e3e883036597955"
+  integrity sha512-E3rNSblreITLb/2ERC4y5XO5JLgELVWbKNgJ3sCgn2pkaBtHNL0Z8GsNuKgSF78RDmfSwoaOqqFz+ujZkl+zYg==
   dependencies:
     "@ethersproject/address" "^5.7.0"
     "@ethersproject/bignumber" "^5.7.0"
