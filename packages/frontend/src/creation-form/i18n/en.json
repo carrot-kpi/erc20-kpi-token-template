@@ -32,6 +32,7 @@
     "label.collateral.picker.minimum.payout": "Minimum payout",
     "label.collateral.picker.apply": "Add to campaign",
     "label.collateral.picker.token.pick": "Pick a token",
+    "label.collateral.picker.balance.max": "Max",
     "label.collateral.table.collateral": "Collateral",
     "label.collateral.table.amount": "Total amount",
     "label.collateral.table.minimum.payout": "Minimum payout",

@@ -22,6 +22,7 @@ import { Address, useAccount, useBalance, useNetwork } from "wagmi";
 import { TOKEN_LIST_URLS } from "../../constants";
 import { getDefaultERC20TokenLogoURL } from "../../../utils/erc20";
 import { ReactComponent as X } from "../../../assets/x.svg";
+import { ReactComponent as ArrowDown } from "../../../assets/arrow-down.svg";
 
 interface CollateralProps {
     t: NamespacedTranslateFunction;
@@ -104,11 +105,7 @@ export const Collaterals = ({
         }
         const parsedAmount = parseFloat(pickerRawAmount.value);
         const parsedMinimumAmount = parseFloat(pickerRawMinimumPayout.value);
-        if (
-            parsedAmount === 0 ||
-            parsedMinimumAmount === 0 ||
-            parsedMinimumAmount >= parsedAmount
-        ) {
+        if (parsedAmount === 0 || parsedMinimumAmount >= parsedAmount) {
             setAddDisabled(true);
             return;
         }
@@ -193,6 +190,18 @@ export const Collaterals = ({
         [collaterals]
     );
 
+    const handleMaxClick = useCallback(() => {
+        if (!data || !pickedToken) return;
+        console.log(data);
+        setPickerRawAmount({
+            formattedValue: data.formatted,
+            value: utils.formatUnits(
+                data.value.toString(),
+                pickedToken.decimals
+            ),
+        });
+    }, [data, pickedToken]);
+
     return (
         <>
             <ERC20TokenPicker
@@ -264,9 +273,23 @@ export const Collaterals = ({
                                         {isLoading ? (
                                             <span className="inline-block h-4 w-14 animate-pulse rounded-md bg-gray-200 text-sm" />
                                         ) : !!data ? (
-                                            <Typography variant="sm">
-                                                {data.formatted}
-                                            </Typography>
+                                            <>
+                                                <Typography variant="sm">
+                                                    {data.formatted}
+                                                </Typography>
+                                                <Typography
+                                                    variant="sm"
+                                                    className={{
+                                                        root: "text-orange cursor-pointer",
+                                                    }}
+                                                    uppercase
+                                                    onClick={handleMaxClick}
+                                                >
+                                                    {t(
+                                                        "label.collateral.picker.balance.max"
+                                                    )}
+                                                </Typography>
+                                            </>
                                         ) : (
                                             <Typography variant="sm">
                                                 -
@@ -310,9 +333,9 @@ export const Collaterals = ({
                     </div>
                     <Button
                         size="small"
+                        icon={ArrowDown}
                         onClick={handleCollateralAdd}
                         disabled={addDisabled}
-                        className={{ root: "cui-w-full" }}
                     >
                         {t("label.collateral.picker.apply")}
                     </Button>
@@ -356,10 +379,11 @@ export const Collaterals = ({
                                     >
                                         <div className="flex gap-2 items-center">
                                             <div
+                                                className="cursor-pointer"
                                                 onClick={handleRemoveCollateral}
                                                 data-index={index}
                                             >
-                                                <X className="stroke-gray-500 dark:stroke-gray-700 cursor-pointer" />
+                                                <X className="stroke-gray-500 dark:stroke-gray-700 pointer-events-none" />
                                             </div>
                                             <RemoteLogo
                                                 src={token.logoURI}
