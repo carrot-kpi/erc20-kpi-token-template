@@ -166,7 +166,7 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                     owner={owner}
                 />
             </div>
-            <div className="bg-white dark:bg-black p-2 md:p-5">
+            <div className="bg-white dark:bg-black">
                 <div className="bg-grid-dark dark:bg-grid-light flex flex-col gap-7 md:gap-9 lg:gap-28 bg-white px-2 py-3 dark:bg-black sm:px-9 sm:py-6 md:px-36 md:py-24">
                     <div className="flex flex-col gap-6 md:gap-8 max-w-6xl">
                         <Typography variant="h2">
