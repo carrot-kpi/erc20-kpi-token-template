@@ -1,4 +1,4 @@
-import { utils } from "ethers";
+import { BigNumber, utils } from "ethers";
 import { ReactElement, useCallback, useEffect, useState } from "react";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import {
@@ -6,14 +6,15 @@ import {
     AccordionSummary,
     Typography,
     AccordionDetails,
-    NumberInput,
     NextStepButton,
 } from "@carrot-kpi/ui";
 import { NumberFormatValue, OutcomeData } from "../../types";
 import { Template } from "@carrot-kpi/sdk";
+import { SingleConfiguration } from "./single-configuration";
 
 type RawOutcomeDataMap = {
     [id: number]: {
+        binary: boolean;
         lowerBound: NumberFormatValue;
         higherBound: NumberFormatValue;
     };
@@ -49,7 +50,11 @@ export const OutcomesConfiguration = ({
             const higherBoundFormattedValue = !!higherBoundValue
                 ? utils.commify(higherBoundValue)
                 : "";
+            const binary =
+                data.lowerBound.eq(BigNumber.from(0)) &&
+                data.lowerBound.eq(BigNumber.from(1));
             accumulator[templates[i].id] = {
+                binary,
                 lowerBound: {
                     value: lowerBoundValue,
                     formattedValue: lowerBoundFormattedValue,
@@ -78,14 +83,36 @@ export const OutcomesConfiguration = ({
                     const parsedHigherBoundAmount = parseFloat(
                         value.higherBound.value
                     );
-                    return (
-                        parsedLowerBoundAmount === 0 ||
-                        parsedLowerBoundAmount === 0 ||
-                        parsedLowerBoundAmount >= parsedHigherBoundAmount
-                    );
+                    if (
+                        isNaN(parsedLowerBoundAmount) ||
+                        isNaN(parsedHigherBoundAmount)
+                    )
+                        return true;
+                    return value.binary
+                        ? parsedLowerBoundAmount !== 0 ||
+                              parsedHigherBoundAmount !== 1
+                        : parsedHigherBoundAmount === 0 ||
+                              parsedLowerBoundAmount >= parsedHigherBoundAmount;
                 })
         );
     }, [data, templates.length]);
+
+    const handleBinaryChange = useCallback(
+        (id: number) => (value: boolean) => {
+            const previousData = data[id] || {};
+            previousData.binary = value;
+            previousData.lowerBound = {
+                formattedValue: "",
+                value: value ? "0" : "",
+            };
+            previousData.higherBound = {
+                formattedValue: "",
+                value: value ? "1" : "",
+            };
+            setData({ ...data, [id]: previousData });
+        },
+        [data]
+    );
 
     const handleLowerBoundChange = useCallback(
         (id: number) => (value: NumberFormatValue) => {
@@ -119,28 +146,17 @@ export const OutcomesConfiguration = ({
     return (
         <div className="flex flex-col gap-6">
             {templates.length === 1 ? (
-                <div className="flex flex-col gap-2">
-                    <NumberInput
-                        id="lower-bound"
-                        label={t("label.lower.bound")}
-                        placeholder={"1,000,000"}
-                        onValueChange={handleLowerBoundChange(templates[0].id)}
-                        value={
-                            data[templates[0].id]?.lowerBound?.formattedValue
-                        }
-                        className={{ root: "w-full", input: "w-full" }}
-                    />
-                    <NumberInput
-                        id="higher-bound"
-                        label={t("label.higher.bound")}
-                        placeholder={"1,000,000"}
-                        onValueChange={handleHigherBoundChange(templates[0].id)}
-                        value={
-                            data[templates[0].id]?.higherBound?.formattedValue
-                        }
-                        className={{ root: "w-full", input: "w-full" }}
-                    />
-                </div>
+                <SingleConfiguration
+                    t={t}
+                    binary={data[templates[0].id]?.binary}
+                    onBinaryChange={handleBinaryChange(templates[0].id)}
+                    lowerBound={data[templates[0].id]?.lowerBound}
+                    onLowerBoundChange={handleLowerBoundChange(templates[0].id)}
+                    higherBound={data[templates[0].id]?.higherBound}
+                    onHigherBoundChange={handleHigherBoundChange(
+                        templates[0].id
+                    )}
+                />
             ) : (
                 templates.map((template) => {
                     const { id } = template;
@@ -153,39 +169,19 @@ export const OutcomesConfiguration = ({
                                 </Typography>
                             </AccordionSummary>
                             <AccordionDetails>
-                                <div className="flex flex-col gap-2">
-                                    <NumberInput
-                                        id="lower-bound"
-                                        label={t("label.lower.bound")}
-                                        placeholder={"1,000,000"}
-                                        onValueChange={handleLowerBoundChange(
-                                            id
-                                        )}
-                                        value={
-                                            data[id]?.lowerBound?.formattedValue
-                                        }
-                                        className={{
-                                            root: "w-full",
-                                            input: "w-full",
-                                        }}
-                                    />
-                                    <NumberInput
-                                        id="higher-bound"
-                                        label={t("label.higher.bound")}
-                                        placeholder={"1,000,000"}
-                                        onValueChange={handleHigherBoundChange(
-                                            id
-                                        )}
-                                        value={
-                                            data[id]?.higherBound
-                                                ?.formattedValue
-                                        }
-                                        className={{
-                                            root: "w-full",
-                                            input: "w-full",
-                                        }}
-                                    />
-                                </div>
+                                <SingleConfiguration
+                                    t={t}
+                                    binary={data[id]?.binary}
+                                    onBinaryChange={handleBinaryChange(id)}
+                                    lowerBound={data[id]?.lowerBound}
+                                    onLowerBoundChange={handleLowerBoundChange(
+                                        id
+                                    )}
+                                    higherBound={data[id]?.higherBound}
+                                    onHigherBoundChange={handleHigherBoundChange(
+                                        id
+                                    )}
+                                />
                             </AccordionDetails>
                         </Accordion>
                     );
