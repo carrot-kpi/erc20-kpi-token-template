@@ -86,7 +86,7 @@ export const Account = ({
                                     ${kpiTokenData.symbol}`}
                                 </Typography>
                             ) : (
-                                <Skeleton width="50" />
+                                <Skeleton />
                             )}
                         </div>
                         <div className="flex-col">

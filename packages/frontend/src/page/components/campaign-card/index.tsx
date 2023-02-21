@@ -1,6 +1,13 @@
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { KPIToken } from "@carrot-kpi/sdk";
-import { Card, CardContent, Chip, Markdown, Typography } from "@carrot-kpi/ui";
+import {
+    Card,
+    CardContent,
+    Chip,
+    Markdown,
+    Skeleton,
+    Typography,
+} from "@carrot-kpi/ui";
 import { commify, formatUnits } from "ethers/lib/utils.js";
 import { ReactElement } from "react";
 import sanitizeHtml from "sanitize-html";
@@ -15,6 +22,7 @@ import { Header } from "./info-section/header";
 import { ReactComponent as Clock } from "../../../assets/clock.svg";
 import { ReactComponent as External } from "../../../assets/external.svg";
 import { ClipboardCopy } from "../../../ui/clipboard-copy";
+import { PopoverText } from "../../../ui/popover-label";
 
 interface CampaignCardProps {
     t: NamespacedTranslateFunction;
@@ -127,24 +135,26 @@ export const CampaignCard = ({
                                 <Typography variant="md" uppercase>
                                     {t("overview.token.label")}
                                 </Typography>
-                                <Typography variant="md">
-                                    {kpiTokenData.name} ({kpiTokenData.symbol})
-                                </Typography>
+                                <PopoverText maxTextLenght={16}>
+                                    {`${kpiTokenData.name} (${kpiTokenData.symbol})`}
+                                </PopoverText>
                             </div>
                             <div className="flex items-center justify-between">
                                 <Typography variant="md" uppercase>
                                     {t("overview.supply.label")}
                                 </Typography>
-                                <Typography variant="md" uppercase>
-                                    {kpiTokenData.initialSupply
-                                        ? commify(
-                                              formatUnits(
-                                                  kpiTokenData.initialSupply,
-                                                  18
-                                              )
-                                          )
-                                        : "Loading..."}
-                                </Typography>
+                                {kpiTokenData.initialSupply ? (
+                                    <Typography variant="md" uppercase>
+                                        {commify(
+                                            formatUnits(
+                                                kpiTokenData.initialSupply,
+                                                18
+                                            )
+                                        )}
+                                    </Typography>
+                                ) : (
+                                    <Skeleton />
+                                )}
                             </div>
                         </Content>
                     </InfoSection>
