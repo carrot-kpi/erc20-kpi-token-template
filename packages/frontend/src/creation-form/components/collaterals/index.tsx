@@ -19,7 +19,7 @@ import {
 } from "../../types";
 import { Amount, IPFSService } from "@carrot-kpi/sdk";
 import { Address, useAccount, useBalance, useNetwork } from "wagmi";
-import { TOKEN_LIST_URLS } from "../../constants";
+import { PROTOCOL_FEE_BPS, TOKEN_LIST_URLS } from "../../constants";
 import { getDefaultERC20TokenLogoURL } from "../../../utils/erc20";
 import { ReactComponent as X } from "../../../assets/x.svg";
 import { ReactComponent as ArrowDown } from "../../../assets/arrow-down.svg";
@@ -56,6 +56,7 @@ export const Collaterals = ({
         formattedValue: "",
         value: "",
     });
+    const [protocolFeeAmount, setProtocolFeeAmount] = useState("");
     const [pickerRawMinimumPayout, setPickerRawMinimumPayout] =
         useState<NumberFormatValue>({
             formattedValue: "",
@@ -104,8 +105,10 @@ export const Collaterals = ({
             return;
         }
         const parsedAmount = parseFloat(pickerRawAmount.value);
+        const amountMinusFees =
+            parsedAmount - (parsedAmount * PROTOCOL_FEE_BPS) / 10_000;
         const parsedMinimumAmount = parseFloat(pickerRawMinimumPayout.value);
-        if (parsedAmount === 0 || parsedMinimumAmount >= parsedAmount) {
+        if (amountMinusFees === 0 || parsedMinimumAmount >= amountMinusFees) {
             setAddDisabled(true);
             return;
         }
@@ -122,6 +125,17 @@ export const Collaterals = ({
         pickerRawMinimumPayout.value,
         pickedToken,
     ]);
+
+    useEffect(() => {
+        if (!pickedToken || !pickerRawAmount.value) return;
+        const parsedRawAmount = parseFloat(pickerRawAmount.value);
+        if (isNaN(parsedRawAmount)) return;
+        setProtocolFeeAmount(
+            utils.commify(
+                ((parsedRawAmount * PROTOCOL_FEE_BPS) / 10_000).toFixed(4)
+            )
+        );
+    }, [pickedToken, pickerRawAmount]);
 
     const handleOpenERC20TokenPicker = useCallback((): void => {
         setTokenPickerOpen(true);
@@ -323,6 +337,20 @@ export const Collaterals = ({
                                         }
                                     />
                                 </div>
+
+                                <div className="h-px w-full bg-black" />
+
+                                <div className="flex items-center justify-between">
+                                    <Typography>
+                                        {t("label.collateral.picker.fee")}
+                                    </Typography>
+                                    <Typography>
+                                        {PROTOCOL_FEE_BPS / 10_000}%{" "}
+                                        {protocolFeeAmount &&
+                                            pickedToken &&
+                                            `(${protocolFeeAmount} ${pickedToken.symbol})`}
+                                    </Typography>
+                                </div>
                                 {/* TODO: implement price fetching */}
                                 {/* <div className="flex justify-end">
                                 <Typography size="sm">$ 7,068.31</Typography>
@@ -403,8 +431,26 @@ export const Collaterals = ({
                                         <Typography
                                             className={{ root: "text-center" }}
                                         >
-                                            {utils.commify(
-                                                collateral.amount.toFixed(4)
+                                            {t(
+                                                "label.collateral.table.amount.value",
+                                                {
+                                                    total: `${utils.commify(
+                                                        collateral.amount.toFixed(
+                                                            4
+                                                        )
+                                                    )}`,
+                                                    afterFees: `${utils.commify(
+                                                        collateral.amount
+                                                            .sub(
+                                                                collateral.amount
+                                                                    .mul(
+                                                                        PROTOCOL_FEE_BPS
+                                                                    )
+                                                                    .div(10_000)
+                                                            )
+                                                            .toFixed(4)
+                                                    )}`,
+                                                }
                                             )}
                                         </Typography>
                                         <Typography
