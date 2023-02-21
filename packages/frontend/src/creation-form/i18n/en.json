@@ -9,6 +9,7 @@
     "general.label.title": "Title:",
     "general.label.description": "Description:",
     "general.label.tags": "Tags:",
+    "general.label.addTag": "Add",
     "general.label.token.name": "ERC20 token name:",
     "general.label.token.symbol": "ERC20 token symbol:",
     "general.label.token.supply": "ERC20 token supply:",

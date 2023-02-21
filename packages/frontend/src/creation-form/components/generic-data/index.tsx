@@ -211,6 +211,7 @@ export const GenericData = ({
             <TagsInput
                 id="tags"
                 label={t("general.label.tags")}
+                addButtonLabel={t("general.label.addTag")}
                 placeholder={t("general.placeholder.tags")}
                 onChange={handleTagsChange}
                 value={tags}
