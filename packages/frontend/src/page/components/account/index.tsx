@@ -56,19 +56,19 @@ export const Account = ({
                             >
                                 {t("account.supply.label")}
                             </Typography>
-                            <Typography variant="md" weight="medium">
-                                {kpiTokenData.initialSupply ? (
-                                    `${commify(
+                            {kpiTokenData.initialSupply ? (
+                                <Typography variant="md" weight="medium">
+                                    {`${commify(
                                         formatUnits(
                                             kpiTokenData.initialSupply,
                                             18
                                         )
                                     )}
-                                    ${kpiTokenData.symbol}`
-                                ) : (
-                                    <Skeleton />
-                                )}
-                            </Typography>
+                                    ${kpiTokenData.symbol}`}
+                                </Typography>
+                            ) : (
+                                <Skeleton />
+                            )}
                         </div>
                         <div className="flex-col">
                             <Typography
@@ -78,16 +78,16 @@ export const Account = ({
                             >
                                 {t("account.balance.label")}
                             </Typography>
-                            <Typography variant="md" weight="medium">
-                                {kpiTokenBalance ? (
-                                    `${commify(
+                            {kpiTokenBalance ? (
+                                <Typography variant="md" weight="medium">
+                                    {`${commify(
                                         formatUnits(kpiTokenBalance.value, 18)
-                                    )}                                  
-                                        ${kpiTokenData.symbol}`
-                                ) : (
-                                    <Skeleton width="50" />
-                                )}
-                            </Typography>
+                                    )}
+                                    ${kpiTokenData.symbol}`}
+                                </Typography>
+                            ) : (
+                                <Skeleton width="50" />
+                            )}
                         </div>
                         <div className="flex-col">
                             <Typography
