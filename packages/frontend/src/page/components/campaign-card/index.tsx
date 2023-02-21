@@ -1,13 +1,6 @@
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { KPIToken } from "@carrot-kpi/sdk";
-import {
-    Card,
-    CardContent,
-    CardTitle,
-    Chip,
-    Markdown,
-    Typography,
-} from "@carrot-kpi/ui";
+import { Card, CardContent, Chip, Markdown, Typography } from "@carrot-kpi/ui";
 import { commify, formatUnits } from "ethers/lib/utils.js";
 import { ReactElement } from "react";
 import sanitizeHtml from "sanitize-html";
@@ -40,22 +33,13 @@ export const CampaignCard = ({
 }: CampaignCardProps): ReactElement => {
     return (
         <Card className={{ root: "w-full max-w-6xl dark:border-gray-400" }}>
-            <CardTitle className={{ root: "dark:border-b-gray-400" }}>
-                <Typography weight="medium" uppercase>
-                    {specification.title}
-                </Typography>
-            </CardTitle>
             <CardContent>
                 <Markdown
                     className={{
                         root: "p-4 max-h-[300px] max-w-none overflow-y-auto",
                     }}
                 >
-                    <div
-                        dangerouslySetInnerHTML={{
-                            __html: sanitizeHtml(specification.description),
-                        }}
-                    />
+                    {sanitizeHtml(specification.description)}
                 </Markdown>
                 <div className="p-4 flex flex-wrap gap-3">
                     {specification.tags.map((tag) => (
