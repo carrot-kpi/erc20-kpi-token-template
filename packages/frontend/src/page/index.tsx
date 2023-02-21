@@ -20,6 +20,7 @@ import { useProvider } from "wagmi";
 import { Loader } from "../ui/loader";
 import { CampaignCard } from "./components/campaign-card";
 import { Account } from "./components/account";
+import { ExpandableContent } from "../ui/expandable-content";
 
 interface PageProps {
     i18n: i18n;
@@ -124,7 +125,10 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
     return (
         <div className="overflow-x-hidden">
             <div className="bg-grid-dark dark:bg-grid-light bg-orange flex flex-col items-center gap-6 px-2 py-3 sm:px-9 sm:py-5 md:items-start md:px-36 md:py-24">
-                <Typography variant="h2">
+                <Typography
+                    variant="h2"
+                    className={{ root: "dark:text-black" }}
+                >
                     {kpiToken.specification.title}
                 </Typography>
                 <div className="flex gap-6">
@@ -132,10 +136,7 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                         size="small"
                         iconPlacement="left"
                         icon={ShareIcon}
-                        className={{
-                            icon: "stroke-white",
-                            root: "[&>svg]:hover:stroke-black",
-                        }}
+                        variant="primary"
                         onClick={handleShare}
                     >
                         {t("share")}
@@ -144,10 +145,7 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                         size="small"
                         iconPlacement="left"
                         icon={ReportIcon}
-                        className={{
-                            icon: "stroke-white",
-                            root: "[&>svg]:hover:stroke-black",
-                        }}
+                        variant="primary"
                         onClick={() => console.log("report")}
                     >
                         {t("report")}
@@ -168,32 +166,42 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                     owner={owner}
                 />
             </div>
-            <div className="bg-grid-dark dark:bg-grid-light m-5 flex flex-col gap-[124px] bg-white px-2 py-3 dark:bg-black sm:px-9 sm:py-5 md:px-36 md:py-24">
-                <div className="flex flex-col gap-12">
-                    <Typography variant="h2">{t("account.title")}</Typography>
-                    <Account
-                        t={t}
-                        kpiTokenData={{
-                            address: kpiToken.address,
-                            symbol,
-                            initialSupply,
-                        }}
-                        collaterals={collaterals}
-                    />
-                </div>
-                <div className="flex flex-col gap-12 ">
-                    <Typography variant="h2">{t("oracle.title")}</Typography>
-                    <div className="w-full max-w-6xl p-10 border bg-white dark:bg-black border-black dark:border-white">
-                        <OraclePage
-                            i18n={i18n}
-                            fallback={<Loader />}
-                            oracle={kpiToken.oracles[0]}
+            <div className="bg-white dark:bg-black">
+                <div className="bg-grid-dark dark:bg-grid-light flex flex-col gap-7 md:gap-9 lg:gap-28 bg-white px-2 py-3 dark:bg-black sm:px-9 sm:py-6 md:px-36 md:py-24">
+                    <div className="flex flex-col gap-6 md:gap-8 max-w-6xl">
+                        <Typography variant="h2">
+                            {t("account.title")}
+                        </Typography>
+                        <Account
+                            t={t}
+                            kpiTokenData={{
+                                address: kpiToken.address,
+                                symbol,
+                                initialSupply,
+                            }}
+                            collaterals={collaterals}
                         />
                     </div>
-                </div>
-                <div className="flex flex-col gap-12">
-                    <Typography variant="h2">{t("widgets.title")}</Typography>
-                    {/*TODO: add campaign widgets*/}
+                    <div className="flex flex-col gap-6 md:gap-8 max-w-6xl">
+                        <Typography variant="h2">
+                            {t("oracle.title")}
+                        </Typography>
+                        <ExpandableContent summary="Oracle template">
+                            <div className="w-full max-w-6xl p-10 bg-white dark:bg-black">
+                                <OraclePage
+                                    i18n={i18n}
+                                    fallback={<Loader />}
+                                    oracle={kpiToken.oracles[0]}
+                                />
+                            </div>
+                        </ExpandableContent>
+                    </div>
+                    <div className="flex flex-col gap-6 md:gap-8 max-w-6xl">
+                        <Typography variant="h2">
+                            {t("widgets.title")}
+                        </Typography>
+                        {/*TODO: add campaign widgets*/}
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,5 +1,5 @@
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import { Typography } from "@carrot-kpi/ui";
+import { Skeleton, Typography } from "@carrot-kpi/ui";
 import { commify, formatUnits } from "ethers/lib/utils.js";
 import { ReactElement } from "react";
 import { Address, useAccount, useBalance } from "wagmi";
@@ -26,7 +26,7 @@ export const Account = ({
     });
 
     return (
-        <div className="flex flex-col w-full max-w-6xl items-center justify-center bg-white dark:bg-black border border-black">
+        <div className="flex flex-col w-full max-w-6xl items-center justify-center bg-white dark:bg-black border border-black dark:border-gray-400">
             {isLoading ? (
                 <Loader />
             ) : !isConnected ? (
@@ -37,7 +37,7 @@ export const Account = ({
                 </div>
             ) : (
                 <>
-                    <div className="w-full p-6 bg-gray-200 border-b border-black">
+                    <div className="w-full p-6 bg-gray-300 dark:bg-gray-700 border-b border-black dark:border-gray-400">
                         <Typography
                             weight="medium"
                             className={{
@@ -57,16 +57,17 @@ export const Account = ({
                                 {t("account.supply.label")}
                             </Typography>
                             <Typography variant="md" weight="medium">
-                                {`${
-                                    kpiTokenData.initialSupply
-                                        ? commify(
-                                              formatUnits(
-                                                  kpiTokenData.initialSupply,
-                                                  18
-                                              )
-                                          )
-                                        : "Loading..."
-                                } ${kpiTokenData.symbol}`}
+                                {kpiTokenData.initialSupply ? (
+                                    `${commify(
+                                        formatUnits(
+                                            kpiTokenData.initialSupply,
+                                            18
+                                        )
+                                    )}
+                                    ${kpiTokenData.symbol}`
+                                ) : (
+                                    <Skeleton />
+                                )}
                             </Typography>
                         </div>
                         <div className="flex-col">
@@ -78,16 +79,14 @@ export const Account = ({
                                 {t("account.balance.label")}
                             </Typography>
                             <Typography variant="md" weight="medium">
-                                {`${
-                                    kpiTokenBalance
-                                        ? commify(
-                                              formatUnits(
-                                                  kpiTokenBalance.value,
-                                                  18
-                                              )
-                                          )
-                                        : "Loading..."
-                                } ${kpiTokenData.symbol}`}
+                                {kpiTokenBalance ? (
+                                    `${commify(
+                                        formatUnits(kpiTokenBalance.value, 18)
+                                    )}                                  
+                                        ${kpiTokenData.symbol}`
+                                ) : (
+                                    <Skeleton width="50" />
+                                )}
                             </Typography>
                         </div>
                         <div className="flex-col">

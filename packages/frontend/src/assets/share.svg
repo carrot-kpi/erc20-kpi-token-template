@@ -1,6 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
-    <path stroke-linecap="round" d="m13.333 6.667-6.667 2.5M13.333 13.333l-6.667-2.5" />
+    <path fill="currentColor" stroke="currentColor" stroke-linecap="round"
+        d="m13.333 6.667-6.667 2.5M13.333 13.333l-6.667-2.5" />
     <path
+        fill="currentColor"
+        stroke="currentColor"
         d="M5 11.666a1.667 1.667 0 1 0 0-3.333 1.667 1.667 0 0 0 0 3.333ZM15 7.5a1.667 1.667 0 1 0 0-3.333A1.667 1.667 0 0 0 15 7.5ZM15 15.833a1.667 1.667 0 1 0 0-3.333 1.667 1.667 0 0 0 0 3.333Z"
         clip-rule="evenodd" />
 </svg>

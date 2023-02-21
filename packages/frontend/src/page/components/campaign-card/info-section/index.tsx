@@ -7,6 +7,7 @@ const rootStyles = cva([
     "sm:border-r",
     "border-t",
     "border-black",
+    "dark:border-gray-400",
     "[&:last-of-type]:border-r-0",
 ]);
 
@@ -24,8 +25,10 @@ export const InfoSection = ({
 
     return (
         <div className={rootStyles({ className: className?.root })}>
-            <div className="p-3 border-b border-black">{headerChildren}</div>
-            <div className="flex flex-col gap-3 p-3">{contentChildren}</div>
+            <div className="p-4 border-b border-black dark:border-gray-400">
+                {headerChildren}
+            </div>
+            <div className="flex flex-col gap-3 p-4">{contentChildren}</div>
         </div>
     );
 };
