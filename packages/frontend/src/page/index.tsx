@@ -123,7 +123,7 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
     }, []);
 
     return (
-        <div className="overflow-x-hidden dark">
+        <div className="overflow-x-hidden">
             <div className="bg-grid-dark dark:bg-grid-light bg-orange flex flex-col items-center gap-6 px-2 py-3 sm:px-9 sm:py-5 md:items-start md:px-36 md:py-24">
                 <Typography
                     variant="h2"
