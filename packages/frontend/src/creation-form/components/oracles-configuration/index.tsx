@@ -1,6 +1,9 @@
 import { BigNumber } from "ethers";
 import { ReactElement, useCallback, useEffect, useState } from "react";
-import { CreationForm, NamespacedTranslateFunction } from "@carrot-kpi/react";
+import {
+    OracleCreationForm,
+    NamespacedTranslateFunction,
+} from "@carrot-kpi/react";
 import {
     Accordion,
     AccordionSummary,
@@ -56,7 +59,7 @@ export const OraclesConfiguration = ({
     return (
         <div className="flex flex-col gap-6">
             {templates.length === 1 ? (
-                <CreationForm
+                <OracleCreationForm
                     i18n={i18n}
                     fallback={<Loader />}
                     template={templates[0]}
@@ -71,7 +74,7 @@ export const OraclesConfiguration = ({
                             </Typography>
                         </AccordionSummary>
                         <AccordionDetails>
-                            <CreationForm
+                            <OracleCreationForm
                                 i18n={i18n}
                                 fallback={<Loader />}
                                 template={template}

@@ -46,9 +46,7 @@ export const Deploy = ({
     onNext,
 }: DeployProps): ReactElement => {
     const { address } = useAccount();
-    const uploadToDecentralizeStorage = useDecentralizedStorageUploader(
-        __DEV__ ? "playground" : "ipfs"
-    );
+    const uploadToDecentralizeStorage = useDecentralizedStorageUploader("ipfs");
     const { data } = useContractReads({
         contracts: collateralsData.map((collateralData) => {
             return {
