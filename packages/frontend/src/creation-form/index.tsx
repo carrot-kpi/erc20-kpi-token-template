@@ -20,11 +20,7 @@ import { i18n } from "i18next";
 import { OraclesConfiguration } from "./components/oracles-configuration";
 import { OutcomesConfiguration } from "./components/outcomes-configuration";
 import { Deploy } from "./components/deploy";
-
-const CREATION_PROXY_ADDRESS: Record<ChainId, Address> = {
-    [ChainId.GOERLI]: "0x66ad026c2dAF2A7CbF265f7E1804712bb250F549",
-    [ChainId.SEPOLIA]: "0x4300d4C410f87c7c1824Cbc2eF67431030106604",
-};
+import { CREATION_PROXY_ADDRESS } from "./constants";
 
 interface CreationFormProps {
     i18n: i18n;
