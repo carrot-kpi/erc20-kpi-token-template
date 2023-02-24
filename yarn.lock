@@ -1163,10 +1163,10 @@
     react-virtualized-auto-sizer "^1.0.7"
     react-window "^1.8.8"
 
-"@carrot-kpi/ui@^0.27.0":
-  version "0.27.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.27.0.tgz#1b6b9b0ce18fbb710142aece6b230c83e86c7c31"
-  integrity sha512-rvXkWM6wdYmWW3WyY62bJYRla1SB6hsM/AjjphHPLnzw9naGPDO3gso12ipg7c5JtEECa+QrWM7jEdx0LiQMOQ==
+"@carrot-kpi/ui@^0.27.1":
+  version "0.27.1"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.27.1.tgz#3217cc220ceaa7f3231dc64602ae9aa39c1bc81a"
+  integrity sha512-PUqypzUO6RIm9ZayfOvQAqIHDOaz3VhSYuWafx3K4wAepR19pm1NzxVP2zIEc3efe0E8/TgY1lrqNe9uUU5Vpg==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@ethersproject/bignumber" "^5.7.0"

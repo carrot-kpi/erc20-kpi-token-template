@@ -29,7 +29,7 @@
         "@carrot-kpi/react": "^0.28.0",
         "@carrot-kpi/sdk": "^1.16.5",
         "@carrot-kpi/shared-state": "^0.1.0",
-        "@carrot-kpi/ui": "^0.27.0",
+        "@carrot-kpi/ui": "^0.27.1",
         "@fontsource/ibm-plex-mono": "^4.5.13",
         "@tailwindcss/line-clamp": "^0.4.2",
         "@testing-library/jest-dom": "^5.16.5",

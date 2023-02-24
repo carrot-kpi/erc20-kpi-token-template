@@ -1,29 +1,16 @@
 @tailwind components;
 @tailwind utilities;
 
-/* TODO: standardize and move to the monorepo UI */
 @layer utilities {
-    .bg-grid-dark {
-        background-size: 64px 64px;
-        background-image: linear-gradient(
-                to right,
-                rgba(0, 0, 0, 0.1) 1px,
-                transparent 1px
-            ),
-            linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+    .bg-grid-light {
+        @apply bg-center;
+        @apply bg-2 md:bg-4;
+        @apply bg-black-squares;
     }
 
-    .bg-grid-light {
-        background-size: 64px 64px;
-        background-image: linear-gradient(
-                to right,
-                rgba(255, 255, 255, 0.1) 1px,
-                transparent 1px
-            ),
-            linear-gradient(
-                to bottom,
-                rgba(255, 255, 255, 0.1) 1px,
-                transparent 1px
-            );
+    .bg-grid-dark {
+        @apply bg-center;
+        @apply bg-2 md:bg-4;
+        @apply bg-white-squares;
     }
 }
