@@ -216,6 +216,7 @@ export const GenericData = ({
                 value={tags}
                 error={!!tagsErrorText}
                 helperText={tagsErrorText}
+                messages={{ add: t("add") }}
                 className={{ root: "w-full", input: "w-full" }}
             />
             <div className="flex gap-4">

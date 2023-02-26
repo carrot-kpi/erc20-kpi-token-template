@@ -1,6 +1,6 @@
 import "../global.css";
 
-import { MultiStepCards, StepCard } from "@carrot-kpi/ui";
+import { MultiStepCards, StepCard, Stepper } from "@carrot-kpi/ui";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { ChainId, Template } from "@carrot-kpi/sdk";
 import { BigNumber, constants } from "ethers";
@@ -20,12 +20,7 @@ import { i18n } from "i18next";
 import { OraclesConfiguration } from "./components/oracles-configuration";
 import { OutcomesConfiguration } from "./components/outcomes-configuration";
 import { Deploy } from "./components/deploy";
-import { SquareStepsList } from "../ui/square-steps-list";
-
-const CREATION_PROXY_ADDRESS: Record<ChainId, Address> = {
-    [ChainId.GOERLI]: "0x66ad026c2dAF2A7CbF265f7E1804712bb250F549",
-    [ChainId.SEPOLIA]: "0x4300d4C410f87c7c1824Cbc2eF67431030106604",
-};
+import { CREATION_PROXY_ADDRESS } from "./constants";
 
 interface CreationFormProps {
     i18n: i18n;
@@ -132,30 +127,31 @@ export const Component = ({
     );
 
     return (
-        <div className="relative h-full w-full bg-grid-dark dark:bg-grid-light scrollbar bg-green overflow-y-auto px-2">
+        <div className="relative h-full w-full bg-green scrollbar overflow-y-auto px-4">
             <div className="h-full flex flex-col items-center justify-between pt-10">
-                <div className="absolute left-20 top-40 hidden lg:flex">
-                    <SquareStepsList
-                        layout="vertical"
-                        stepTitles={stepTitles}
-                        activeStep={step}
-                        mostUpdatedStep={mostUpdatedStep}
-                        onClick={handleStepClick}
-                    />
-                </div>
-                <div className="flex lg:hidden mb-16">
-                    <SquareStepsList
+                <div className="flex lg:hidden mb-8">
+                    <Stepper
                         layout="horizontal"
                         stepTitles={stepTitles}
                         activeStep={step}
-                        mostUpdatedStep={mostUpdatedStep}
+                        lastStepCompleted={mostUpdatedStep}
                         onClick={handleStepClick}
                     />
                 </div>
+                <div className="absolute left-10 top-40 hidden lg:flex">
+                    <Stepper
+                        layout="vertical"
+                        stepTitles={stepTitles}
+                        activeStep={step}
+                        lastStepCompleted={mostUpdatedStep}
+                        onClick={handleStepClick}
+                    />
+                </div>
+                <div className="absolute top-48 md:top-28 bg-grid-light w-[95%] md:w-[65%] h-[75%] md:h-[80%]" />
                 <MultiStepCards
                     activeStep={step}
                     messages={{ step: t("step") }}
-                    className={{ root: "h-full justify-between" }}
+                    className={{ root: "h-full justify-between z-[1]" }}
                 >
                     <StepCard
                         title={t("card.general.title")}

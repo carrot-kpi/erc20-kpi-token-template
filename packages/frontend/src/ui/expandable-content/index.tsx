@@ -35,7 +35,7 @@ export const ExpandableContent = ({
 
     return (
         <Accordion
-            className={{ root: "rounded-none" }}
+            className={{ root: "rounded-none border-x dark:border-x-gray-400" }}
             expanded={expanded}
             onChange={handleExpandClick}
         >
