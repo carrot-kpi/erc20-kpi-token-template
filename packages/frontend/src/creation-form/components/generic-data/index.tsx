@@ -197,7 +197,10 @@ export const GenericData = ({
                 value={title}
                 error={!!titleErrorText}
                 helperText={titleErrorText}
-                className={{ root: "w-full", input: "w-full" }}
+                className={{
+                    input: "w-full",
+                    inputWrapper: "w-full",
+                }}
             />
             <MarkdownInput
                 id="description"
@@ -207,6 +210,7 @@ export const GenericData = ({
                 error={!!descriptionErrorText}
                 helperText={descriptionErrorText}
                 value={description}
+                className={{ input: { inputWrapper: "w-full" } }}
             />
             <TagsInput
                 id="tags"
@@ -217,7 +221,10 @@ export const GenericData = ({
                 error={!!tagsErrorText}
                 helperText={tagsErrorText}
                 messages={{ add: t("add") }}
-                className={{ root: "w-full", input: "w-full" }}
+                className={{
+                    input: "w-full",
+                    inputWrapper: "w-full",
+                }}
             />
             <div className="flex gap-4">
                 <TextInput
@@ -229,7 +236,11 @@ export const GenericData = ({
                     value={erc20Name}
                     error={!!erc20NameErrorText}
                     helperText={erc20NameErrorText}
-                    className={{ root: "w-full", input: "w-full" }}
+                    className={{
+                        root: "w-full",
+                        input: "w-full",
+                        inputWrapper: "w-full",
+                    }}
                 />
                 <TextInput
                     id="token-symbol"
@@ -239,7 +250,11 @@ export const GenericData = ({
                     value={erc20Symbol}
                     error={!!erc20SymbolErrorText}
                     helperText={erc20SymbolErrorText}
-                    className={{ root: "w-full", input: "w-full" }}
+                    className={{
+                        root: "w-full",
+                        input: "w-full",
+                        inputWrapper: "w-full",
+                    }}
                 />
             </div>
             <NumberInput
@@ -250,7 +265,10 @@ export const GenericData = ({
                 value={erc20Supply.formattedValue}
                 error={!!erc20SupplyErrorText}
                 helperText={erc20SupplyErrorText}
-                className={{ root: "w-full", input: "w-full" }}
+                className={{
+                    input: "w-full",
+                    inputWrapper: "w-full",
+                }}
             />
             <NextStepButton onClick={handleNext} disabled={disabled}>
                 {t("next")}
