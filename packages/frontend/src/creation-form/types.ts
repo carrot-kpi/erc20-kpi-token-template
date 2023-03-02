@@ -1,7 +1,9 @@
 import { Amount, KPITokenSpecification, Token } from "@carrot-kpi/sdk";
 import { BigNumber } from "ethers";
 
-export type SpecificationData = Omit<KPITokenSpecification, "ipfsHash">;
+export type SpecificationData = Omit<KPITokenSpecification, "ipfsHash"> & {
+    expiration: Date;
+};
 
 export interface NumberFormatValue {
     formattedValue: string;

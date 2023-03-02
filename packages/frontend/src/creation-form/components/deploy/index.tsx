@@ -16,6 +16,7 @@ import {
 } from "@carrot-kpi/react";
 import CREATION_PROXY_ABI from "../../../abis/creation-proxy.json";
 import { Template } from "@carrot-kpi/sdk";
+import { unixTimestamp } from "../../../utils/dates";
 import { CollateralsTable } from "../collaterals/table";
 import { ReactComponent as Info } from "../../../assets/info.svg";
 
@@ -97,8 +98,7 @@ export const Deploy = ({
                     "createERC20KPIToken",
                     [
                         cid,
-                        // TODO: dynamic expiration
-                        BigNumber.from(Math.floor(Date.now() + 86_400_000)),
+                        unixTimestamp(specificationData.expiration),
                         collateralsData.map((collateral) => ({
                             token: collateral.amount.currency.address,
                             amount: collateral.amount.raw,

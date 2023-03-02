@@ -15,8 +15,10 @@ import {
     NumberInput,
     TagsInput,
     NextStepButton,
+    DateTimeInput,
 } from "@carrot-kpi/ui";
 import { BigNumber, utils } from "ethers";
+import { isInThePast } from "../../../utils/dates";
 
 const stripHtml = (value: string) => value.replace(/(<([^>]+)>)/gi, "");
 
@@ -41,6 +43,7 @@ export const GenericData = ({
         specificationData?.description || ""
     );
     const [tags, setTags] = useState<string[]>(specificationData?.tags || []);
+    const [expiration, setExpiration] = useState<Date | null>(null);
     const [erc20Name, setERC20Name] = useState(tokenData?.name || "");
     const [erc20Symbol, setERC20Symbol] = useState(tokenData?.symbol || "");
     const { defaultValue, defaultFormattedValue } = useMemo(() => {
@@ -60,6 +63,7 @@ export const GenericData = ({
     const [titleErrorText, setTitleErrorText] = useState("");
     const [descriptionErrorText, setDescriptionErrorText] = useState("");
     const [tagsErrorText, setTagsErrorText] = useState("");
+    const [expirationErrorText, setExpirationErrorText] = useState("");
     const [erc20NameErrorText, setERC20NameErrorText] = useState("");
     const [erc20SymbolErrorText, setERC20SymbolErrorText] = useState("");
     const [erc20SupplyErrorText, setERC20SupplyErrorText] = useState("");
@@ -74,6 +78,8 @@ export const GenericData = ({
                 !title.trim() ||
                 !stripHtml(description).trim() ||
                 tags.length === 0 ||
+                !expiration ||
+                isInThePast(expiration) ||
                 !erc20Name.trim() ||
                 !erc20Symbol.trim() ||
                 !erc20Supply.value ||
@@ -84,6 +90,7 @@ export const GenericData = ({
         erc20Name,
         erc20Supply.value,
         erc20Symbol,
+        expiration,
         tags.length,
         title,
     ]);
@@ -129,6 +136,16 @@ export const GenericData = ({
         [t]
     );
 
+    const handleExpirationChange = useCallback(
+        (value: Date) => {
+            setExpiration(value);
+            setExpirationErrorText(
+                isInThePast(value) ? t("error.expiration.past") : ""
+            );
+        },
+        [t]
+    );
+
     const handleERC20NameChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {
             setERC20Name(event.target.value);
@@ -166,6 +183,8 @@ export const GenericData = ({
         if (
             !title ||
             !description ||
+            tags.length === 0 ||
+            !expiration ||
             !erc20Name ||
             !erc20Supply ||
             !erc20Supply.value ||
@@ -177,6 +196,7 @@ export const GenericData = ({
                 title,
                 description,
                 tags,
+                expiration,
             },
             {
                 name: erc20Name,
@@ -184,7 +204,16 @@ export const GenericData = ({
                 symbol: erc20Symbol,
             }
         );
-    }, [description, erc20Name, erc20Supply, erc20Symbol, onNext, tags, title]);
+    }, [
+        description,
+        erc20Name,
+        erc20Supply,
+        erc20Symbol,
+        expiration,
+        onNext,
+        tags,
+        title,
+    ]);
 
     return (
         <div className="flex flex-col gap-6">
@@ -215,20 +244,38 @@ export const GenericData = ({
                     inputWrapper: "w-full",
                 }}
             />
-            <TagsInput
-                id="tags"
-                label={t("general.label.tags")}
-                placeholder={t("general.placeholder.tags")}
-                onChange={handleTagsChange}
-                value={tags}
-                error={!!tagsErrorText}
-                helperText={tagsErrorText}
-                messages={{ add: t("add") }}
-                className={{
-                    input: "w-full",
-                    inputWrapper: "w-full",
-                }}
-            />
+            <div className="flex w-full gap-4">
+                <TagsInput
+                    id="tags"
+                    label={t("general.label.tags")}
+                    placeholder={t("general.placeholder.tags")}
+                    onChange={handleTagsChange}
+                    value={tags}
+                    error={!!tagsErrorText}
+                    helperText={tagsErrorText}
+                    messages={{ add: t("add") }}
+                    className={{
+                        root: "w-full",
+                        input: "w-full",
+                        inputWrapper: "w-full",
+                    }}
+                />
+                <DateTimeInput
+                    id="expiration"
+                    label={t("general.label.expiration")}
+                    placeholder={t("general.placeholder.expiration")}
+                    onChange={handleExpirationChange}
+                    value={expiration}
+                    error={!!expirationErrorText}
+                    helperText={expirationErrorText}
+                    min={new Date()}
+                    className={{
+                        root: "w-full",
+                        input: "w-full",
+                        inputWrapper: "w-full",
+                    }}
+                />
+            </div>
             <div className="flex w-full gap-4">
                 <TextInput
                     id="token-name"
@@ -259,20 +306,21 @@ export const GenericData = ({
                         inputWrapper: "w-full",
                     }}
                 />
+                <NumberInput
+                    id="token-supply"
+                    label={t("general.label.token.supply")}
+                    placeholder={"1,000,000"}
+                    onValueChange={handleERC20SupplyChange}
+                    value={erc20Supply.formattedValue}
+                    error={!!erc20SupplyErrorText}
+                    helperText={erc20SupplyErrorText}
+                    className={{
+                        root: "w-full",
+                        input: "w-full",
+                        inputWrapper: "w-full",
+                    }}
+                />
             </div>
-            <NumberInput
-                id="token-supply"
-                label={t("general.label.token.supply")}
-                placeholder={"1,000,000"}
-                onValueChange={handleERC20SupplyChange}
-                value={erc20Supply.formattedValue}
-                error={!!erc20SupplyErrorText}
-                helperText={erc20SupplyErrorText}
-                className={{
-                    input: "w-full",
-                    inputWrapper: "w-full",
-                }}
-            />
             <NextStepButton onClick={handleNext} disabled={disabled}>
                 {t("next")}
             </NextStepButton>
