@@ -9,7 +9,11 @@ import {
     RemoteLogo,
     NextStepButton,
 } from "@carrot-kpi/ui";
-import { NamespacedTranslateFunction, useTokenLists } from "@carrot-kpi/react";
+import {
+    NamespacedTranslateFunction,
+    useIPFSGatewayURL,
+    useTokenLists,
+} from "@carrot-kpi/react";
 import { ReactElement, useCallback, useEffect, useState } from "react";
 import { utils } from "ethers";
 import {
@@ -17,7 +21,7 @@ import {
     NumberFormatValue,
     TokenWithLogoURI,
 } from "../../types";
-import { Amount, IPFSService } from "@carrot-kpi/sdk";
+import { Amount } from "@carrot-kpi/sdk";
 import { Address, useAccount, useBalance, useNetwork } from "wagmi";
 import { PROTOCOL_FEE_BPS, TOKEN_LIST_URLS } from "../../constants";
 import { getDefaultERC20TokenLogoURL } from "../../../utils/erc20";
@@ -35,6 +39,7 @@ export const Collaterals = ({
     collaterals: collateralsData,
     onNext,
 }: CollateralProps): ReactElement => {
+    const ipfsGatewayURL = useIPFSGatewayURL();
     const { address } = useAccount();
     const { chain } = useNetwork();
     // TODO: handle loading state
@@ -420,9 +425,7 @@ export const Collaterals = ({
                                                     token.address
                                                 )}
                                                 defaultText={token.symbol}
-                                                ipfsGatewayURL={
-                                                    IPFSService.gateway
-                                                }
+                                                ipfsGatewayURL={ipfsGatewayURL}
                                             />
                                             <Typography>
                                                 {token.symbol}
