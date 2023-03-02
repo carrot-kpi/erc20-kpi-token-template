@@ -5,7 +5,7 @@ import { CollateralData } from "../../../types";
 import { CollateralRow } from "./row";
 
 const containerStyles = cva(
-    ["flex", "max-h-48", "flex-col", "gap-2", "overflow-y-auto"],
+    ["flex", "max-h-48", "flex-col", "gap-3", "overflow-y-auto"],
     {
         variants: {
             noBorder: {

@@ -62,7 +62,6 @@ export const CollateralRow = ({
                 )}
                 <RemoteLogo
                     src={token.logoURI}
-                    size="sm"
                     defaultSrc={getDefaultERC20TokenLogoURL(
                         token.chainId,
                         token.address
