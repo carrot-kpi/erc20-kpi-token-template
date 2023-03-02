@@ -13,12 +13,14 @@ import { PROTOCOL_FEE_BPS } from "../../../../constants";
 type CollateralRowProps = CollateralData & {
     t: NamespacedTranslateFunction;
     index: number;
-    onRemove: (index: number) => void;
+    noEdit?: boolean;
+    onRemove?: (index: number) => void;
 };
 
 export const CollateralRow = ({
     t,
     index,
+    noEdit,
     onRemove,
     amount,
     minimumPayout,
@@ -29,6 +31,7 @@ export const CollateralRow = ({
     const [feeSplitPopoverOpen, setFeeSplitPopoverOpen] = useState(false);
 
     const handleRemove = useCallback(() => {
+        if (!onRemove) return;
         onRemove(index);
     }, [index, onRemove]);
 
@@ -48,16 +51,17 @@ export const CollateralRow = ({
     return (
         <div key={token.address} className="grid grid-cols-3">
             <div className="flex gap-2 items-center">
-                <div
-                    className="cursor-pointer"
-                    onClick={handleRemove}
-                    data-index={index}
-                >
-                    <X className="stroke-gray-500 dark:stroke-gray-700 pointer-events-none" />
-                </div>
+                {!noEdit && (
+                    <div
+                        className="cursor-pointer"
+                        onClick={handleRemove}
+                        data-index={index}
+                    >
+                        <X className="stroke-gray-500 dark:stroke-gray-700 pointer-events-none" />
+                    </div>
+                )}
                 <RemoteLogo
                     src={token.logoURI}
-                    size="sm"
                     defaultSrc={getDefaultERC20TokenLogoURL(
                         token.chainId,
                         token.address

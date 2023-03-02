@@ -1,4 +1,4 @@
-import { ReactElement, useCallback, useEffect, useState } from "react";
+import { ReactElement, useCallback, useLayoutEffect, useState } from "react";
 import { Address, erc20ABI, useAccount, useContractReads } from "wagmi";
 import { CollateralApproval } from "../collateral-approval";
 import {
@@ -9,7 +9,7 @@ import {
     TokenData,
 } from "../../types";
 import { BigNumber, constants, utils } from "ethers";
-import { Button } from "@carrot-kpi/ui";
+import { Button, Typography } from "@carrot-kpi/ui";
 import {
     NamespacedTranslateFunction,
     useDecentralizedStorageUploader,
@@ -17,6 +17,8 @@ import {
 import CREATION_PROXY_ABI from "../../../abis/creation-proxy.json";
 import { Template } from "@carrot-kpi/sdk";
 import { unixTimestamp } from "../../../utils/dates";
+import { CollateralsTable } from "../collaterals/table";
+import { ReactComponent as Info } from "../../../assets/info.svg";
 
 const CREATION_PROXY_INTERFACE = new utils.Interface(CREATION_PROXY_ABI);
 
@@ -32,11 +34,8 @@ interface DeployProps {
     onNext: (data: string, value: BigNumber) => void;
 }
 
-interface ApprovalStatusMap {
-    [key: Address]: boolean;
-}
-
 export const Deploy = ({
+    t,
     targetAddress,
     specificationData,
     tokenData,
@@ -48,7 +47,7 @@ export const Deploy = ({
 }: DeployProps): ReactElement => {
     const { address } = useAccount();
     const uploadToDecentralizeStorage = useDecentralizedStorageUploader("ipfs");
-    const { data } = useContractReads({
+    const { data: allowances } = useContractReads({
         contracts: collateralsData.map((collateralData) => {
             return {
                 address: collateralData.amount.currency.address,
@@ -57,44 +56,30 @@ export const Deploy = ({
                 args: [address ?? constants.AddressZero, targetAddress],
             };
         }),
-        watch: true,
     });
 
-    const [approved, setApproved] = useState<ApprovalStatusMap>({});
-    const [allApproved, setAllApproved] = useState(false);
+    const [toApprove, setToApprove] = useState<CollateralData[]>([]);
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        setApproved(
-            collateralsData.reduce(
-                (accumulator: ApprovalStatusMap, collateral, index) => {
-                    const address = collateral.amount.currency
-                        .address as Address;
-                    if (!data || data.length === 0 || !data[index]) {
-                        accumulator[address] = false;
-                        return accumulator;
-                    }
-                    accumulator[address] = (
-                        data[index] as unknown as BigNumber
-                    ).gte(collateral.amount.raw);
-                    return accumulator;
-                },
-                {}
+    useLayoutEffect(() => {
+        if (!allowances || allowances.length !== collateralsData.length) return;
+        const newToApprove = [];
+        for (let i = 0; i < collateralsData.length; i++) {
+            const collateralData = collateralsData[i];
+            if (
+                (allowances[i] as unknown as BigNumber).gte(
+                    collateralData.amount.raw
+                )
             )
-        );
-    }, [collateralsData, data]);
-
-    useEffect(() => {
-        const values = Object.values(approved);
-        if (values.length === 0) return;
-        for (const approval of values) {
-            if (!approval) {
-                setAllApproved(false);
-                return;
-            }
+                continue;
+            newToApprove.push(collateralData);
         }
-        setAllApproved(true);
-    }, [approved]);
+        setToApprove(newToApprove);
+    }, [allowances, collateralsData]);
+
+    const handleApproved = useCallback(() => {
+        setToApprove([]);
+    }, []);
 
     const handleCreate = useCallback(() => {
         if (!tokenData) return;
@@ -169,28 +154,40 @@ export const Deploy = ({
     ]);
 
     return (
-        <>
-            {collateralsData.map((collateral) => {
-                const address = collateral.amount.currency.address as Address;
-                return (
-                    <CollateralApproval
-                        key={address}
-                        disabled={approved[address]}
-                        collateral={collateral}
-                        spender={targetAddress}
-                    />
-                );
-            })}
+        <div className="flex flex-col gap-6">
+            <div className="rounded-xxl w-full flex flex-col gap-6 border border-black p-4">
+                <CollateralsTable
+                    noBorder
+                    t={t}
+                    collaterals={collateralsData}
+                    noEdit
+                />
+                <div className="w-full rounded-xxl flex items-center gap-4 border border-gray-600 p-3">
+                    <Info className="w-6 h-6 text-gray-600" />
+                    <Typography
+                        variant="sm"
+                        className={{ root: "flex-1 text-gray-600" }}
+                    >
+                        {t("info.approve")}
+                    </Typography>
+                </div>
+                <CollateralApproval
+                    t={t}
+                    toApprove={toApprove}
+                    spender={targetAddress}
+                    onApproved={handleApproved}
+                />
+            </div>
             <div className="flex justify-between">
                 <Button
                     size="small"
                     onClick={handleCreate}
-                    disabled={!allApproved}
+                    disabled={toApprove.length > 0}
                     loading={loading}
                 >
-                    Create
+                    {t("label.create")}
                 </Button>
             </div>
-        </>
+        </div>
     );
 };

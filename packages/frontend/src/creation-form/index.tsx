@@ -221,7 +221,7 @@ export const Component = ({
                         <StepCard
                             title={t("card.deploy.title")}
                             step={6}
-                            className={{ root: "relative pb-10" }}
+                            className={{ root: "relative" }}
                             messages={{ step: t("step") }}
                         >
                             <Deploy

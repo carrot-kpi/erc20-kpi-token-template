@@ -46,6 +46,7 @@ export const SingleConfiguration = ({
                     className={{
                         root: "w-full",
                         input: "w-full",
+                        inputWrapper: "w-full",
                     }}
                 />
                 <NumberInput
@@ -57,6 +58,7 @@ export const SingleConfiguration = ({
                     className={{
                         root: "w-full",
                         input: "w-full",
+                        inputWrapper: "w-full",
                     }}
                 />
             </div>
