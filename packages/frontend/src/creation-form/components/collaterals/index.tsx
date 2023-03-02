@@ -7,6 +7,7 @@ import {
     TokenInfoWithBalance,
     TokenListWithBalance,
     NextStepButton,
+    Skeleton,
 } from "@carrot-kpi/ui";
 import { NamespacedTranslateFunction, useTokenLists } from "@carrot-kpi/react";
 import { ReactElement, useCallback, useEffect, useState } from "react";
@@ -103,6 +104,17 @@ export const Collaterals = ({
             return;
         }
         const parsedAmount = parseFloat(pickerRawAmount.value);
+        if (data) {
+            // check if the user has enough balance of the picked token
+            const bnPickerAmount = utils.parseUnits(
+                pickerRawAmount.value,
+                pickedToken.decimals
+            );
+            if (data.value.lt(bnPickerAmount)) {
+                setAddDisabled(true);
+                return;
+            }
+        }
         const amountMinusFees =
             parsedAmount - (parsedAmount * PROTOCOL_FEE_BPS) / 10_000;
         const parsedMinimumAmount = parseFloat(pickerRawMinimumPayout.value);
@@ -122,6 +134,7 @@ export const Collaterals = ({
         pickerRawAmount.value,
         pickerRawMinimumPayout.value,
         pickedToken,
+        data,
     ]);
 
     useEffect(() => {
@@ -277,7 +290,7 @@ export const Collaterals = ({
                                             {t("label.collateral.balance")}:{" "}
                                         </Typography>
                                         {isLoading ? (
-                                            <span className="inline-block h-4 w-14 animate-pulse rounded-md bg-gray-200 text-sm" />
+                                            <Skeleton variant="sm" />
                                         ) : !!data ? (
                                             <>
                                                 <Typography variant="sm">
