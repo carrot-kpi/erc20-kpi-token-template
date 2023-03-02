@@ -6,14 +6,9 @@ import {
     Typography,
     TokenInfoWithBalance,
     TokenListWithBalance,
-    RemoteLogo,
     NextStepButton,
 } from "@carrot-kpi/ui";
-import {
-    NamespacedTranslateFunction,
-    useIPFSGatewayURL,
-    useTokenLists,
-} from "@carrot-kpi/react";
+import { NamespacedTranslateFunction, useTokenLists } from "@carrot-kpi/react";
 import { ReactElement, useCallback, useEffect, useState } from "react";
 import { utils } from "ethers";
 import {
@@ -24,9 +19,8 @@ import {
 import { Amount } from "@carrot-kpi/sdk";
 import { Address, useAccount, useBalance, useNetwork } from "wagmi";
 import { PROTOCOL_FEE_BPS, TOKEN_LIST_URLS } from "../../constants";
-import { getDefaultERC20TokenLogoURL } from "../../../utils/erc20";
-import { ReactComponent as X } from "../../../assets/x.svg";
 import { ReactComponent as ArrowDown } from "../../../assets/arrow-down.svg";
+import { CollateralsTable } from "./table";
 
 interface CollateralProps {
     t: NamespacedTranslateFunction;
@@ -39,7 +33,6 @@ export const Collaterals = ({
     collaterals: collateralsData,
     onNext,
 }: CollateralProps): ReactElement => {
-    const ipfsGatewayURL = useIPFSGatewayURL();
     const { address } = useAccount();
     const { chain } = useNetwork();
     // TODO: handle loading state
@@ -198,12 +191,7 @@ export const Collaterals = ({
     }, [collaterals, onNext]);
 
     const handleRemoveCollateral = useCallback(
-        (event: React.MouseEvent<HTMLDivElement>) => {
-            if (!event.target) return;
-            const rawIndex = (event.target as HTMLDivElement).dataset.index;
-            if (!rawIndex) return;
-            const index = parseInt(rawIndex);
-            if (isNaN(index)) return;
+        (index: number) => {
             setCollaterals(collaterals.filter((_, i) => i !== index));
         },
         [collaterals]
@@ -372,105 +360,11 @@ export const Collaterals = ({
                         {t("label.collateral.picker.apply")}
                     </Button>
                 </div>
-                <div className="flex flex-col gap-2">
-                    <div className="grid grid-cols-3">
-                        <Typography weight="medium" variant="sm">
-                            {t("label.collateral.table.collateral")}
-                        </Typography>
-                        <Typography
-                            weight="medium"
-                            className={{ root: "text-center" }}
-                            variant="sm"
-                        >
-                            {t("label.collateral.table.amount")}
-                        </Typography>
-                        <Typography
-                            weight="medium"
-                            className={{ root: "text-right" }}
-                            variant="sm"
-                        >
-                            {t("label.collateral.table.minimum.payout")}
-                        </Typography>
-                    </div>
-                    <div className="rounded-xxl flex max-h-48 flex-col gap-2 overflow-y-auto border border-black p-4">
-                        {collaterals.length === 0 ? (
-                            <Typography
-                                variant="sm"
-                                className={{ root: "text-center" }}
-                                weight="medium"
-                            >
-                                {t("label.collateral.table.empty")}
-                            </Typography>
-                        ) : (
-                            collaterals.map((collateral, index) => {
-                                const token = collateral.amount.currency;
-                                return (
-                                    <div
-                                        key={token.address}
-                                        className="grid grid-cols-3"
-                                    >
-                                        <div className="flex gap-2 items-center">
-                                            <div
-                                                className="cursor-pointer"
-                                                onClick={handleRemoveCollateral}
-                                                data-index={index}
-                                            >
-                                                <X className="stroke-gray-500 dark:stroke-gray-700 pointer-events-none" />
-                                            </div>
-                                            <RemoteLogo
-                                                src={token.logoURI}
-                                                size="sm"
-                                                defaultSrc={getDefaultERC20TokenLogoURL(
-                                                    token.chainId,
-                                                    token.address
-                                                )}
-                                                defaultText={token.symbol}
-                                                ipfsGatewayURL={ipfsGatewayURL}
-                                            />
-                                            <Typography>
-                                                {token.symbol}
-                                            </Typography>
-                                        </div>
-                                        <Typography
-                                            className={{ root: "text-center" }}
-                                        >
-                                            {t(
-                                                "label.collateral.table.amount.value",
-                                                {
-                                                    total: `${utils.commify(
-                                                        collateral.amount.toFixed(
-                                                            4
-                                                        )
-                                                    )}`,
-                                                    afterFees: `${utils.commify(
-                                                        collateral.amount
-                                                            .sub(
-                                                                collateral.amount
-                                                                    .mul(
-                                                                        PROTOCOL_FEE_BPS
-                                                                    )
-                                                                    .div(10_000)
-                                                            )
-                                                            .toFixed(4)
-                                                    )}`,
-                                                }
-                                            )}
-                                        </Typography>
-                                        <Typography
-                                            className={{ root: "text-right" }}
-                                        >
-                                            {utils.commify(
-                                                collateral.minimumPayout.toFixed(
-                                                    4
-                                                )
-                                            )}
-                                        </Typography>
-                                    </div>
-                                );
-                            })
-                        )}
-                    </div>
-                </div>
+                <CollateralsTable
+                    t={t}
+                    collaterals={collaterals}
+                    onRemove={handleRemoveCollateral}
+                />
             </div>
             <NextStepButton onClick={handleNext} disabled={disabled}>
                 {t("next")}
