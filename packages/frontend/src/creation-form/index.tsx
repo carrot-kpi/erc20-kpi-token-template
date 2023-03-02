@@ -127,8 +127,9 @@ export const Component = ({
     );
 
     return (
-        <div className="relative h-full w-full bg-green scrollbar overflow-y-auto px-4">
-            <div className="h-full flex flex-col items-center justify-between pt-10">
+        <div className="relative h-full w-full bg-green scrollbar overflow-y-auto px-4 pt-10">
+            <div className="absolute bg-grid-light top-0 right-0 bottom-0 left-0" />
+            <div className="h-full flex flex-col items-center justify-between">
                 <div className="flex lg:hidden mb-8">
                     <Stepper
                         layout="horizontal"
@@ -147,7 +148,6 @@ export const Component = ({
                         onClick={handleStepClick}
                     />
                 </div>
-                <div className="absolute top-48 md:top-28 bg-grid-light w-[95%] md:w-[65%] h-[75%] md:h-[80%]" />
                 <MultiStepCards
                     activeStep={step}
                     messages={{ step: t("step") }}
