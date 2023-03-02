@@ -39,6 +39,8 @@ export const CampaignCard = ({
     kpiTokenData,
     owner,
 }: CampaignCardProps): ReactElement => {
+    const expirationDate = new Date(kpiTokenData.expiration * 1_000);
+
     return (
         <Card className={{ root: "w-full max-w-6xl dark:border-gray-400" }}>
             <CardContent>
@@ -168,9 +170,8 @@ export const CampaignCard = ({
                                     <Clock className="stroke-black dark:stroke-white" />
                                     <Typography variant="md">
                                         {formatCountDownString(
-                                            new Date(
-                                                kpiTokenData.expiration
-                                            ).getTime() - new Date().getTime()
+                                            expirationDate.getTime() -
+                                                new Date().getTime()
                                         )}
                                     </Typography>
                                 </div>
@@ -182,9 +183,7 @@ export const CampaignCard = ({
                                     {t("overview.expiration.label")}
                                 </Typography>
                                 <Typography variant="md">
-                                    {formatDate(
-                                        new Date(kpiTokenData.expiration)
-                                    )}
+                                    {formatDate(expirationDate)}
                                 </Typography>
                             </div>
                             <div className="flex justify-between">
