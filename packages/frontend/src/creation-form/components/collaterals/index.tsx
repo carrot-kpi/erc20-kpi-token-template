@@ -263,8 +263,7 @@ export const Collaterals = ({
                                                 "label.collateral.picker.token.pick"
                                             )}
                                             className={{
-                                                root: "cursor-pointer",
-                                                input: "w-full",
+                                                input: "w-full cursor-pointer",
                                             }}
                                             readOnly
                                             value={pickedToken?.symbol || ""}
