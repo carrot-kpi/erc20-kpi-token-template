@@ -279,6 +279,7 @@ export const Collaterals = ({
                                             input: "w-full border-none text-right",
                                         }}
                                         variant="xl"
+                                        allowNegative={false}
                                         disabled={!!!pickedToken}
                                         value={pickerRawAmount.formattedValue}
                                         onValueChange={setPickerRawAmount}
@@ -335,6 +336,7 @@ export const Collaterals = ({
                                         }}
                                         variant="xl"
                                         disabled={!!!pickedToken}
+                                        allowNegative={false}
                                         value={
                                             pickerRawMinimumPayout.formattedValue
                                         }

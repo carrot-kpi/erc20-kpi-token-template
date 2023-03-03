@@ -308,6 +308,7 @@ export const GenericData = ({
                 />
                 <NumberInput
                     id="token-supply"
+                    allowNegative={false}
                     label={t("general.label.token.supply")}
                     placeholder={"1,000,000"}
                     onValueChange={handleERC20SupplyChange}
