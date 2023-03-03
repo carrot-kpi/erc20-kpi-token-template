@@ -76,6 +76,7 @@ export const Deploy = ({
     });
 
     const [toApprove, setToApprove] = useState<CollateralData[]>([]);
+    const [approved, setApproved] = useState(false);
     const [creationArgs, setCreationArgs] = useState<unknown[]>([]);
     const [loading, setLoading] = useState(false);
 
@@ -106,7 +107,7 @@ export const Deploy = ({
     // once the collaterals are approved, this uploads the question spec
     // to ipfs and sets creation args
     useEffect(() => {
-        if (toApprove.length > 0) return;
+        if (!approved) return;
 
         try {
             assertRequiredOraclesData(oraclesData);
@@ -117,7 +118,7 @@ export const Deploy = ({
 
         let cancelled = false;
         const uploadAndSetCreationArgs = async () => {
-            setLoading(true);
+            if (!cancelled) setLoading(true);
             try {
                 const specificationCID = await uploadToDecentralizeStorage(
                     JSON.stringify(specificationData)
@@ -154,12 +155,12 @@ export const Deploy = ({
             cancelled = true;
         };
     }, [
+        approved,
         collateralsData,
         oracleTemplatesData,
         oraclesData,
         outcomesData,
         specificationData,
-        toApprove.length,
         tokenData.name,
         tokenData.supply,
         tokenData.symbol,
@@ -168,6 +169,7 @@ export const Deploy = ({
 
     const handleApproved = useCallback(() => {
         setToApprove([]);
+        setApproved(true);
     }, []);
 
     const handleCreate = useCallback(() => {
