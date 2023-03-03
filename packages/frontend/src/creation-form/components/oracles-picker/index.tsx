@@ -3,7 +3,7 @@ import {
     useOracleTemplates,
 } from "@carrot-kpi/react";
 import { Template } from "@carrot-kpi/sdk";
-import { Typography, NextStepButton } from "@carrot-kpi/ui";
+import { Typography, NextStepButton, Checkbox } from "@carrot-kpi/ui";
 import { ReactElement, useCallback, useEffect, useState } from "react";
 import { Loader } from "../../../ui/loader";
 import { OracleTemplate } from "../../../ui/oracle-template";
@@ -66,24 +66,21 @@ export const OraclesPicker = ({
                                         version={template.version}
                                         address={template.address}
                                     />
-                                    <input
-                                        className="h-6 w-6 cursor-pointer accent-black outline-none"
-                                        type="checkbox"
+                                    <Checkbox
+                                        id={template.id.toString()}
                                         checked={checked}
                                         onChange={() => {
+                                            // TODO: support multiple choices when it will be a thing
                                             if (checked) {
-                                                const newPickedTemplates = {
-                                                    ...pickedTemplates,
-                                                };
-                                                delete newPickedTemplates[
-                                                    template.id
-                                                ];
-                                                setPickedTemplates(
-                                                    newPickedTemplates
-                                                );
+                                                // const newPickedTemplates = {
+                                                //     ...pickedTemplates,
+                                                // };
+                                                // delete newPickedTemplates[
+                                                //     template.id
+                                                // ];
+                                                setPickedTemplates({});
                                             } else {
                                                 setPickedTemplates({
-                                                    ...pickedTemplates,
                                                     [template.id]: template,
                                                 });
                                             }
@@ -93,10 +90,11 @@ export const OraclesPicker = ({
                             );
                         })}
                     </div>
-                    <Typography weight="medium">
+                    {/* TODO: make this a thing when multiple oracles will be properly supported */}
+                    {/* <Typography weight="medium">
                         {t("oracles.picker.selected")}{" "}
                         {Object.keys(pickedTemplates).length}
-                    </Typography>
+                    </Typography> */}
                 </>
             )}
             <NextStepButton onClick={handleNext} disabled={disabled}>

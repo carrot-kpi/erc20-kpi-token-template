@@ -36,8 +36,7 @@ export const Collaterals = ({
 }: CollateralProps): ReactElement => {
     const { address } = useAccount();
     const { chain } = useNetwork();
-    // TODO: handle loading state
-    const { lists: tokenLists } = useTokenLists(TOKEN_LIST_URLS);
+    const { lists: tokenLists, loading } = useTokenLists(TOKEN_LIST_URLS);
 
     const [collaterals, setCollaterals] = useState(collateralsData);
     const [selectedTokenList, setSelectedTokenList] = useState<
@@ -229,7 +228,7 @@ export const Collaterals = ({
                 selectedToken={pickedToken}
                 onSelectedTokenChange={setPickedToken}
                 lists={tokenLists as TokenListWithBalance[]}
-                /* TODO: define */
+                loading={loading}
                 selectedList={selectedTokenList}
                 onSelectedListChange={setSelectedTokenList}
                 chainId={chain?.id}
@@ -264,8 +263,7 @@ export const Collaterals = ({
                                                 "label.collateral.picker.token.pick"
                                             )}
                                             className={{
-                                                root: "cursor-pointer",
-                                                input: "w-full",
+                                                input: "w-full cursor-pointer",
                                             }}
                                             readOnly
                                             value={pickedToken?.symbol || ""}
@@ -279,6 +277,7 @@ export const Collaterals = ({
                                             input: "w-full border-none text-right",
                                         }}
                                         variant="xl"
+                                        allowNegative={false}
                                         disabled={!!!pickedToken}
                                         value={pickerRawAmount.formattedValue}
                                         onValueChange={setPickerRawAmount}
@@ -335,6 +334,7 @@ export const Collaterals = ({
                                         }}
                                         variant="xl"
                                         disabled={!!!pickedToken}
+                                        allowNegative={false}
                                         value={
                                             pickerRawMinimumPayout.formattedValue
                                         }

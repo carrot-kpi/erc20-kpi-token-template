@@ -1,6 +1,18 @@
-import { ReactElement, useCallback, useLayoutEffect, useState } from "react";
-import { Address, erc20ABI, useAccount, useContractReads } from "wagmi";
-import { CollateralApproval } from "../collateral-approval";
+import {
+    ReactElement,
+    useCallback,
+    useEffect,
+    useLayoutEffect,
+    useState,
+} from "react";
+import {
+    Address,
+    erc20ABI,
+    useAccount,
+    useContractReads,
+    useContractWrite,
+    usePrepareContractWrite,
+} from "wagmi";
 import {
     CollateralData,
     OracleData,
@@ -17,7 +29,10 @@ import {
 import { Template } from "@carrot-kpi/sdk";
 import { CollateralsTable } from "../collaterals/table";
 import { ReactComponent as Info } from "../../../assets/info.svg";
-import { encodeKPITokenData } from "../../utils/data-encoding";
+import { encodeOraclesData } from "../../utils/data-encoding";
+import CREATION_PROXY_ABI from "../../../abis/creation-proxy.json";
+import { ApproveCollateralsButton } from "../approve-collaterals-button";
+import { unixTimestamp } from "../../../utils/dates";
 
 type Assert = (data: OracleData[]) => asserts data is Required<OracleData>[];
 const assertRequiredOraclesData: Assert = (data) => {
@@ -61,7 +76,17 @@ export const Deploy = ({
     });
 
     const [toApprove, setToApprove] = useState<CollateralData[]>([]);
+    const [approved, setApproved] = useState(false);
+    const [creationArgs, setCreationArgs] = useState<unknown[]>([]);
     const [loading, setLoading] = useState(false);
+
+    const { config, isLoading: loadingTxConfig } = usePrepareContractWrite({
+        address: targetAddress,
+        abi: CREATION_PROXY_ABI,
+        functionName: "createERC20KPIToken",
+        args: creationArgs,
+    });
+    const { writeAsync } = useContractWrite(config);
 
     useLayoutEffect(() => {
         if (!allowances || allowances.length !== collateralsData.length) return;
@@ -79,52 +104,90 @@ export const Deploy = ({
         setToApprove(newToApprove);
     }, [allowances, collateralsData]);
 
+    // once the collaterals are approved, this uploads the question spec
+    // to ipfs and sets creation args
+    useEffect(() => {
+        if (!approved) return;
+
+        try {
+            assertRequiredOraclesData(oraclesData);
+        } catch (error) {
+            console.warn("not all required oracles data is present");
+            return;
+        }
+
+        let cancelled = false;
+        const uploadAndSetCreationArgs = async () => {
+            if (!cancelled) setLoading(true);
+            try {
+                const specificationCID = await uploadToDecentralizeStorage(
+                    JSON.stringify(specificationData)
+                );
+                if (!cancelled)
+                    setCreationArgs([
+                        specificationCID,
+                        unixTimestamp(specificationData.expiration),
+                        collateralsData.map((collateral) => ({
+                            token: collateral.amount.currency.address,
+                            amount: collateral.amount.raw,
+                            minimumPayout: collateral.minimumPayout.raw,
+                        })),
+                        tokenData.name,
+                        tokenData.symbol,
+                        tokenData.supply,
+                        encodeOraclesData(
+                            oracleTemplatesData,
+                            outcomesData,
+                            oraclesData
+                        ),
+                    ]);
+            } catch (error) {
+                console.warn(
+                    "error while uploading specification to ipfs",
+                    error
+                );
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        };
+        void uploadAndSetCreationArgs();
+        return () => {
+            cancelled = true;
+        };
+    }, [
+        approved,
+        collateralsData,
+        oracleTemplatesData,
+        oraclesData,
+        outcomesData,
+        specificationData,
+        tokenData.name,
+        tokenData.supply,
+        tokenData.symbol,
+        uploadToDecentralizeStorage,
+    ]);
+
     const handleApproved = useCallback(() => {
         setToApprove([]);
+        setApproved(true);
     }, []);
 
     const handleCreate = useCallback(() => {
-        if (!tokenData) return;
+        if (!writeAsync) return;
         const create = async () => {
             setLoading(true);
             try {
-                assertRequiredOraclesData(oraclesData);
-                // TODO: implement the actual deployment
-                const descriptionCid = await uploadToDecentralizeStorage(
-                    JSON.stringify(specificationData)
-                );
-                encodeKPITokenData(
-                    descriptionCid,
-                    specificationData,
-                    collateralsData,
-                    tokenData,
-                    oracleTemplatesData,
-                    outcomesData,
-                    oraclesData
-                );
-                oraclesData.reduce(
-                    (accumulator, { initializationBundle }) =>
-                        accumulator.add(initializationBundle.value),
-                    BigNumber.from("0")
-                );
+                const tx = await writeAsync();
+                await tx.wait();
                 onNext();
             } catch (error) {
-                console.warn("error while creating", error);
+                console.warn("could not create kpi token", error);
             } finally {
                 setLoading(false);
             }
         };
         void create();
-    }, [
-        collateralsData,
-        onNext,
-        oracleTemplatesData,
-        oraclesData,
-        outcomesData,
-        specificationData,
-        tokenData,
-        uploadToDecentralizeStorage,
-    ]);
+    }, [onNext, writeAsync]);
 
     return (
         <div className="flex flex-col gap-6">
@@ -144,7 +207,7 @@ export const Deploy = ({
                         {t("info.approve")}
                     </Typography>
                 </div>
-                <CollateralApproval
+                <ApproveCollateralsButton
                     t={t}
                     toApprove={toApprove}
                     spender={targetAddress}
@@ -155,8 +218,8 @@ export const Deploy = ({
                 <Button
                     size="small"
                     onClick={handleCreate}
-                    disabled={toApprove.length > 0}
-                    loading={loading}
+                    disabled={!writeAsync}
+                    loading={loading || loadingTxConfig}
                 >
                     {t("label.create")}
                 </Button>
