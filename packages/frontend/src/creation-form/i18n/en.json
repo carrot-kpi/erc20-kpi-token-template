@@ -50,7 +50,7 @@
     "label.lower.bound": "Lower bound:",
     "label.higher.bound": "Higher bound:",
     "label.binary": "Binary:",
-    "oracles.picker.label": "Select your Oracle Templates",
+    "oracles.picker.label": "Select your oracle template",
     "oracles.picker.template.title": "Title",
     "oracles.picker.template.version": "Version",
     "oracles.picker.template.id": "Id",
