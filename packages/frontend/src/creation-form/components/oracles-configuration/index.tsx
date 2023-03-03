@@ -73,7 +73,6 @@ export const OraclesConfiguration = ({
             initializationBundleGetter?: OracleInitializationBundleGetter
         ) => {
             setData((prevData) => {
-                console.log({ initializationBundleGetter });
                 return {
                     ...prevData,
                     [templateId]: {
