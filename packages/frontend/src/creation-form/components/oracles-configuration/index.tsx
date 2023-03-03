@@ -1,8 +1,7 @@
-import { BigNumber } from "ethers";
 import { ReactElement, useCallback, useEffect, useState } from "react";
 import {
-    OracleCreationForm,
     NamespacedTranslateFunction,
+    OracleInitializationBundleGetter,
 } from "@carrot-kpi/react";
 import {
     Accordion,
@@ -15,15 +14,32 @@ import { i18n } from "i18next";
 import { OracleData } from "../../types";
 import { Template } from "@carrot-kpi/sdk";
 import { Loader } from "../../../ui/loader";
+import { OracleCreationFormWrapper } from "./oracle-creation-form-wrapper";
 
-type OracleDataMap = { [id: number]: OracleData };
+type AugmentedOracleData = OracleData & {
+    initializationBundleGetter?: OracleInitializationBundleGetter;
+};
+
+type AugmentedOracleDataMap = {
+    [id: number]: AugmentedOracleData;
+};
+
+type Assert = (
+    data: AugmentedOracleDataMap
+) => asserts data is { [id: number]: Required<AugmentedOracleData> };
+const assertInitializationBundleGetterPresent: Assert = (
+    data: AugmentedOracleDataMap
+) => {
+    if (Object.values(data).some((item) => !item.initializationBundleGetter))
+        throw new Error();
+};
 
 interface OraclesConfigurationProps {
     t: NamespacedTranslateFunction;
     i18n: i18n;
     templates: Template[];
     oraclesData: OracleData[];
-    onNext: (data: OracleData[]) => void;
+    onNext: (oraclesData: OracleData[]) => void;
 }
 
 export const OraclesConfiguration = ({
@@ -34,7 +50,7 @@ export const OraclesConfiguration = ({
     onNext,
 }: OraclesConfigurationProps): ReactElement => {
     const [data, setData] = useState(
-        oraclesData.reduce((accumulator: OracleDataMap, data, i) => {
+        oraclesData.reduce((accumulator: AugmentedOracleDataMap, data, i) => {
             accumulator[templates[i].id] = data;
             return accumulator;
         }, {})
@@ -42,28 +58,66 @@ export const OraclesConfiguration = ({
     const [disabled, setDisabled] = useState(true);
 
     useEffect(() => {
-        setDisabled(Object.keys(data).length !== templates.length);
-    }, [data, templates.length]);
+        try {
+            assertInitializationBundleGetterPresent(data);
+            setDisabled(false);
+        } catch (error) {
+            setDisabled(true);
+        }
+    }, [data]);
 
-    const handleDone = useCallback(
-        (id: number) => (initializationData: string, value: BigNumber) => {
-            setData({ ...data, [id]: { data: initializationData, value } });
+    const handleChange = useCallback(
+        (
+            templateId: number,
+            state: Partial<unknown>,
+            initializationBundleGetter?: OracleInitializationBundleGetter
+        ) => {
+            setData((prevData) => {
+                return {
+                    ...prevData,
+                    [templateId]: {
+                        ...prevData[templateId],
+                        state,
+                        initializationBundleGetter,
+                    },
+                };
+            });
         },
-        [data]
+        []
     );
 
     const handleNext = useCallback(() => {
-        onNext(Object.values(data));
+        const perform = async () => {
+            try {
+                assertInitializationBundleGetterPresent(data);
+                onNext(
+                    await Promise.all(
+                        Object.values(data).map(async (item) => {
+                            const initializationBundle =
+                                await item.initializationBundleGetter();
+                            return {
+                                ...item,
+                                initializationBundle,
+                            };
+                        })
+                    )
+                );
+            } catch (error) {
+                console.warn("could not get initialization data", error);
+            }
+        };
+        void perform();
     }, [data, onNext]);
 
     return (
         <div className="flex flex-col gap-6">
             {templates.length === 1 ? (
-                <OracleCreationForm
+                <OracleCreationFormWrapper
                     i18n={i18n}
                     fallback={<Loader />}
                     template={templates[0]}
-                    onDone={handleDone(templates[0].id)}
+                    state={data[templates[0].id]?.state || {}}
+                    onChange={handleChange}
                 />
             ) : (
                 templates.map((template) => (
@@ -74,11 +128,12 @@ export const OraclesConfiguration = ({
                             </Typography>
                         </AccordionSummary>
                         <AccordionDetails>
-                            <OracleCreationForm
+                            <OracleCreationFormWrapper
                                 i18n={i18n}
                                 fallback={<Loader />}
                                 template={template}
-                                onDone={handleDone(template.id)}
+                                state={data[template.id]?.state || {}}
+                                onChange={handleChange}
                             />
                         </AccordionDetails>
                     </Accordion>
