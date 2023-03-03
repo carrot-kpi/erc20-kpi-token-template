@@ -9,19 +9,19 @@ import {
 } from "wagmi";
 import { CollateralData } from "../../types";
 
-interface CollateralApprovalProps {
+interface ApproveCollateralsButtonProps {
     t: NamespacedTranslateFunction;
     toApprove: CollateralData[];
     spender: Address;
     onApproved: () => void;
 }
 
-export const CollateralApproval = ({
+export const ApproveCollateralsButton = ({
     t,
     toApprove,
     spender,
     onApproved,
-}: CollateralApprovalProps): ReactElement => {
+}: ApproveCollateralsButtonProps): ReactElement => {
     const [approving, setApproving] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
 
