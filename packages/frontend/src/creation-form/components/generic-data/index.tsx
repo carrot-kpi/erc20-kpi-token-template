@@ -244,38 +244,36 @@ export const GenericData = ({
                     inputWrapper: "w-full",
                 }}
             />
-            <div className="flex w-full gap-4">
-                <TagsInput
-                    id="tags"
-                    label={t("general.label.tags")}
-                    placeholder={t("general.placeholder.tags")}
-                    onChange={handleTagsChange}
-                    value={tags}
-                    error={!!tagsErrorText}
-                    helperText={tagsErrorText}
-                    messages={{ add: t("add") }}
-                    className={{
-                        root: "w-full",
-                        input: "w-full",
-                        inputWrapper: "w-full",
-                    }}
-                />
-                <DateTimeInput
-                    id="expiration"
-                    label={t("general.label.expiration")}
-                    placeholder={t("general.placeholder.expiration")}
-                    onChange={handleExpirationChange}
-                    value={expiration}
-                    error={!!expirationErrorText}
-                    helperText={expirationErrorText}
-                    min={new Date()}
-                    className={{
-                        root: "w-full",
-                        input: "w-full",
-                        inputWrapper: "w-full",
-                    }}
-                />
-            </div>
+            <TagsInput
+                id="tags"
+                label={t("general.label.tags")}
+                placeholder={t("general.placeholder.tags")}
+                onChange={handleTagsChange}
+                value={tags}
+                error={!!tagsErrorText}
+                helperText={tagsErrorText}
+                messages={{ add: t("add") }}
+                className={{
+                    root: "w-full",
+                    input: "w-full",
+                    inputWrapper: "w-full",
+                }}
+            />
+            <DateTimeInput
+                id="expiration"
+                label={t("general.label.expiration")}
+                placeholder={t("general.placeholder.expiration")}
+                onChange={handleExpirationChange}
+                value={expiration}
+                error={!!expirationErrorText}
+                helperText={expirationErrorText}
+                min={new Date()}
+                className={{
+                    root: "w-full",
+                    input: "w-full",
+                    inputWrapper: "w-full",
+                }}
+            />
             <div className="flex w-full gap-4">
                 <TextInput
                     id="token-name"
