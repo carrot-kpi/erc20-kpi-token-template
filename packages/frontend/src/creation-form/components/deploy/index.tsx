@@ -8,19 +8,21 @@ import {
     SpecificationData,
     TokenData,
 } from "../../types";
-import { BigNumber, constants, utils } from "ethers";
+import { BigNumber, constants } from "ethers";
 import { Button, Typography } from "@carrot-kpi/ui";
 import {
     NamespacedTranslateFunction,
     useDecentralizedStorageUploader,
 } from "@carrot-kpi/react";
-import CREATION_PROXY_ABI from "../../../abis/creation-proxy.json";
 import { Template } from "@carrot-kpi/sdk";
-import { unixTimestamp } from "../../../utils/dates";
 import { CollateralsTable } from "../collaterals/table";
 import { ReactComponent as Info } from "../../../assets/info.svg";
+import { encodeKPITokenData } from "../../utils/data-encoding";
 
-const CREATION_PROXY_INTERFACE = new utils.Interface(CREATION_PROXY_ABI);
+type Assert = (data: OracleData[]) => asserts data is Required<OracleData>[];
+const assertRequiredOraclesData: Assert = (data) => {
+    for (const item of data) if (!item.initializationBundle) throw new Error();
+};
 
 interface DeployProps {
     t: NamespacedTranslateFunction;
@@ -31,7 +33,7 @@ interface DeployProps {
     oracleTemplatesData: Template[];
     outcomesData: OutcomeData[];
     oraclesData: OracleData[];
-    onNext: (data: string, value: BigNumber) => void;
+    onNext: () => void;
 }
 
 export const Deploy = ({
@@ -83,65 +85,36 @@ export const Deploy = ({
 
     const handleCreate = useCallback(() => {
         if (!tokenData) return;
-        const uploadToIpfsAndDone = async () => {
+        const create = async () => {
             setLoading(true);
-            let cid;
             try {
-                cid = await uploadToDecentralizeStorage(
+                assertRequiredOraclesData(oraclesData);
+                // TODO: implement the actual deployment
+                const descriptionCid = await uploadToDecentralizeStorage(
                     JSON.stringify(specificationData)
                 );
+                encodeKPITokenData(
+                    descriptionCid,
+                    specificationData,
+                    collateralsData,
+                    tokenData,
+                    oracleTemplatesData,
+                    outcomesData,
+                    oraclesData
+                );
+                oraclesData.reduce(
+                    (accumulator, { initializationBundle }) =>
+                        accumulator.add(initializationBundle.value),
+                    BigNumber.from("0")
+                );
+                onNext();
+            } catch (error) {
+                console.warn("error while creating", error);
             } finally {
                 setLoading(false);
             }
-            onNext(
-                CREATION_PROXY_INTERFACE.encodeFunctionData(
-                    "createERC20KPIToken",
-                    [
-                        cid,
-                        unixTimestamp(specificationData.expiration),
-                        collateralsData.map((collateral) => ({
-                            token: collateral.amount.currency.address,
-                            amount: collateral.amount.raw,
-                            minimumPayout: collateral.minimumPayout.raw,
-                        })),
-                        tokenData.name,
-                        tokenData.symbol,
-                        tokenData.supply,
-                        utils.defaultAbiCoder.encode(
-                            [
-                                "tuple(uint256 templateId,uint256 lowerBound,uint256 higherBound,uint256 weight,uint256 value,bytes data)[]",
-                                "bool",
-                            ],
-                            [
-                                oracleTemplatesData.map(
-                                    ({ id: templateId }, index) => {
-                                        const { lowerBound, higherBound } =
-                                            outcomesData[index];
-                                        const { value, data } =
-                                            oraclesData[index];
-                                        return {
-                                            templateId,
-                                            lowerBound,
-                                            higherBound,
-                                            // TODO: dynamic weight
-                                            weight: BigNumber.from("1"),
-                                            value,
-                                            data,
-                                        };
-                                    }
-                                ),
-                                false,
-                            ]
-                        ),
-                    ]
-                ),
-                oraclesData.reduce(
-                    (accumulator, { value }) => accumulator.add(value),
-                    BigNumber.from("0")
-                )
-            );
         };
-        void uploadToIpfsAndDone();
+        void create();
     }, [
         collateralsData,
         onNext,

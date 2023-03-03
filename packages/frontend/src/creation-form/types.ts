@@ -1,4 +1,5 @@
 import { Amount, KPITokenSpecification, Token } from "@carrot-kpi/sdk";
+import { OracleInitializationBundle } from "@carrot-kpi/react";
 import { BigNumber } from "ethers";
 
 export type SpecificationData = Omit<KPITokenSpecification, "ipfsHash"> & {
@@ -38,8 +39,8 @@ export interface TokenData {
 }
 
 export interface OracleData {
-    data: string;
-    value: BigNumber;
+    state: Partial<unknown>;
+    initializationBundle?: OracleInitializationBundle;
 }
 
 export interface OutcomeData {

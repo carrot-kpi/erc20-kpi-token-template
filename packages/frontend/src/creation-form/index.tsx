@@ -1,9 +1,9 @@
 import "../global.css";
 
 import { MultiStepCards, StepCard, Stepper } from "@carrot-kpi/ui";
-import { NamespacedTranslateFunction } from "@carrot-kpi/react";
+import { KPITokenCreationFormProps } from "@carrot-kpi/react";
 import { ChainId, Template } from "@carrot-kpi/sdk";
-import { BigNumber, constants } from "ethers";
+import { constants } from "ethers";
 import { ReactElement, useCallback, useMemo, useState } from "react";
 import { OraclesPicker } from "./components/oracles-picker";
 import {
@@ -13,28 +13,21 @@ import {
     SpecificationData,
     TokenData as TokenDataType,
 } from "./types";
-import { Address, useNetwork } from "wagmi";
+import { useNetwork } from "wagmi";
 import { GenericData } from "./components/generic-data";
 import { Collaterals } from "./components/collaterals";
-import { i18n } from "i18next";
 import { OraclesConfiguration } from "./components/oracles-configuration";
 import { OutcomesConfiguration } from "./components/outcomes-configuration";
 import { Deploy } from "./components/deploy";
 import { CREATION_PROXY_ADDRESS } from "./constants";
-
-interface CreationFormProps {
-    i18n: i18n;
-    t: NamespacedTranslateFunction;
-    onDone: (to: Address, data: string, value: BigNumber) => void;
-}
 
 // TODO: add a check that displays an error message if the creation
 // proxy address is 0 for more than x time
 export const Component = ({
     i18n,
     t,
-    onDone,
-}: CreationFormProps): ReactElement => {
+    onCreate,
+}: KPITokenCreationFormProps): ReactElement => {
     const { chain } = useNetwork();
     const creationProxyAddress = useMemo(() => {
         if (__DEV__) return CCT_CREATION_PROXY_ADDRESS;
@@ -118,13 +111,10 @@ export const Component = ({
         [mostUpdatedStep]
     );
 
-    const handleDeployNext = useCallback(
-        (data: string, value: BigNumber) => {
-            onDone(creationProxyAddress, data, value);
-            console.log("done");
-        },
-        [creationProxyAddress, onDone]
-    );
+    const handleDeployNext = useCallback(() => {
+        onCreate();
+        // TODO: implement success step transition
+    }, [onCreate]);
 
     return (
         <div className="relative h-full w-full bg-green scrollbar overflow-y-auto px-4 pt-10">
