@@ -58,13 +58,9 @@ export const OraclesPicker = ({
                                     className="flex flex-col items-center gap-3 p-2"
                                 >
                                     <OracleTemplate
+                                        t={t}
                                         key={template.id}
-                                        name={template.specification.name}
-                                        description={
-                                            template.specification.description
-                                        }
-                                        version={template.version}
-                                        address={template.address}
+                                        template={template}
                                     />
                                     <Checkbox
                                         id={template.id.toString()}
