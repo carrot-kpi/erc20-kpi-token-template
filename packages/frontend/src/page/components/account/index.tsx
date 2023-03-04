@@ -1,28 +1,28 @@
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
+import { KPIToken } from "@carrot-kpi/sdk";
 import { Skeleton, Typography } from "@carrot-kpi/ui";
 import { commify, formatUnits } from "ethers/lib/utils.js";
 import { ReactElement } from "react";
 import { Address, useAccount, useBalance } from "wagmi";
-import { CollateralData } from "../../../creation-form/types";
 import { Loader } from "../../../ui/loader";
-import { KpiTokenData } from "../../types";
-import { CollateralRow } from "../collateral-row";
 
 interface AccountProps {
     t: NamespacedTranslateFunction;
-    kpiTokenData: Pick<KpiTokenData, "address" | "initialSupply" | "symbol">;
-    collaterals: CollateralData[];
+    loading?: boolean;
+    kpiToken: KPIToken;
+    erc20Symbol?: string;
 }
 
 export const Account = ({
     t,
-    kpiTokenData,
-    collaterals,
+    loading,
+    kpiToken,
+    erc20Symbol,
 }: AccountProps): ReactElement => {
     const { isConnected, address } = useAccount();
     const { data: kpiTokenBalance, isLoading } = useBalance({
         address,
-        token: kpiTokenData.address as Address,
+        token: kpiToken.address as Address,
     });
 
     return (
@@ -54,86 +54,18 @@ export const Account = ({
                                 uppercase
                                 className={{ root: "mb-2" }}
                             >
-                                {t("account.supply.label")}
+                                {t("position.balance.label")}
                             </Typography>
-                            {kpiTokenData.initialSupply ? (
-                                <Typography variant="md" weight="medium">
-                                    {`${commify(
-                                        formatUnits(
-                                            kpiTokenData.initialSupply,
-                                            18
-                                        )
-                                    )}
-                                    ${kpiTokenData.symbol}`}
-                                </Typography>
+                            {loading || !kpiTokenBalance || !erc20Symbol ? (
+                                <Skeleton width="60px" />
                             ) : (
-                                <Skeleton />
-                            )}
-                        </div>
-                        <div className="flex-col">
-                            <Typography
-                                variant="xs"
-                                uppercase
-                                className={{ root: "mb-2" }}
-                            >
-                                {t("account.balance.label")}
-                            </Typography>
-                            {kpiTokenBalance ? (
-                                <Typography variant="md" weight="medium">
+                                <Typography weight="medium">
                                     {`${commify(
                                         formatUnits(kpiTokenBalance.value, 18)
                                     )}
-                                    ${kpiTokenData.symbol}`}
+                                    ${erc20Symbol}`}
                                 </Typography>
-                            ) : (
-                                <Skeleton />
                             )}
-                        </div>
-                        <div className="flex-col">
-                            <Typography
-                                variant="xs"
-                                uppercase
-                                className={{ root: "mb-2" }}
-                            >
-                                {t("account.totalRewards.label")}
-                            </Typography>
-                            <div className="flex flex-col gap-2">
-                                {collaterals.map((collateral) => {
-                                    return (
-                                        <CollateralRow
-                                            key={
-                                                collateral.amount.currency
-                                                    .address
-                                            }
-                                            collateral={collateral}
-                                            display={"amount"}
-                                        />
-                                    );
-                                })}
-                            </div>
-                        </div>
-                        <div className="flex-col">
-                            <Typography
-                                variant="xs"
-                                uppercase
-                                className={{ root: "mb-2" }}
-                            >
-                                {t("account.remaninng.label")}
-                            </Typography>
-                            <div className="flex flex-col gap-2">
-                                {collaterals.map((collateral) => {
-                                    return (
-                                        <CollateralRow
-                                            key={
-                                                collateral.amount.currency
-                                                    .address
-                                            }
-                                            collateral={collateral}
-                                            display={"amount"}
-                                        />
-                                    );
-                                })}
-                            </div>
                         </div>
                     </div>
                 </>
