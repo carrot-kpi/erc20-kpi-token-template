@@ -82,8 +82,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(0);
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].amount, 0 ether);
@@ -128,8 +128,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(0);
 
-        (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainOracles,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainOracles,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertTrue(kpiTokenInstance.finalized());
         assertEq(onChainCollaterals.length, 1);
@@ -150,8 +150,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(kpiTokenInstance.oracles()[1]);
         kpiTokenInstance.finalize(0);
 
-        (onChainCollaterals, onChainOracles,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (onChainCollaterals, onChainOracles,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertTrue(kpiTokenInstance.finalized());
         assertEq(onChainCollaterals.length, 1);
@@ -193,8 +193,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(100 ether);
 
-        (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainOracles,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainOracles,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertTrue(!kpiTokenInstance.finalized());
         assertEq(onChainCollaterals.length, 1);
@@ -215,8 +215,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(kpiTokenInstance.oracles()[1]);
         kpiTokenInstance.finalize(0);
 
-        (onChainCollaterals, onChainOracles,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (onChainCollaterals, onChainOracles,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertTrue(kpiTokenInstance.finalized());
         assertEq(onChainCollaterals.length, 1);
@@ -294,8 +294,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(10);
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].amount, 0 ether);
@@ -379,8 +379,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(12);
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].amount, 109.67 ether);
@@ -423,8 +423,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(12);
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].amount, 109.67 ether);
@@ -468,8 +468,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(12);
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].amount, 109.67 ether);
@@ -514,8 +514,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(12);
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].amount, 109.67 ether);
@@ -575,8 +575,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(12);
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 2);
         assertEq(onChainCollaterals[0].amount, 109.67 ether);
@@ -627,8 +627,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(12);
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].amount, 109.67 ether);
@@ -671,8 +671,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(11);
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].amount, 7.311333333333333334 ether);
@@ -684,8 +684,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(holder);
         kpiTokenInstance.redeemCollateral(address(firstErc20), holder);
 
-        (onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].amount, 7.238220000000000001 ether);
@@ -724,8 +724,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(11);
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].amount, 7.311333333333333334 ether);
@@ -815,8 +815,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(0);
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].amount, 0 ether);
@@ -915,8 +915,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(10);
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].amount, 0 ether);
@@ -1022,8 +1022,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(100);
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].amount, 109.67 ether);
@@ -1078,8 +1078,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(100);
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].amount, 109.67 ether);
@@ -1141,8 +1141,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(100);
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].amount, 109.67 ether);
@@ -1188,8 +1188,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(11);
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].amount, 36.556666666666666667 ether);
@@ -1245,8 +1245,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(11);
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].amount, 36.556666666666666667 ether);
@@ -1357,8 +1357,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(11);
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].amount, 36.556666666666666667 ether);
@@ -1423,8 +1423,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(11);
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].amount, 36.556666666666666667 ether);

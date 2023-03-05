@@ -388,10 +388,8 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
             Collateral[] memory onChainCollaterals,
             FinalizableOracle[] memory onChainFinalizableOracles,
             bool onChainAndRelationship,
-            uint256 onChainInitialSupply,
-            string memory onChainName,
-            string memory onChainSymbol
-        ) = abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+            uint256 onChainInitialSupply
+        ) = abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].token, address(firstErc20));
@@ -403,8 +401,6 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
         assertEq(kpiTokenInstance.owner(), address(this));
         assertEq(kpiTokenInstance.description(), "a");
         assertTrue(!onChainAndRelationship);
-        assertEq(onChainName, "Token");
-        assertEq(onChainSymbol, "TKN");
     }
 
     function testInitializationSuccess() external {

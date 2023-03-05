@@ -652,7 +652,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
                 minimumPayout: _collateral.minimumPayout
             });
         }
-        return abi.encode(_collaterals, _finalizableOracles, allOrNone);
+        return abi.encode(_collaterals, _finalizableOracles, allOrNone, initialSupply);
     }
 
     /// @dev View function returning info about the template used to instantiate this KPI token.

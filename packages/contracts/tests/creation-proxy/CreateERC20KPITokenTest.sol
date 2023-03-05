@@ -58,10 +58,8 @@ contract CreationProxyCreateERC20KPITokenTest is BaseTestSetup {
             Collateral[] memory _onchainCollaterals,
             FinalizableOracle[] memory _finalizableOracles,
             bool _allOrNone,
-            uint256 _initialSupply,
-            string memory _name,
-            string memory _symbol
-        ) = abi.decode(_kpiToken.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+            uint256 _initialSupply
+        ) = abi.decode(_kpiToken.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(_onchainCollaterals.length, 1);
         assertEq(_onchainCollaterals[0].token, _collaterals[0].token);
@@ -77,8 +75,6 @@ contract CreationProxyCreateERC20KPITokenTest is BaseTestSetup {
 
         assertEq(_allOrNone, false);
         assertEq(_initialSupply, _erc20Supply);
-        assertEq(_name, _erc20Name);
-        assertEq(_symbol, _erc20Symbol);
 
         assertEq(_kpiToken.oracles().length, 1);
     }

@@ -64,8 +64,8 @@ contract ERC20KPITokenBaseFinalizeTest is BaseTestSetup {
         assertTrue(kpiTokenInstance.finalized());
         assertEq(firstErc20.balanceOf(address(this)), 0);
 
-        (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].token, _collaterals[0].token);
@@ -79,8 +79,8 @@ contract ERC20KPITokenBaseFinalizeTest is BaseTestSetup {
         vm.prank(kpiTokenInstance.oracles()[1]);
         kpiTokenInstance.finalize(0);
 
-        (onChainCollaterals, onChainFinalizableOracles,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (onChainCollaterals, onChainFinalizableOracles,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].token, _collaterals[0].token);

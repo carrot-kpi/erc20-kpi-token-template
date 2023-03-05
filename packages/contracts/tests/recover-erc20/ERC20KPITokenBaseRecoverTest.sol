@@ -27,8 +27,8 @@ contract ERC20KPITokenBaseRecoverTest is BaseTestSetup {
     function testNothingToRecoverCollateral() external {
         IERC20KPIToken kpiTokenInstance = createKpiToken("a");
 
-        (Collateral[] memory _collaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory _collaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         vm.expectRevert(abi.encodeWithSignature("NothingToRecover()"));
         kpiTokenInstance.recoverERC20(_collaterals[0].token, address(1));
