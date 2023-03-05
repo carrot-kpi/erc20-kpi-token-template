@@ -1,4 +1,4 @@
-import { KPIToken } from "@carrot-kpi/sdk";
+import { Amount, KPIToken, Token } from "@carrot-kpi/sdk";
 import { Button, Typography } from "@carrot-kpi/ui";
 import { ReactElement, useEffect, useState } from "react";
 import {
@@ -17,6 +17,7 @@ import { CampaignCard } from "./components/campaign-card";
 import { WalletPosition } from "./components/wallet-position";
 import { ExpandableContent } from "../ui/expandable-content";
 import { decodeKPITokenData } from "../utils/data-decoding";
+import { FinalizableOracle } from "./types";
 
 interface PageProps {
     i18n: i18n;
@@ -37,7 +38,11 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
 
     const [decodingKPITokenData, setDecodingKPITokenData] = useState(false);
     const [collaterals, setCollaterals] = useState<CollateralData[]>([]);
+    const [oracles, setOracles] = useState<FinalizableOracle[]>([]);
     const [allOrNone, setAllOrNone] = useState(false);
+    const [initialSupply, setInitialSupply] = useState<Amount<Token> | null>(
+        null
+    );
     const [openInExplorerHref, setOpenInExplorerHref] = useState("");
 
     useEffect(() => {
@@ -53,15 +58,32 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
             } finally {
                 if (!cancelled) setDecodingKPITokenData(false);
             }
-            if (!decoded || cancelled) return;
-            setCollaterals(decoded.collaterals);
-            setAllOrNone(decoded.allOrNone);
+            if (!decoded) return;
+            if (!cancelled) setCollaterals(decoded.collaterals);
+            if (!cancelled) setOracles(decoded.finalizableOracles);
+            if (!cancelled) setAllOrNone(decoded.allOrNone);
+            if (!tokenData?.symbol || !tokenData.name) return;
+            const erc20KPIToken = new Token(
+                kpiToken.chainId,
+                kpiToken.address,
+                18,
+                tokenData.symbol,
+                tokenData.name
+            );
+            setInitialSupply(new Amount(erc20KPIToken, decoded.initialSupply));
         };
         void fetchData();
         return () => {
             cancelled = true;
         };
-    }, [data, provider]);
+    }, [
+        data,
+        kpiToken.address,
+        kpiToken.chainId,
+        provider,
+        tokenData?.name,
+        tokenData?.symbol,
+    ]);
 
     useEffect(() => {
         if (!chain || !chain.blockExplorers) return;
@@ -79,7 +101,6 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                 >
                     {kpiToken.specification.title}
                 </Typography>
-                {/* TODO: enable when functionality is clear */}
                 <div className="flex gap-6">
                     <Button
                         size="xsmall"
@@ -92,15 +113,6 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                     >
                         {t("open.explorer")}
                     </Button>
-                    {/* <Button
-                        size="small"
-                        iconPlacement="left"
-                        icon={ReportIcon}
-                        variant="primary"
-                        onClick={() => console.log("report")}
-                    >
-                        {t("report")}
-                    </Button> */}
                 </div>
                 <CampaignCard
                     t={t}
@@ -124,7 +136,11 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                             t={t}
                             loading={loadingERC20Data || decodingKPITokenData}
                             kpiToken={kpiToken}
+                            collaterals={collaterals}
+                            oracles={oracles}
                             erc20Symbol={tokenData?.symbol}
+                            erc20Name={tokenData?.name}
+                            initialSupply={initialSupply}
                         />
                     </div>
                     <div className="flex flex-col gap-6 md:gap-8 max-w-6xl">
@@ -160,12 +176,6 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                             })
                         )}
                     </div>
-                    {/* TODO: implement widgets */}
-                    {/* <div className="flex flex-col gap-6 md:gap-8 max-w-6xl">
-                        <Typography variant="h2">
-                            {t("widgets.title")}
-                        </Typography>
-                    </div> */}
                 </div>
             </div>
         </div>

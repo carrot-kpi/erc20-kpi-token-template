@@ -3,19 +3,7 @@ import { Provider } from "@wagmi/core";
 import { BigNumber } from "ethers";
 import { defaultAbiCoder } from "ethers/lib/utils.js";
 import { CollateralData } from "../creation-form/types";
-
-interface FinalizableOracle {
-    address: string;
-    lowerBound: BigNumber;
-    higherBound: BigNumber;
-    finalResult: BigNumber;
-    weight: BigNumber;
-    finalized: boolean;
-}
-
-interface OnChainFinalizableOracle extends Omit<FinalizableOracle, "address"> {
-    addrezz: string;
-}
+import { FinalizableOracle } from "../page/types";
 
 interface OnChainCollateral {
     token: string;
@@ -43,12 +31,7 @@ export const decodeKPITokenData = async (
                 "uint256",
             ],
             data
-        ) as [
-            OnChainCollateral[],
-            OnChainFinalizableOracle[],
-            boolean,
-            BigNumber
-        ];
+        ) as [OnChainCollateral[], FinalizableOracle[], boolean, BigNumber];
 
     const erc20Tokens = await Fetcher.fetchERC20Tokens({
         provider,
@@ -69,9 +52,7 @@ export const decodeKPITokenData = async (
         : {
               collaterals: collaterals as CollateralData[],
               allOrNone,
-              finalizableOracles: finalizableOracles.map((oracle) => {
-                  return { ...oracle, address: oracle.addrezz };
-              }),
+              finalizableOracles,
               initialSupply,
           };
 };
