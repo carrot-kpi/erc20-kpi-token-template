@@ -116,5 +116,5 @@ doing that, you can finally execute the following command to initiate the
 deployment:
 
 ```
-forge script --broadcast --slow --private-key $PRIVATE_KEY --fork-url $RPC_ENDPOINT --sig 'run(address,address,uint256)' ./scripts/DeployCreationProxy.sol $FACTORY_ADDRESS $KPI_TOKENS_MANAGER_ADDRESS $TEMPLATE_ID
+forge script --ffi --broadcast --slow --private-key $PRIVATE_KEY --fork-url $RPC_ENDPOINT --sig 'run(address,address,uint256)' ./scripts/DeployCreationProxy.sol $FACTORY_ADDRESS $KPI_TOKENS_MANAGER_ADDRESS $TEMPLATE_ID
 ```
