@@ -3,36 +3,52 @@ import { Provider } from "@wagmi/core";
 import { BigNumber } from "ethers";
 import { defaultAbiCoder } from "ethers/lib/utils.js";
 import { CollateralData } from "../creation-form/types";
-import { FinalizableOracle } from "../page/types";
+
+interface FinalizableOracle {
+    address: string;
+    lowerBound: BigNumber;
+    higherBound: BigNumber;
+    finalResult: BigNumber;
+    weight: BigNumber;
+    finalized: boolean;
+}
+
+interface OnChainFinalizableOracle extends Omit<FinalizableOracle, "address"> {
+    addrezz: string;
+}
+
+interface OnChainCollateral {
+    token: string;
+    amount: BigNumber;
+    minimumPayout: BigNumber;
+}
 
 interface DecodedData {
     collaterals: CollateralData[];
+    finalizableOracles: FinalizableOracle[];
     allOrNone: boolean;
+    initialSupply: BigNumber;
 }
 
 export const decodeKPITokenData = async (
     provider: Provider,
     data: string
 ): Promise<DecodedData | null> => {
-    // FIXME: handle finalizable oracles
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [rawCollaterals, _, allOrNone] = defaultAbiCoder.decode(
-        [
-            "tuple(address token,uint256 amount,uint256 minimumPayout)[]",
-            "tuple(address addrezz,uint256 lowerBound,uint256 higherBound,uint256 finalResult,uint256 weight,bool finalized)[]",
-            "bool",
-        ],
-        data
-    ) as [
-        {
-            token: string;
-            amount: BigNumber;
-            minimumPayout: BigNumber;
-        }[],
-        FinalizableOracle[],
-        boolean
-    ];
+    const [rawCollaterals, finalizableOracles, allOrNone, initialSupply] =
+        defaultAbiCoder.decode(
+            [
+                "tuple(address token,uint256 amount,uint256 minimumPayout)[]",
+                "tuple(address addrezz,uint256 lowerBound,uint256 higherBound,uint256 finalResult,uint256 weight,bool finalized)[]",
+                "bool",
+                "uint256",
+            ],
+            data
+        ) as [
+            OnChainCollateral[],
+            OnChainFinalizableOracle[],
+            boolean,
+            BigNumber
+        ];
 
     const erc20Tokens = await Fetcher.fetchERC20Tokens({
         provider,
@@ -53,5 +69,9 @@ export const decodeKPITokenData = async (
         : {
               collaterals: collaterals as CollateralData[],
               allOrNone,
+              finalizableOracles: finalizableOracles.map((oracle) => {
+                  return { ...oracle, address: oracle.addrezz };
+              }),
+              initialSupply,
           };
 };

@@ -14,7 +14,7 @@ import { Address, useNetwork, useProvider, useToken } from "wagmi";
 import { ReactComponent as External } from "../assets/external.svg";
 import { Loader } from "../ui/loader";
 import { CampaignCard } from "./components/campaign-card";
-import { Account } from "./components/account";
+import { WalletPosition } from "./components/wallet-position";
 import { ExpandableContent } from "../ui/expandable-content";
 import { decodeKPITokenData } from "../utils/data-decoding";
 
@@ -53,7 +53,7 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
             } finally {
                 if (!cancelled) setDecodingKPITokenData(false);
             }
-            if (!decoded) return;
+            if (!decoded || cancelled) return;
             setCollaterals(decoded.collaterals);
             setAllOrNone(decoded.allOrNone);
         };
@@ -108,9 +108,10 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                     kpiToken={kpiToken}
                     collaterals={collaterals}
                     allOrNone={allOrNone}
+                    initialSupply={tokenData?.totalSupply.value}
                     erc20Name={tokenData?.name}
                     erc20Symbol={tokenData?.symbol}
-                    erc20TotalSupply={tokenData?.totalSupply.value}
+                    erc20Supply={tokenData?.totalSupply.value}
                 />
             </div>
             <div className="bg-white dark:bg-black">
@@ -119,7 +120,7 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                         <Typography variant="h2">
                             {t("position.title")}
                         </Typography>
-                        <Account
+                        <WalletPosition
                             t={t}
                             loading={loadingERC20Data || decodingKPITokenData}
                             kpiToken={kpiToken}

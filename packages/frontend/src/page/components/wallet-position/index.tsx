@@ -6,19 +6,19 @@ import { ReactElement } from "react";
 import { Address, useAccount, useBalance } from "wagmi";
 import { Loader } from "../../../ui/loader";
 
-interface AccountProps {
+interface WalletPositionProps {
     t: NamespacedTranslateFunction;
     loading?: boolean;
     kpiToken: KPIToken;
     erc20Symbol?: string;
 }
 
-export const Account = ({
+export const WalletPosition = ({
     t,
     loading,
     kpiToken,
     erc20Symbol,
-}: AccountProps): ReactElement => {
+}: WalletPositionProps): ReactElement => {
     const { isConnected, address } = useAccount();
     const { data: kpiTokenBalance, isLoading } = useBalance({
         address,
