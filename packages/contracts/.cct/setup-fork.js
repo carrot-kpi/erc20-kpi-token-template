@@ -1,6 +1,7 @@
 import { utils, ContractFactory } from "ethers";
 import { createRequire } from "module";
 import { fileURLToPath } from "url";
+import { execSync } from "child_process";
 
 const require = createRequire(fileURLToPath(import.meta.url));
 
@@ -25,21 +26,23 @@ export const setupFork = async (
     const templateContract = await templateFactory.deploy();
     await templateContract.deployed();
 
+    const chainId = await signer.getChainId();
+    execSync(
+        `node ./packages/contracts/codegen-chain-specific-contracts.js ${chainId} ${factory.address} ${kpiTokensManager.address} ${predictedTemplateId}`
+    );
+    execSync("yarn build:contracts");
+
     // deploy creation proxy
     const {
         abi: creationProxyAbi,
         bytecode: creationProxyBytecode,
-    } = require("../artifacts/CreationProxy.sol/CreationProxy.json");
+    } = require(`../artifacts/CreationProxy${chainId}.sol/CreationProxy.json`);
     const creationProxyFactory = new ContractFactory(
         creationProxyAbi,
         creationProxyBytecode,
         signer
     );
-    const creationProxy = await creationProxyFactory.deploy(
-        factory.address,
-        kpiTokensManager.address,
-        predictedTemplateId
-    );
+    const creationProxy = await creationProxyFactory.deploy();
     await creationProxy.deployed();
 
     // deploy test erc20 tokens
