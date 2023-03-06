@@ -1,7 +1,4 @@
-import {
-    NamespacedTranslateFunction,
-    useOracleTemplates,
-} from "@carrot-kpi/react";
+import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Template } from "@carrot-kpi/sdk";
 import { Typography, NextStepButton, Checkbox } from "@carrot-kpi/ui";
 import { ReactElement, useCallback, useEffect, useState } from "react";
@@ -12,17 +9,19 @@ type TemplateMap = { [id: number]: Template };
 
 interface OraclesPickerProps {
     t: NamespacedTranslateFunction;
+    loading?: boolean;
+    templates: Template[];
     oracleTemplatesData: Template[];
     onNext: (oracleTemplates: Template[]) => void;
 }
 
 export const OraclesPicker = ({
     t,
+    loading,
+    templates,
     oracleTemplatesData,
     onNext,
 }: OraclesPickerProps): ReactElement => {
-    const { loading, templates } = useOracleTemplates();
-
     const [pickedTemplates, setPickedTemplates] = useState(
         oracleTemplatesData.reduce((accumulator: TemplateMap, template) => {
             accumulator[template.id] = template;

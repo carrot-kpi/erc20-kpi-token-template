@@ -1,10 +1,13 @@
 import "../global.css";
 
-import { MultiStepCards, StepCard, Stepper } from "@carrot-kpi/ui";
-import { KPITokenCreationFormProps } from "@carrot-kpi/react";
+import { Loader, MultiStepCards, StepCard, Stepper } from "@carrot-kpi/ui";
+import {
+    KPITokenCreationFormProps,
+    useOracleTemplates,
+} from "@carrot-kpi/react";
 import { ChainId, Template } from "@carrot-kpi/sdk";
 import { constants } from "ethers";
-import { ReactElement, useCallback, useMemo, useState } from "react";
+import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
 import { OraclesPicker } from "./components/oracles-picker";
 import {
     CollateralData,
@@ -28,6 +31,8 @@ export const Component = ({
     t,
     onCreate,
 }: KPITokenCreationFormProps): ReactElement => {
+    const { loading, templates: oracleTemplates } = useOracleTemplates();
+
     const { chain } = useNetwork();
     const creationProxyAddress = useMemo(() => {
         if (__DEV__) return CCT_CREATION_PROXY_ADDRESS;
@@ -35,17 +40,24 @@ export const Component = ({
             ? CREATION_PROXY_ADDRESS[chain.id as ChainId]
             : constants.AddressZero;
     }, [chain]);
-    const stepTitles = useMemo(
-        () => [
-            t("card.general.title"),
-            t("card.collateral.title"),
-            t("card.oracle.pick.title"),
-            t("card.oracle.configuration.title"),
-            t("card.outcome.configuration.title"),
-            t("card.deploy.title"),
-        ],
-        [t]
-    );
+
+    const enableOraclePickStep = !loading && oracleTemplates.length > 1;
+    const stepTitles = enableOraclePickStep
+        ? [
+              t("card.general.title"),
+              t("card.collateral.title"),
+              t("card.oracle.pick.title"),
+              t("card.oracle.configuration.title"),
+              t("card.outcome.configuration.title"),
+              t("card.deploy.title"),
+          ]
+        : [
+              t("card.general.title"),
+              t("card.collateral.title"),
+              t("card.oracle.configuration.title"),
+              t("card.outcome.configuration.title"),
+              t("card.deploy.title"),
+          ];
 
     const [step, setStep] = useState(0);
     const [mostUpdatedStep, setMostUpdatedStep] = useState(0);
@@ -60,6 +72,11 @@ export const Component = ({
     );
     const [oraclesData, setOraclesData] = useState<OracleData[]>([]);
     const [outcomesData, setOutcomesData] = useState<OutcomeData[]>([]);
+
+    useEffect(() => {
+        if (oracleTemplates.length === 1 && oracleTemplatesData.length === 0)
+            setOracleTemplatesData([oracleTemplates[0]]);
+    }, [oracleTemplates, oracleTemplatesData.length]);
 
     const handleStepClick = useCallback((clickedStep: number) => {
         setStep(clickedStep);
@@ -116,6 +133,13 @@ export const Component = ({
         // TODO: implement success step transition
     }, [onCreate]);
 
+    if (loading) {
+        return (
+            <div className="bg-green py-10 text-black flex justify-center">
+                <Loader />
+            </div>
+        );
+    }
     return (
         <div className="relative h-full w-full bg-green scrollbar overflow-y-auto px-4 pt-10">
             <div className="absolute bg-grid-light top-0 left-0 w-full h-full" />
@@ -168,21 +192,25 @@ export const Component = ({
                             onNext={handleCollateralsNext}
                         />
                     </StepCard>
-                    <StepCard
-                        title={t("card.oracle.pick.title")}
-                        step={3}
-                        className={{ root: "relative pb-10" }}
-                        messages={{ step: t("step") }}
-                    >
-                        <OraclesPicker
-                            t={t}
-                            oracleTemplatesData={oracleTemplatesData}
-                            onNext={handleOraclesPickerNext}
-                        />
-                    </StepCard>
+                    {enableOraclePickStep && (
+                        <StepCard
+                            title={t("card.oracle.pick.title")}
+                            step={3}
+                            className={{ root: "relative pb-10" }}
+                            messages={{ step: t("step") }}
+                        >
+                            <OraclesPicker
+                                t={t}
+                                loading={loading}
+                                templates={oracleTemplates}
+                                oracleTemplatesData={oracleTemplatesData}
+                                onNext={handleOraclesPickerNext}
+                            />
+                        </StepCard>
+                    )}
                     <StepCard
                         title={t("card.oracle.configuration.title")}
-                        step={4}
+                        step={enableOraclePickStep ? 4 : 3}
                         className={{ root: "relative pb-10" }}
                         messages={{ step: t("step") }}
                     >
@@ -196,7 +224,7 @@ export const Component = ({
                     </StepCard>
                     <StepCard
                         title={t("card.outcome.configuration.title")}
-                        step={5}
+                        step={enableOraclePickStep ? 5 : 4}
                         className={{ root: "relative pb-10" }}
                         messages={{ step: t("step") }}
                     >
@@ -210,7 +238,7 @@ export const Component = ({
                     {!!specificationData && !!tokenData && (
                         <StepCard
                             title={t("card.deploy.title")}
-                            step={6}
+                            step={enableOraclePickStep ? 6 : 5}
                             className={{ root: "relative" }}
                             messages={{ step: t("step") }}
                         >
