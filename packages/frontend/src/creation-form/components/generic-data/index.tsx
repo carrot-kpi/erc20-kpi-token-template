@@ -68,6 +68,16 @@ export const GenericData = ({
     const [erc20SymbolErrorText, setERC20SymbolErrorText] = useState("");
     const [erc20SupplyErrorText, setERC20SupplyErrorText] = useState("");
     const [disabled, setDisabled] = useState(true);
+    const [minimumDate, setMinimumDate] = useState(new Date());
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setMinimumDate(new Date());
+        }, 1_000);
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
 
     useEffect(() => {
         setDisabled(
@@ -267,7 +277,7 @@ export const GenericData = ({
                 value={expiration}
                 error={!!expirationErrorText}
                 helperText={expirationErrorText}
-                min={new Date()}
+                min={minimumDate}
                 className={{
                     root: "w-full",
                     input: "w-full",
