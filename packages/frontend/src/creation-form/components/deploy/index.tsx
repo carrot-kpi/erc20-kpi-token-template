@@ -77,6 +77,7 @@ export const Deploy = ({
 
     const [toApprove, setToApprove] = useState<CollateralData[]>([]);
     const [approved, setApproved] = useState(false);
+    const [specificationCID, setSpecificationCID] = useState<string>("");
     const [creationArgs, setCreationArgs] = useState<unknown[]>([]);
     const [loading, setLoading] = useState(false);
 
@@ -85,6 +86,7 @@ export const Deploy = ({
         abi: CREATION_PROXY_ABI,
         functionName: "createERC20KPIToken",
         args: creationArgs,
+        enabled: creationArgs.length > 0,
     });
     const { writeAsync } = useContractWrite(config);
 
@@ -104,43 +106,22 @@ export const Deploy = ({
         setToApprove(newToApprove);
     }, [allowances, collateralsData]);
 
+    useLayoutEffect(() => {
+        setApproved(toApprove.length === 0);
+    }, [toApprove.length]);
+
     // once the collaterals are approved, this uploads the question spec
     // to ipfs and sets creation args
     useEffect(() => {
         if (!approved) return;
-
-        try {
-            assertRequiredOraclesData(oraclesData);
-        } catch (error) {
-            console.warn("not all required oracles data is present");
-            return;
-        }
-
         let cancelled = false;
-        const uploadAndSetCreationArgs = async () => {
+        const uploadAndSetSpecificationCid = async () => {
             if (!cancelled) setLoading(true);
             try {
                 const specificationCID = await uploadToDecentralizeStorage(
                     JSON.stringify(specificationData)
                 );
-                if (!cancelled)
-                    setCreationArgs([
-                        specificationCID,
-                        unixTimestamp(specificationData.expiration),
-                        collateralsData.map((collateral) => ({
-                            token: collateral.amount.currency.address,
-                            amount: collateral.amount.raw,
-                            minimumPayout: collateral.minimumPayout.raw,
-                        })),
-                        tokenData.name,
-                        tokenData.symbol,
-                        tokenData.supply,
-                        encodeOraclesData(
-                            oracleTemplatesData,
-                            outcomesData,
-                            oraclesData
-                        ),
-                    ]);
+                if (!cancelled) setSpecificationCID(specificationCID);
             } catch (error) {
                 console.warn(
                     "error while uploading specification to ipfs",
@@ -150,7 +131,7 @@ export const Deploy = ({
                 if (!cancelled) setLoading(false);
             }
         };
-        void uploadAndSetCreationArgs();
+        void uploadAndSetSpecificationCid();
         return () => {
             cancelled = true;
         };
@@ -167,9 +148,43 @@ export const Deploy = ({
         uploadToDecentralizeStorage,
     ]);
 
+    useEffect(() => {
+        if (!specificationCID) return;
+
+        try {
+            assertRequiredOraclesData(oraclesData);
+        } catch (error) {
+            console.warn("not all required oracles data is present");
+            return;
+        }
+
+        setCreationArgs([
+            specificationCID,
+            unixTimestamp(specificationData.expiration),
+            collateralsData.map((collateral) => ({
+                token: collateral.amount.currency.address,
+                amount: collateral.amount.raw,
+                minimumPayout: collateral.minimumPayout.raw,
+            })),
+            tokenData.name,
+            tokenData.symbol,
+            tokenData.supply,
+            encodeOraclesData(oracleTemplatesData, outcomesData, oraclesData),
+        ]);
+    }, [
+        collateralsData,
+        oracleTemplatesData,
+        oraclesData,
+        outcomesData,
+        specificationCID,
+        specificationData.expiration,
+        tokenData.name,
+        tokenData.supply,
+        tokenData.symbol,
+    ]);
+
     const handleApproved = useCallback(() => {
         setToApprove([]);
-        setApproved(true);
     }, []);
 
     const handleCreate = useCallback(() => {
