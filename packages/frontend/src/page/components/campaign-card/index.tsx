@@ -62,8 +62,8 @@ export const CampaignCard = ({
                         <Chip key={tag}>{tag}</Chip>
                     ))}
                 </div>
-                <div className="w-full flex h-14 border-t border-black">
-                    <div className="px-4 flex items-center justify-between flex-1 border-r border-black">
+                <div className="w-full h-36 md:h-auto flex flex-col md:flex-row border-t border-black">
+                    <div className="h-12 px-4 flex items-center justify-between flex-1 border-b md:border-r md:border-b-0 border-black">
                         <Typography uppercase>
                             {t("overview.rewards.label")}
                         </Typography>
@@ -85,7 +85,7 @@ export const CampaignCard = ({
                             )}
                         </div>
                     </div>
-                    <div className="px-4 flex items-center justify-between flex-1 border-r border-black">
+                    <div className="h-12 px-4 flex items-center justify-between flex-1 border-b md:border-r md:border-b-0 border-black">
                         <Typography uppercase>
                             {t("overview.minimumPayout.label")}
                         </Typography>
@@ -108,7 +108,7 @@ export const CampaignCard = ({
                             )}
                         </div>
                     </div>
-                    <div className="px-4 flex items-center justify-between flex-1">
+                    <div className="h-12 px-4 flex items-center justify-between flex-1">
                         <Typography uppercase>
                             {t("overview.token.label")}
                         </Typography>
@@ -121,8 +121,8 @@ export const CampaignCard = ({
                         )}
                     </div>
                 </div>
-                <div className="w-full flex h-14 border-t border-black">
-                    <div className="px-4 flex items-center justify-between flex-1 border-r border-black">
+                <div className="w-full h-36 md:h-auto flex flex-col md:flex-row border-t border-black">
+                    <div className="h-12 px-4 flex items-center justify-between flex-1 border-b md:border-r md:border-b-0 border-black">
                         <Typography uppercase>
                             {t("overview.supply.initial.label")}
                         </Typography>
@@ -134,7 +134,7 @@ export const CampaignCard = ({
                             </Typography>
                         )}
                     </div>
-                    <div className="px-4 flex items-center justify-between flex-1 border-r border-black">
+                    <div className="h-12 px-4 flex items-center justify-between flex-1 border-b md:border-r md:border-b-0 border-black">
                         <Typography uppercase>
                             {t("overview.supply.current.label")}
                         </Typography>
@@ -146,7 +146,7 @@ export const CampaignCard = ({
                             </Typography>
                         )}
                     </div>
-                    <div className="px-4 flex items-center justify-between flex-1">
+                    <div className="h-12 px-4 flex items-center justify-between flex-1">
                         <Typography uppercase>
                             {t("overview.time.label")}
                         </Typography>

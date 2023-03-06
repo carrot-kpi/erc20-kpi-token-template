@@ -94,7 +94,7 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
 
     return (
         <div className="overflow-x-hidden">
-            <div className="bg-grid-light bg-orange flex flex-col items-center gap-6 px-2 py-3 sm:px-9 sm:py-5 md:items-start md:px-36 md:py-24">
+            <div className="bg-grid-light bg-orange flex flex-col items-center gap-6 px-3 py-4 sm:px-9 sm:py-5 md:items-start md:px-36 md:py-24">
                 <Typography
                     variant="h2"
                     className={{ root: "dark:text-black" }}
@@ -127,8 +127,8 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                 />
             </div>
             <div className="bg-white dark:bg-black">
-                <div className="bg-grid-light dark:bg-grid-dark flex flex-col gap-7 md:gap-9 lg:gap-28 bg-white px-2 py-3 dark:bg-black sm:px-9 sm:py-6 md:px-36 md:py-24">
-                    <div className="flex flex-col mt-7 sm:mt-0 gap-6 md:gap-8 max-w-6xl">
+                <div className="bg-grid-light dark:bg-grid-dark flex flex-col gap-7 md:gap-9 lg:gap-28 bg-white px-4 py-4 dark:bg-black sm:px-9 sm:py-6 md:px-36 md:py-24">
+                    <div className="flex flex-col mt-5 sm:mt-0 gap-6 md:gap-8 max-w-6xl">
                         <Typography variant="h2">
                             {t("position.title")}
                         </Typography>
