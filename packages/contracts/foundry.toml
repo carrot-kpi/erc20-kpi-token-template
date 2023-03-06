@@ -11,6 +11,7 @@ remappings = [
     'oz/=lib/openzeppelin-contracts/contracts/',
     'tests/=tests/',
 ]
+ffi = true
 
 [profile.production]
 optimizer = true

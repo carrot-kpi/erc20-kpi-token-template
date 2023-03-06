@@ -4,8 +4,7 @@ import {IERC20} from "oz/token/ERC20/ERC20.sol";
 import {SafeERC20} from "oz/token/ERC20/utils/SafeERC20.sol";
 import {IKPITokensFactory} from "carrot/interfaces/IKPITokensFactory.sol";
 import {IKPITokensManager1} from "carrot/interfaces/kpi-tokens-managers/IKPITokensManager1.sol";
-import {IKPIToken} from "carrot/interfaces/kpi-tokens/IKPIToken.sol";
-import {Collateral} from "./interfaces/IERC20KPIToken.sol";
+import {IERC20KPIToken, Collateral} from "./interfaces/IERC20KPIToken.sol";
 import {ICreationProxy} from "./interfaces/ICreationProxy.sol";
 
 /// SPDX-License-Identifier: GPL-3.0-or-later
@@ -21,27 +20,14 @@ import {ICreationProxy} from "./interfaces/ICreationProxy.sol";
 contract CreationProxy is ICreationProxy {
     using SafeERC20 for IERC20;
 
-    address public immutable factory;
-    address public immutable kpiTokensManager;
-    uint256 public immutable templateId;
+    // replaced by codegen script
+    address public immutable FACTORY_ADDRESS = address(1111111111);
+    address public immutable KPI_TOKENS_MANAGER_ADDRESS = address(2222222222);
+    uint256 public immutable TEMPLATE_ID = 3333333333;
 
-    error ZeroAddressFactory();
-    error ZeroAddressKpiTokensManager();
-    error InvalidTemplateId();
     error InconsistentAddress();
 
     event Create(address indexed kpiToken);
-
-    constructor(address _factory, address _kpiTokensManager, uint256 _templateId) {
-        if (_factory == address(0)) revert ZeroAddressFactory();
-        if (_kpiTokensManager == address(0)) {
-            revert ZeroAddressKpiTokensManager();
-        }
-        if (_templateId == 0) revert InvalidTemplateId();
-        factory = _factory;
-        templateId = _templateId;
-        kpiTokensManager = _kpiTokensManager;
-    }
 
     function createERC20KPIToken(
         string memory _description,
@@ -52,22 +38,22 @@ contract CreationProxy is ICreationProxy {
         uint256 _erc20Supply,
         bytes memory _oraclesInitializationData
     ) external payable override returns (address) {
-        uint256 _templateId = templateId;
         bytes memory _initializationData = abi.encode(_collaterals, false, _erc20Name, _erc20Symbol, _erc20Supply);
-        address _predictedKpiTokenAddress = IKPITokensManager1(kpiTokensManager).predictInstanceAddress(
-            address(this), _templateId, _description, _expiration, _initializationData, _oraclesInitializationData
+        address _predictedKpiTokenAddress = IKPITokensManager1(KPI_TOKENS_MANAGER_ADDRESS).predictInstanceAddress(
+            address(this), TEMPLATE_ID, _description, _expiration, _initializationData, _oraclesInitializationData
         );
         for (uint8 _i = 0; _i < _collaterals.length; _i++) {
             Collateral memory _collateral = _collaterals[_i];
             IERC20(_collateral.token).safeTransferFrom(msg.sender, _predictedKpiTokenAddress, _collateral.amount);
         }
-        address _createdKpiToken = IKPITokensFactory(factory).createToken{value: msg.value}(
-            _templateId, _description, _expiration, _initializationData, _oraclesInitializationData
+        address _createdKpiToken = IKPITokensFactory(FACTORY_ADDRESS).createToken{value: msg.value}(
+            TEMPLATE_ID, _description, _expiration, _initializationData, _oraclesInitializationData
         );
         if (_predictedKpiTokenAddress != _createdKpiToken) {
             revert InconsistentAddress();
         }
-        IKPIToken(_createdKpiToken).transferOwnership(msg.sender);
+        IERC20KPIToken(_createdKpiToken).transferOwnership(msg.sender);
+        IERC20KPIToken(_createdKpiToken).transfer(msg.sender, IERC20KPIToken(_createdKpiToken).balanceOf(address(this)));
         emit Create(_createdKpiToken);
         return _createdKpiToken;
     }

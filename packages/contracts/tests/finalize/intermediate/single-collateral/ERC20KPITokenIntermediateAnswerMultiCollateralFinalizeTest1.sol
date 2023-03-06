@@ -43,8 +43,8 @@ contract ERC20KPITokenIntermediateAnswerMultiCollateralFinalizeTest1 is BaseTest
         vm.prank(oracle);
         kpiTokenInstance.finalize(11);
 
-        (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 2);
         assertEq(onChainCollaterals[0].token, _collaterals[0].token);
@@ -100,8 +100,8 @@ contract ERC20KPITokenIntermediateAnswerMultiCollateralFinalizeTest1 is BaseTest
         vm.prank(oracle);
         kpiTokenInstance.finalize(12 ether);
 
-        (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 2);
         assertEq(onChainCollaterals[0].token, _collaterals[0].token);
@@ -157,8 +157,8 @@ contract ERC20KPITokenIntermediateAnswerMultiCollateralFinalizeTest1 is BaseTest
         vm.prank(oracle);
         kpiTokenInstance.finalize(45 ether);
 
-        (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertTrue(kpiTokenInstance.finalized());
 
@@ -214,8 +214,8 @@ contract ERC20KPITokenIntermediateAnswerMultiCollateralFinalizeTest1 is BaseTest
         vm.prank(oracle);
         kpiTokenInstance.finalize(153 ether);
 
-        (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 2);
         assertEq(onChainCollaterals[0].token, _collaterals[0].token);

@@ -113,8 +113,8 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
         address oraclesManager = address(2);
         ERC20KPIToken kpiTokenInstance = initializeKpiToken(oraclesManager, abi.encode(oracleData, true), "", 0);
 
-        (, FinalizableOracle[] memory onChainFinalizableOracles, bool andRelationship,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (, FinalizableOracle[] memory onChainFinalizableOracles, bool andRelationship,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainFinalizableOracles.length, 1);
         FinalizableOracle memory finalizableOracle = onChainFinalizableOracles[0];
@@ -133,8 +133,8 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
         address oraclesManager = address(2);
         ERC20KPIToken kpiTokenInstance = initializeKpiToken(oraclesManager, abi.encode(oracleData, false), "", 0);
 
-        (, FinalizableOracle[] memory onChainFinalizableOracles, bool andRelationship,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (, FinalizableOracle[] memory onChainFinalizableOracles, bool andRelationship,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainFinalizableOracles.length, 1);
         FinalizableOracle memory finalizableOracle = onChainFinalizableOracles[0];
@@ -161,8 +161,8 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
         address oraclesManager = address(2);
         ERC20KPIToken kpiTokenInstance = initializeKpiToken(oraclesManager, abi.encode(oracleData, true), "", 0);
 
-        (, FinalizableOracle[] memory onChainFinalizableOracles, bool andRelationship,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (, FinalizableOracle[] memory onChainFinalizableOracles, bool andRelationship,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainFinalizableOracles.length, 2);
 
@@ -289,8 +289,8 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
         address oraclesManager = address(2);
         ERC20KPIToken kpiTokenInstance = initializeKpiToken(oraclesManager, abi.encode(oracleData, false), "", 0);
 
-        (, FinalizableOracle[] memory onChainFinalizableOracles, bool andRelationship,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (, FinalizableOracle[] memory onChainFinalizableOracles, bool andRelationship,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainFinalizableOracles.length, 2);
 

@@ -101,8 +101,8 @@ contract ERC20KPITokenCollectProtocoFeeTest is BaseTestSetup {
     function testSuccessSingleCollateral() external {
         (, ERC20KPIToken kpiTokenInstance) = initializeKpiToken();
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
 
@@ -160,8 +160,8 @@ contract ERC20KPITokenCollectProtocoFeeTest is BaseTestSetup {
             })
         );
 
-        (Collateral[] memory onChainCollaterals,,,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256, string, string));
+        (Collateral[] memory onChainCollaterals,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 2);
 

@@ -41,6 +41,7 @@ export const SingleConfiguration = ({
                     id="lower-bound"
                     label={t("label.lower.bound")}
                     placeholder={"1,000,000"}
+                    allowNegative={false}
                     onValueChange={onLowerBoundChange}
                     value={lowerBound?.formattedValue}
                     className={{
@@ -52,6 +53,7 @@ export const SingleConfiguration = ({
                 <NumberInput
                     id="higher-bound"
                     label={t("label.higher.bound")}
+                    allowNegative={false}
                     placeholder={"1,000,000"}
                     onValueChange={onHigherBoundChange}
                     value={higherBound?.formattedValue}

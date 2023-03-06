@@ -15,8 +15,6 @@ import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { Address, Connector, ConnectorData } from "wagmi";
 import { Chain } from "wagmi/chains";
 import * as chains from "wagmi/chains";
-import i18next from "i18next";
-import { initReactI18next } from "react-i18next";
 
 class CarrotConnector extends Connector<
     providers.JsonRpcProvider,
@@ -90,14 +88,6 @@ class CarrotConnector extends Connector<
         return "<CarrotConnector>";
     }
 }
-
-i18next.use(initReactI18next).init({
-    lng: "en",
-    fallbackLng: "en",
-    interpolation: {
-        escapeValue: false,
-    },
-});
 
 const forkedChain = Object.values(chains).find(
     (chain) => chain.id === CCT_CHAIN_ID

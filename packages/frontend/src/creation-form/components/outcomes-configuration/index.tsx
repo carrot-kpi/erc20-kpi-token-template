@@ -35,24 +35,25 @@ export const OutcomesConfiguration = ({
 }: OutcomesConfigurationProps): ReactElement => {
     const [data, setData] = useState<RawOutcomeDataMap>(
         outcomesData.reduce((accumulator: RawOutcomeDataMap, data, i) => {
-            const lowerBoundValue = utils.formatUnits(
-                data.lowerBound.toString(),
-                18
-            );
-            const lowerBoundFormattedValue = !!lowerBoundValue
-                ? utils.commify(lowerBoundValue)
-                : "";
-
-            const higherBoundValue = utils.formatUnits(
-                data.higherBound.toString(),
-                18
-            );
-            const higherBoundFormattedValue = !!higherBoundValue
-                ? utils.commify(higherBoundValue)
-                : "";
             const binary =
                 data.lowerBound.eq(BigNumber.from(0)) &&
-                data.lowerBound.eq(BigNumber.from(1));
+                data.higherBound.eq(BigNumber.from(1));
+
+            const lowerBoundValue = binary
+                ? "0"
+                : utils.formatUnits(data.lowerBound.toString(), 18);
+            const lowerBoundFormattedValue =
+                binary || !lowerBoundValue
+                    ? ""
+                    : utils.commify(lowerBoundValue);
+
+            const higherBoundValue = binary
+                ? "0"
+                : utils.formatUnits(data.higherBound.toString(), 18);
+            const higherBoundFormattedValue =
+                binary || !higherBoundValue
+                    ? ""
+                    : utils.commify(higherBoundValue);
             accumulator[templates[i].id] = {
                 binary,
                 lowerBound: {
@@ -136,8 +137,12 @@ export const OutcomesConfiguration = ({
         onNext(
             Object.values(data).map((value) => {
                 return {
-                    lowerBound: utils.parseUnits(value.lowerBound.value, 18),
-                    higherBound: utils.parseUnits(value.higherBound.value, 18),
+                    lowerBound: value.binary
+                        ? BigNumber.from(0)
+                        : utils.parseUnits(value.lowerBound.value, 18),
+                    higherBound: value.binary
+                        ? BigNumber.from(1)
+                        : utils.parseUnits(value.higherBound.value, 18),
                 };
             })
         );

@@ -8,6 +8,7 @@ import {OraclesManager1} from "carrot/oracles-managers/OraclesManager1.sol";
 import {KPITokensFactory} from "carrot/KPITokensFactory.sol";
 import {IERC20KPIToken, Collateral, OracleData} from "../../src/interfaces/IERC20KPIToken.sol";
 import {MockOracle} from "tests/mocks/MockOracle.sol";
+import {DeployCreationProxy} from "../../scripts/DeployCreationProxy.sol";
 import {CreationProxy} from "../../src/CreationProxy.sol";
 
 /// SPDX-License-Identifier: GPL-3.0-or-later
@@ -40,11 +41,7 @@ abstract contract BaseTestSetup is Test {
         oraclesManager = new OraclesManager1(address(factory));
         oraclesManager.addTemplate(address(new MockOracle()), "test-specification-mock");
 
-        creationProxy = new CreationProxy(
-            address(factory),
-            address(kpiTokensManager),
-            1
-        );
+        creationProxy = CreationProxy(new DeployCreationProxy().run(address(factory), address(kpiTokensManager), 1));
 
         factory.setKpiTokensManager(address(kpiTokensManager));
         factory.setOraclesManager(address(oraclesManager));

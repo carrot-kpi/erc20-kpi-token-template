@@ -145,3 +145,5 @@ dist
 
 .turbo
 .env*
+
+CreationProxy[0-9]*.sol
