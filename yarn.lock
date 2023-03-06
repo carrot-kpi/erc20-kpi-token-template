@@ -1068,10 +1068,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@carrot-kpi/frontend@^1.0.0-rc.40":
-  version "1.0.0-rc.40"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/frontend/-/frontend-1.0.0-rc.40.tgz#8bf37d0fc3efccecc6ba3792dc72f3e4def34354"
-  integrity sha512-wTHIzFYimYrsJC6rdMNYEnvVuUEU3XxVaVsey7P+M2I+NkXgfcYuMQsxUh0qbqCRr4C7vTTpc9n4K1yvGm3g2g==
+"@carrot-kpi/frontend@^1.0.0-rc.42":
+  version "1.0.0-rc.42"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/frontend/-/frontend-1.0.0-rc.42.tgz#b3dec544fbf30656c788c4e1b9a267bad5e19641"
+  integrity sha512-BOnnFPIFzAbuO3pOrW34oPlbCOK0dx/EtmQ71P+nUx1rGSjBmUW8tUad5KE+r3Xogs/oaWoymK+Q0ADzX+w1Cw==
   dependencies:
     "@carrot-kpi/react" "*"
     "@carrot-kpi/sdk" "*"
@@ -1197,10 +1197,10 @@
     react-virtualized-auto-sizer "^1.0.7"
     react-window "^1.8.8"
 
-"@carrot-kpi/ui@^0.30.0":
-  version "0.30.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.30.0.tgz#48431857a66e0551dd17edcc665287e23205d63a"
-  integrity sha512-vNkEfgsc11masnwUxTvt7StXmG92bDYaQOi4mP/YMeg48YlMZT9k/Fo4jmKDFr3qy/fI8829bB8Ec2cvqOtUKA==
+"@carrot-kpi/ui@^0.30.1":
+  version "0.30.1"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.30.1.tgz#84fe80a6e31eedee865952ceb51b307b3a711a28"
+  integrity sha512-HaxPEG/bNgY7VL0xQtTqyJhm8DGRMUIZzXwnAOGoQqzCxqmhpVQ/w2O2L/05rTMmMvNoYI44CMZYnXBOsIJW4Q==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@ethersproject/bignumber" "^5.7.0"
