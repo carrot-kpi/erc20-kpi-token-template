@@ -113,19 +113,21 @@ export const Component = ({
     const handleOraclesConfigurationNext = useCallback(
         (oracleData: OracleData[]) => {
             setOraclesData(oracleData);
-            setStep(4);
-            if (mostUpdatedStep < 4) setMostUpdatedStep(4);
+            const nextStep = enableOraclePickStep ? 4 : 3;
+            setStep(nextStep);
+            if (mostUpdatedStep < nextStep) setMostUpdatedStep(nextStep);
         },
-        [mostUpdatedStep]
+        [enableOraclePickStep, mostUpdatedStep]
     );
 
     const handleOutcomesConfigurationNext = useCallback(
         (outcomesData: OutcomeData[]) => {
             setOutcomesData(outcomesData);
-            setStep(5);
-            if (mostUpdatedStep < 5) setMostUpdatedStep(5);
+            const nextStep = enableOraclePickStep ? 5 : 4;
+            setStep(nextStep);
+            if (mostUpdatedStep < nextStep) setMostUpdatedStep(nextStep);
         },
-        [mostUpdatedStep]
+        [enableOraclePickStep, mostUpdatedStep]
     );
 
     const handleDeployNext = useCallback(() => {
