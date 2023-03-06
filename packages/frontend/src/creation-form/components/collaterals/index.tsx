@@ -351,7 +351,7 @@ export const Collaterals = ({
                                         {t("label.collateral.picker.fee")}
                                     </Typography>
                                     <Typography>
-                                        {PROTOCOL_FEE_BPS / 10_000}%{" "}
+                                        {PROTOCOL_FEE_BPS / 100}%{" "}
                                         {protocolFeeAmount &&
                                             pickedToken &&
                                             `(${protocolFeeAmount} ${pickedToken.symbol})`}

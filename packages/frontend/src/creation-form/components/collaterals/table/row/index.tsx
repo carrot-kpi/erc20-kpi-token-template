@@ -81,7 +81,7 @@ export const CollateralRow = ({
                         {t("label.collateral.picker.fee")}
                     </Typography>
                     <Typography variant="sm">
-                        {PROTOCOL_FEE_BPS / 10_000}%
+                        {PROTOCOL_FEE_BPS / 100}%
                     </Typography>
                 </div>
                 <div className="w-full h-[1px] bg-black dark:bg-white" />
