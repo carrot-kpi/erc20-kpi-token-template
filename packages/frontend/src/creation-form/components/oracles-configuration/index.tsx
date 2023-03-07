@@ -41,6 +41,7 @@ interface OraclesConfigurationProps {
     templates: Template[];
     oraclesData: OracleData[];
     onNext: (oraclesData: OracleData[]) => void;
+    navigate: KPITokenCreationFormProps["navigate"];
     onTx: KPITokenCreationFormProps["onTx"];
 }
 
@@ -50,6 +51,7 @@ export const OraclesConfiguration = ({
     templates,
     oraclesData,
     onNext,
+    navigate,
     onTx,
 }: OraclesConfigurationProps): ReactElement => {
     const [data, setData] = useState(
@@ -121,6 +123,7 @@ export const OraclesConfiguration = ({
                     template={templates[0]}
                     state={data[templates[0].id]?.state || {}}
                     onChange={handleChange}
+                    navigate={navigate}
                     onTx={onTx}
                 />
             ) : (
@@ -138,6 +141,7 @@ export const OraclesConfiguration = ({
                                 template={template}
                                 state={data[template.id]?.state || {}}
                                 onChange={handleChange}
+                                navigate={navigate}
                                 onTx={onTx}
                             />
                         </AccordionDetails>

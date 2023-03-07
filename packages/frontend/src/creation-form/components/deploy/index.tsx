@@ -51,7 +51,7 @@ interface DeployProps {
     oracleTemplatesData: Template[];
     outcomesData: OutcomeData[];
     oraclesData: OracleData[];
-    onNext: () => void;
+    onNext: (address: string) => void;
     onCreate: KPITokenCreationFormProps["onCreate"];
     onTx: KPITokenCreationFormProps["onTx"];
 }
@@ -220,7 +220,7 @@ export const Deploy = ({
                     receipt,
                     timestamp: unixTimestamp(new Date()),
                 });
-                onNext();
+                onNext(createdKPITokenAddress);
             } catch (error) {
                 console.warn("could not create kpi token", error);
             } finally {
