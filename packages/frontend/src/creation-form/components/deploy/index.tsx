@@ -23,7 +23,9 @@ import {
 import { BigNumber, constants } from "ethers";
 import { Button, Typography } from "@carrot-kpi/ui";
 import {
+    KPITokenCreationFormProps,
     NamespacedTranslateFunction,
+    TxType,
     useDecentralizedStorageUploader,
 } from "@carrot-kpi/react";
 import { Template } from "@carrot-kpi/sdk";
@@ -33,6 +35,7 @@ import { encodeOraclesData } from "../../utils/data-encoding";
 import CREATION_PROXY_ABI from "../../../abis/creation-proxy.json";
 import { ApproveCollateralsButton } from "../approve-collaterals-button";
 import { unixTimestamp } from "../../../utils/dates";
+import { getKPITokenAddressFromReceipt } from "../../../utils/logs";
 
 type Assert = (data: OracleData[]) => asserts data is Required<OracleData>[];
 const assertRequiredOraclesData: Assert = (data) => {
@@ -49,6 +52,8 @@ interface DeployProps {
     outcomesData: OutcomeData[];
     oraclesData: OracleData[];
     onNext: () => void;
+    onCreate: KPITokenCreationFormProps["onCreate"];
+    onTx: KPITokenCreationFormProps["onTx"];
 }
 
 export const Deploy = ({
@@ -61,6 +66,8 @@ export const Deploy = ({
     outcomesData,
     oraclesData,
     onNext,
+    onCreate,
+    onTx,
 }: DeployProps): ReactElement => {
     const { address } = useAccount();
     const uploadToDecentralizeStorage = useDecentralizedStorageUploader("ipfs");
@@ -193,7 +200,26 @@ export const Deploy = ({
             setLoading(true);
             try {
                 const tx = await writeAsync();
-                await tx.wait();
+                const receipt = await tx.wait();
+                let createdKPITokenAddress =
+                    getKPITokenAddressFromReceipt(receipt);
+                if (!createdKPITokenAddress) {
+                    console.warn(
+                        "could not extract created kpi token address from logs"
+                    );
+                    createdKPITokenAddress = constants.AddressZero;
+                }
+                onCreate();
+                onTx({
+                    type: TxType.KPI_TOKEN_CREATION,
+                    from: receipt.from,
+                    hash: tx.hash,
+                    payload: {
+                        address: createdKPITokenAddress,
+                    },
+                    receipt,
+                    timestamp: unixTimestamp(new Date()),
+                });
                 onNext();
             } catch (error) {
                 console.warn("could not create kpi token", error);
@@ -202,7 +228,7 @@ export const Deploy = ({
             }
         };
         void create();
-    }, [onNext, writeAsync]);
+    }, [onCreate, onNext, onTx, writeAsync]);
 
     return (
         <div className="flex flex-col gap-6">
@@ -227,6 +253,7 @@ export const Deploy = ({
                     toApprove={toApprove}
                     spender={targetAddress}
                     onApproved={handleApproved}
+                    onTx={onTx}
                 />
             </div>
             <div className="flex justify-between">

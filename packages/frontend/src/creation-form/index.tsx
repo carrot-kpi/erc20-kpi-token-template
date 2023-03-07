@@ -30,6 +30,7 @@ export const Component = ({
     i18n,
     t,
     onCreate,
+    onTx,
 }: KPITokenCreationFormProps): ReactElement => {
     const { loading, templates: oracleTemplates } = useOracleTemplates();
 
@@ -131,9 +132,8 @@ export const Component = ({
     );
 
     const handleDeployNext = useCallback(() => {
-        onCreate();
         // TODO: implement success step transition
-    }, [onCreate]);
+    }, []);
 
     if (loading) {
         return (
@@ -222,6 +222,7 @@ export const Component = ({
                             oraclesData={oraclesData}
                             templates={oracleTemplatesData}
                             onNext={handleOraclesConfigurationNext}
+                            onTx={onTx}
                         />
                     </StepCard>
                     <StepCard
@@ -254,6 +255,8 @@ export const Component = ({
                                 outcomesData={outcomesData}
                                 oraclesData={oraclesData}
                                 onNext={handleDeployNext}
+                                onCreate={onCreate}
+                                onTx={onTx}
                             />
                         </StepCard>
                     )}

@@ -1,4 +1,8 @@
-import { NamespacedTranslateFunction } from "@carrot-kpi/react";
+import {
+    KPITokenCreationFormProps,
+    NamespacedTranslateFunction,
+    TxType,
+} from "@carrot-kpi/react";
 import { Button } from "@carrot-kpi/ui";
 import { ReactElement, useCallback, useMemo, useState } from "react";
 import {
@@ -7,6 +11,7 @@ import {
     useContractWrite,
     Address,
 } from "wagmi";
+import { unixTimestamp } from "../../../utils/dates";
 import { CollateralData } from "../../types";
 
 interface ApproveCollateralsButtonProps {
@@ -14,6 +19,7 @@ interface ApproveCollateralsButtonProps {
     toApprove: CollateralData[];
     spender: Address;
     onApproved: () => void;
+    onTx: KPITokenCreationFormProps["onTx"];
 }
 
 export const ApproveCollateralsButton = ({
@@ -21,6 +27,7 @@ export const ApproveCollateralsButton = ({
     toApprove,
     spender,
     onApproved,
+    onTx,
 }: ApproveCollateralsButtonProps): ReactElement => {
     const [approving, setApproving] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -38,14 +45,26 @@ export const ApproveCollateralsButton = ({
     const { writeAsync: approveAsync } = useContractWrite(config);
 
     const handleClick = useCallback(() => {
-        if (!approveAsync) return;
+        if (!approveAsync || !approvingCollateral) return;
         let cancelled = false;
         const approve = async () => {
             if (!cancelled) setApproving(true);
             try {
                 const tx = await approveAsync();
-                await tx.wait();
+                const receipt = await tx.wait();
                 if (cancelled) return;
+                onTx({
+                    type: TxType.ERC20_APPROVAL,
+                    from: receipt.from,
+                    hash: tx.hash,
+                    payload: {
+                        amount: approvingCollateral.amount.raw,
+                        spender,
+                        token: approvingCollateral.amount.currency.address,
+                    },
+                    receipt,
+                    timestamp: unixTimestamp(new Date()),
+                });
                 if (currentIndex < toApprove.length - 1)
                     setCurrentIndex(currentIndex + 1);
                 else onApproved();
@@ -57,7 +76,15 @@ export const ApproveCollateralsButton = ({
         return () => {
             cancelled = true;
         };
-    }, [approveAsync, currentIndex, onApproved, toApprove.length]);
+    }, [
+        approveAsync,
+        approvingCollateral,
+        currentIndex,
+        onApproved,
+        onTx,
+        spender,
+        toApprove.length,
+    ]);
 
     let message;
     if (!approvingCollateral) message = t("label.collateral.approve.done");
