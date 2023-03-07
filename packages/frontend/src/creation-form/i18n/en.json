@@ -6,6 +6,7 @@
     "card.oracle.configuration.title": "Oracle configuration",
     "card.outcome.configuration.title": "Outcome configuration",
     "card.deploy.title": "Deploy",
+    "card.success.title": "Success",
     "general.label.title": "Title",
     "general.label.description": "Description",
     "general.label.tags": "Tags",
@@ -63,5 +64,7 @@
     "oracle.use": "Use",
     "next": "Next",
     "step": "Step",
-    "add": "Add"
+    "add": "Add",
+    "success.text": "Your Carrot Campaign has successfully been created!",
+    "success.button.label": "Go to campaign"
 }

@@ -1,5 +1,6 @@
 import { ReactElement, useCallback, useEffect, useState } from "react";
 import {
+    KPITokenCreationFormProps,
     NamespacedTranslateFunction,
     OracleInitializationBundleGetter,
 } from "@carrot-kpi/react";
@@ -40,6 +41,8 @@ interface OraclesConfigurationProps {
     templates: Template[];
     oraclesData: OracleData[];
     onNext: (oraclesData: OracleData[]) => void;
+    navigate: KPITokenCreationFormProps["navigate"];
+    onTx: KPITokenCreationFormProps["onTx"];
 }
 
 export const OraclesConfiguration = ({
@@ -48,6 +51,8 @@ export const OraclesConfiguration = ({
     templates,
     oraclesData,
     onNext,
+    navigate,
+    onTx,
 }: OraclesConfigurationProps): ReactElement => {
     const [data, setData] = useState(
         oraclesData.reduce((accumulator: AugmentedOracleDataMap, data, i) => {
@@ -118,6 +123,8 @@ export const OraclesConfiguration = ({
                     template={templates[0]}
                     state={data[templates[0].id]?.state || {}}
                     onChange={handleChange}
+                    navigate={navigate}
+                    onTx={onTx}
                 />
             ) : (
                 templates.map((template) => (
@@ -134,6 +141,8 @@ export const OraclesConfiguration = ({
                                 template={template}
                                 state={data[template.id]?.state || {}}
                                 onChange={handleChange}
+                                navigate={navigate}
+                                onTx={onTx}
                             />
                         </AccordionDetails>
                     </Accordion>

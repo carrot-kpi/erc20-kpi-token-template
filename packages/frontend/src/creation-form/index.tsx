@@ -23,6 +23,7 @@ import { OraclesConfiguration } from "./components/oracles-configuration";
 import { OutcomesConfiguration } from "./components/outcomes-configuration";
 import { Deploy } from "./components/deploy";
 import { CREATION_PROXY_ADDRESS } from "./constants";
+import { Success } from "./components/success";
 
 // TODO: add a check that displays an error message if the creation
 // proxy address is 0 for more than x time
@@ -30,6 +31,8 @@ export const Component = ({
     i18n,
     t,
     onCreate,
+    navigate,
+    onTx,
 }: KPITokenCreationFormProps): ReactElement => {
     const { loading, templates: oracleTemplates } = useOracleTemplates();
 
@@ -50,6 +53,7 @@ export const Component = ({
               t("card.oracle.configuration.title"),
               t("card.outcome.configuration.title"),
               t("card.deploy.title"),
+              t("card.success.title"),
           ]
         : [
               t("card.general.title"),
@@ -57,6 +61,7 @@ export const Component = ({
               t("card.oracle.configuration.title"),
               t("card.outcome.configuration.title"),
               t("card.deploy.title"),
+              t("card.success.title"),
           ];
 
     const [step, setStep] = useState(0);
@@ -72,6 +77,7 @@ export const Component = ({
     );
     const [oraclesData, setOraclesData] = useState<OracleData[]>([]);
     const [outcomesData, setOutcomesData] = useState<OutcomeData[]>([]);
+    const [createdKPITokenAddress, setCreatedKPITokenAddress] = useState("");
 
     useEffect(() => {
         if (oracleTemplates.length === 1 && oracleTemplatesData.length === 0)
@@ -130,10 +136,15 @@ export const Component = ({
         [enableOraclePickStep, mostUpdatedStep]
     );
 
-    const handleDeployNext = useCallback(() => {
-        onCreate();
-        // TODO: implement success step transition
-    }, [onCreate]);
+    const handleDeployNext = useCallback(
+        (address: string) => {
+            setCreatedKPITokenAddress(address);
+            const nextStep = enableOraclePickStep ? 6 : 5;
+            setStep(nextStep);
+            if (mostUpdatedStep < nextStep) setMostUpdatedStep(nextStep);
+        },
+        [enableOraclePickStep, mostUpdatedStep]
+    );
 
     if (loading) {
         return (
@@ -222,6 +233,8 @@ export const Component = ({
                             oraclesData={oraclesData}
                             templates={oracleTemplatesData}
                             onNext={handleOraclesConfigurationNext}
+                            navigate={navigate}
+                            onTx={onTx}
                         />
                     </StepCard>
                     <StepCard
@@ -254,9 +267,22 @@ export const Component = ({
                                 outcomesData={outcomesData}
                                 oraclesData={oraclesData}
                                 onNext={handleDeployNext}
+                                onCreate={onCreate}
+                                onTx={onTx}
                             />
                         </StepCard>
                     )}
+                    <StepCard
+                        title={t("card.success.title")}
+                        step={enableOraclePickStep ? 7 : 6}
+                        messages={{ step: t("step") }}
+                    >
+                        <Success
+                            t={t}
+                            navigate={navigate}
+                            kpiTokenAddress={createdKPITokenAddress}
+                        />
+                    </StepCard>
                 </MultiStepCards>
             </div>
         </div>

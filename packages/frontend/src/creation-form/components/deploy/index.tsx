@@ -23,7 +23,9 @@ import {
 import { BigNumber, constants } from "ethers";
 import { Button, Typography } from "@carrot-kpi/ui";
 import {
+    KPITokenCreationFormProps,
     NamespacedTranslateFunction,
+    TxType,
     useDecentralizedStorageUploader,
 } from "@carrot-kpi/react";
 import { Template } from "@carrot-kpi/sdk";
@@ -33,6 +35,7 @@ import { encodeOraclesData } from "../../utils/data-encoding";
 import CREATION_PROXY_ABI from "../../../abis/creation-proxy.json";
 import { ApproveCollateralsButton } from "../approve-collaterals-button";
 import { unixTimestamp } from "../../../utils/dates";
+import { getKPITokenAddressFromReceipt } from "../../../utils/logs";
 
 type Assert = (data: OracleData[]) => asserts data is Required<OracleData>[];
 const assertRequiredOraclesData: Assert = (data) => {
@@ -48,7 +51,9 @@ interface DeployProps {
     oracleTemplatesData: Template[];
     outcomesData: OutcomeData[];
     oraclesData: OracleData[];
-    onNext: () => void;
+    onNext: (address: string) => void;
+    onCreate: KPITokenCreationFormProps["onCreate"];
+    onTx: KPITokenCreationFormProps["onTx"];
 }
 
 export const Deploy = ({
@@ -61,6 +66,8 @@ export const Deploy = ({
     outcomesData,
     oraclesData,
     onNext,
+    onCreate,
+    onTx,
 }: DeployProps): ReactElement => {
     const { address } = useAccount();
     const uploadToDecentralizeStorage = useDecentralizedStorageUploader("ipfs");
@@ -77,7 +84,7 @@ export const Deploy = ({
 
     const [toApprove, setToApprove] = useState<CollateralData[]>([]);
     const [approved, setApproved] = useState(false);
-    const [specificationCID, setSpecificationCID] = useState<string>("");
+    const [specificationCID, setSpecificationCID] = useState("");
     const [creationArgs, setCreationArgs] = useState<unknown[]>([]);
     const [loading, setLoading] = useState(false);
 
@@ -106,14 +113,14 @@ export const Deploy = ({
         setToApprove(newToApprove);
     }, [allowances, collateralsData]);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         setApproved(toApprove.length === 0);
-    }, [toApprove.length]);
+    }, [toApprove]);
 
     // once the collaterals are approved, this uploads the question spec
     // to ipfs and sets creation args
     useEffect(() => {
-        if (!approved) return;
+        if (specificationCID || !approved) return;
         let cancelled = false;
         const uploadAndSetSpecificationCid = async () => {
             if (!cancelled) setLoading(true);
@@ -141,6 +148,7 @@ export const Deploy = ({
         oracleTemplatesData,
         oraclesData,
         outcomesData,
+        specificationCID,
         specificationData,
         tokenData.name,
         tokenData.supply,
@@ -193,8 +201,27 @@ export const Deploy = ({
             setLoading(true);
             try {
                 const tx = await writeAsync();
-                await tx.wait();
-                onNext();
+                const receipt = await tx.wait();
+                let createdKPITokenAddress =
+                    getKPITokenAddressFromReceipt(receipt);
+                if (!createdKPITokenAddress) {
+                    console.warn(
+                        "could not extract created kpi token address from logs"
+                    );
+                    createdKPITokenAddress = constants.AddressZero;
+                }
+                onCreate();
+                onTx({
+                    type: TxType.KPI_TOKEN_CREATION,
+                    from: receipt.from,
+                    hash: tx.hash,
+                    payload: {
+                        address: createdKPITokenAddress,
+                    },
+                    receipt,
+                    timestamp: unixTimestamp(new Date()),
+                });
+                onNext(createdKPITokenAddress);
             } catch (error) {
                 console.warn("could not create kpi token", error);
             } finally {
@@ -202,7 +229,7 @@ export const Deploy = ({
             }
         };
         void create();
-    }, [onNext, writeAsync]);
+    }, [onCreate, onNext, onTx, writeAsync]);
 
     return (
         <div className="flex flex-col gap-6">
@@ -227,6 +254,7 @@ export const Deploy = ({
                     toApprove={toApprove}
                     spender={targetAddress}
                     onApproved={handleApproved}
+                    onTx={onTx}
                 />
             </div>
             <div className="flex justify-between">
