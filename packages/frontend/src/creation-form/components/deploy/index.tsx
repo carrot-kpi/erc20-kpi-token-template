@@ -114,8 +114,9 @@ export const Deploy = ({
     }, [allowances, collateralsData]);
 
     useEffect(() => {
+        if (!allowances) return;
         setApproved(toApprove.length === 0);
-    }, [toApprove]);
+    }, [allowances, toApprove.length]);
 
     // once the collaterals are approved, this uploads the question spec
     // to ipfs and sets creation args
