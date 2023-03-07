@@ -84,6 +84,11 @@ export const Component = ({
             setOracleTemplatesData([oracleTemplates[0]]);
     }, [oracleTemplates, oracleTemplatesData.length]);
 
+    useEffect(() => {
+        if (oracleTemplates.length === 1 && oracleTemplatesData.length === 0)
+            setOracleTemplatesData([oracleTemplates[0]]);
+    }, [oracleTemplates, oracleTemplatesData.length]);
+
     const handleStepClick = useCallback((clickedStep: number) => {
         setStep(clickedStep);
     }, []);
