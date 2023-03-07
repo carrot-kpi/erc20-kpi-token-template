@@ -84,7 +84,7 @@ export const Deploy = ({
 
     const [toApprove, setToApprove] = useState<CollateralData[]>([]);
     const [approved, setApproved] = useState(false);
-    const [specificationCID, setSpecificationCID] = useState<string>("");
+    const [specificationCID, setSpecificationCID] = useState("");
     const [creationArgs, setCreationArgs] = useState<unknown[]>([]);
     const [loading, setLoading] = useState(false);
 
@@ -113,14 +113,14 @@ export const Deploy = ({
         setToApprove(newToApprove);
     }, [allowances, collateralsData]);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         setApproved(toApprove.length === 0);
-    }, [toApprove.length]);
+    }, [toApprove]);
 
     // once the collaterals are approved, this uploads the question spec
     // to ipfs and sets creation args
     useEffect(() => {
-        if (!approved) return;
+        if (specificationCID || !approved) return;
         let cancelled = false;
         const uploadAndSetSpecificationCid = async () => {
             if (!cancelled) setLoading(true);
@@ -148,6 +148,7 @@ export const Deploy = ({
         oracleTemplatesData,
         oraclesData,
         outcomesData,
+        specificationCID,
         specificationData,
         tokenData.name,
         tokenData.supply,
