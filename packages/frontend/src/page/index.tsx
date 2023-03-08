@@ -150,10 +150,14 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                             })}
                         </Typography>
                         {kpiToken.oracles.length === 1 ? (
-                            <div className="border border-black">
+                            <div className="bg-white dark:bg-black border border-black">
                                 <OraclePage
                                     i18n={i18n}
-                                    fallback={<Loader />}
+                                    fallback={
+                                        <div className="p-6">
+                                            <Loader />
+                                        </div>
+                                    }
                                     oracle={kpiToken.oracles[0]}
                                 />
                             </div>

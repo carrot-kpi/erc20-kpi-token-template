@@ -49,7 +49,7 @@ export const CollateralRow = ({
         amount.sub(amount.mul(PROTOCOL_FEE_BPS).div(10_000)).toFixed(4)
     );
     return (
-        <div key={token.address} className="grid grid-cols-3">
+        <div key={token.address} className="h-10 grid grid-cols-3 items-center">
             <div className="flex gap-2 items-center">
                 {!noEdit && (
                     <div

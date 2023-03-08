@@ -5,11 +5,17 @@ import { CollateralData } from "../../../types";
 import { CollateralRow } from "./row";
 
 const containerStyles = cva(
-    ["flex", "max-h-48", "flex-col", "gap-3", "overflow-y-auto"],
+    ["flex", "max-h-48", "flex-col", "gap-1", "overflow-y-auto"],
     {
         variants: {
             noBorder: {
-                false: ["rounded-xxl", "border", "border-black", "p-4"],
+                false: [
+                    "rounded-xxl",
+                    "border",
+                    "border-black",
+                    "px-4",
+                    "py-2",
+                ],
             },
         },
     }
@@ -55,7 +61,9 @@ export const CollateralsTable = ({
                 {collaterals.length === 0 ? (
                     <Typography
                         variant="sm"
-                        className={{ root: "text-center" }}
+                        className={{
+                            root: "h-10 flex justify-center items-center",
+                        }}
                         weight="medium"
                     >
                         {t("label.collateral.table.empty")}

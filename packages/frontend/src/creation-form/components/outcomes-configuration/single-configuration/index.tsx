@@ -32,7 +32,7 @@ export const SingleConfiguration = ({
 }: SingleConfigurationProps) => {
     return (
         <div className="flex flex-col gap-4">
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
                 <Typography>{t("label.binary")}</Typography>
                 <Switch checked={binary} onChange={onBinaryChange} />
             </div>
