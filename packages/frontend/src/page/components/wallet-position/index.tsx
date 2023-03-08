@@ -64,13 +64,21 @@ export const WalletPosition = ({
                 collateral
             ) => {
                 accumulator.maximum.push(
-                    collateral.amount.multiply(balance).divide(initialSupply)
+                    new Amount(
+                        collateral.amount.currency,
+                        collateral.amount.raw
+                            .mul(balance.raw)
+                            .div(initialSupply.raw)
+                    )
                 );
                 if (collateral.minimumPayout.isZero()) return accumulator;
                 accumulator.guaranteed.push(
-                    collateral.minimumPayout
-                        .multiply(balance)
-                        .divide(initialSupply)
+                    new Amount(
+                        collateral.minimumPayout.currency,
+                        collateral.minimumPayout.raw
+                            .mul(balance.raw)
+                            .div(initialSupply.raw)
+                    )
                 );
                 return accumulator;
             },
