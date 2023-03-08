@@ -88,12 +88,16 @@ export const Deploy = ({
     const [creationArgs, setCreationArgs] = useState<unknown[]>([]);
     const [loading, setLoading] = useState(false);
 
-    const { config, isLoading: loadingTxConfig } = usePrepareContractWrite({
+    const {
+        config,
+        isLoading: loadingTxConfig,
+        isFetching: fetchingTxConfig,
+    } = usePrepareContractWrite({
         address: targetAddress,
         abi: CREATION_PROXY_ABI,
         functionName: "createERC20KPIToken",
         args: creationArgs,
-        enabled: creationArgs.length > 0,
+        enabled: approved && creationArgs.length > 0,
     });
     const { writeAsync } = useContractWrite(config);
 
@@ -158,7 +162,7 @@ export const Deploy = ({
     ]);
 
     useEffect(() => {
-        if (!specificationCID) return;
+        if (!specificationCID || !approved) return;
 
         try {
             assertRequiredOraclesData(oraclesData);
@@ -181,6 +185,7 @@ export const Deploy = ({
             encodeOraclesData(oracleTemplatesData, outcomesData, oraclesData),
         ]);
     }, [
+        approved,
         collateralsData,
         oracleTemplatesData,
         oraclesData,
@@ -263,7 +268,7 @@ export const Deploy = ({
                     size="small"
                     onClick={handleCreate}
                     disabled={!writeAsync}
-                    loading={loading || loadingTxConfig}
+                    loading={loading || loadingTxConfig || fetchingTxConfig}
                 >
                     {t("label.create")}
                 </Button>
