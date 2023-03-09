@@ -12,10 +12,11 @@ import {
     NextStepButton,
 } from "@carrot-kpi/ui";
 import { i18n } from "i18next";
-import { OracleData } from "../../types";
-import { Template } from "@carrot-kpi/sdk";
+import { OracleData, SpecificationData } from "../../types";
+import { KPIToken, Template } from "@carrot-kpi/sdk";
 import { Loader } from "../../../ui/loader";
 import { OracleCreationFormWrapper } from "./oracle-creation-form-wrapper";
+import { unixTimestamp } from "../../../utils/dates";
 
 type AugmentedOracleData = OracleData & {
     initializationBundleGetter?: OracleInitializationBundleGetter;
@@ -40,6 +41,7 @@ interface OraclesConfigurationProps {
     i18n: i18n;
     templates: Template[];
     oraclesData: OracleData[];
+    specificationData?: SpecificationData | null;
     onNext: (oraclesData: OracleData[]) => void;
     navigate: KPITokenCreationFormProps["navigate"];
     onTx: KPITokenCreationFormProps["onTx"];
@@ -50,6 +52,7 @@ export const OraclesConfiguration = ({
     i18n,
     templates,
     oraclesData,
+    specificationData,
     onNext,
     navigate,
     onTx,
@@ -61,6 +64,9 @@ export const OraclesConfiguration = ({
         }, {})
     );
     const [disabled, setDisabled] = useState(true);
+    const [partialKPIToken, setPartialKPIToken] = useState<
+        Partial<KPIToken> | undefined
+    >();
 
     useEffect(() => {
         try {
@@ -70,6 +76,13 @@ export const OraclesConfiguration = ({
             setDisabled(true);
         }
     }, [data]);
+
+    useEffect(() => {
+        if (!specificationData?.expiration) return;
+        setPartialKPIToken({
+            expiration: unixTimestamp(specificationData.expiration),
+        });
+    }, [specificationData?.expiration]);
 
     const handleChange = useCallback(
         (
@@ -122,6 +135,7 @@ export const OraclesConfiguration = ({
                     fallback={<Loader />}
                     template={templates[0]}
                     state={data[templates[0].id]?.state || {}}
+                    kpiToken={partialKPIToken}
                     onChange={handleChange}
                     navigate={navigate}
                     onTx={onTx}
@@ -140,6 +154,7 @@ export const OraclesConfiguration = ({
                                 fallback={<Loader />}
                                 template={template}
                                 state={data[template.id]?.state || {}}
+                                kpiToken={partialKPIToken}
                                 onChange={handleChange}
                                 navigate={navigate}
                                 onTx={onTx}

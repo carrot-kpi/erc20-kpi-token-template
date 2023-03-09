@@ -251,6 +251,7 @@ export const Component = ({
                                 t={t}
                                 i18n={i18n}
                                 oraclesData={oraclesData}
+                                specificationData={specificationData}
                                 templates={oracleTemplatesData}
                                 onNext={handleOraclesConfigurationNext}
                                 navigate={navigate}
