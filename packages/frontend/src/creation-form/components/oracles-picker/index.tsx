@@ -62,7 +62,6 @@ export const OraclesPicker = ({
                                         template={template}
                                     />
                                     <Checkbox
-                                        id={template.id.toString()}
                                         checked={checked}
                                         onChange={() => {
                                             // TODO: support multiple choices when it will be a thing

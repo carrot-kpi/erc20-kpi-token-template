@@ -7,6 +7,7 @@ import {
     TagsInput,
     NextStepButton,
     DateTimeInput,
+    Typography,
 } from "@carrot-kpi/ui";
 import { BigNumber, utils } from "ethers";
 import { isInThePast } from "../../../utils/dates";
@@ -207,25 +208,23 @@ export const GenericData = ({
     return (
         <div className="flex flex-col gap-6">
             <NoSpecialCharactersTextInput
-                id="title"
                 label={t("general.label.title")}
                 placeholder={t("general.placeholder.title")}
                 onChange={handleTitleChange}
                 value={title}
                 error={!!titleErrorText}
-                helperText={titleErrorText}
+                errorText={t("error.title.empty")}
                 className={{
                     input: "w-full",
                     inputWrapper: "w-full",
                 }}
             />
             <MarkdownInput
-                id="description"
                 label={t("general.label.description")}
                 placeholder={t("general.placeholder.description")}
                 onChange={handleDescriptionChange}
                 error={!!descriptionErrorText}
-                helperText={descriptionErrorText}
+                errorText={descriptionErrorText}
                 value={description}
                 className={{
                     input: "w-full",
@@ -233,13 +232,12 @@ export const GenericData = ({
                 }}
             />
             <TagsInput
-                id="tags"
                 label={t("general.label.tags")}
                 placeholder={t("general.placeholder.tags")}
                 onChange={handleTagsChange}
                 value={tags}
                 error={!!tagsErrorText}
-                helperText={tagsErrorText}
+                errorText={tagsErrorText}
                 messages={{ add: t("add") }}
                 className={{
                     root: "w-full",
@@ -248,13 +246,22 @@ export const GenericData = ({
                 }}
             />
             <DateTimeInput
-                id="expiration"
                 label={t("general.label.expiration")}
                 placeholder={t("general.placeholder.expiration")}
                 onChange={handleExpirationChange}
                 value={expiration}
                 error={!!expirationErrorText}
-                helperText={expirationErrorText}
+                errorText={expirationErrorText}
+                info={
+                    <>
+                        <Typography variant="sm" className={{ root: "mb-2" }}>
+                            {t("general.info.expiration.1")}
+                        </Typography>
+                        <Typography variant="sm">
+                            {t("general.info.expiration.2")}
+                        </Typography>
+                    </>
+                }
                 min={minimumDate}
                 className={{
                     root: "w-full",
@@ -264,13 +271,12 @@ export const GenericData = ({
             />
             <div className="flex w-full gap-4">
                 <NoSpecialCharactersTextInput
-                    id="token-name"
                     label={t("general.label.token.name")}
                     placeholder={"Example"}
                     onChange={handleERC20NameChange}
                     value={erc20Name}
                     error={!!erc20NameErrorText}
-                    helperText={erc20NameErrorText}
+                    errorText={erc20NameErrorText}
                     className={{
                         root: "w-full",
                         input: "w-full",
@@ -278,13 +284,12 @@ export const GenericData = ({
                     }}
                 />
                 <NoSpecialCharactersTextInput
-                    id="token-symbol"
                     label={t("general.label.token.symbol")}
                     placeholder={"XMPL"}
                     onChange={handleERC20SymbolChange}
                     value={erc20Symbol}
                     error={!!erc20SymbolErrorText}
-                    helperText={erc20SymbolErrorText}
+                    errorText={erc20SymbolErrorText}
                     className={{
                         root: "w-full",
                         input: "w-full",
@@ -292,14 +297,13 @@ export const GenericData = ({
                     }}
                 />
                 <NumberInput
-                    id="token-supply"
                     allowNegative={false}
                     label={t("general.label.token.supply")}
                     placeholder={"1,000,000"}
                     onValueChange={handleERC20SupplyChange}
                     value={erc20Supply.formattedValue}
                     error={!!erc20SupplyErrorText}
-                    helperText={erc20SupplyErrorText}
+                    errorText={erc20SupplyErrorText}
                     className={{
                         root: "w-full",
                         input: "w-full",

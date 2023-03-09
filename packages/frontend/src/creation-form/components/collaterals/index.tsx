@@ -267,7 +267,6 @@ export const Collaterals = ({
                                         className="cursor-pointer"
                                     >
                                         <TextInput
-                                            id="collateral-select"
                                             label=""
                                             autoComplete="off"
                                             placeholder={t(
@@ -281,7 +280,6 @@ export const Collaterals = ({
                                         />
                                     </div>
                                     <NumberInput
-                                        id="collateral-amount"
                                         label=""
                                         placeholder="0.0"
                                         className={{
@@ -337,7 +335,6 @@ export const Collaterals = ({
                                         )}
                                     </Typography>
                                     <NumberInput
-                                        id="minimum-payout"
                                         label=""
                                         placeholder="0.0"
                                         className={{

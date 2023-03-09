@@ -38,7 +38,6 @@ export const SingleConfiguration = ({
             </div>
             <div className={boundsWrapperStyles({ binary })}>
                 <NumberInput
-                    id="lower-bound"
                     label={t("label.lower.bound")}
                     placeholder={"1,000,000"}
                     allowNegative={false}
@@ -51,7 +50,6 @@ export const SingleConfiguration = ({
                     }}
                 />
                 <NumberInput
-                    id="higher-bound"
                     label={t("label.higher.bound")}
                     allowNegative={false}
                     placeholder={"1,000,000"}

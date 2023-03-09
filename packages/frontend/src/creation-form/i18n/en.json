@@ -14,6 +14,8 @@
     "general.label.token.name": "ERC20 token name",
     "general.label.token.symbol": "ERC20 token symbol",
     "general.label.token.supply": "ERC20 token supply",
+    "general.info.expiration.1": "If the KPI token has not been finalized before this date it will expire and all of the collateral minus any minimum payouts will be sent back to you.",
+    "general.info.expiration.2": "Make sure any oracles you configure later will resolve before this date.",
     "general.placeholder.title": "Enter campaign title",
     "general.placeholder.description": "Enter campaign description",
     "general.placeholder.tags": "Enter campaign tags",
