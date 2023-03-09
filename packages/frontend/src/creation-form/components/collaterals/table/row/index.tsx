@@ -7,8 +7,10 @@ import {
     NamespacedTranslateFunction,
     useIPFSGatewayURL,
 } from "@carrot-kpi/react";
-import { utils } from "ethers";
 import { PROTOCOL_FEE_BPS } from "../../../../constants";
+import { formatTokenAmount } from "../../../../../utils/formatting";
+import { Amount } from "@carrot-kpi/sdk";
+import { parseUnits } from "ethers/lib/utils.js";
 
 type CollateralRowProps = CollateralData & {
     t: NamespacedTranslateFunction;
@@ -44,9 +46,16 @@ export const CollateralRow = ({
     }, []);
 
     const token = amount.currency;
-    const formattedAmount = utils.commify(amount.toFixed(4));
-    const formattedAmountAfterFees = utils.commify(
-        amount.sub(amount.mul(PROTOCOL_FEE_BPS).div(10_000)).toFixed(4)
+    const formattedAmount = formatTokenAmount(amount, false);
+    const formattedAmountAfterFees = formatTokenAmount(
+        new Amount(
+            amount.currency,
+            parseUnits(
+                amount.sub(amount.mul(PROTOCOL_FEE_BPS).div(10_000)).toString(),
+                amount.currency.decimals
+            )
+        ),
+        false
     );
     return (
         <div key={token.address} className="h-10 grid grid-cols-3 items-center">
@@ -109,7 +118,7 @@ export const CollateralRow = ({
                 {formattedAmountAfterFees}
             </Typography>
             <Typography className={{ root: "text-right" }}>
-                {utils.commify(minimumPayout.toFixed(4))}
+                {formatTokenAmount(minimumPayout, false)}
             </Typography>
         </div>
     );

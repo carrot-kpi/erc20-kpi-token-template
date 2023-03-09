@@ -10,7 +10,6 @@ import {
 import { NumberFormatValue, SpecificationData, TokenData } from "../../types";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import {
-    TextInput,
     MarkdownInput,
     NumberInput,
     TagsInput,
@@ -19,6 +18,7 @@ import {
 } from "@carrot-kpi/ui";
 import { BigNumber, utils } from "ethers";
 import { isInThePast } from "../../../utils/dates";
+import { NoSpecialCharactersTextInput } from "../no-special-characters-text-input";
 
 const stripHtml = (value: string) => value.replace(/(<([^>]+)>)/gi, "");
 
@@ -227,7 +227,7 @@ export const GenericData = ({
 
     return (
         <div className="flex flex-col gap-6">
-            <TextInput
+            <NoSpecialCharactersTextInput
                 id="title"
                 label={t("general.label.title")}
                 placeholder={t("general.placeholder.title")}
@@ -285,7 +285,7 @@ export const GenericData = ({
                 }}
             />
             <div className="flex w-full gap-4">
-                <TextInput
+                <NoSpecialCharactersTextInput
                     id="token-name"
                     label={t("general.label.token.name")}
                     placeholder={"Example"}
@@ -300,7 +300,7 @@ export const GenericData = ({
                         inputWrapper: "w-full",
                     }}
                 />
-                <TextInput
+                <NoSpecialCharactersTextInput
                     id="token-symbol"
                     label={t("general.label.token.symbol")}
                     placeholder={"XMPL"}

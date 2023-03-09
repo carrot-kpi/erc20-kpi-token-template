@@ -22,6 +22,7 @@
     "error.description.empty": "A campaign description is required",
     "error.tags.empty": "A campaign tag is required",
     "error.tags.duplicated": "Duplicated campaign tag",
+    "error.expiration.past": "The expiration must be in the future",
     "error.erc20.name.empty": "A token name is required",
     "error.erc20.symbol.empty": "A token symbol is required",
     "error.erc20.supply.zero": "A non-zero supply is required",
