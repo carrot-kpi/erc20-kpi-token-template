@@ -9,12 +9,16 @@
     "overview.supply.current.label": "Current supply",
     "overview.minimumPayout.label": "Minimum payouts",
     "position.title": "Wallet position",
+    "position.noWallet": "No wallet connected",
     "position.balance.label": "Balance",
     "position.rewards.guaranteed.label": "Guaranteed rewards",
     "position.rewards.maximum.label": "Maximum rewards",
+    "position.rewards.remaining.label": "Remaining rewards",
+    "position.rewards.claimable.label": "Claimable rewards",
     "position.actions.finalized": "The token is awaiting finalization. Click the button below to finalize.",
     "oracle.title_one": "Oracle",
     "oracle.title_other": "Oracles",
     "widgets.title": "Widgets",
-    "open.explorer": "Open in explorer"
+    "open.explorer": "Open in explorer",
+    "redeem": "Redeem"
 }

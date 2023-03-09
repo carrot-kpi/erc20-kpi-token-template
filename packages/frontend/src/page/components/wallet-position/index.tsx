@@ -1,11 +1,17 @@
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Amount, KPIToken, Token } from "@carrot-kpi/sdk";
-import { Skeleton, Typography } from "@carrot-kpi/ui";
-import { commify } from "ethers/lib/utils.js";
+import { Typography } from "@carrot-kpi/ui";
 import { ReactElement, useEffect, useState } from "react";
 import { Address, useAccount, useBalance } from "wagmi";
 import { CollateralData } from "../../../creation-form/types";
+import {
+    getGuaranteedRewards,
+    getMaximumRewards,
+    getRedeemableRewards,
+} from "../../../utils/collaterals";
+import { useWatchKPITokenCollateralBalances } from "../../hooks/useWatchKPITokenCollateralBalances";
 import { FinalizableOracle } from "../../types";
+import { TokenAmount } from "../token-amount";
 import { WalletActions } from "./actions";
 
 interface WalletPositionProps {
@@ -29,11 +35,15 @@ export const WalletPosition = ({
     erc20Symbol,
     erc20Name,
 }: WalletPositionProps): ReactElement => {
-    const { isConnected, address } = useAccount();
+    const { address: connectedAddress } = useAccount();
     const { data: rawKpiTokenBalance } = useBalance({
-        address,
+        address: connectedAddress,
         token: kpiToken.address as Address,
     });
+    const {
+        balances: kpiTokenCollateralBalances,
+        loading: loadingKPITokenCollateralBalances,
+    } = useWatchKPITokenCollateralBalances(kpiToken.address, collaterals);
 
     const [balance, setBalance] = useState<Amount<Token> | null>(null);
     const [guaranteedRewards, setGuaranteedRewards] = useState<
@@ -42,9 +52,12 @@ export const WalletPosition = ({
     const [maximumRewards, setMaximumRewards] = useState<
         Amount<Token>[] | null
     >(null);
+    const [redeemableRewards, setRedeemableRewards] = useState<
+        Amount<Token>[] | null
+    >(null);
 
     useEffect(() => {
-        if (!rawKpiTokenBalance || !initialSupply) return;
+        if (!rawKpiTokenBalance || !initialSupply || !oracles) return;
         const balance = new Amount(
             initialSupply.currency,
             rawKpiTokenBalance.value
@@ -53,39 +66,18 @@ export const WalletPosition = ({
         if (!collaterals || !initialSupply) return;
         if (collaterals.length === 0) {
             setGuaranteedRewards(null);
+            setMaximumRewards(null);
             return;
         }
-        const { maximum, guaranteed } = collaterals.reduce(
-            (
-                accumulator: {
-                    guaranteed: Amount<Token>[];
-                    maximum: Amount<Token>[];
-                },
-                collateral
-            ) => {
-                accumulator.maximum.push(
-                    new Amount(
-                        collateral.amount.currency,
-                        collateral.amount.raw
-                            .mul(balance.raw)
-                            .div(initialSupply.raw)
-                    )
-                );
-                if (collateral.minimumPayout.isZero()) return accumulator;
-                accumulator.guaranteed.push(
-                    new Amount(
-                        collateral.minimumPayout.currency,
-                        collateral.minimumPayout.raw
-                            .mul(balance.raw)
-                            .div(initialSupply.raw)
-                    )
-                );
-                return accumulator;
-            },
-            { guaranteed: [], maximum: [] }
+        setMaximumRewards(
+            getMaximumRewards(balance, initialSupply, collaterals)
         );
-        setMaximumRewards(maximum);
-        setGuaranteedRewards(guaranteed);
+        setGuaranteedRewards(
+            getGuaranteedRewards(balance, initialSupply, collaterals)
+        );
+        setRedeemableRewards(
+            getRedeemableRewards(oracles, balance, initialSupply, collaterals)
+        );
     }, [
         collaterals,
         erc20Name,
@@ -93,108 +85,162 @@ export const WalletPosition = ({
         initialSupply,
         kpiToken.address,
         kpiToken.chainId,
+        oracles,
         rawKpiTokenBalance,
     ]);
 
-    return (
-        <div className="flex flex-col w-full max-w-6xl bg-white dark:bg-black border border-black dark:border-gray-400">
-            {!isConnected ? (
-                <div className="p-6">
-                    <Typography variant="2xl" uppercase>
-                        WALLET NOT CONNECTED
+    return !connectedAddress ? (
+        <div className="flex p-6 h-60 items-center justify-center w-full max-w-6xl bg-gray-200 dark:bg-black">
+            <Typography uppercase>{t("position.noWallet")}</Typography>
+        </div>
+    ) : (
+        <div className="flex flex-col gap-6">
+            <div className="flex flex-col w-full max-w-6xl bg-white dark:bg-black border border-black dark:border-gray-400">
+                <div className="w-full p-6 bg-gray-200 dark:bg-gray-700 border-b border-black dark:border-gray-400">
+                    <Typography
+                        weight="medium"
+                        className={{
+                            root: "text-ellipsis overflow-hidden ...",
+                        }}
+                    >
+                        {connectedAddress}
                     </Typography>
                 </div>
-            ) : (
-                <>
-                    <div className="w-full p-6 bg-gray-300 dark:bg-gray-700 border-b border-black dark:border-gray-400">
+                <div className="w-full p-6 flex flex-col sm:flex-row justify-between gap-6 border-black border-b">
+                    <div className="flex-col">
                         <Typography
-                            weight="medium"
-                            className={{
-                                root: "text-ellipsis overflow-hidden ...",
-                            }}
+                            variant="xs"
+                            uppercase
+                            className={{ root: "mb-2" }}
                         >
-                            {address}
+                            {t("position.rewards.guaranteed.label")}
                         </Typography>
-                    </div>
-                    <div className="w-full p-6 flex flex-col sm:flex-row justify-between gap-4">
-                        <div>
-                            <Typography
-                                variant="xs"
-                                uppercase
-                                className={{ root: "mb-2" }}
-                            >
-                                {t("position.balance.label")}
-                            </Typography>
-                            {loading || !balance ? (
-                                <Skeleton width="60px" />
-                            ) : (
-                                <Typography weight="medium">
-                                    {`${commify(balance.toFixed(4))}
-                                    ${balance.currency.symbol}`}
-                                </Typography>
-                            )}
-                        </div>
-                        <div className="flex-col">
-                            <Typography
-                                variant="xs"
-                                uppercase
-                                className={{ root: "mb-2" }}
-                            >
-                                {t("position.rewards.guaranteed.label")}
-                            </Typography>
+                        <div className="flex flex-col gap-2">
                             {loading || !guaranteedRewards ? (
-                                <Skeleton width="60px" />
+                                new Array(collaterals?.length || 1)
+                                    .fill(null)
+                                    .map((_, index) => (
+                                        <TokenAmount key={index} loading />
+                                    ))
                             ) : (
-                                <div className="flex flex-col gap-2">
+                                <div className="flex items-center gap-2">
                                     {guaranteedRewards.map((reward) => {
                                         return (
-                                            <Typography
+                                            <TokenAmount
                                                 key={reward.currency.address}
-                                                weight="medium"
-                                            >
-                                                {commify(reward.toFixed(4))}
-                                                {reward.currency.symbol}
-                                            </Typography>
-                                        );
-                                    })}
-                                </div>
-                            )}
-                        </div>
-                        <div className="flex-col">
-                            <Typography
-                                variant="xs"
-                                uppercase
-                                className={{ root: "mb-2" }}
-                            >
-                                {t("position.rewards.maximum.label")}
-                            </Typography>
-                            {loading || !maximumRewards ? (
-                                <Skeleton width="60px" />
-                            ) : (
-                                <div className="flex flex-col gap-2">
-                                    {maximumRewards.map((reward) => {
-                                        return (
-                                            <Typography
-                                                key={reward.currency.address}
-                                                weight="medium"
-                                            >
-                                                {commify(reward.toFixed(4))}
-                                                {reward.currency.symbol}
-                                            </Typography>
+                                                amount={reward}
+                                            />
                                         );
                                     })}
                                 </div>
                             )}
                         </div>
                     </div>
-                    <WalletActions
-                        t={t}
-                        kpiToken={kpiToken}
-                        collaterals={collaterals}
-                        oracles={oracles}
-                    />
-                </>
-            )}
+                    <div className="flex-col">
+                        <Typography
+                            variant="xs"
+                            uppercase
+                            className={{ root: "mb-2" }}
+                        >
+                            {t("position.rewards.maximum.label")}
+                        </Typography>
+                        <div className="flex flex-col gap-2">
+                            {loading || !maximumRewards ? (
+                                new Array(collaterals?.length || 1)
+                                    .fill(null)
+                                    .map((_, index) => (
+                                        <TokenAmount key={index} loading />
+                                    ))
+                            ) : (
+                                <div className="flex items-center gap-2">
+                                    {maximumRewards.map((reward) => {
+                                        return (
+                                            <TokenAmount
+                                                key={reward.currency.address}
+                                                amount={reward}
+                                            />
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex-col">
+                        <Typography
+                            variant="xs"
+                            uppercase
+                            className={{ root: "mb-2" }}
+                        >
+                            {t("position.rewards.remaining.label")}
+                        </Typography>
+                        {loading ||
+                        !kpiTokenCollateralBalances ||
+                        loadingKPITokenCollateralBalances ? (
+                            new Array(collaterals?.length || 1)
+                                .fill(null)
+                                .map((_, index) => (
+                                    <TokenAmount key={index} loading />
+                                ))
+                        ) : (
+                            <div className="flex items-center gap-2">
+                                {kpiTokenCollateralBalances.map((reward) => {
+                                    return (
+                                        <TokenAmount
+                                            key={reward.currency.address}
+                                            amount={reward}
+                                        />
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                </div>
+                <div className="w-full flex justify-between gap-4">
+                    <div className="w-1/2 p-6 border-black border-r">
+                        <Typography
+                            variant="xs"
+                            uppercase
+                            className={{ root: "mb-2" }}
+                        >
+                            {t("position.balance.label")}
+                        </Typography>
+                        <TokenAmount amount={balance} loading={loading} />
+                    </div>
+                    <div className="w-1/2 p-6">
+                        <Typography
+                            variant="xs"
+                            uppercase
+                            className={{ root: "mb-2" }}
+                        >
+                            {t("position.rewards.claimable.label")}
+                        </Typography>
+                        {loading || !redeemableRewards ? (
+                            new Array(collaterals?.length || 1)
+                                .fill(null)
+                                .map((_, index) => (
+                                    <TokenAmount key={index} loading />
+                                ))
+                        ) : (
+                            <div className="flex items-center gap-2">
+                                {redeemableRewards.map((reward) => {
+                                    return (
+                                        <TokenAmount
+                                            key={reward.currency.address}
+                                            amount={reward}
+                                        />
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+            <WalletActions
+                t={t}
+                collaterals={collaterals}
+                redeemableRewards={redeemableRewards}
+                oracles={oracles}
+            />
         </div>
     );
 };
