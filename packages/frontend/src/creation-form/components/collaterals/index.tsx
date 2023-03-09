@@ -17,11 +17,13 @@ import {
     NumberFormatValue,
     TokenWithLogoURI,
 } from "../../types";
-import { Amount } from "@carrot-kpi/sdk";
+import { Amount, Token } from "@carrot-kpi/sdk";
 import { Address, useAccount, useBalance, useNetwork } from "wagmi";
 import { PROTOCOL_FEE_BPS, TOKEN_LIST_URLS } from "../../constants";
 import { ReactComponent as ArrowDown } from "../../../assets/arrow-down.svg";
 import { CollateralsTable } from "./table";
+import { formatTokenAmount } from "../../../utils/formatting";
+import { parseUnits } from "ethers/lib/utils.js";
 
 interface CollateralProps {
     t: NamespacedTranslateFunction;
@@ -141,8 +143,17 @@ export const Collaterals = ({
         const parsedRawAmount = parseFloat(pickerRawAmount.value);
         if (isNaN(parsedRawAmount)) return;
         setProtocolFeeAmount(
-            utils.commify(
-                ((parsedRawAmount * PROTOCOL_FEE_BPS) / 10_000).toFixed(4)
+            formatTokenAmount(
+                new Amount(
+                    pickedToken as unknown as Token,
+                    parseUnits(
+                        (
+                            (parsedRawAmount * PROTOCOL_FEE_BPS) /
+                            10_000
+                        ).toString(),
+                        pickedToken.decimals
+                    )
+                )
             )
         );
     }, [pickedToken, pickerRawAmount]);
