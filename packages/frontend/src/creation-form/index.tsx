@@ -16,7 +16,7 @@ import {
     SpecificationData,
     TokenData as TokenDataType,
 } from "./types";
-import { useNetwork } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 import { GenericData } from "./components/generic-data";
 import { Collaterals } from "./components/collaterals";
 import { OraclesConfiguration } from "./components/oracles-configuration";
@@ -34,6 +34,7 @@ export const Component = ({
     navigate,
     onTx,
 }: KPITokenCreationFormProps): ReactElement => {
+    const { address: connectedAddress } = useAccount();
     const { loading, templates: oracleTemplates } = useOracleTemplates();
 
     const { chain } = useNetwork();
@@ -78,6 +79,20 @@ export const Component = ({
     const [oraclesData, setOraclesData] = useState<OracleData[]>([]);
     const [outcomesData, setOutcomesData] = useState<OutcomeData[]>([]);
     const [createdKPITokenAddress, setCreatedKPITokenAddress] = useState("");
+
+    // on walet disconnect, reset EVERYTHING
+    useEffect(() => {
+        if (connectedAddress) return;
+        setStep(0);
+        setMostUpdatedStep(0);
+        setSpecificationData(null);
+        setCollateralsData([]);
+        setTokenData(null);
+        setOracleTemplatesData([]);
+        setOraclesData([]);
+        setOutcomesData([]);
+        setCreatedKPITokenAddress("");
+    }, [connectedAddress]);
 
     useEffect(() => {
         if (oracleTemplates.length === 1 && oracleTemplatesData.length === 0)
@@ -157,133 +172,142 @@ export const Component = ({
         <div className="relative h-full w-full bg-green scrollbar overflow-y-auto px-4 pt-10">
             <div className="absolute bg-grid-light top-0 left-0 w-full h-full" />
             <div className="h-full flex flex-col items-center justify-between">
-                <div className="flex lg:hidden mb-8">
-                    <Stepper
-                        layout="horizontal"
-                        stepTitles={stepTitles}
+                {connectedAddress && (
+                    <>
+                        <div className="flex lg:hidden mb-8">
+                            <Stepper
+                                layout="horizontal"
+                                stepTitles={stepTitles}
+                                activeStep={step}
+                                lastStepCompleted={mostUpdatedStep}
+                                onClick={handleStepClick}
+                            />
+                        </div>
+                        <div className="absolute left-10 top-40 hidden lg:flex">
+                            <Stepper
+                                layout="vertical"
+                                stepTitles={stepTitles}
+                                activeStep={step}
+                                lastStepCompleted={mostUpdatedStep}
+                                onClick={handleStepClick}
+                            />
+                        </div>
+                    </>
+                )}
+                {connectedAddress ? (
+                    <MultiStepCards
                         activeStep={step}
-                        lastStepCompleted={mostUpdatedStep}
-                        onClick={handleStepClick}
-                    />
-                </div>
-                <div className="absolute left-10 top-40 hidden lg:flex">
-                    <Stepper
-                        layout="vertical"
-                        stepTitles={stepTitles}
-                        activeStep={step}
-                        lastStepCompleted={mostUpdatedStep}
-                        onClick={handleStepClick}
-                    />
-                </div>
-                <MultiStepCards
-                    activeStep={step}
-                    messages={{ step: t("step") }}
-                    className={{ root: "h-full justify-between z-[1]" }}
-                >
-                    <StepCard
-                        title={t("card.general.title")}
-                        step={1}
-                        className={{ root: "relative pb-10" }}
                         messages={{ step: t("step") }}
+                        className={{ root: "h-full justify-between z-[1]" }}
                     >
-                        <GenericData
-                            t={t}
-                            specificationData={specificationData}
-                            tokenData={tokenData}
-                            onNext={handleGenericDataNext}
-                        />
-                    </StepCard>
-                    <StepCard
-                        title={t("card.collateral.title")}
-                        step={2}
-                        className={{ root: "relative pb-10" }}
-                        messages={{ step: t("step") }}
-                    >
-                        <Collaterals
-                            t={t}
-                            collaterals={collateralsData}
-                            onNext={handleCollateralsNext}
-                        />
-                    </StepCard>
-                    {enableOraclePickStep && (
                         <StepCard
-                            title={t("card.oracle.pick.title")}
-                            step={3}
+                            title={t("card.general.title")}
+                            step={1}
                             className={{ root: "relative pb-10" }}
                             messages={{ step: t("step") }}
                         >
-                            <OraclesPicker
+                            <GenericData
                                 t={t}
-                                loading={loading}
-                                templates={oracleTemplates}
-                                oracleTemplatesData={oracleTemplatesData}
-                                onNext={handleOraclesPickerNext}
-                            />
-                        </StepCard>
-                    )}
-                    <StepCard
-                        title={t("card.oracle.configuration.title")}
-                        step={enableOraclePickStep ? 4 : 3}
-                        className={{ root: "relative pb-10" }}
-                        messages={{ step: t("step") }}
-                    >
-                        <OraclesConfiguration
-                            t={t}
-                            i18n={i18n}
-                            oraclesData={oraclesData}
-                            templates={oracleTemplatesData}
-                            onNext={handleOraclesConfigurationNext}
-                            navigate={navigate}
-                            onTx={onTx}
-                        />
-                    </StepCard>
-                    <StepCard
-                        title={t("card.outcome.configuration.title")}
-                        step={enableOraclePickStep ? 5 : 4}
-                        className={{ root: "relative pb-10" }}
-                        messages={{ step: t("step") }}
-                    >
-                        <OutcomesConfiguration
-                            t={t}
-                            outcomesData={outcomesData}
-                            templates={oracleTemplatesData}
-                            onNext={handleOutcomesConfigurationNext}
-                        />
-                    </StepCard>
-                    {!!specificationData && !!tokenData && (
-                        <StepCard
-                            title={t("card.deploy.title")}
-                            step={enableOraclePickStep ? 6 : 5}
-                            className={{ root: "relative" }}
-                            messages={{ step: t("step") }}
-                        >
-                            <Deploy
-                                t={t}
-                                targetAddress={creationProxyAddress}
                                 specificationData={specificationData}
                                 tokenData={tokenData}
-                                collateralsData={collateralsData}
-                                oracleTemplatesData={oracleTemplatesData}
-                                outcomesData={outcomesData}
+                                onNext={handleGenericDataNext}
+                            />
+                        </StepCard>
+                        <StepCard
+                            title={t("card.collateral.title")}
+                            step={2}
+                            className={{ root: "relative pb-10" }}
+                            messages={{ step: t("step") }}
+                        >
+                            <Collaterals
+                                t={t}
+                                collaterals={collateralsData}
+                                onNext={handleCollateralsNext}
+                            />
+                        </StepCard>
+                        {enableOraclePickStep && (
+                            <StepCard
+                                title={t("card.oracle.pick.title")}
+                                step={3}
+                                className={{ root: "relative pb-10" }}
+                                messages={{ step: t("step") }}
+                            >
+                                <OraclesPicker
+                                    t={t}
+                                    loading={loading}
+                                    templates={oracleTemplates}
+                                    oracleTemplatesData={oracleTemplatesData}
+                                    onNext={handleOraclesPickerNext}
+                                />
+                            </StepCard>
+                        )}
+                        <StepCard
+                            title={t("card.oracle.configuration.title")}
+                            step={enableOraclePickStep ? 4 : 3}
+                            className={{ root: "relative pb-10" }}
+                            messages={{ step: t("step") }}
+                        >
+                            <OraclesConfiguration
+                                t={t}
+                                i18n={i18n}
                                 oraclesData={oraclesData}
-                                onNext={handleDeployNext}
-                                onCreate={onCreate}
+                                templates={oracleTemplatesData}
+                                onNext={handleOraclesConfigurationNext}
+                                navigate={navigate}
                                 onTx={onTx}
                             />
                         </StepCard>
-                    )}
-                    <StepCard
-                        title={t("card.success.title")}
-                        step={enableOraclePickStep ? 7 : 6}
-                        messages={{ step: t("step") }}
-                    >
-                        <Success
-                            t={t}
-                            navigate={navigate}
-                            kpiTokenAddress={createdKPITokenAddress}
-                        />
-                    </StepCard>
-                </MultiStepCards>
+                        <StepCard
+                            title={t("card.outcome.configuration.title")}
+                            step={enableOraclePickStep ? 5 : 4}
+                            className={{ root: "relative pb-10" }}
+                            messages={{ step: t("step") }}
+                        >
+                            <OutcomesConfiguration
+                                t={t}
+                                outcomesData={outcomesData}
+                                templates={oracleTemplatesData}
+                                onNext={handleOutcomesConfigurationNext}
+                            />
+                        </StepCard>
+                        {!!specificationData && !!tokenData && (
+                            <StepCard
+                                title={t("card.deploy.title")}
+                                step={enableOraclePickStep ? 6 : 5}
+                                className={{ root: "relative" }}
+                                messages={{ step: t("step") }}
+                            >
+                                <Deploy
+                                    t={t}
+                                    targetAddress={creationProxyAddress}
+                                    specificationData={specificationData}
+                                    tokenData={tokenData}
+                                    collateralsData={collateralsData}
+                                    oracleTemplatesData={oracleTemplatesData}
+                                    outcomesData={outcomesData}
+                                    oraclesData={oraclesData}
+                                    onNext={handleDeployNext}
+                                    onCreate={onCreate}
+                                    onTx={onTx}
+                                />
+                            </StepCard>
+                        )}
+                        <StepCard
+                            title={t("card.success.title")}
+                            step={enableOraclePickStep ? 7 : 6}
+                            messages={{ step: t("step") }}
+                        >
+                            <Success
+                                t={t}
+                                navigate={navigate}
+                                kpiTokenAddress={createdKPITokenAddress}
+                            />
+                        </StepCard>
+                    </MultiStepCards>
+                ) : (
+                    // TODO: make this better once the design is ready
+                    <div>Connect the wallet</div>
+                )}
             </div>
         </div>
     );
