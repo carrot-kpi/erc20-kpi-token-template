@@ -1,12 +1,4 @@
-import {
-    ChangeEvent,
-    FocusEvent,
-    ReactElement,
-    useCallback,
-    useEffect,
-    useMemo,
-    useState,
-} from "react";
+import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
 import { NumberFormatValue, SpecificationData, TokenData } from "../../types";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import {
@@ -105,20 +97,10 @@ export const GenericData = ({
         title,
     ]);
 
-    const handleOnBlur = useCallback(
-        (stateUpdater: (value: string) => void) =>
-            (event: FocusEvent<HTMLInputElement>) => {
-                stateUpdater(event.target.value.trim());
-            },
-        []
-    );
-
     const handleTitleChange = useCallback(
-        (event: ChangeEvent<HTMLInputElement>): void => {
-            setTitle(event.target.value);
-            setTitleErrorText(
-                !event.target.value ? t("error.title.empty") : ""
-            );
+        (value: string): void => {
+            setTitle(value);
+            setTitleErrorText(!value ? t("error.title.empty") : "");
         },
         [t]
     );
@@ -157,21 +139,18 @@ export const GenericData = ({
     );
 
     const handleERC20NameChange = useCallback(
-        (event: ChangeEvent<HTMLInputElement>) => {
-            setERC20Name(event.target.value);
-            setERC20NameErrorText(
-                !event.target.value ? t("error.erc20.name.empty") : ""
-            );
+        (value: string) => {
+            setERC20Name(value);
+            setERC20NameErrorText(!value ? t("error.erc20.name.empty") : "");
         },
         [t]
     );
 
     const handleERC20SymbolChange = useCallback(
-        (event: ChangeEvent<HTMLInputElement>) => {
-            const trimmedValue = event.target.value.trim();
-            setERC20Symbol(trimmedValue);
+        (value: string) => {
+            setERC20Symbol(value);
             setERC20SymbolErrorText(
-                !trimmedValue ? t("error.erc20.symbol.empty") : ""
+                !value ? t("error.erc20.symbol.empty") : ""
             );
         },
         [t]
@@ -232,7 +211,6 @@ export const GenericData = ({
                 label={t("general.label.title")}
                 placeholder={t("general.placeholder.title")}
                 onChange={handleTitleChange}
-                onBlur={handleOnBlur(setTitle)}
                 value={title}
                 error={!!titleErrorText}
                 helperText={titleErrorText}
@@ -290,7 +268,6 @@ export const GenericData = ({
                     label={t("general.label.token.name")}
                     placeholder={"Example"}
                     onChange={handleERC20NameChange}
-                    onBlur={handleOnBlur(setERC20Name)}
                     value={erc20Name}
                     error={!!erc20NameErrorText}
                     helperText={erc20NameErrorText}

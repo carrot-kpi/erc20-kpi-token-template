@@ -1,18 +1,33 @@
 import { TextInput, TextInputProps } from "@carrot-kpi/ui";
-import { ChangeEvent, useCallback } from "react";
+import { ChangeEvent, FocusEvent, useCallback } from "react";
 import { NO_SPECIAL_CHARACTERS_REGEX } from "../../constants";
+
+interface NoSpecialCharactersTextInputProps
+    extends Omit<TextInputProps, "onChange"> {
+    onChange: (value: string) => void;
+}
 
 export const NoSpecialCharactersTextInput = ({
     onChange,
     ...props
-}: TextInputProps) => {
+}: NoSpecialCharactersTextInputProps) => {
     const handleChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {
-            if (!event.target.value.match(NO_SPECIAL_CHARACTERS_REGEX)) return;
-            if (onChange) onChange(event);
+            if (!onChange) return;
+            const value = event.target.value;
+            if (!value.match(NO_SPECIAL_CHARACTERS_REGEX)) return;
+            onChange(value);
         },
         [onChange]
     );
 
-    return <TextInput {...props} onChange={handleChange} />;
+    const handleBlur = useCallback(
+        (event: FocusEvent<HTMLInputElement>) => {
+            if (!onChange) return;
+            onChange(event.target.value.trim());
+        },
+        [onChange]
+    );
+
+    return <TextInput {...props} onChange={handleChange} onBlur={handleBlur} />;
 };
