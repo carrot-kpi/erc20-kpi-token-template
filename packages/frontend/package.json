@@ -62,7 +62,7 @@
         "webpack-dev-server": "^4.11.1"
     },
     "devDependencies": {
-        "@carrot-kpi/frontend": "^1.0.0-rc.43",
+        "@carrot-kpi/frontend": "^1.0.0-rc.44",
         "@fontsource/inter": "^4.5.15",
         "@size-limit/file": "^8.2.4",
         "@svgr/webpack": "^6.5.1",
