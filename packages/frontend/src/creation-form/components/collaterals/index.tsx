@@ -147,10 +147,9 @@ export const Collaterals = ({
                 new Amount(
                     pickedToken as unknown as Token,
                     parseUnits(
-                        (
-                            (parsedRawAmount * PROTOCOL_FEE_BPS) /
-                            10_000
-                        ).toString(),
+                        ((parsedRawAmount * PROTOCOL_FEE_BPS) / 10_000).toFixed(
+                            pickedToken.decimals
+                        ),
                         pickedToken.decimals
                     )
                 )
