@@ -1,4 +1,6 @@
 {
+    "wallet.disconnected.title": "Wallet diconnected",
+    "wallet.disconnected.description": "A connected wallet is required to continue.",
     "card.step.label": "Step {{number}}",
     "card.general.title": "General",
     "card.collateral.title": "Collateral",

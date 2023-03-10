@@ -1,6 +1,12 @@
 import "../global.css";
 
-import { Loader, MultiStepCards, StepCard, Stepper } from "@carrot-kpi/ui";
+import {
+    Loader,
+    MultiStepCards,
+    StepCard,
+    Stepper,
+    Typography,
+} from "@carrot-kpi/ui";
 import {
     KPITokenCreationFormProps,
     useOracleTemplates,
@@ -24,6 +30,7 @@ import { OutcomesConfiguration } from "./components/outcomes-configuration";
 import { Deploy } from "./components/deploy";
 import { CREATION_PROXY_ADDRESS } from "./constants";
 import { Success } from "./components/success";
+import { ReactComponent as DisconnectedWallet } from "../assets/disconnected-wallet.svg";
 
 // TODO: add a check that displays an error message if the creation
 // proxy address is 0 for more than x time
@@ -306,8 +313,15 @@ export const Component = ({
                         </StepCard>
                     </MultiStepCards>
                 ) : (
-                    // TODO: make this better once the design is ready
-                    <div>Connect the wallet</div>
+                    <div className="bg-white rounded-xl p-8 flex flex-col items-center gap-4 z-[1]">
+                        <DisconnectedWallet className="w-40" />
+                        <Typography variant="h5">
+                            {t("wallet.disconnected.title")}
+                        </Typography>
+                        <Typography>
+                            {t("wallet.disconnected.description")}
+                        </Typography>
+                    </div>
                 )}
             </div>
         </div>
