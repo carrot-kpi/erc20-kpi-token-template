@@ -51,7 +51,9 @@ export const CollateralRow = ({
         new Amount(
             amount.currency,
             parseUnits(
-                amount.sub(amount.mul(PROTOCOL_FEE_BPS).div(10_000)).toString(),
+                amount
+                    .sub(amount.mul(PROTOCOL_FEE_BPS).div(10_000))
+                    .toFixed(amount.currency.decimals),
                 amount.currency.decimals
             )
         ),
