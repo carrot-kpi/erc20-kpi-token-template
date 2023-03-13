@@ -1,6 +1,8 @@
 {
     "wallet.disconnected.title": "Wallet diconnected",
     "wallet.disconnected.description": "A connected wallet is required to continue.",
+    "chainId.changed.title": "Chain changed",
+    "chainId.changed.description": "This instance of the template is chain-specific. Please switch back to the previous chain to continue creating the KPI token.",
     "card.step.label": "Step {{number}}",
     "card.general.title": "General",
     "card.collateral.title": "Collateral",

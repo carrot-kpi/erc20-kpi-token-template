@@ -45,6 +45,10 @@ export const Component = ({
     const { loading, templates: oracleTemplates } = useOracleTemplates();
 
     const { chain } = useNetwork();
+    const [initialChainId, setInitialChainId] = useState<ChainId | undefined>(
+        chain?.id
+    );
+    const [chainIdChanged, setChainIdChanged] = useState(false);
     const creationProxyAddress = useMemo(() => {
         if (__DEV__) return CCT_CREATION_PROXY_ADDRESS;
         return chain && chain.id in ChainId
@@ -87,7 +91,7 @@ export const Component = ({
     const [outcomesData, setOutcomesData] = useState<OutcomeData[]>([]);
     const [createdKPITokenAddress, setCreatedKPITokenAddress] = useState("");
 
-    // on walet disconnect, reset EVERYTHING
+    // on wallet disconnect, reset EVERYTHING
     useEffect(() => {
         if (connectedAddress) return;
         setStep(0);
@@ -100,6 +104,18 @@ export const Component = ({
         setOutcomesData([]);
         setCreatedKPITokenAddress("");
     }, [connectedAddress]);
+
+    // if the chain id is initially unavailable and then
+    // it becomes available later, set it
+    useEffect(() => {
+        if (initialChainId || !chain?.id) return;
+        setInitialChainId(chain.id);
+    }, [chain?.id, initialChainId]);
+
+    useEffect(() => {
+        if (!chain || !initialChainId) return;
+        setChainIdChanged(chain.id != initialChainId);
+    }, [chain, initialChainId]);
 
     useEffect(() => {
         if (oracleTemplates.length === 1 && oracleTemplatesData.length === 0)
@@ -201,7 +217,7 @@ export const Component = ({
                         </div>
                     </>
                 )}
-                {connectedAddress ? (
+                {connectedAddress && !chainIdChanged ? (
                     <MultiStepCards
                         activeStep={step}
                         messages={{ step: t("step") }}
@@ -313,13 +329,21 @@ export const Component = ({
                         </StepCard>
                     </MultiStepCards>
                 ) : (
-                    <div className="bg-white rounded-xl p-8 flex flex-col items-center gap-4 z-[1]">
+                    <div className="bg-white border border-black rounded-xl p-8 flex flex-col items-center gap-4 z-[1]">
                         <DisconnectedWallet className="w-40" />
                         <Typography variant="h5">
-                            {t("wallet.disconnected.title")}
+                            {t(
+                                chainIdChanged
+                                    ? "chainId.changed.title"
+                                    : "wallet.disconnected.title"
+                            )}
                         </Typography>
                         <Typography>
-                            {t("wallet.disconnected.description")}
+                            {t(
+                                chainIdChanged
+                                    ? "chainId.changed.description"
+                                    : "wallet.disconnected.description"
+                            )}
                         </Typography>
                     </div>
                 )}
