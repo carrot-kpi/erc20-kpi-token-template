@@ -150,6 +150,17 @@ export const OutcomesConfiguration = ({
 
     return (
         <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-3">
+                <Typography variant="sm">
+                    {t("card.outcome.configuration.description.1")}
+                </Typography>
+                <Typography variant="sm">
+                    {t("card.outcome.configuration.description.2")}
+                </Typography>
+                <Typography variant="sm">
+                    {t("card.outcome.configuration.description.3")}
+                </Typography>
+            </div>
             {templates.length === 1 ? (
                 <SingleConfiguration
                     t={t}
