@@ -2,7 +2,7 @@ import { ChainId } from "@carrot-kpi/sdk";
 import { Address } from "wagmi";
 
 export const NO_SPECIAL_CHARACTERS_REGEX =
-    /^[A-Z@~`!@#$%^&*()_=+\\';:"\/?>.<,-\s]*$/i;
+    /^[A-Z0-9@~`!@#$%^&*()_=+\\';:"\/?>.<,-\s]*$/i;
 
 const COINGECKO_LIST = "https://tokens.coingecko.com/uniswap/all.json";
 const CARROT_LIST = "https://carrot-kpi.dev/token-list.json";
