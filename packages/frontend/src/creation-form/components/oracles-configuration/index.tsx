@@ -63,6 +63,7 @@ export const OraclesConfiguration = ({
             return accumulator;
         }, {})
     );
+    const [loading, setLoading] = useState(false);
     const [disabled, setDisabled] = useState(true);
     const [partialKPIToken, setPartialKPIToken] = useState<
         Partial<KPIToken> | undefined
@@ -108,20 +109,22 @@ export const OraclesConfiguration = ({
         const perform = async () => {
             try {
                 assertInitializationBundleGetterPresent(data);
-                onNext(
-                    await Promise.all(
-                        Object.values(data).map(async (item) => {
-                            const initializationBundle =
-                                await item.initializationBundleGetter();
-                            return {
-                                ...item,
-                                initializationBundle,
-                            };
-                        })
-                    )
+                setLoading(true);
+                const oracles = await Promise.all(
+                    Object.values(data).map(async (item) => {
+                        const initializationBundle =
+                            await item.initializationBundleGetter();
+                        return {
+                            ...item,
+                            initializationBundle,
+                        };
+                    })
                 );
+                onNext(oracles);
             } catch (error) {
                 console.warn("could not get initialization data", error);
+            } finally {
+                setLoading(false);
             }
         };
         void perform();
@@ -163,7 +166,11 @@ export const OraclesConfiguration = ({
                     </Accordion>
                 ))
             )}
-            <NextStepButton onClick={handleNext} disabled={disabled}>
+            <NextStepButton
+                onClick={handleNext}
+                disabled={disabled}
+                loading={loading}
+            >
                 {t("next")}
             </NextStepButton>
         </div>
