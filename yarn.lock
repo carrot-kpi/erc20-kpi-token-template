@@ -1139,20 +1139,6 @@
     decimal.js-light "^2.5.1"
     multiformats "^9.9.0"
 
-"@carrot-kpi/sdk@^1.16.5":
-  version "1.16.5"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.16.5.tgz#27ef6649042e1d7c01f81f6788b18e77582f3c7d"
-  integrity sha512-R/smwH28jhwtfKnqITpSwiFRobUPhyDTIcvfFGKGF62UB2xrnSgNnWQd3zCnGtk8zwl29IOA9rtq3LP3IhcmMg==
-  dependencies:
-    "@ethersproject/address" "^5.7.0"
-    "@ethersproject/bignumber" "^5.7.0"
-    "@ethersproject/contracts" "^5.7.0"
-    "@ethersproject/providers" "^5.7.2"
-    "@ethersproject/units" "^5.7.0"
-    "@ethersproject/wallet" "^5.7.0"
-    decimal.js-light "^2.5.1"
-    multiformats "^9.9.0"
-
 "@carrot-kpi/sdk@^1.18.0":
   version "1.18.0"
   resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.18.0.tgz#7a2671dca06c11697dc6e26e15af35bdd8200218"
@@ -5897,13 +5883,13 @@ capital-case@^1.0.4:
     tslib "^2.0.3"
     upper-case-first "^2.0.2"
 
-carrot-scripts@^0.15.2:
-  version "0.15.2"
-  resolved "https://registry.yarnpkg.com/carrot-scripts/-/carrot-scripts-0.15.2.tgz#9154e0c4ac9c741e172a21164efd0a986d7dae0b"
-  integrity sha512-M76I1ARtn6etHvbUpfnr/Q+wDgfz1gyvo8r1Gt1I4YYMBTwZXfaRsWgaZDBPywQDTd9nNJo6nPjrhXeuBSJTew==
+carrot-scripts@^0.15.3:
+  version "0.15.3"
+  resolved "https://registry.yarnpkg.com/carrot-scripts/-/carrot-scripts-0.15.3.tgz#fe3ddac4094fbd338b533236f053c7d5d1f595f4"
+  integrity sha512-iZEZAbco5X4TuxxYysXasQerLBJgztK6DonXT0knYM7Hh/rVnzBNcyvxbMNMYgB+JGnsktFxAzEG5T5H1DgOUw==
   dependencies:
     "@carrot-kpi/ganache" "^0.1.0"
-    "@carrot-kpi/sdk" "^1.16.5"
+    "@carrot-kpi/sdk" "^1.18.0"
     chalk "^4.1.2"
     ethers "^5.7.1"
     git-rev-sync "^3.0.2"
