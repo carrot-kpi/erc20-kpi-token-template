@@ -12,11 +12,4 @@ remappings = [
     'tests/=tests/',
 ]
 ffi = true
-
-[profile.production]
-optimizer = true
-optimizer_runs = 200
-
-[profile.test]
-test = 'tests'
-optimizer = false
+optimizer_runs = 5000000
