@@ -1,12 +1,6 @@
 import "../global.css";
 
-import {
-    Loader,
-    MultiStepCards,
-    StepCard,
-    Stepper,
-    Typography,
-} from "@carrot-kpi/ui";
+import { Loader, MultiStepCards, StepCard, Stepper } from "@carrot-kpi/ui";
 import {
     KPITokenCreationFormProps,
     useOracleTemplates,
@@ -30,7 +24,6 @@ import { OutcomesConfiguration } from "./components/outcomes-configuration";
 import { Deploy } from "./components/deploy";
 import { CREATION_PROXY_ADDRESS } from "./constants";
 import { Success } from "./components/success";
-import { ReactComponent as DisconnectedWallet } from "../assets/disconnected-wallet.svg";
 
 // TODO: add a check that displays an error message if the creation
 // proxy address is 0 for more than x time
@@ -45,10 +38,6 @@ export const Component = ({
     const { loading, templates: oracleTemplates } = useOracleTemplates();
 
     const { chain } = useNetwork();
-    const [initialChainId, setInitialChainId] = useState<ChainId | undefined>(
-        chain?.id
-    );
-    const [chainIdChanged, setChainIdChanged] = useState(false);
     const creationProxyAddress = useMemo(() => {
         if (__DEV__) return CCT_CREATION_PROXY_ADDRESS;
         return chain && chain.id in ChainId
@@ -104,18 +93,6 @@ export const Component = ({
         setOutcomesData([]);
         setCreatedKPITokenAddress("");
     }, [connectedAddress]);
-
-    // if the chain id is initially unavailable and then
-    // it becomes available later, set it
-    useEffect(() => {
-        if (initialChainId || !chain?.id) return;
-        setInitialChainId(chain.id);
-    }, [chain?.id, initialChainId]);
-
-    useEffect(() => {
-        if (!chain || !initialChainId) return;
-        setChainIdChanged(chain.id != initialChainId);
-    }, [chain, initialChainId]);
 
     useEffect(() => {
         if (oracleTemplates.length === 1 && oracleTemplatesData.length === 0)
@@ -217,136 +194,116 @@ export const Component = ({
                         </div>
                     </>
                 )}
-                {connectedAddress && !chainIdChanged ? (
-                    <MultiStepCards
-                        activeStep={step}
+                <MultiStepCards
+                    activeStep={step}
+                    messages={{ step: t("step") }}
+                    className={{ root: "h-full justify-between z-[1]" }}
+                >
+                    <StepCard
+                        title={t("card.general.title")}
+                        step={1}
+                        className={{ root: "relative pb-10" }}
                         messages={{ step: t("step") }}
-                        className={{ root: "h-full justify-between z-[1]" }}
                     >
+                        <GenericData
+                            t={t}
+                            specificationData={specificationData}
+                            tokenData={tokenData}
+                            onNext={handleGenericDataNext}
+                        />
+                    </StepCard>
+                    <StepCard
+                        title={t("card.collateral.title")}
+                        step={2}
+                        className={{ root: "relative pb-10" }}
+                        messages={{ step: t("step") }}
+                    >
+                        <Collaterals
+                            t={t}
+                            collaterals={collateralsData}
+                            onNext={handleCollateralsNext}
+                        />
+                    </StepCard>
+                    {enableOraclePickStep && (
                         <StepCard
-                            title={t("card.general.title")}
-                            step={1}
+                            title={t("card.oracle.pick.title")}
+                            step={3}
                             className={{ root: "relative pb-10" }}
                             messages={{ step: t("step") }}
                         >
-                            <GenericData
+                            <OraclesPicker
                                 t={t}
+                                loading={loading}
+                                templates={oracleTemplates}
+                                oracleTemplatesData={oracleTemplatesData}
+                                onNext={handleOraclesPickerNext}
+                            />
+                        </StepCard>
+                    )}
+                    <StepCard
+                        title={t("card.oracle.configuration.title")}
+                        step={enableOraclePickStep ? 4 : 3}
+                        className={{ root: "relative pb-10" }}
+                        messages={{ step: t("step") }}
+                    >
+                        <OraclesConfiguration
+                            t={t}
+                            i18n={i18n}
+                            oraclesData={oraclesData}
+                            specificationData={specificationData}
+                            templates={oracleTemplatesData}
+                            onNext={handleOraclesConfigurationNext}
+                            navigate={navigate}
+                            onTx={onTx}
+                        />
+                    </StepCard>
+                    <StepCard
+                        title={t("card.outcome.configuration.title")}
+                        step={enableOraclePickStep ? 5 : 4}
+                        className={{ root: "relative pb-10" }}
+                        messages={{ step: t("step") }}
+                    >
+                        <OutcomesConfiguration
+                            t={t}
+                            outcomesData={outcomesData}
+                            templates={oracleTemplatesData}
+                            onNext={handleOutcomesConfigurationNext}
+                        />
+                    </StepCard>
+                    {!!specificationData && !!tokenData && (
+                        <StepCard
+                            title={t("card.deploy.title")}
+                            step={enableOraclePickStep ? 6 : 5}
+                            className={{ root: "relative" }}
+                            messages={{ step: t("step") }}
+                        >
+                            <Deploy
+                                t={t}
+                                targetAddress={creationProxyAddress}
                                 specificationData={specificationData}
                                 tokenData={tokenData}
-                                onNext={handleGenericDataNext}
-                            />
-                        </StepCard>
-                        <StepCard
-                            title={t("card.collateral.title")}
-                            step={2}
-                            className={{ root: "relative pb-10" }}
-                            messages={{ step: t("step") }}
-                        >
-                            <Collaterals
-                                t={t}
-                                collaterals={collateralsData}
-                                onNext={handleCollateralsNext}
-                            />
-                        </StepCard>
-                        {enableOraclePickStep && (
-                            <StepCard
-                                title={t("card.oracle.pick.title")}
-                                step={3}
-                                className={{ root: "relative pb-10" }}
-                                messages={{ step: t("step") }}
-                            >
-                                <OraclesPicker
-                                    t={t}
-                                    loading={loading}
-                                    templates={oracleTemplates}
-                                    oracleTemplatesData={oracleTemplatesData}
-                                    onNext={handleOraclesPickerNext}
-                                />
-                            </StepCard>
-                        )}
-                        <StepCard
-                            title={t("card.oracle.configuration.title")}
-                            step={enableOraclePickStep ? 4 : 3}
-                            className={{ root: "relative pb-10" }}
-                            messages={{ step: t("step") }}
-                        >
-                            <OraclesConfiguration
-                                t={t}
-                                i18n={i18n}
+                                collateralsData={collateralsData}
+                                oracleTemplatesData={oracleTemplatesData}
+                                outcomesData={outcomesData}
                                 oraclesData={oraclesData}
-                                specificationData={specificationData}
-                                templates={oracleTemplatesData}
-                                onNext={handleOraclesConfigurationNext}
-                                navigate={navigate}
+                                onNext={handleDeployNext}
+                                onCreate={onCreate}
                                 onTx={onTx}
                             />
                         </StepCard>
-                        <StepCard
-                            title={t("card.outcome.configuration.title")}
-                            step={enableOraclePickStep ? 5 : 4}
-                            className={{ root: "relative pb-10" }}
-                            messages={{ step: t("step") }}
-                        >
-                            <OutcomesConfiguration
-                                t={t}
-                                outcomesData={outcomesData}
-                                templates={oracleTemplatesData}
-                                onNext={handleOutcomesConfigurationNext}
-                            />
-                        </StepCard>
-                        {!!specificationData && !!tokenData && (
-                            <StepCard
-                                title={t("card.deploy.title")}
-                                step={enableOraclePickStep ? 6 : 5}
-                                className={{ root: "relative" }}
-                                messages={{ step: t("step") }}
-                            >
-                                <Deploy
-                                    t={t}
-                                    targetAddress={creationProxyAddress}
-                                    specificationData={specificationData}
-                                    tokenData={tokenData}
-                                    collateralsData={collateralsData}
-                                    oracleTemplatesData={oracleTemplatesData}
-                                    outcomesData={outcomesData}
-                                    oraclesData={oraclesData}
-                                    onNext={handleDeployNext}
-                                    onCreate={onCreate}
-                                    onTx={onTx}
-                                />
-                            </StepCard>
-                        )}
-                        <StepCard
-                            title={t("card.success.title")}
-                            step={enableOraclePickStep ? 7 : 6}
-                            messages={{ step: t("step") }}
-                        >
-                            <Success
-                                t={t}
-                                navigate={navigate}
-                                kpiTokenAddress={createdKPITokenAddress}
-                            />
-                        </StepCard>
-                    </MultiStepCards>
-                ) : (
-                    <div className="bg-white border border-black rounded-xl p-8 flex flex-col items-center gap-4 z-[1]">
-                        <DisconnectedWallet className="w-40" />
-                        <Typography variant="h5">
-                            {t(
-                                chainIdChanged
-                                    ? "chainId.changed.title"
-                                    : "wallet.disconnected.title"
-                            )}
-                        </Typography>
-                        <Typography>
-                            {t(
-                                chainIdChanged
-                                    ? "chainId.changed.description"
-                                    : "wallet.disconnected.description"
-                            )}
-                        </Typography>
-                    </div>
-                )}
+                    )}
+                    <StepCard
+                        title={t("card.success.title")}
+                        step={enableOraclePickStep ? 7 : 6}
+                        messages={{ step: t("step") }}
+                    >
+                        <Success
+                            t={t}
+                            navigate={navigate}
+                            kpiTokenAddress={createdKPITokenAddress}
+                        />
+                    </StepCard>
+                </MultiStepCards>
             </div>
         </div>
     );
