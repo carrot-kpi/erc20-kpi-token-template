@@ -1,12 +1,7 @@
-import { Amount, KPIToken, Token } from "@carrot-kpi/sdk";
+import { Amount, Token } from "@carrot-kpi/sdk";
 import { Button, Typography } from "@carrot-kpi/ui";
 import { ReactElement, useEffect, useState } from "react";
-import {
-    NamespacedTranslateFunction,
-    useWatchData,
-    OraclePage,
-} from "@carrot-kpi/react";
-import { i18n } from "i18next";
+import { useWatchData, OraclePage, KPITokenPageProps } from "@carrot-kpi/react";
 
 import "../global.css";
 import { CollateralData } from "../creation-form/types";
@@ -19,21 +14,19 @@ import { ExpandableContent } from "../ui/expandable-content";
 import { decodeKPITokenData } from "../utils/data-decoding";
 import { FinalizableOracle } from "./types";
 
-interface PageProps {
-    i18n: i18n;
-    t: NamespacedTranslateFunction;
-    kpiToken: KPIToken;
-    data: string;
-}
-
-export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
+export const Component = ({
+    i18n,
+    t,
+    kpiToken,
+    onTx,
+}: KPITokenPageProps): ReactElement => {
     const provider = useProvider();
     const { chain } = useNetwork();
 
-    const { loading: loadingERC20Data, data } = useWatchData(kpiToken.address);
+    const { loading: loadingERC20Data, data } = useWatchData(kpiToken?.address);
 
     const { data: tokenData } = useToken({
-        address: kpiToken.address as Address,
+        address: kpiToken?.address as Address,
     });
 
     const [decodingKPITokenData, setDecodingKPITokenData] = useState(false);
@@ -49,6 +42,7 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
         let cancelled = false;
         const fetchData = async () => {
             if (!data) return;
+            if (!kpiToken) return;
             if (!cancelled) setDecodingKPITokenData(true);
             let decoded;
             try {
@@ -76,21 +70,22 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
         return () => {
             cancelled = true;
         };
-    }, [
-        data,
-        kpiToken.address,
-        kpiToken.chainId,
-        provider,
-        tokenData?.name,
-        tokenData?.symbol,
-    ]);
+    }, [data, kpiToken, provider, tokenData?.name, tokenData?.symbol]);
 
     useEffect(() => {
-        if (!chain || !chain.blockExplorers) return;
+        if (!chain || !chain.blockExplorers || !kpiToken) return;
         setOpenInExplorerHref(
             `${chain.blockExplorers.default.url}/address/${kpiToken.address}`
         );
-    }, [chain, kpiToken.address]);
+    }, [chain, kpiToken]);
+
+    if (!kpiToken) {
+        return (
+            <div className="bg-orange py-10 text-black flex justify-center">
+                <Loader />
+            </div>
+        );
+    }
 
     return (
         <div className="overflow-x-hidden">
@@ -159,6 +154,7 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                                         </div>
                                     }
                                     oracle={kpiToken.oracles[0]}
+                                    onTx={onTx}
                                 />
                             </div>
                         ) : (
@@ -173,6 +169,7 @@ export const Component = ({ i18n, t, kpiToken }: PageProps): ReactElement => {
                                                 i18n={i18n}
                                                 fallback={<Loader />}
                                                 oracle={kpiToken.oracles[0]}
+                                                onTx={onTx}
                                             />
                                         </div>
                                     </ExpandableContent>
