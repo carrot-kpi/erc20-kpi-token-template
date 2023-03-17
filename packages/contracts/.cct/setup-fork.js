@@ -1,17 +1,9 @@
-import { ChainId } from "@carrot-kpi/sdk";
-import { utils, ContractFactory, Contract } from "ethers";
+import { utils, ContractFactory } from "ethers";
 import { createRequire } from "module";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
 
 const require = createRequire(fileURLToPath(import.meta.url));
-
-const wrappedNativeCurrencyAbi = require("./abis/native-currency-wrapper.json");
-const WRAPPED_NATIVE_CURRENCY_ADDRESS = {
-    [ChainId.GOERLI]: "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6", // weth
-    [ChainId.SEPOLIA]: "0xa5ba8636a78bbf1910430d0368c0175ef5a1845b", // weth
-    [ChainId.GNOSIS]: "0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d", // wxdai
-};
 
 export const setupFork = async (
     factory,
@@ -73,15 +65,6 @@ export const setupFork = async (
     // mint some test erc20 tokens to signer
     await testToken1Contract.mint(signer.address, utils.parseUnits("100", 18));
     await testToken2Contract.mint(signer.address, utils.parseUnits("100", 18));
-
-    // give us some wrapped native currency too
-    await new Contract(
-        WRAPPED_NATIVE_CURRENCY_ADDRESS[chainId],
-        wrappedNativeCurrencyAbi,
-        signer
-    ).deposit({
-        value: utils.parseEther("1"),
-    });
 
     return {
         templateContract,
