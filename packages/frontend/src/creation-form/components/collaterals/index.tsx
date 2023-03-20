@@ -242,6 +242,8 @@ export const Collaterals = ({
                 selectedList={selectedTokenList}
                 onSelectedListChange={setSelectedTokenList}
                 chainId={chain?.id}
+                withBalances
+                accountAddress={address}
                 messages={{
                     search: {
                         title: t("erc20.picker.search.title"),
