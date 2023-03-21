@@ -4,6 +4,7 @@ import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import postcssOptions from "../../postcss.config.js";
 import { fileURLToPath } from "url";
 import { createRequire } from "module";
+import { long as longCommitHash } from "git-rev-sync";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -11,12 +12,17 @@ const require = createRequire(import.meta.url);
 const shared = require("@carrot-kpi/frontend/shared-dependencies.json");
 
 export const getTemplateComponentWebpackConfig = (
-    uniqueName,
+    type,
     componentPath,
     i18nPath,
     globals,
     outDir
 ) => {
+    if (type !== "page" && type !== "creationForm")
+        throw new Error("type must either be creationForm or page");
+
+    const uniqueName = `${longCommitHash(join(__dirname, "../../"))}${type}`;
+
     const devMode = !!!outDir;
     return {
         mode: devMode ? "development" : "production",
@@ -94,7 +100,7 @@ export const getTemplateComponentWebpackConfig = (
             }),
             new MiniCssExtractPlugin(),
             new webpack.container.ModuleFederationPlugin({
-                name: "remoteEntry",
+                name: devMode ? `${type}/remoteEntry` : "remoteEntry",
                 library: {
                     type: "window",
                     name: uniqueName,
