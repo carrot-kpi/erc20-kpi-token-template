@@ -100,6 +100,7 @@ export const startPlayground = async (
         stats: "none",
         entry: join(__dirname, "../src"),
         output: {
+            clean: true,
             uniqueName: commitHash,
         },
         resolve: {

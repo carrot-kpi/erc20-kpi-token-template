@@ -2,13 +2,12 @@
 
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
-import { writeFile, rm } from "fs/promises";
+import { writeFile } from "fs/promises";
 import { long as longCommitHash } from "git-rev-sync";
 import chalk from "chalk";
 import webpack from "webpack";
 import ora from "ora";
 import { createRequire } from "module";
-import TerserPlugin from "terser-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
 import postcssOptions from "../postcss.config.js";
@@ -22,12 +21,8 @@ const main = async () => {
     const __dirname = dirname(fileURLToPath(import.meta.url));
 
     const outDir = join(__dirname, "../dist");
-    let spinner = ora();
-    spinner.start(`Removing previous ${chalk.blue("dist")} folder`);
-    await rm(outDir, { recursive: true, force: true });
-    spinner.succeed(`Previous ${chalk.blue("dist")} folder removed`);
 
-    spinner = ora();
+    let spinner = ora();
     spinner.start(`Building ${chalk.blue("federated modules")}`);
     const commitHash = longCommitHash(join(__dirname, "../"));
     await new Promise((resolve) => {
@@ -37,8 +32,8 @@ const main = async () => {
                 devtool: false,
                 entry: join(__dirname, "../src"),
                 output: {
-                    filename: "[name].js",
-                    path: join(__dirname, "../dist"),
+                    clean: true,
+                    path: outDir,
                     uniqueName: commitHash,
                 },
                 resolve: {
@@ -88,16 +83,6 @@ const main = async () => {
                 },
                 optimization: {
                     minimize: true,
-                    minimizer: [
-                        new TerserPlugin({
-                            terserOptions: {
-                                format: {
-                                    comments: false,
-                                },
-                            },
-                            extractComments: false,
-                        }),
-                    ],
                 },
                 plugins: [
                     // TODO: further globals might be passed by carrot-scripts??
