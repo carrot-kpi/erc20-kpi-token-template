@@ -99,6 +99,9 @@ export const startPlayground = async (
         },
         stats: "none",
         entry: join(__dirname, "../src"),
+        output: {
+            uniqueName: commitHash,
+        },
         resolve: {
             fallback: {
                 buffer: join(__dirname, "./utils/buffer.js"),

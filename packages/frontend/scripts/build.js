@@ -39,6 +39,7 @@ const main = async () => {
                 output: {
                     filename: "[name].js",
                     path: join(__dirname, "../dist"),
+                    uniqueName: commitHash,
                 },
                 resolve: {
                     extensions: [".ts", ".tsx", "..."],
