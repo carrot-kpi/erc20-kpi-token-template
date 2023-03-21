@@ -95,13 +95,13 @@ export const startPlayground = async (
     const commitHash = longCommitHash(join(__dirname, "../"));
     const templateApplicationCompiler = webpack([
         getTemplateComponentWebpackConfig(
-            `${commitHash}creationForm`,
+            "creationForm",
             join(__dirname, "../src/creation-form/index.tsx"),
             join(__dirname, "../src/creation-form/i18n/index.ts"),
             globals
         ),
         getTemplateComponentWebpackConfig(
-            `${commitHash}page`,
+            "page",
             join(__dirname, "../src/page/index.tsx"),
             join(__dirname, "../src/page/i18n/index.ts"),
             globals
