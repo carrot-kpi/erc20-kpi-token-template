@@ -12,6 +12,7 @@ import {
 import { BigNumber, utils } from "ethers";
 import { isInThePast } from "../../../utils/dates";
 import { NoSpecialCharactersTextInput } from "../no-special-characters-text-input";
+import { MAX_KPI_TOKEN_DESCRIPTION_CHARS } from "../../constants";
 
 const stripHtml = (value: string) => value.replace(/(<([^>]+)>)/gi, "");
 
@@ -80,6 +81,8 @@ export const GenericData = ({
                 !erc20Symbol ||
                 !title.trim() ||
                 !stripHtml(description).trim() ||
+                stripHtml(description).trim().length >
+                    MAX_KPI_TOKEN_DESCRIPTION_CHARS ||
                 tags.length === 0 ||
                 !expiration ||
                 isInThePast(expiration) ||
@@ -111,7 +114,11 @@ export const GenericData = ({
             const trimmedValue = stripHtml(value).trim();
             setDescription(value);
             setDescriptionErrorText(
-                !trimmedValue ? t("error.description.empty") : ""
+                !trimmedValue
+                    ? t("error.description.empty")
+                    : trimmedValue.length > MAX_KPI_TOKEN_DESCRIPTION_CHARS
+                    ? t("error.description.tooLong")
+                    : ""
             );
         },
         [t]
