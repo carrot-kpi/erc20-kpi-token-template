@@ -12,7 +12,14 @@ import {
 import { BigNumber, utils } from "ethers";
 import { isInThePast } from "../../../utils/dates";
 import { NoSpecialCharactersTextInput } from "../no-special-characters-text-input";
-import { MAX_KPI_TOKEN_DESCRIPTION_CHARS } from "../../constants";
+import {
+    MAX_KPI_TOKEN_DESCRIPTION_CHARS,
+    MAX_KPI_TOKEN_ERC20_NAME_CHARS,
+    MAX_KPI_TOKEN_ERC20_SYMBOL_CHARS,
+    MAX_KPI_TOKEN_TAGS_COUNT,
+    MAX_KPI_TOKEN_TAG_CHARS,
+    MAX_KPI_TOKEN_TITLE_CHARS,
+} from "../../constants";
 
 const stripHtml = (value: string) => value.replace(/(<([^>]+)>)/gi, "");
 
@@ -80,14 +87,18 @@ export const GenericData = ({
                 !erc20Name ||
                 !erc20Symbol ||
                 !title.trim() ||
+                title.trim().length > MAX_KPI_TOKEN_TITLE_CHARS ||
                 !stripHtml(description).trim() ||
                 stripHtml(description).trim().length >
                     MAX_KPI_TOKEN_DESCRIPTION_CHARS ||
                 tags.length === 0 ||
+                tags.length > MAX_KPI_TOKEN_TAGS_COUNT ||
                 !expiration ||
                 isInThePast(expiration) ||
                 !erc20Name.trim() ||
+                erc20Name.trim().length > MAX_KPI_TOKEN_ERC20_NAME_CHARS ||
                 !erc20Symbol.trim() ||
+                erc20Symbol.trim().length > MAX_KPI_TOKEN_ERC20_SYMBOL_CHARS ||
                 !erc20Supply.value ||
                 parseFloat(erc20Supply.value) === 0
         );
@@ -104,7 +115,15 @@ export const GenericData = ({
     const handleTitleChange = useCallback(
         (value: string): void => {
             setTitle(value);
-            setTitleErrorText(!value ? t("error.title.empty") : "");
+            setTitleErrorText(
+                !value
+                    ? t("error.title.empty")
+                    : value.trim().length > MAX_KPI_TOKEN_TITLE_CHARS
+                    ? t("error.title.tooLong", {
+                          chars: MAX_KPI_TOKEN_TITLE_CHARS,
+                      })
+                    : ""
+            );
         },
         [t]
     );
@@ -117,7 +136,9 @@ export const GenericData = ({
                 !trimmedValue
                     ? t("error.description.empty")
                     : trimmedValue.length > MAX_KPI_TOKEN_DESCRIPTION_CHARS
-                    ? t("error.description.tooLong")
+                    ? t("error.description.tooLong", {
+                          chars: MAX_KPI_TOKEN_DESCRIPTION_CHARS,
+                      })
                     : ""
             );
         },
@@ -126,12 +147,28 @@ export const GenericData = ({
 
     const handleTagsChange = useCallback(
         (value: string[]) => {
+            if (value.some((tag) => tag.length > MAX_KPI_TOKEN_TAG_CHARS)) {
+                setTagsErrorText(
+                    t("error.tags.tooLong", {
+                        chars: MAX_KPI_TOKEN_TAG_CHARS,
+                    })
+                );
+                return;
+            }
             if (value.some((tag, i) => value.indexOf(tag) !== i)) {
                 setTagsErrorText(t("error.tags.duplicated"));
                 return;
             }
             setTags(value);
-            setTagsErrorText(value.length === 0 ? t("error.tags.empty") : "");
+            setTagsErrorText(
+                value.length === 0
+                    ? t("error.tags.empty")
+                    : value.length > MAX_KPI_TOKEN_TAGS_COUNT
+                    ? t("error.tags.tooMany", {
+                          count: MAX_KPI_TOKEN_TAGS_COUNT,
+                      })
+                    : ""
+            );
         },
         [t]
     );
@@ -149,7 +186,15 @@ export const GenericData = ({
     const handleERC20NameChange = useCallback(
         (value: string) => {
             setERC20Name(value);
-            setERC20NameErrorText(!value ? t("error.erc20.name.empty") : "");
+            setERC20NameErrorText(
+                !value
+                    ? t("error.erc20.name.empty")
+                    : value.trim().length > MAX_KPI_TOKEN_ERC20_NAME_CHARS
+                    ? t("error.erc20.name.tooLong", {
+                          chars: MAX_KPI_TOKEN_ERC20_NAME_CHARS,
+                      })
+                    : ""
+            );
         },
         [t]
     );
@@ -158,7 +203,13 @@ export const GenericData = ({
         (value: string) => {
             setERC20Symbol(value);
             setERC20SymbolErrorText(
-                !value ? t("error.erc20.symbol.empty") : ""
+                !value
+                    ? t("error.erc20.symbol.empty")
+                    : value.trim().length > MAX_KPI_TOKEN_ERC20_SYMBOL_CHARS
+                    ? t("error.erc20.symbol.tooLong", {
+                          chars: MAX_KPI_TOKEN_ERC20_SYMBOL_CHARS,
+                      })
+                    : ""
             );
         },
         [t]
@@ -220,7 +271,7 @@ export const GenericData = ({
                 onChange={handleTitleChange}
                 value={title}
                 error={!!titleErrorText}
-                errorText={t("error.title.empty")}
+                errorText={titleErrorText}
                 className={{
                     input: "w-full",
                     inputWrapper: "w-full",
