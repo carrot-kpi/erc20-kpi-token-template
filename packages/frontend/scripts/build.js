@@ -56,7 +56,7 @@ const main = async () => {
                     console.log();
                     console.log(error.message || error);
                     console.log();
-                    process.exit(0);
+                    process.exit(1);
                 }
 
                 const statsData = stats.toJson({
@@ -74,7 +74,7 @@ const main = async () => {
                     );
                     console.log();
                     console.log(messages.errors.join("\n\n"));
-                    process.exit(0);
+                    process.exit(1);
                 }
 
                 if (messages.warnings.length) {

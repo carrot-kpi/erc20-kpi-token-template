@@ -1,7 +1,7 @@
 import { Amount, Token } from "@carrot-kpi/sdk";
 import { Button, Typography } from "@carrot-kpi/ui";
 import { ReactElement, useEffect, useState } from "react";
-import { useWatchData, OraclePage, KPITokenPageProps } from "@carrot-kpi/react";
+import { OraclePage, KPITokenPageProps } from "@carrot-kpi/react";
 
 import "../global.css";
 import { CollateralData } from "../creation-form/types";
@@ -23,8 +23,6 @@ export const Component = ({
     const provider = useProvider();
     const { chain } = useNetwork();
 
-    const { loading: loadingERC20Data, data } = useWatchData(kpiToken?.address);
-
     const { data: tokenData } = useToken({
         address: kpiToken?.address as Address,
     });
@@ -41,21 +39,22 @@ export const Component = ({
     useEffect(() => {
         let cancelled = false;
         const fetchData = async () => {
-            if (!data) return;
             if (!kpiToken) return;
             if (!cancelled) setDecodingKPITokenData(true);
             let decoded;
             try {
-                decoded = await decodeKPITokenData(provider, data);
+                decoded = await decodeKPITokenData(provider, kpiToken.data);
             } catch (error) {
                 console.warn("could not decode kpi token data", error);
             } finally {
                 if (!cancelled) setDecodingKPITokenData(false);
             }
             if (!decoded) return;
-            if (!cancelled) setCollaterals(decoded.collaterals);
-            if (!cancelled) setOracles(decoded.finalizableOracles);
-            if (!cancelled) setAllOrNone(decoded.allOrNone);
+            if (!cancelled) {
+                setCollaterals(decoded.collaterals);
+                setOracles(decoded.finalizableOracles);
+                setAllOrNone(decoded.allOrNone);
+            }
             if (!tokenData?.symbol || !tokenData.name) return;
             const erc20KPIToken = new Token(
                 kpiToken.chainId,
@@ -70,7 +69,7 @@ export const Component = ({
         return () => {
             cancelled = true;
         };
-    }, [data, kpiToken, provider, tokenData?.name, tokenData?.symbol]);
+    }, [kpiToken, provider, tokenData?.name, tokenData?.symbol]);
 
     useEffect(() => {
         if (!chain || !chain.blockExplorers || !kpiToken) return;
@@ -111,7 +110,7 @@ export const Component = ({
                 </div>
                 <CampaignCard
                     t={t}
-                    loading={decodingKPITokenData || loadingERC20Data}
+                    loading={decodingKPITokenData}
                     kpiToken={kpiToken}
                     collaterals={collaterals}
                     allOrNone={allOrNone}
@@ -129,7 +128,7 @@ export const Component = ({
                         </Typography>
                         <WalletPosition
                             t={t}
-                            loading={loadingERC20Data || decodingKPITokenData}
+                            loading={decodingKPITokenData}
                             kpiToken={kpiToken}
                             collaterals={collaterals}
                             oracles={oracles}
