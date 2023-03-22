@@ -1104,20 +1104,7 @@
     bufferutil "4.0.5"
     utf-8-validate "5.0.7"
 
-"@carrot-kpi/react@*":
-  version "0.36.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.36.0.tgz#e71eced7e54ccf6dd41b50bb152f82d90dcd88a4"
-  integrity sha512-E7OkpyUY0PCkDahwzgpiwA7AVm+OG6XsdtepHb75mVIC0ya6f5JqxRBFMzG5uzoG3KHwqrys3u7tO5UaigWF4w==
-  dependencies:
-    "@carrot-kpi/sdk" "*"
-    "@ethersproject/bignumber" "^5.7.0"
-    "@tanstack/query-sync-storage-persister" "^4.24.9"
-    "@tanstack/react-query-persist-client" "^4.24.9"
-    "@uniswap/token-lists" "1.0.0-beta.31"
-    class-variance-authority "^0.4.0"
-    react-use "^17.4.0"
-
-"@carrot-kpi/react@^0.36.1":
+"@carrot-kpi/react@*", "@carrot-kpi/react@^0.36.1":
   version "0.36.1"
   resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.36.1.tgz#48e8bafbe27c1ccda5e2f46a8a4b00f32a75d913"
   integrity sha512-oq8GE+PoBPMIMrhAC0o4+Yy9ICv6rCikrxk6jFwV19pNnLhVMkwKzJI028vVgIxfSn6Lqb74YWV+DJ2k2AZfqg==
@@ -1130,21 +1117,7 @@
     class-variance-authority "^0.4.0"
     react-use "^17.4.0"
 
-"@carrot-kpi/sdk@*", "@carrot-kpi/sdk@^1.18.3":
-  version "1.21.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.21.0.tgz#b56b5988c406045b6911f3f3015dba78026fa7bb"
-  integrity sha512-PjZ7OmC5Dj8LpN2/ZrYnk/wjnhC2SV2b56MKjAf8swJZeQFlOICpd6vHInF8Iuox2QtjGFOf29e14WsSpilJbA==
-  dependencies:
-    "@ethersproject/address" "^5.7.0"
-    "@ethersproject/bignumber" "^5.7.0"
-    "@ethersproject/contracts" "^5.7.0"
-    "@ethersproject/providers" "^5.7.2"
-    "@ethersproject/units" "^5.7.0"
-    "@ethersproject/wallet" "^5.7.0"
-    decimal.js-light "^2.5.1"
-    multiformats "^9.9.0"
-
-"@carrot-kpi/sdk@^1.21.1":
+"@carrot-kpi/sdk@*", "@carrot-kpi/sdk@^1.18.3", "@carrot-kpi/sdk@^1.21.1":
   version "1.21.1"
   resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.21.1.tgz#63982b6e19e8bddfe924c386d650e522bb2b3196"
   integrity sha512-O0gUU/Y8RyXu5lekyIShE1m3XNXo09fjveOzQnguw4p+IINhvnT45NMVO9oQeANxoqLT6EVZbXcZbVV7QMhA+w==
@@ -15590,9 +15563,9 @@ webpack-sources@^3.2.3:
   integrity sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==
 
 webpack@^5.76.2:
-  version "5.76.2"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.76.2.tgz#6f80d1c1d1e3bf704db571b2504a0461fac80230"
-  integrity sha512-Th05ggRm23rVzEOlX8y67NkYCHa9nTNcwHPBhdg+lKG+mtiW7XgggjAeeLnADAe7mLjJ6LUNfgHAuRRh+Z6J7w==
+  version "5.76.3"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.76.3.tgz#dffdc72c8950e5b032fddad9c4452e7787d2f489"
+  integrity sha512-18Qv7uGPU8b2vqGeEEObnfICyw2g39CHlDEK4I7NK13LOur1d0HGmGNKGT58Eluwddpn3oEejwvBPoP4M7/KSA==
   dependencies:
     "@types/eslint-scope" "^3.7.3"
     "@types/estree" "^0.0.51"
