@@ -29,6 +29,7 @@
     "general.placeholder.expiration": "Pick a future date",
     "error.title.empty": "A campaign title is required",
     "error.description.empty": "A campaign description is required",
+    "error.description.tooLong": "Your description must be less that 256 characters",
     "error.tags.empty": "A campaign tag is required",
     "error.tags.duplicated": "Duplicated campaign tag",
     "error.expiration.past": "The expiration must be in the future",
