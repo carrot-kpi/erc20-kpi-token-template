@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
-import { Typography, ERC20TokenLogo, Popover, Skeleton } from "@carrot-kpi/ui";
+import { Typography, Popover } from "@carrot-kpi/ui";
 import { CollateralData } from "../../../creation-form/types";
-import { useNetwork } from "wagmi";
+import { TokenAmount } from "../token-amount";
 
 interface CollateralRowProps {
     loading?: boolean;
@@ -14,7 +14,6 @@ export const CollateralRow = ({
     collateral,
     minimumPayout,
 }: CollateralRowProps) => {
-    const { chain } = useNetwork();
     const [open, setOpen] = useState(false);
     const [anchor, setAnchor] = useState<HTMLDivElement | null>(null);
 
@@ -34,30 +33,14 @@ export const CollateralRow = ({
                 onMouseEnter={collateral && handleMouseEnter}
                 onMouseLeave={collateral && handleMouseLeave}
             >
-                {loading || !collateral ? (
-                    <Skeleton circular width="20px" />
-                ) : (
-                    <ERC20TokenLogo
-                        // TODO: update the UI lib to accept undefined
-                        chainId={chain?.id || 1}
-                        address={collateral.amount.currency.address}
-                        size="sm"
-                    />
-                )}
-                {loading || !collateral ? (
-                    <Skeleton width="40px" />
-                ) : (
-                    <Typography
-                        className={{
-                            root: "inline-block",
-                        }}
-                    >
-                        {(minimumPayout
-                            ? collateral.minimumPayout
-                            : collateral.amount
-                        ).toFixed(4)}
-                    </Typography>
-                )}
+                <TokenAmount
+                    loading={loading || !collateral}
+                    amount={
+                        minimumPayout
+                            ? collateral?.minimumPayout
+                            : collateral?.amount
+                    }
+                />
             </div>
             {collateral && (
                 <Popover anchor={anchor} open={open} placement="bottom">

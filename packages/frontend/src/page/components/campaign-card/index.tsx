@@ -63,11 +63,11 @@ export const CampaignCard = ({
                     ))}
                 </div>
                 <div className="w-full h-36 md:h-auto flex flex-col md:flex-row border-t border-black">
-                    <div className="h-12 px-4 flex items-center justify-between flex-1 border-b md:border-r md:border-b-0 border-black">
+                    <div className="py-3 px-4 flex items-center justify-between flex-1 border-b md:border-r md:border-b-0 border-black">
                         <Typography uppercase>
                             {t("overview.rewards.label")}
                         </Typography>
-                        <div className="flex flex-row gap-2">
+                        <div className="flex flex-col gap-2">
                             {loading || !collaterals ? (
                                 <CollateralRow loading />
                             ) : (
@@ -85,11 +85,11 @@ export const CampaignCard = ({
                             )}
                         </div>
                     </div>
-                    <div className="h-12 px-4 flex items-center justify-between flex-1 border-b md:border-r md:border-b-0 border-black">
+                    <div className="py-3 px-4 flex items-center justify-between flex-1 border-b md:border-r md:border-b-0 border-black">
                         <Typography uppercase>
                             {t("overview.minimumPayout.label")}
                         </Typography>
-                        <div className="flex flex-row gap-2">
+                        <div className="flex flex-col gap-2">
                             {loading || !collaterals ? (
                                 <CollateralRow loading />
                             ) : (
@@ -108,7 +108,7 @@ export const CampaignCard = ({
                             )}
                         </div>
                     </div>
-                    <div className="h-12 px-4 flex items-center justify-between flex-1">
+                    <div className="py-3 px-4 flex items-center justify-between flex-1">
                         <Typography uppercase>
                             {t("overview.token.label")}
                         </Typography>
