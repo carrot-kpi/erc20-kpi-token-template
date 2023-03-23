@@ -24,6 +24,7 @@ import { OutcomesConfiguration } from "./components/outcomes-configuration";
 import { Deploy } from "./components/deploy";
 import { CREATION_PROXY_ADDRESS } from "./constants";
 import { Success } from "./components/success";
+import { ConnectWallet } from "./components/connect-wallet";
 
 // TODO: add a check that displays an error message if the creation
 // proxy address is 0 for more than x time
@@ -214,11 +215,15 @@ export const Component = ({
                         className={{ root: "relative pb-10" }}
                         messages={{ step: t("step") }}
                     >
-                        <Collaterals
-                            t={t}
-                            collaterals={collateralsData}
-                            onNext={handleCollateralsNext}
-                        />
+                        {!connectedAddress ? (
+                            <ConnectWallet t={t} />
+                        ) : (
+                            <Collaterals
+                                t={t}
+                                collaterals={collateralsData}
+                                onNext={handleCollateralsNext}
+                            />
+                        )}
                     </StepCard>
                     {enableOraclePickStep && (
                         <StepCard
@@ -242,16 +247,20 @@ export const Component = ({
                         className={{ root: "relative pb-10" }}
                         messages={{ step: t("step") }}
                     >
-                        <OraclesConfiguration
-                            t={t}
-                            i18n={i18n}
-                            oraclesData={oraclesData}
-                            specificationData={specificationData}
-                            templates={oracleTemplatesData}
-                            onNext={handleOraclesConfigurationNext}
-                            navigate={navigate}
-                            onTx={onTx}
-                        />
+                        {!connectedAddress ? (
+                            <ConnectWallet t={t} />
+                        ) : (
+                            <OraclesConfiguration
+                                t={t}
+                                i18n={i18n}
+                                oraclesData={oraclesData}
+                                specificationData={specificationData}
+                                templates={oracleTemplatesData}
+                                onNext={handleOraclesConfigurationNext}
+                                navigate={navigate}
+                                onTx={onTx}
+                            />
+                        )}
                     </StepCard>
                     <StepCard
                         title={t("card.outcome.configuration.title")}
@@ -273,19 +282,23 @@ export const Component = ({
                             className={{ root: "relative" }}
                             messages={{ step: t("step") }}
                         >
-                            <Deploy
-                                t={t}
-                                targetAddress={creationProxyAddress}
-                                specificationData={specificationData}
-                                tokenData={tokenData}
-                                collateralsData={collateralsData}
-                                oracleTemplatesData={oracleTemplatesData}
-                                outcomesData={outcomesData}
-                                oraclesData={oraclesData}
-                                onNext={handleDeployNext}
-                                onCreate={onCreate}
-                                onTx={onTx}
-                            />
+                            {!connectedAddress ? (
+                                <ConnectWallet t={t} />
+                            ) : (
+                                <Deploy
+                                    t={t}
+                                    targetAddress={creationProxyAddress}
+                                    specificationData={specificationData}
+                                    tokenData={tokenData}
+                                    collateralsData={collateralsData}
+                                    oracleTemplatesData={oracleTemplatesData}
+                                    outcomesData={outcomesData}
+                                    oraclesData={oraclesData}
+                                    onNext={handleDeployNext}
+                                    onCreate={onCreate}
+                                    onTx={onTx}
+                                />
+                            )}
                         </StepCard>
                     )}
                     <StepCard
