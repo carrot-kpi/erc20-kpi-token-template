@@ -39,6 +39,7 @@ export const WalletPosition = ({
     const { data: rawKpiTokenBalance } = useBalance({
         address: connectedAddress,
         token: kpiToken.address as Address,
+        watch: true,
     });
     const {
         balances: kpiTokenCollateralBalances,
@@ -237,9 +238,8 @@ export const WalletPosition = ({
             </div>
             <WalletActions
                 t={t}
-                collaterals={collaterals}
+                kpiToken={kpiToken}
                 redeemableRewards={redeemableRewards}
-                oracles={oracles}
             />
         </div>
     );
