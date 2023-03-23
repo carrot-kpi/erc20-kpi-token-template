@@ -26,8 +26,8 @@
         "size-limit": "size-limit"
     },
     "dependencies": {
-        "@carrot-kpi/react": "^0.36.2",
-        "@carrot-kpi/sdk": "^1.21.1",
+        "@carrot-kpi/react": "^0.36.3",
+        "@carrot-kpi/sdk": "^1.21.2",
         "@carrot-kpi/shared-state": "^0.2.0",
         "@carrot-kpi/ui": "^0.34.1",
         "@fontsource/ibm-plex-mono": "^4.5.13",
@@ -61,7 +61,7 @@
         "webpack-dev-server": "^4.13.1"
     },
     "devDependencies": {
-        "@carrot-kpi/frontend": "^1.0.0-rc.56",
+        "@carrot-kpi/frontend": "^1.0.0-rc.57",
         "@fontsource/inter": "^4.5.15",
         "@size-limit/file": "^8.2.4",
         "@svgr/webpack": "^6.5.1",
