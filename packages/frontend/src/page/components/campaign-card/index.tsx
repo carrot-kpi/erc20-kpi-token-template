@@ -151,7 +151,16 @@ export const CampaignCard = ({
                             {t("overview.time.label")}
                         </Typography>
                         <div className="flex justify-between gap-2 items-center">
-                            <Timer to={kpiToken.expiration} countdown />
+                            {kpiToken.finalized ? (
+                                <Typography
+                                    uppercase
+                                    className={{ root: "text-red" }}
+                                >
+                                    {t("overview.expired")}
+                                </Typography>
+                            ) : (
+                                <Timer to={kpiToken.expiration} countdown />
+                            )}
                         </div>
                     </div>
                 </div>

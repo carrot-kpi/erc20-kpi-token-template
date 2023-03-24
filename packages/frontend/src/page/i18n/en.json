@@ -4,6 +4,7 @@
     "report": "Report",
     "overview.rewards.label": "Rewards",
     "overview.time.label": "Time left",
+    "overview.expired": "Expired",
     "overview.token.label": "KPI token",
     "overview.supply.initial.label": "Initial supply",
     "overview.supply.current.label": "Current supply",
