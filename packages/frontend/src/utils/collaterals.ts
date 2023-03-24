@@ -37,18 +37,29 @@ export const getMaximumRewards = (
 
 const MULTIPLIER = BigNumber.from(2).pow(64);
 
-// TODO: handle expired scenario
 export const getRedeemableRewards = (
     oracles: FinalizableOracle[],
     kpiTokenBalance: Amount<Token>,
     kpiTokenInitialSupply: Amount<Token>,
-    collaterals: CollateralData[]
+    collaterals: CollateralData[],
+    expired: boolean
 ): Amount<Token>[] => {
     if (kpiTokenBalance.isZero() || oracles.some((oracle) => !oracle.finalized))
         return collaterals.map(
             (collateral) =>
                 new Amount(collateral.amount.currency, BigNumber.from(0))
         );
+
+    if (expired) {
+        return collaterals.map((collateral) => {
+            return new Amount(
+                collateral.minimumPayout.currency,
+                collateral.minimumPayout.raw
+                    .mul(kpiTokenBalance.raw)
+                    .div(kpiTokenInitialSupply.raw)
+            );
+        });
+    }
 
     // replicating the on-chain logic, calculate the remaining collaterals
     // after all the oracles have settled

@@ -7,7 +7,6 @@ import {
     Chip,
     Markdown,
     Skeleton,
-    Timer,
     Typography,
 } from "@carrot-kpi/ui";
 import { commify, formatUnits } from "ethers/lib/utils.js";
@@ -16,15 +15,7 @@ import { CollateralData } from "../../../creation-form/types";
 import { shortenAddress } from "../../../utils/address";
 import { CollateralRow } from "../collateral-row";
 import { BigNumber } from "ethers";
-
-// TODO:
-// States to handle:
-
-// - Awaiting finalization (show how many oracles are left to finalize)
-// - Finalizable (oracles have reported their result but the KPI token needs to be finalized in order to access the collateral)
-// - 2 cases after finalization:
-//     - Something to redeem: show a redeem button alongside a prediction of how much people can redeem
-//     - Nothing to redeem: show a burn KPI tokens button
+import { TimeLeft } from "./time-left";
 
 interface CampaignCardProps {
     t: NamespacedTranslateFunction;
@@ -150,18 +141,7 @@ export const CampaignCard = ({
                         <Typography uppercase>
                             {t("overview.time.label")}
                         </Typography>
-                        <div className="flex justify-between gap-2 items-center">
-                            {kpiToken.finalized ? (
-                                <Typography
-                                    uppercase
-                                    className={{ root: "text-red" }}
-                                >
-                                    {t("overview.expired")}
-                                </Typography>
-                            ) : (
-                                <Timer to={kpiToken.expiration} countdown />
-                            )}
-                        </div>
+                        <TimeLeft t={t} kpiToken={kpiToken} />
                     </div>
                 </div>
             </CardContent>

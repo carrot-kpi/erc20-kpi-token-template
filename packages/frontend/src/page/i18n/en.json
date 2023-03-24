@@ -4,6 +4,7 @@
     "report": "Report",
     "overview.rewards.label": "Rewards",
     "overview.time.label": "Time left",
+    "overview.finalized": "Finalized",
     "overview.expired": "Expired",
     "overview.token.label": "KPI token",
     "overview.supply.initial.label": "Initial supply",
@@ -12,6 +13,12 @@
     "position.title": "Wallet position",
     "position.noWallet": "No wallet connected",
     "position.balance.label": "Balance",
+    "position.status.notFinalized": "The KPI token still needs to be finalized, and no action is available yet. If applicable, use the oracle section below to move the finalization process forward.",
+    "position.status.finalized.noBalance": "The KPI token has been successfully finalized. No redemption is possible",
+    "position.status.finalized.withBalance.redeemable": "The KPI token has been successfully finalized. You can redeem your {{amount}} {{symbol}} by clicking the button below.",
+    "position.status.finalized.withBalance.burnable": "The KPI token has been successfully finalized. You can burn your {{amount}} {{symbol}} by clicking the button below.",
+    "position.status.expired.noBalance": "The KPI token expired without being finalized. No redemption is possible",
+    "position.status.expired.withBalance": "The KPI token expired. You can burn your {{amount}} {{symbol}} by clicking the button below.",
     "position.rewards.guaranteed.label": "Guaranteed rewards",
     "position.rewards.maximum.label": "Maximum rewards",
     "position.rewards.remaining.label": "Remaining rewards",
@@ -21,5 +28,6 @@
     "oracle.title_other": "Oracles",
     "widgets.title": "Widgets",
     "open.explorer": "Open in explorer",
-    "redeem": "Redeem"
+    "redeem": "Redeem",
+    "burn": "Burn"
 }

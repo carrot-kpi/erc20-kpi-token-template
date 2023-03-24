@@ -1,8 +1,8 @@
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Amount, KPIToken, Token } from "@carrot-kpi/sdk";
-import { Typography } from "@carrot-kpi/ui";
+import { Skeleton, Typography } from "@carrot-kpi/ui";
 import { ReactElement, useEffect, useState } from "react";
-import { Address, useAccount, useBalance } from "wagmi";
+import { Address, useAccount, useBalance, useEnsName, useNetwork } from "wagmi";
 import { CollateralData } from "../../../creation-form/types";
 import {
     getGuaranteedRewards,
@@ -36,6 +36,11 @@ export const WalletPosition = ({
     erc20Name,
 }: WalletPositionProps): ReactElement => {
     const { address: connectedAddress } = useAccount();
+    const { chain } = useNetwork();
+    const { data: ensName, isLoading: loadingENSName } = useEnsName({
+        address: connectedAddress as Address,
+        enabled: !!(chain && chain.contracts && chain.contracts.ensRegistry),
+    });
     const { data: rawKpiTokenBalance } = useBalance({
         address: connectedAddress,
         token: kpiToken.address as Address,
@@ -77,7 +82,13 @@ export const WalletPosition = ({
             getGuaranteedRewards(balance, initialSupply, collaterals)
         );
         setRedeemableRewards(
-            getRedeemableRewards(oracles, balance, initialSupply, collaterals)
+            getRedeemableRewards(
+                oracles,
+                balance,
+                initialSupply,
+                collaterals,
+                kpiToken.expired
+            )
         );
     }, [
         collaterals,
@@ -86,6 +97,7 @@ export const WalletPosition = ({
         initialSupply,
         kpiToken.address,
         kpiToken.chainId,
+        kpiToken.expired,
         oracles,
         rawKpiTokenBalance,
     ]);
@@ -98,14 +110,18 @@ export const WalletPosition = ({
         <div className="flex flex-col gap-6">
             <div className="flex flex-col w-full max-w-6xl bg-white dark:bg-black border border-black dark:border-gray-400">
                 <div className="w-full p-6 bg-gray-200 dark:bg-gray-700 border-b border-black dark:border-gray-400">
-                    <Typography
-                        weight="medium"
-                        className={{
-                            root: "text-ellipsis overflow-hidden ...",
-                        }}
-                    >
-                        {connectedAddress}
-                    </Typography>
+                    {loadingENSName ? (
+                        <Skeleton width="120px" />
+                    ) : (
+                        <Typography
+                            weight="medium"
+                            className={{
+                                root: "text-ellipsis overflow-hidden ...",
+                            }}
+                        >
+                            {ensName || connectedAddress}
+                        </Typography>
+                    )}
                 </div>
                 <div className="w-full p-6 flex flex-col sm:flex-row justify-between gap-6 border-black border-b">
                     <div className="flex-col">
@@ -196,7 +212,7 @@ export const WalletPosition = ({
                         )}
                     </div>
                 </div>
-                <div className="w-full flex justify-between gap-4">
+                <div className="w-full flex justify-between gap-4 border-black border-b">
                     <div className="w-1/2 p-6 border-black border-r">
                         <Typography
                             variant="xs"
@@ -235,12 +251,15 @@ export const WalletPosition = ({
                         )}
                     </div>
                 </div>
+                <div className="w-full p-6">
+                    <WalletActions
+                        t={t}
+                        kpiToken={kpiToken}
+                        kpiTokenBalance={balance}
+                        redeemableRewards={redeemableRewards}
+                    />
+                </div>
             </div>
-            <WalletActions
-                t={t}
-                kpiToken={kpiToken}
-                redeemableRewards={redeemableRewards}
-            />
         </div>
     );
 };
