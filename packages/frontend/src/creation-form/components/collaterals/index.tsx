@@ -17,12 +17,11 @@ import {
     NumberFormatValue,
     TokenWithLogoURI,
 } from "../../types";
-import { Amount, Token } from "@carrot-kpi/sdk";
+import { Amount, Token, formatTokenAmount } from "@carrot-kpi/sdk";
 import { Address, useAccount, useBalance, useNetwork } from "wagmi";
 import { PROTOCOL_FEE_BPS, TOKEN_LIST_URLS } from "../../constants";
 import { ReactComponent as ArrowDown } from "../../../assets/arrow-down.svg";
 import { CollateralsTable } from "./table";
-import { formatTokenAmount } from "../../../utils/formatting";
 import { parseUnits } from "ethers/lib/utils.js";
 
 interface CollateralProps {
@@ -363,7 +362,7 @@ export const Collaterals = ({
                                         {PROTOCOL_FEE_BPS / 100}%{" "}
                                         {protocolFeeAmount &&
                                             pickedToken &&
-                                            `(${protocolFeeAmount} ${pickedToken.symbol})`}
+                                            `(${protocolFeeAmount})`}
                                     </Typography>
                                 </div>
                                 {/* TODO: implement price fetching */}

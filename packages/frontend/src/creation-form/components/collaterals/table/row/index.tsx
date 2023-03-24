@@ -8,8 +8,7 @@ import {
     useIPFSGatewayURL,
 } from "@carrot-kpi/react";
 import { PROTOCOL_FEE_BPS } from "../../../../constants";
-import { formatTokenAmount } from "../../../../../utils/formatting";
-import { Amount } from "@carrot-kpi/sdk";
+import { Amount, formatTokenAmount } from "@carrot-kpi/sdk";
 import { parseUnits } from "ethers/lib/utils.js";
 
 type CollateralRowProps = CollateralData & {
