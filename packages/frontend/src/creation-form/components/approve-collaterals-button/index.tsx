@@ -40,7 +40,10 @@ export const ApproveCollateralsButton = ({
         address: approvingCollateral?.amount.currency.address,
         abi: erc20ABI,
         functionName: "approve",
-        args: approvingCollateral && [spender, approvingCollateral.amount.raw],
+        args: approvingCollateral
+            ? [spender, approvingCollateral?.amount.raw]
+            : undefined,
+        enabled: !!approvingCollateral,
     });
     const { writeAsync: approveAsync } = useContractWrite(config);
 
