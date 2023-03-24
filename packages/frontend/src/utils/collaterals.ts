@@ -37,6 +37,7 @@ export const getMaximumRewards = (
 
 const MULTIPLIER = BigNumber.from(2).pow(64);
 
+// TODO: handle expired scenario
 export const getRedeemableRewards = (
     oracles: FinalizableOracle[],
     kpiTokenBalance: Amount<Token>,
