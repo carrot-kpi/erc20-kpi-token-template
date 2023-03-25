@@ -1,4 +1,8 @@
-import { NamespacedTranslateFunction } from "@carrot-kpi/react";
+import {
+    KPITokenPageProps,
+    NamespacedTranslateFunction,
+    TxType,
+} from "@carrot-kpi/react";
 import {
     Amount,
     Token,
@@ -10,9 +14,11 @@ import { Button, Typography } from "@carrot-kpi/ui";
 import { useCallback, useEffect, useState } from "react";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 import { defaultAbiCoder } from "@ethersproject/abi";
+import { unixTimestamp } from "../../../../utils/dates";
 
 interface WalletActionsProps {
     t: NamespacedTranslateFunction;
+    onTx: KPITokenPageProps["onTx"];
     kpiToken: KPIToken;
     kpiTokenBalance?: Amount<Token> | null;
     redeemableRewards?: Amount<Token>[] | null;
@@ -20,6 +26,7 @@ interface WalletActionsProps {
 
 export const WalletActions = ({
     t,
+    onTx,
     kpiToken,
     kpiTokenBalance,
     redeemableRewards,
@@ -112,12 +119,22 @@ export const WalletActions = ({
         setLoading(true);
         try {
             const tx = await writeAsync();
-            await tx.wait();
+            const receipt = await tx.wait();
+            onTx({
+                type: TxType.KPI_TOKEN_REDEMPTION,
+                from: receipt.from,
+                hash: tx.hash,
+                payload: {
+                    address: kpiToken.address,
+                },
+                receipt,
+                timestamp: unixTimestamp(new Date()),
+            });
         } catch (error) {
         } finally {
             setLoading(false);
         }
-    }, [writeAsync]);
+    }, [kpiToken.address, onTx, writeAsync]);
 
     return (
         <div className="flex flex-col gap-4">
