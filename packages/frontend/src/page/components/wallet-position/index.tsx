@@ -1,4 +1,7 @@
-import { NamespacedTranslateFunction } from "@carrot-kpi/react";
+import {
+    KPITokenPageProps,
+    NamespacedTranslateFunction,
+} from "@carrot-kpi/react";
 import { Amount, KPIToken, Token } from "@carrot-kpi/sdk";
 import { Skeleton, Typography } from "@carrot-kpi/ui";
 import { ReactElement, useEffect, useState } from "react";
@@ -16,6 +19,7 @@ import { WalletActions } from "./actions";
 
 interface WalletPositionProps {
     t: NamespacedTranslateFunction;
+    onTx: KPITokenPageProps["onTx"];
     loading?: boolean;
     kpiToken: KPIToken;
     collaterals?: CollateralData[];
@@ -27,6 +31,7 @@ interface WalletPositionProps {
 
 export const WalletPosition = ({
     t,
+    onTx,
     loading,
     kpiToken,
     collaterals,
@@ -254,6 +259,7 @@ export const WalletPosition = ({
                 <div className="w-full p-6">
                     <WalletActions
                         t={t}
+                        onTx={onTx}
                         kpiToken={kpiToken}
                         kpiTokenBalance={balance}
                         redeemableRewards={redeemableRewards}

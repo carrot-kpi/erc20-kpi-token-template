@@ -128,6 +128,7 @@ export const Component = ({
                         </Typography>
                         <WalletPosition
                             t={t}
+                            onTx={onTx}
                             loading={decodingKPITokenData}
                             kpiToken={kpiToken}
                             collaterals={collaterals}
