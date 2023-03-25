@@ -19,7 +19,7 @@ export const TokenAmount = ({
         <div className="flex items-center gap-2">
             {loading || !amount ? (
                 <>
-                    <Skeleton circular width="20px" />
+                    <Skeleton circular width="24px" />
                     <Skeleton width="60px" />
                 </>
             ) : (
