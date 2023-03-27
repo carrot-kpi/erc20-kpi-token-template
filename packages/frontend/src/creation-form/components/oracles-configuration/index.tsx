@@ -32,7 +32,11 @@ type Assert = (
 const assertInitializationBundleGetterPresent: Assert = (
     data: AugmentedOracleDataMap
 ) => {
-    if (Object.values(data).some((item) => !item.initializationBundleGetter))
+    const dataValues = Object.values(data);
+    if (
+        dataValues.length === 0 ||
+        dataValues.some((item) => !item.initializationBundleGetter)
+    )
         throw new Error();
 };
 
