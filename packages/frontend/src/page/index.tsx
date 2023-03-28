@@ -167,6 +167,7 @@ export const Component = ({
                                             />
                                         </div>
                                     }
+                                    kpiToken={kpiToken}
                                     oracle={kpiToken.oracles[0]}
                                     onTx={onTx}
                                 />
@@ -196,6 +197,7 @@ export const Component = ({
                                                         />
                                                     </div>
                                                 }
+                                                kpiToken={kpiToken}
                                                 oracle={kpiToken.oracles[0]}
                                                 onTx={onTx}
                                             />
