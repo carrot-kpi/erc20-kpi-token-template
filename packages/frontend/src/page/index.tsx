@@ -1,7 +1,7 @@
 import { Amount, Token } from "@carrot-kpi/sdk";
-import { Button, Typography } from "@carrot-kpi/ui";
+import { Button, ErrorFeedback, Typography } from "@carrot-kpi/ui";
 import { ReactElement, useEffect, useState } from "react";
-import { OraclePage, KPITokenPageProps } from "@carrot-kpi/react";
+import { OraclePage, KPITokenRemotePageProps } from "@carrot-kpi/react";
 
 import "../global.css";
 import { CollateralData } from "../creation-form/types";
@@ -19,7 +19,7 @@ export const Component = ({
     t,
     kpiToken,
     onTx,
-}: KPITokenPageProps): ReactElement => {
+}: KPITokenRemotePageProps): ReactElement => {
     const provider = useProvider();
     const { chain } = useNetwork();
 
@@ -153,6 +153,20 @@ export const Component = ({
                                             <Loader />
                                         </div>
                                     }
+                                    error={
+                                        <div className="flex justify-center">
+                                            <ErrorFeedback
+                                                messages={{
+                                                    title: t(
+                                                        "error.initializing.creation.title"
+                                                    ),
+                                                    description: t(
+                                                        "error.initializing.creation.description"
+                                                    ),
+                                                }}
+                                            />
+                                        </div>
+                                    }
                                     oracle={kpiToken.oracles[0]}
                                     onTx={onTx}
                                 />
@@ -168,6 +182,20 @@ export const Component = ({
                                             <OraclePage
                                                 i18n={i18n}
                                                 fallback={<Loader />}
+                                                error={
+                                                    <div className="flex justify-center">
+                                                        <ErrorFeedback
+                                                            messages={{
+                                                                title: t(
+                                                                    "error.initializing.creation.title"
+                                                                ),
+                                                                description: t(
+                                                                    "error.initializing.creation.description"
+                                                                ),
+                                                            }}
+                                                        />
+                                                    </div>
+                                                }
                                                 oracle={kpiToken.oracles[0]}
                                                 onTx={onTx}
                                             />

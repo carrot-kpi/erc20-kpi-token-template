@@ -7,7 +7,7 @@ import {
     Amount,
     Token,
     KPI_TOKEN_ABI,
-    KPIToken,
+    ResolvedKPIToken,
     formatTokenAmount,
 } from "@carrot-kpi/sdk";
 import { Button, Typography } from "@carrot-kpi/ui";
@@ -19,7 +19,7 @@ import { unixTimestamp } from "../../../../utils/dates";
 interface WalletActionsProps {
     t: NamespacedTranslateFunction;
     onTx: KPITokenPageProps["onTx"];
-    kpiToken: KPIToken;
+    kpiToken: ResolvedKPIToken;
     kpiTokenBalance?: Amount<Token> | null;
     redeemableRewards?: Amount<Token>[] | null;
 }

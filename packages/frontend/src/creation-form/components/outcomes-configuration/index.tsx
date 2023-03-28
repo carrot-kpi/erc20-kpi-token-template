@@ -1,18 +1,13 @@
 import { BigNumber, utils } from "ethers";
 import { ReactElement, useCallback, useEffect, useState } from "react";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import {
-    Accordion,
-    AccordionSummary,
-    Typography,
-    AccordionDetails,
-    NextStepButton,
-} from "@carrot-kpi/ui";
+import { Typography, NextStepButton } from "@carrot-kpi/ui";
 import { NumberFormatValue, OutcomeData } from "../../types";
-import { Template } from "@carrot-kpi/sdk";
 import { SingleConfiguration } from "./single-configuration";
+import { Template } from "@carrot-kpi/sdk";
+import { OraclesAccordion } from "./oracles-accordion";
 
-type RawOutcomeDataMap = {
+export type RawOutcomeDataMap = {
     [id: number]: {
         binary: boolean;
         lowerBound: NumberFormatValue;
@@ -99,7 +94,7 @@ export const OutcomesConfiguration = ({
     }, [data, templates.length]);
 
     const handleBinaryChange = useCallback(
-        (id: number) => (value: boolean) => {
+        (id: number, value: boolean) => {
             const previousData = data[id] || {};
             previousData.binary = value;
             previousData.lowerBound = {
@@ -116,7 +111,7 @@ export const OutcomesConfiguration = ({
     );
 
     const handleLowerBoundChange = useCallback(
-        (id: number) => (value: NumberFormatValue) => {
+        (id: number, value: NumberFormatValue) => {
             const previousData = data[id] || {};
             previousData.lowerBound = value;
             setData({ ...data, [id]: previousData });
@@ -125,7 +120,7 @@ export const OutcomesConfiguration = ({
     );
 
     const handleHigherBoundChange = useCallback(
-        (id: number) => (value: NumberFormatValue) => {
+        (id: number, value: NumberFormatValue) => {
             const previousData = data[id] || {};
             previousData.higherBound = value;
             setData({ ...data, [id]: previousData });
@@ -164,44 +159,23 @@ export const OutcomesConfiguration = ({
             {templates.length === 1 ? (
                 <SingleConfiguration
                     t={t}
+                    templateId={templates[0].id}
                     binary={data[templates[0].id]?.binary}
-                    onBinaryChange={handleBinaryChange(templates[0].id)}
+                    onBinaryChange={handleBinaryChange}
                     lowerBound={data[templates[0].id]?.lowerBound}
-                    onLowerBoundChange={handleLowerBoundChange(templates[0].id)}
+                    onLowerBoundChange={handleLowerBoundChange}
                     higherBound={data[templates[0].id]?.higherBound}
-                    onHigherBoundChange={handleHigherBoundChange(
-                        templates[0].id
-                    )}
+                    onHigherBoundChange={handleHigherBoundChange}
                 />
             ) : (
-                templates.map((template) => {
-                    const { id } = template;
-
-                    return (
-                        <Accordion key={template.id}>
-                            <AccordionSummary>
-                                <Typography>
-                                    {template.specification.name}
-                                </Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <SingleConfiguration
-                                    t={t}
-                                    binary={data[id]?.binary}
-                                    onBinaryChange={handleBinaryChange(id)}
-                                    lowerBound={data[id]?.lowerBound}
-                                    onLowerBoundChange={handleLowerBoundChange(
-                                        id
-                                    )}
-                                    higherBound={data[id]?.higherBound}
-                                    onHigherBoundChange={handleHigherBoundChange(
-                                        id
-                                    )}
-                                />
-                            </AccordionDetails>
-                        </Accordion>
-                    );
-                })
+                <OraclesAccordion
+                    t={t}
+                    onBinaryChange={handleBinaryChange}
+                    onLowerBoundChange={handleLowerBoundChange}
+                    onHigherBoundChange={handleHigherBoundChange}
+                    templates={templates}
+                    data={data}
+                />
             )}
             <NextStepButton onClick={handleNext} disabled={disabled}>
                 {t("next")}

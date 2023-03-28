@@ -11,6 +11,7 @@
 
 import {
     OracleCreationForm,
+    OracleCreationFormProps,
     OracleInitializationBundleGetter,
 } from "@carrot-kpi/react";
 import { useCallback } from "react";
@@ -20,7 +21,7 @@ import { useCallback } from "react";
 // enriched, as we also pass the template id alongside the oracle creation
 // form state and initialization data bundle getter function
 type OracleCreationFormWrapperProps<T> = Omit<
-    Parameters<typeof OracleCreationForm<T>>[0],
+    OracleCreationFormProps<T>,
     "onChange"
 > & {
     onChange: (

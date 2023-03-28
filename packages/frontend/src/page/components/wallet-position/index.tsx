@@ -2,7 +2,7 @@ import {
     KPITokenPageProps,
     NamespacedTranslateFunction,
 } from "@carrot-kpi/react";
-import { Amount, KPIToken, Token } from "@carrot-kpi/sdk";
+import { Amount, ResolvedKPIToken, Token } from "@carrot-kpi/sdk";
 import { Skeleton, Typography } from "@carrot-kpi/ui";
 import { ReactElement, useEffect, useState } from "react";
 import { Address, useAccount, useBalance, useEnsName, useNetwork } from "wagmi";
@@ -21,7 +21,7 @@ interface WalletPositionProps {
     t: NamespacedTranslateFunction;
     onTx: KPITokenPageProps["onTx"];
     loading?: boolean;
-    kpiToken: KPIToken;
+    kpiToken: ResolvedKPIToken;
     collaterals?: CollateralData[];
     oracles?: FinalizableOracle[];
     initialSupply?: Amount<Token> | null;
@@ -128,8 +128,8 @@ export const WalletPosition = ({
                         </Typography>
                     )}
                 </div>
-                <div className="w-full p-6 flex flex-col sm:flex-row justify-between gap-6 border-black border-b">
-                    <div className="flex-col">
+                <div className="w-full flex flex-col sm:flex-row justify-between border-black border-b">
+                    <div className="w-full p-6 flex-col border-b md:border-b-0  md:border-r">
                         <Typography
                             variant="xs"
                             uppercase
@@ -158,7 +158,7 @@ export const WalletPosition = ({
                             )}
                         </div>
                     </div>
-                    <div className="flex-col">
+                    <div className="w-full p-6 flex-col border-b md:border-b-0  md:border-r">
                         <Typography
                             variant="xs"
                             uppercase
@@ -187,7 +187,7 @@ export const WalletPosition = ({
                             )}
                         </div>
                     </div>
-                    <div className="flex-col">
+                    <div className="w-full p-6 flex-col">
                         <Typography
                             variant="xs"
                             uppercase
@@ -217,8 +217,8 @@ export const WalletPosition = ({
                         )}
                     </div>
                 </div>
-                <div className="w-full flex justify-between gap-4 border-black border-b">
-                    <div className="w-1/2 p-6 border-black border-r">
+                <div className="w-full flex flex-col md:flex-row justify-between gap-4 border-black border-b">
+                    <div className="w-full p-6 flex-col border-b md:border-b-0 md:border-r">
                         <Typography
                             variant="xs"
                             uppercase
@@ -228,7 +228,7 @@ export const WalletPosition = ({
                         </Typography>
                         <TokenAmount amount={balance} loading={loading} />
                     </div>
-                    <div className="w-1/2 p-6">
+                    <div className="w-full p-6 flex-col">
                         <Typography
                             variant="xs"
                             uppercase
