@@ -1104,10 +1104,23 @@
     bufferutil "4.0.5"
     utf-8-validate "5.0.7"
 
-"@carrot-kpi/react@*", "@carrot-kpi/react@^0.37.0":
+"@carrot-kpi/react@*":
   version "0.37.0"
   resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.37.0.tgz#0e6e3eec9f697f0337299b98e62e9a899f44b599"
   integrity sha512-61Zw8M9hNwFxWe34pjZMuhCWhK6NEoBqxZK2oyw+uQ7WghXa3jqXfci87iYzGJ+nDQaOhRuslWINKNX2iXE3vA==
+  dependencies:
+    "@carrot-kpi/sdk" "*"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@tanstack/query-sync-storage-persister" "^4.24.9"
+    "@tanstack/react-query-persist-client" "^4.24.9"
+    "@uniswap/token-lists" "1.0.0-beta.31"
+    class-variance-authority "^0.4.0"
+    react-use "^17.4.0"
+
+"@carrot-kpi/react@^0.37.1":
+  version "0.37.1"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.37.1.tgz#7f8a4d3b3560f8b153c7d44ea8d6eecced549ffb"
+  integrity sha512-ChqU9NvRL/3KVyCC6inrK5d7bihzHYmrpChAFh1+Yh/gQv4Aa9DMkNvLSg3xwtLEgMlxUCneQb7Ifk4WRhduzA==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@ethersproject/bignumber" "^5.7.0"
