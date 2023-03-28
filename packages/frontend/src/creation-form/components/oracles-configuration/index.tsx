@@ -4,25 +4,19 @@ import {
     NamespacedTranslateFunction,
     OracleInitializationBundleGetter,
 } from "@carrot-kpi/react";
-import {
-    Accordion,
-    AccordionSummary,
-    Typography,
-    AccordionDetails,
-    NextStepButton,
-} from "@carrot-kpi/ui";
+import { NextStepButton } from "@carrot-kpi/ui";
 import { i18n } from "i18next";
 import { OracleData, SpecificationData } from "../../types";
 import { KPIToken, Template } from "@carrot-kpi/sdk";
-import { Loader } from "../../../ui/loader";
-import { OracleCreationFormWrapper } from "./oracle-creation-form-wrapper";
 import { unixTimestamp } from "../../../utils/dates";
+import { OraclesAccordion } from "./oracles-accordion";
+import { OracleCreationForm } from "./oracle-creation-form";
 
 type AugmentedOracleData = OracleData & {
     initializationBundleGetter?: OracleInitializationBundleGetter;
 };
 
-type AugmentedOracleDataMap = {
+export type AugmentedOracleDataMap = {
     [id: number]: AugmentedOracleData;
 };
 
@@ -137,38 +131,27 @@ export const OraclesConfiguration = ({
     return (
         <div className="flex flex-col gap-6">
             {templates.length === 1 ? (
-                <OracleCreationFormWrapper
+                <OracleCreationForm
+                    t={t}
                     i18n={i18n}
-                    fallback={<Loader />}
-                    template={templates[0]}
-                    state={data[templates[0].id]?.state || {}}
-                    kpiToken={partialKPIToken}
-                    onChange={handleChange}
                     navigate={navigate}
                     onTx={onTx}
+                    kpiToken={partialKPIToken}
+                    onChange={handleChange}
+                    template={templates[0]}
+                    data={data}
                 />
             ) : (
-                templates.map((template) => (
-                    <Accordion key={template.id}>
-                        <AccordionSummary>
-                            <Typography>
-                                {template.specification.name}
-                            </Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <OracleCreationFormWrapper
-                                i18n={i18n}
-                                fallback={<Loader />}
-                                template={template}
-                                state={data[template.id]?.state || {}}
-                                kpiToken={partialKPIToken}
-                                onChange={handleChange}
-                                navigate={navigate}
-                                onTx={onTx}
-                            />
-                        </AccordionDetails>
-                    </Accordion>
-                ))
+                <OraclesAccordion
+                    t={t}
+                    i18n={i18n}
+                    navigate={navigate}
+                    onTx={onTx}
+                    kpiToken={partialKPIToken}
+                    onChange={handleChange}
+                    templates={templates}
+                    data={data}
+                />
             )}
             <NextStepButton
                 onClick={handleNext}

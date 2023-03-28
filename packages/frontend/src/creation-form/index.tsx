@@ -2,7 +2,7 @@ import "../global.css";
 
 import { Loader, MultiStepCards, StepCard, Stepper } from "@carrot-kpi/ui";
 import {
-    KPITokenCreationFormProps,
+    KPITokenRemoteCreationFormProps,
     useOracleTemplates,
 } from "@carrot-kpi/react";
 import { ChainId, Template } from "@carrot-kpi/sdk";
@@ -34,7 +34,7 @@ export const Component = ({
     onCreate,
     navigate,
     onTx,
-}: KPITokenCreationFormProps): ReactElement => {
+}: KPITokenRemoteCreationFormProps): ReactElement => {
     const { address: connectedAddress } = useAccount();
     const { loading, templates: oracleTemplates } = useOracleTemplates();
 
@@ -173,7 +173,7 @@ export const Component = ({
         <div className="relative h-full w-full bg-green scrollbar overflow-y-auto px-4 pt-10">
             <div className="absolute bg-grid-light top-0 left-0 w-full h-full" />
             <div className="h-full flex flex-col items-center justify-between">
-                <div className="flex lg:hidden mb-8">
+                <div className="flex md:hidden mb-8">
                     <Stepper
                         layout="horizontal"
                         stepTitles={stepTitles}
@@ -182,7 +182,7 @@ export const Component = ({
                         onClick={handleStepClick}
                     />
                 </div>
-                <div className="absolute left-10 top-40 hidden lg:flex">
+                <div className="absolute left-10 top-40 hidden md:flex">
                     <Stepper
                         layout="vertical"
                         stepTitles={stepTitles}

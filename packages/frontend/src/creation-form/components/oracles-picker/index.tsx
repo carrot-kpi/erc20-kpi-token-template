@@ -5,7 +5,7 @@ import { ReactElement, useCallback, useEffect, useState } from "react";
 import { Loader } from "../../../ui/loader";
 import { OracleTemplate } from "../../../ui/oracle-template";
 
-type TemplateMap = { [id: number]: Template };
+type TemplatesMap = { [id: number]: Template };
 
 interface OraclesPickerProps {
     t: NamespacedTranslateFunction;
@@ -23,7 +23,7 @@ export const OraclesPicker = ({
     onNext,
 }: OraclesPickerProps): ReactElement => {
     const [pickedTemplates, setPickedTemplates] = useState(
-        oracleTemplatesData.reduce((accumulator: TemplateMap, template) => {
+        oracleTemplatesData.reduce((accumulator: TemplatesMap, template) => {
             accumulator[template.id] = template;
             return accumulator;
         }, {})
@@ -41,7 +41,9 @@ export const OraclesPicker = ({
     return (
         <div className="flex flex-col gap-6">
             {loading ? (
-                <Loader />
+                <div className="w-full flex justify-center">
+                    <Loader />
+                </div>
             ) : (
                 <>
                     <Typography weight="medium">
@@ -53,7 +55,6 @@ export const OraclesPicker = ({
                             return (
                                 <div
                                     key={template.id}
-                                    id={template.specification.cid}
                                     className="flex flex-col items-center gap-3 p-2"
                                 >
                                     <OracleTemplate

@@ -1,10 +1,10 @@
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import { KPIToken } from "@carrot-kpi/sdk";
+import { ResolvedKPIToken } from "@carrot-kpi/sdk";
 import { Timer, Typography } from "@carrot-kpi/ui";
 
 interface TimeLeftProps {
     t: NamespacedTranslateFunction;
-    kpiToken: KPIToken;
+    kpiToken: ResolvedKPIToken;
 }
 
 export const TimeLeft = ({ t, kpiToken }: TimeLeftProps) => {

@@ -1,5 +1,5 @@
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import { KPIToken } from "@carrot-kpi/sdk";
+import { ResolvedKPIToken } from "@carrot-kpi/sdk";
 import {
     Card,
     CardContent,
@@ -20,7 +20,7 @@ import { TimeLeft } from "./time-left";
 interface CampaignCardProps {
     t: NamespacedTranslateFunction;
     loading?: boolean;
-    kpiToken: KPIToken;
+    kpiToken: ResolvedKPIToken;
     collaterals?: CollateralData[] | null;
     allOrNone?: boolean | null;
     initialSupply?: BigNumber | null;

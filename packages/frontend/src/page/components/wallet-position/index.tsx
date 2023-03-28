@@ -2,7 +2,7 @@ import {
     KPITokenPageProps,
     NamespacedTranslateFunction,
 } from "@carrot-kpi/react";
-import { Amount, KPIToken, Token } from "@carrot-kpi/sdk";
+import { Amount, ResolvedKPIToken, Token } from "@carrot-kpi/sdk";
 import { Skeleton, Typography } from "@carrot-kpi/ui";
 import { ReactElement, useEffect, useState } from "react";
 import { Address, useAccount, useBalance, useEnsName, useNetwork } from "wagmi";
@@ -21,7 +21,7 @@ interface WalletPositionProps {
     t: NamespacedTranslateFunction;
     onTx: KPITokenPageProps["onTx"];
     loading?: boolean;
-    kpiToken: KPIToken;
+    kpiToken: ResolvedKPIToken;
     collaterals?: CollateralData[];
     oracles?: FinalizableOracle[];
     initialSupply?: Amount<Token> | null;
