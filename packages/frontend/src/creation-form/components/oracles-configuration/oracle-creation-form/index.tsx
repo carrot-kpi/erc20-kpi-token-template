@@ -3,18 +3,18 @@ import { Template } from "@carrot-kpi/sdk";
 import { OracleCreationFormWrapper } from "../oracle-creation-form-wrapper";
 import {
     NamespacedTranslateFunction,
-    OracleCreationFormProps,
+    OracleCreationFormProps as ReactOracleCreationFormProps,
     OracleInitializationBundleGetter,
     useResolvedTemplate,
 } from "@carrot-kpi/react";
 import { AugmentedOracleDataMap } from "..";
 
-interface OraclesAccordionProps {
+interface OracleCreationFormProps {
     t: NamespacedTranslateFunction;
-    i18n: OracleCreationFormProps<unknown>["i18n"];
-    navigate: OracleCreationFormProps<unknown>["navigate"];
-    onTx: OracleCreationFormProps<unknown>["onTx"];
-    kpiToken: OracleCreationFormProps<unknown>["kpiToken"];
+    i18n: ReactOracleCreationFormProps<unknown>["i18n"];
+    navigate: ReactOracleCreationFormProps<unknown>["navigate"];
+    onTx: ReactOracleCreationFormProps<unknown>["onTx"];
+    kpiToken: ReactOracleCreationFormProps<unknown>["kpiToken"];
     onChange: (
         templateId: number,
         state: Partial<unknown>,
@@ -33,7 +33,7 @@ export const OracleCreationForm = ({
     onChange,
     data,
     template,
-}: OraclesAccordionProps) => {
+}: OracleCreationFormProps) => {
     const { resolvedTemplate } = useResolvedTemplate(template);
 
     return (
