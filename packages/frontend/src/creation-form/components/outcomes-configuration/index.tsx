@@ -26,41 +26,6 @@ export const OutcomesConfiguration = ({
     onStateChange,
     onNext,
 }: OutcomesConfigurationProps): ReactElement => {
-    // const [data, setData] = useState<RawOutcomeDataMap>(
-    //     outcomesData.reduce((accumulator: RawOutcomeDataMap, data, i) => {
-    //         const binary =
-    //             data.lowerBound.eq(BigNumber.from(0)) &&
-    //             data.higherBound.eq(BigNumber.from(1));
-
-    //         const lowerBoundValue = binary
-    //             ? "0"
-    //             : utils.formatUnits(data.lowerBound.toString(), 18);
-    //         const lowerBoundFormattedValue =
-    //             binary || !lowerBoundValue
-    //                 ? ""
-    //                 : utils.commify(lowerBoundValue);
-
-    //         const higherBoundValue = binary
-    //             ? "0"
-    //             : utils.formatUnits(data.higherBound.toString(), 18);
-    //         const higherBoundFormattedValue =
-    //             binary || !higherBoundValue
-    //                 ? ""
-    //                 : utils.commify(higherBoundValue);
-    //         accumulator[templates[i].id] = {
-    //             binary,
-    //             lowerBound: {
-    //                 value: lowerBoundValue,
-    //                 formattedValue: lowerBoundFormattedValue,
-    //             },
-    //             higherBound: {
-    //                 value: higherBoundValue,
-    //                 formattedValue: higherBoundFormattedValue,
-    //             },
-    //         };
-    //         return accumulator;
-    //     }, {})
-    // );
     const [disabled, setDisabled] = useState(true);
 
     useEffect(() => {
