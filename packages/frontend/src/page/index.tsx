@@ -91,7 +91,8 @@ export const Component = ({
             <div className="bg-grid-light bg-orange flex flex-col items-center gap-6 px-3 py-4 sm:px-9 sm:py-5 md:items-start lg:px-36 md:py-24">
                 <Typography
                     variant="h2"
-                    className={{ root: "dark:text-black" }}
+                    className={{ root: "dark:text-black max-w-6xl" }}
+                    truncate
                 >
                     {kpiToken.specification.title}
                 </Typography>
