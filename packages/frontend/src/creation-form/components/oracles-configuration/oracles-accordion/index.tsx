@@ -14,7 +14,7 @@ import {
     OracleInitializationBundleGetter,
     useResolvedTemplates,
 } from "@carrot-kpi/react";
-import { AugmentedOracleDataMap } from "..";
+import { OraclesConfigurationStepState } from "../../../types";
 
 interface OraclesAccordionProps {
     t: NamespacedTranslateFunction;
@@ -28,7 +28,7 @@ interface OraclesAccordionProps {
         initializationBundleGetter?: OracleInitializationBundleGetter
     ) => void;
     templates: Template[];
-    data: AugmentedOracleDataMap;
+    data: OraclesConfigurationStepState;
 }
 
 export const OraclesAccordion = ({
