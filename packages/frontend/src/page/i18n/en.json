@@ -5,7 +5,7 @@
     "overview.owner.label": "Owner",
     "overview.description.label": "Description",
     "overview.rewards.label": "Rewards",
-    "overview.time.label": "Time left",
+    "overview.time.label": "Expires in",
     "overview.finalized": "Finalized",
     "overview.expired": "Expired",
     "overview.token.label": "KPI token",
