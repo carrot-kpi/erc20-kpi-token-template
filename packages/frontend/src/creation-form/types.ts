@@ -1,10 +1,22 @@
 import { Amount, KPITokenSpecification, Token } from "@carrot-kpi/sdk";
-import { OracleInitializationBundle } from "@carrot-kpi/react";
+import {
+    OracleInitializationBundle,
+    OracleInitializationBundleGetter,
+} from "@carrot-kpi/react";
 import { BigNumber } from "ethers";
+import { TokenInfoWithBalance } from "@carrot-kpi/ui";
 
 export type SpecificationData = Omit<KPITokenSpecification, "ipfsHash"> & {
     expiration: Date;
 };
+
+export type GenericDataStepState = Partial<
+    SpecificationData & {
+        erc20Name: string;
+        erc20Symbol: string;
+        erc20Supply: NumberFormatValue;
+    }
+>;
 
 export interface NumberFormatValue {
     formattedValue: string;
@@ -32,6 +44,13 @@ export interface CollateralData {
     minimumPayout: Amount<TokenWithLogoURI>;
 }
 
+export interface CollateralsStepState {
+    collaterals: CollateralData[];
+    pickerToken?: TokenInfoWithBalance;
+    pickerAmount?: NumberFormatValue;
+    pickerMinimumPayout?: NumberFormatValue;
+}
+
 export interface TokenData {
     name: string;
     symbol: string;
@@ -43,7 +62,23 @@ export interface OracleData {
     initializationBundle?: OracleInitializationBundle;
 }
 
+export type OracleConfigurationState = OracleData & {
+    initializationBundleGetter?: OracleInitializationBundleGetter;
+};
+
+export type OraclesConfigurationStepState = {
+    [id: number]: OracleConfigurationState;
+};
+
 export interface OutcomeData {
     lowerBound: BigNumber;
     higherBound: BigNumber;
 }
+
+export type OutcomesConfigurationStepState = {
+    [id: number]: {
+        binary: boolean;
+        lowerBound: NumberFormatValue;
+        higherBound: NumberFormatValue;
+    };
+};

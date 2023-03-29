@@ -6,25 +6,22 @@ import {
 } from "@carrot-kpi/react";
 import { NextStepButton } from "@carrot-kpi/ui";
 import { i18n } from "i18next";
-import { OracleData, SpecificationData } from "../../types";
+import {
+    OracleConfigurationState,
+    OracleData,
+    OraclesConfigurationStepState,
+    SpecificationData,
+} from "../../types";
 import { KPIToken, Template } from "@carrot-kpi/sdk";
 import { unixTimestamp } from "../../../utils/dates";
 import { OraclesAccordion } from "./oracles-accordion";
 import { OracleCreationForm } from "./oracle-creation-form";
 
-type AugmentedOracleData = OracleData & {
-    initializationBundleGetter?: OracleInitializationBundleGetter;
-};
-
-export type AugmentedOracleDataMap = {
-    [id: number]: AugmentedOracleData;
-};
-
 type Assert = (
-    data: AugmentedOracleDataMap
-) => asserts data is { [id: number]: Required<AugmentedOracleData> };
+    data: OraclesConfigurationStepState
+) => asserts data is { [id: number]: Required<OracleConfigurationState> };
 const assertInitializationBundleGetterPresent: Assert = (
-    data: AugmentedOracleDataMap
+    data: OraclesConfigurationStepState
 ) => {
     const dataValues = Object.values(data);
     if (
@@ -38,8 +35,9 @@ interface OraclesConfigurationProps {
     t: NamespacedTranslateFunction;
     i18n: i18n;
     templates: Template[];
-    oraclesData: OracleData[];
     specificationData?: SpecificationData | null;
+    state: OraclesConfigurationStepState;
+    onStateChange: (state: OraclesConfigurationStepState) => void;
     onNext: (oraclesData: OracleData[]) => void;
     navigate: KPITokenCreationFormProps["navigate"];
     onTx: KPITokenCreationFormProps["onTx"];
@@ -49,18 +47,13 @@ export const OraclesConfiguration = ({
     t,
     i18n,
     templates,
-    oraclesData,
     specificationData,
+    state,
+    onStateChange,
     onNext,
     navigate,
     onTx,
 }: OraclesConfigurationProps): ReactElement => {
-    const [data, setData] = useState(
-        oraclesData.reduce((accumulator: AugmentedOracleDataMap, data, i) => {
-            accumulator[templates[i].id] = data;
-            return accumulator;
-        }, {})
-    );
     const [loading, setLoading] = useState(false);
     const [disabled, setDisabled] = useState(true);
     const [partialKPIToken, setPartialKPIToken] = useState<
@@ -69,12 +62,12 @@ export const OraclesConfiguration = ({
 
     useEffect(() => {
         try {
-            assertInitializationBundleGetterPresent(data);
+            assertInitializationBundleGetterPresent(state);
             setDisabled(false);
         } catch (error) {
             setDisabled(true);
         }
-    }, [data]);
+    }, [state]);
 
     useEffect(() => {
         if (!specificationData?.expiration) return;
@@ -86,30 +79,28 @@ export const OraclesConfiguration = ({
     const handleChange = useCallback(
         (
             templateId: number,
-            state: Partial<unknown>,
+            oracleState: Partial<unknown>,
             initializationBundleGetter?: OracleInitializationBundleGetter
         ) => {
-            setData((prevData) => {
-                return {
-                    ...prevData,
-                    [templateId]: {
-                        ...prevData[templateId],
-                        state,
-                        initializationBundleGetter,
-                    },
-                };
+            onStateChange({
+                ...state,
+                [templateId]: {
+                    ...state?.[templateId],
+                    state: oracleState,
+                    initializationBundleGetter,
+                },
             });
         },
-        []
+        [onStateChange, state]
     );
 
     const handleNext = useCallback(() => {
         const perform = async () => {
             try {
-                assertInitializationBundleGetterPresent(data);
+                assertInitializationBundleGetterPresent(state);
                 setLoading(true);
                 const oracles = await Promise.all(
-                    Object.values(data).map(async (item) => {
+                    Object.values(state).map(async (item) => {
                         const initializationBundle =
                             await item.initializationBundleGetter();
                         return {
@@ -126,7 +117,7 @@ export const OraclesConfiguration = ({
             }
         };
         void perform();
-    }, [data, onNext]);
+    }, [state, onNext]);
 
     return (
         <div className="flex flex-col gap-6">
@@ -139,7 +130,7 @@ export const OraclesConfiguration = ({
                     kpiToken={partialKPIToken}
                     onChange={handleChange}
                     template={templates[0]}
-                    data={data}
+                    data={state}
                 />
             ) : (
                 <OraclesAccordion
@@ -150,7 +141,7 @@ export const OraclesConfiguration = ({
                     kpiToken={partialKPIToken}
                     onChange={handleChange}
                     templates={templates}
-                    data={data}
+                    data={state}
                 />
             )}
             <NextStepButton

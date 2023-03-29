@@ -2,71 +2,69 @@ import { BigNumber, utils } from "ethers";
 import { ReactElement, useCallback, useEffect, useState } from "react";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Typography, NextStepButton } from "@carrot-kpi/ui";
-import { NumberFormatValue, OutcomeData } from "../../types";
+import {
+    NumberFormatValue,
+    OutcomeData,
+    OutcomesConfigurationStepState,
+} from "../../types";
 import { SingleConfiguration } from "./single-configuration";
 import { Template } from "@carrot-kpi/sdk";
 import { OraclesAccordion } from "./oracles-accordion";
 
-export type RawOutcomeDataMap = {
-    [id: number]: {
-        binary: boolean;
-        lowerBound: NumberFormatValue;
-        higherBound: NumberFormatValue;
-    };
-};
-
 interface OutcomesConfigurationProps {
     t: NamespacedTranslateFunction;
     templates: Template[];
-    outcomesData: OutcomeData[];
+    state: OutcomesConfigurationStepState;
+    onStateChange: (state: OutcomesConfigurationStepState) => void;
     onNext: (data: OutcomeData[]) => void;
 }
 
 export const OutcomesConfiguration = ({
     t,
     templates,
-    outcomesData,
+    state,
+    onStateChange,
     onNext,
 }: OutcomesConfigurationProps): ReactElement => {
-    const [data, setData] = useState<RawOutcomeDataMap>(
-        outcomesData.reduce((accumulator: RawOutcomeDataMap, data, i) => {
-            const binary =
-                data.lowerBound.eq(BigNumber.from(0)) &&
-                data.higherBound.eq(BigNumber.from(1));
+    // const [data, setData] = useState<RawOutcomeDataMap>(
+    //     outcomesData.reduce((accumulator: RawOutcomeDataMap, data, i) => {
+    //         const binary =
+    //             data.lowerBound.eq(BigNumber.from(0)) &&
+    //             data.higherBound.eq(BigNumber.from(1));
 
-            const lowerBoundValue = binary
-                ? "0"
-                : utils.formatUnits(data.lowerBound.toString(), 18);
-            const lowerBoundFormattedValue =
-                binary || !lowerBoundValue
-                    ? ""
-                    : utils.commify(lowerBoundValue);
+    //         const lowerBoundValue = binary
+    //             ? "0"
+    //             : utils.formatUnits(data.lowerBound.toString(), 18);
+    //         const lowerBoundFormattedValue =
+    //             binary || !lowerBoundValue
+    //                 ? ""
+    //                 : utils.commify(lowerBoundValue);
 
-            const higherBoundValue = binary
-                ? "0"
-                : utils.formatUnits(data.higherBound.toString(), 18);
-            const higherBoundFormattedValue =
-                binary || !higherBoundValue
-                    ? ""
-                    : utils.commify(higherBoundValue);
-            accumulator[templates[i].id] = {
-                binary,
-                lowerBound: {
-                    value: lowerBoundValue,
-                    formattedValue: lowerBoundFormattedValue,
-                },
-                higherBound: {
-                    value: higherBoundValue,
-                    formattedValue: higherBoundFormattedValue,
-                },
-            };
-            return accumulator;
-        }, {})
-    );
+    //         const higherBoundValue = binary
+    //             ? "0"
+    //             : utils.formatUnits(data.higherBound.toString(), 18);
+    //         const higherBoundFormattedValue =
+    //             binary || !higherBoundValue
+    //                 ? ""
+    //                 : utils.commify(higherBoundValue);
+    //         accumulator[templates[i].id] = {
+    //             binary,
+    //             lowerBound: {
+    //                 value: lowerBoundValue,
+    //                 formattedValue: lowerBoundFormattedValue,
+    //             },
+    //             higherBound: {
+    //                 value: higherBoundValue,
+    //                 formattedValue: higherBoundFormattedValue,
+    //             },
+    //         };
+    //         return accumulator;
+    //     }, {})
+    // );
     const [disabled, setDisabled] = useState(true);
 
     useEffect(() => {
-        const dataValues = Object.values(data);
+        const dataValues = Object.values(state);
         setDisabled(
             dataValues.length !== templates.length ||
                 dataValues.some((value) => {
@@ -91,11 +89,11 @@ export const OutcomesConfiguration = ({
                               parsedLowerBoundAmount >= parsedHigherBoundAmount;
                 })
         );
-    }, [data, templates.length]);
+    }, [state, templates.length]);
 
     const handleBinaryChange = useCallback(
         (id: number, value: boolean) => {
-            const previousData = data[id] || {};
+            const previousData = state[id] || {};
             previousData.binary = value;
             previousData.lowerBound = {
                 formattedValue: "",
@@ -105,32 +103,32 @@ export const OutcomesConfiguration = ({
                 formattedValue: "",
                 value: value ? "1" : "",
             };
-            setData({ ...data, [id]: previousData });
+            onStateChange({ ...state, [id]: previousData });
         },
-        [data]
+        [state, onStateChange]
     );
 
     const handleLowerBoundChange = useCallback(
         (id: number, value: NumberFormatValue) => {
-            const previousData = data[id] || {};
+            const previousData = state[id] || {};
             previousData.lowerBound = value;
-            setData({ ...data, [id]: previousData });
+            onStateChange({ ...state, [id]: previousData });
         },
-        [data]
+        [state, onStateChange]
     );
 
     const handleHigherBoundChange = useCallback(
         (id: number, value: NumberFormatValue) => {
-            const previousData = data[id] || {};
+            const previousData = state[id] || {};
             previousData.higherBound = value;
-            setData({ ...data, [id]: previousData });
+            onStateChange({ ...state, [id]: previousData });
         },
-        [data]
+        [state, onStateChange]
     );
 
     const handleNext = useCallback(() => {
         onNext(
-            Object.values(data).map((value) => {
+            Object.values(state).map((value) => {
                 return {
                     lowerBound: value.binary
                         ? BigNumber.from(0)
@@ -141,7 +139,7 @@ export const OutcomesConfiguration = ({
                 };
             })
         );
-    }, [data, onNext]);
+    }, [state, onNext]);
 
     return (
         <div className="flex flex-col gap-6">
@@ -160,11 +158,11 @@ export const OutcomesConfiguration = ({
                 <SingleConfiguration
                     t={t}
                     templateId={templates[0].id}
-                    binary={data[templates[0].id]?.binary}
+                    binary={state[templates[0].id]?.binary}
                     onBinaryChange={handleBinaryChange}
-                    lowerBound={data[templates[0].id]?.lowerBound}
+                    lowerBound={state[templates[0].id]?.lowerBound}
                     onLowerBoundChange={handleLowerBoundChange}
-                    higherBound={data[templates[0].id]?.higherBound}
+                    higherBound={state[templates[0].id]?.higherBound}
                     onHigherBoundChange={handleHigherBoundChange}
                 />
             ) : (
@@ -174,7 +172,7 @@ export const OutcomesConfiguration = ({
                     onLowerBoundChange={handleLowerBoundChange}
                     onHigherBoundChange={handleHigherBoundChange}
                     templates={templates}
-                    data={data}
+                    data={state}
                 />
             )}
             <NextStepButton onClick={handleNext} disabled={disabled}>

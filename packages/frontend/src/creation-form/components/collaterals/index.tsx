@@ -14,6 +14,7 @@ import { ReactElement, useCallback, useEffect, useState } from "react";
 import { utils } from "ethers";
 import {
     CollateralData,
+    CollateralsStepState,
     NumberFormatValue,
     TokenWithLogoURI,
 } from "../../types";
@@ -26,20 +27,21 @@ import { parseUnits } from "ethers/lib/utils.js";
 
 interface CollateralProps {
     t: NamespacedTranslateFunction;
-    collaterals: CollateralData[];
+    state: CollateralsStepState;
+    onStateChange: (state: CollateralsStepState) => void;
     onNext: (collaterals: CollateralData[]) => void;
 }
 
 export const Collaterals = ({
     t,
-    collaterals: collateralsData,
+    state,
+    onStateChange,
     onNext,
 }: CollateralProps): ReactElement => {
     const { address } = useAccount();
     const { chain } = useNetwork();
     const { lists: tokenLists, loading } = useTokenLists(TOKEN_LIST_URLS);
 
-    const [collaterals, setCollaterals] = useState(collateralsData);
     const [selectedTokenList, setSelectedTokenList] = useState<
         TokenListWithBalance | undefined
     >();
@@ -48,29 +50,19 @@ export const Collaterals = ({
     // picker state
     const [tokenPickerOpen, setTokenPickerOpen] = useState(false);
     const [addDisabled, setAddDisabled] = useState(true);
-    const [pickedToken, setPickedToken] = useState<TokenInfoWithBalance | null>(
-        null
-    );
-    const [pickerRawAmount, setPickerRawAmount] = useState<NumberFormatValue>({
-        formattedValue: "",
-        value: "",
-    });
     const [protocolFeeAmount, setProtocolFeeAmount] = useState("");
-    const [pickerRawMinimumPayout, setPickerRawMinimumPayout] =
-        useState<NumberFormatValue>({
-            formattedValue: "",
-            value: "",
-        });
 
     // fetch picked erc20 token balance
     const { data, isLoading } = useBalance({
-        address: !!pickedToken ? address : undefined,
-        token: !!pickedToken ? (pickedToken.address as Address) : undefined,
+        address: !!state.pickerToken ? address : undefined,
+        token: !!state.pickerToken
+            ? (state.pickerToken.address as Address)
+            : undefined,
     });
 
     useEffect(() => {
-        setDisabled(collaterals.length === 0);
-    }, [collaterals]);
+        setDisabled(state.collaterals.length === 0);
+    }, [state.collaterals]);
 
     useEffect(() => {
         if (!!selectedTokenList || tokenLists.length === 0) return;
@@ -96,19 +88,21 @@ export const Collaterals = ({
 
     useEffect(() => {
         if (
-            !pickedToken ||
-            !pickerRawAmount.value ||
-            !pickerRawMinimumPayout.value
+            !state.pickerToken ||
+            !state.pickerAmount ||
+            !state.pickerAmount.value ||
+            !state.pickerMinimumPayout ||
+            !state.pickerMinimumPayout.value
         ) {
             setAddDisabled(true);
             return;
         }
-        const parsedAmount = parseFloat(pickerRawAmount.value);
+        const parsedAmount = parseFloat(state.pickerAmount.value);
         if (data) {
             // check if the user has enough balance of the picked token
             const bnPickerAmount = utils.parseUnits(
-                pickerRawAmount.value,
-                pickedToken.decimals
+                state.pickerAmount.value,
+                state.pickerToken.decimals
             );
             if (data.value.lt(bnPickerAmount)) {
                 setAddDisabled(true);
@@ -117,44 +111,49 @@ export const Collaterals = ({
         }
         const amountMinusFees =
             parsedAmount - (parsedAmount * PROTOCOL_FEE_BPS) / 10_000;
-        const parsedMinimumAmount = parseFloat(pickerRawMinimumPayout.value);
+        const parsedMinimumAmount = parseFloat(state.pickerMinimumPayout.value);
         if (amountMinusFees === 0 || parsedMinimumAmount >= amountMinusFees) {
             setAddDisabled(true);
             return;
         }
         setAddDisabled(
-            !!collaterals.find(
+            !!state.collaterals.find(
                 (collateral) =>
                     collateral.amount.currency.address.toLowerCase() ===
-                    pickedToken.address.toLowerCase()
+                    state.pickerToken?.address.toLowerCase()
             )
         );
     }, [
-        collaterals,
-        pickerRawAmount.value,
-        pickerRawMinimumPayout.value,
-        pickedToken,
         data,
+        state.collaterals,
+        state.pickerAmount,
+        state.pickerMinimumPayout,
+        state.pickerToken,
     ]);
 
     useEffect(() => {
-        if (!pickedToken || !pickerRawAmount.value) return;
-        const parsedRawAmount = parseFloat(pickerRawAmount.value);
+        if (
+            !state.pickerToken ||
+            !state.pickerAmount ||
+            !state.pickerAmount.value
+        )
+            return;
+        const parsedRawAmount = parseFloat(state.pickerAmount.value);
         if (isNaN(parsedRawAmount)) return;
         setProtocolFeeAmount(
             formatTokenAmount(
                 new Amount(
-                    pickedToken as unknown as Token,
+                    state.pickerToken as unknown as Token,
                     parseUnits(
                         ((parsedRawAmount * PROTOCOL_FEE_BPS) / 10_000).toFixed(
-                            pickedToken.decimals
+                            state.pickerToken.decimals
                         ),
-                        pickedToken.decimals
+                        state.pickerToken.decimals
                     )
                 )
             )
         );
-    }, [pickedToken, pickerRawAmount]);
+    }, [state.pickerToken, state.pickerAmount]);
 
     const handleOpenERC20TokenPicker = useCallback((): void => {
         setTokenPickerOpen(true);
@@ -164,78 +163,114 @@ export const Collaterals = ({
         setTokenPickerOpen(false);
     }, []);
 
+    const handleSelectedTokenChange = useCallback(
+        (newSelectedToken: TokenInfoWithBalance): void => {
+            onStateChange({
+                ...state,
+                pickerToken: newSelectedToken,
+            });
+        },
+        [onStateChange, state]
+    );
+
+    const handlePickerRawAmountChange = useCallback(
+        (newPickerRawAmount: NumberFormatValue): void => {
+            onStateChange({
+                ...state,
+                pickerAmount: newPickerRawAmount,
+            });
+        },
+        [onStateChange, state]
+    );
+
+    const handlePickerRawMinimumAmountChange = useCallback(
+        (newPickerRawMinimumPayout: NumberFormatValue): void => {
+            onStateChange({
+                ...state,
+                pickerMinimumPayout: newPickerRawMinimumPayout,
+            });
+        },
+        [onStateChange, state]
+    );
+
     const handleCollateralAdd = useCallback((): void => {
-        if (!chain || !pickedToken) return;
+        if (
+            !chain ||
+            !state.pickerToken ||
+            !state.pickerAmount ||
+            !state.pickerMinimumPayout
+        )
+            return;
         const token = new TokenWithLogoURI(
             chain.id,
-            pickedToken.address,
-            pickedToken.decimals,
-            pickedToken.symbol,
-            pickedToken.name,
-            pickedToken.logoURI
+            state.pickerToken.address,
+            state.pickerToken.decimals,
+            state.pickerToken.symbol,
+            state.pickerToken.name,
+            state.pickerToken.logoURI
         );
-        setCollaterals([
-            ...collaterals,
-            {
-                amount: new Amount(
-                    token,
-                    utils.parseUnits(pickerRawAmount.value, token.decimals)
-                ),
-                minimumPayout: new Amount(
-                    token,
-                    utils.parseUnits(
-                        pickerRawMinimumPayout.value,
-                        token.decimals
-                    )
-                ),
-            },
-        ]);
-        setPickedToken(null);
-        setPickerRawAmount({
-            formattedValue: "",
-            value: "",
+        onStateChange({
+            ...state,
+            collaterals: [
+                ...state.collaterals,
+                {
+                    amount: new Amount(
+                        token,
+                        utils.parseUnits(
+                            state.pickerAmount.value,
+                            token.decimals
+                        )
+                    ),
+                    minimumPayout: new Amount(
+                        token,
+                        utils.parseUnits(
+                            state.pickerMinimumPayout.value,
+                            token.decimals
+                        )
+                    ),
+                },
+            ],
+            pickerToken: undefined,
+            pickerAmount: undefined,
+            pickerMinimumPayout: undefined,
         });
-        setPickerRawMinimumPayout({
-            formattedValue: "",
-            value: "",
-        });
-    }, [
-        chain,
-        collaterals,
-        pickerRawAmount.value,
-        pickerRawMinimumPayout.value,
-        pickedToken,
-    ]);
+    }, [chain, onStateChange, state]);
 
     const handleNext = useCallback((): void => {
-        onNext(collaterals);
-    }, [collaterals, onNext]);
+        onNext(state.collaterals);
+    }, [state.collaterals, onNext]);
 
     const handleRemoveCollateral = useCallback(
         (index: number) => {
-            setCollaterals(collaterals.filter((_, i) => i !== index));
+            onStateChange({
+                ...state,
+                collaterals: state.collaterals.filter((_, i) => i !== index),
+            });
         },
-        [collaterals]
+        [onStateChange, state]
     );
 
     const handleMaxClick = useCallback(() => {
-        if (!data || !pickedToken) return;
-        setPickerRawAmount({
-            formattedValue: data.formatted,
-            value: utils.formatUnits(
-                data.value.toString(),
-                pickedToken.decimals
-            ),
+        if (!data || !state.pickerToken) return;
+        onStateChange({
+            ...state,
+            pickerAmount: {
+                formattedValue: data.formatted,
+                value: utils.formatUnits(
+                    data.value.toString(),
+                    state.pickerToken.decimals
+                ),
+            },
         });
-    }, [data, pickedToken]);
+    }, [data, onStateChange, state]);
 
     return (
         <>
             <ERC20TokenPicker
                 open={tokenPickerOpen}
                 onDismiss={handleERC20TokenPickerDismiss}
-                selectedToken={pickedToken}
-                onSelectedTokenChange={setPickedToken}
+                selectedToken={state.pickerToken}
+                onSelectedTokenChange={handleSelectedTokenChange}
                 lists={tokenLists as TokenListWithBalance[]}
                 loading={loading}
                 selectedList={selectedTokenList}
@@ -276,7 +311,9 @@ export const Collaterals = ({
                                                 input: "w-full cursor-pointer",
                                             }}
                                             readOnly
-                                            value={pickedToken?.symbol || ""}
+                                            value={
+                                                state.pickerToken?.symbol || ""
+                                            }
                                         />
                                     </div>
                                     <NumberInput
@@ -287,9 +324,13 @@ export const Collaterals = ({
                                         }}
                                         variant="xl"
                                         allowNegative={false}
-                                        disabled={!!!pickedToken}
-                                        value={pickerRawAmount.formattedValue}
-                                        onValueChange={setPickerRawAmount}
+                                        disabled={!!!state.pickerToken}
+                                        value={
+                                            state.pickerAmount?.formattedValue
+                                        }
+                                        onValueChange={
+                                            handlePickerRawAmountChange
+                                        }
                                     />
                                 </div>
                                 <div className="flex justify-end">
@@ -341,13 +382,14 @@ export const Collaterals = ({
                                             input: "border-none text-right w-full",
                                         }}
                                         variant="xl"
-                                        disabled={!!!pickedToken}
+                                        disabled={!!!state.pickerToken}
                                         allowNegative={false}
                                         value={
-                                            pickerRawMinimumPayout.formattedValue
+                                            state.pickerMinimumPayout
+                                                ?.formattedValue
                                         }
                                         onValueChange={
-                                            setPickerRawMinimumPayout
+                                            handlePickerRawMinimumAmountChange
                                         }
                                     />
                                 </div>
@@ -361,7 +403,7 @@ export const Collaterals = ({
                                     <Typography>
                                         {PROTOCOL_FEE_BPS / 100}%{" "}
                                         {protocolFeeAmount &&
-                                            pickedToken &&
+                                            state.pickerToken &&
                                             `(${protocolFeeAmount})`}
                                     </Typography>
                                 </div>
@@ -383,7 +425,7 @@ export const Collaterals = ({
                 </div>
                 <CollateralsTable
                     t={t}
-                    collaterals={collaterals}
+                    collaterals={state.collaterals}
                     onRemove={handleRemoveCollateral}
                 />
             </div>
