@@ -2,6 +2,8 @@
     "main": "Page for example KPI token",
     "share": "Share",
     "report": "Report",
+    "overview.owner.label": "Owner",
+    "overview.description.label": "Description",
     "overview.rewards.label": "Rewards",
     "overview.time.label": "Time left",
     "overview.finalized": "Finalized",

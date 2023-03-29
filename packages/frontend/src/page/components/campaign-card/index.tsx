@@ -3,7 +3,6 @@ import { ResolvedKPIToken } from "@carrot-kpi/sdk";
 import {
     Card,
     CardContent,
-    CardTitle,
     Chip,
     Markdown,
     Skeleton,
@@ -16,6 +15,8 @@ import { shortenAddress } from "../../../utils/address";
 import { CollateralRow } from "../collateral-row";
 import { BigNumber } from "ethers";
 import { TimeLeft } from "./time-left";
+import { Address, useEnsName } from "wagmi";
+import { mainnet } from "wagmi/chains";
 
 interface CampaignCardProps {
     t: NamespacedTranslateFunction;
@@ -39,22 +40,39 @@ export const CampaignCard = ({
     erc20Symbol,
     erc20Supply,
 }: CampaignCardProps): ReactElement => {
+    const { data: ensName, isLoading: resolvingENSName } = useEnsName({
+        address: kpiToken.owner as Address,
+        chainId: mainnet.id,
+    });
+
     return (
         <Card className={{ root: "w-full max-w-6xl dark:border-gray-400" }}>
-            <CardTitle>
-                <Typography>{shortenAddress(kpiToken.owner)}</Typography>
-            </CardTitle>
             <CardContent>
-                <Markdown className={{ root: "p-4" }}>
-                    {kpiToken.specification.description}
-                </Markdown>
+                <div className="flex flex-col gap-1 border-b border-black w-full py-3 px-4">
+                    <Typography uppercase variant="xs">
+                        {t("overview.owner.label")}
+                    </Typography>
+                    {resolvingENSName ? (
+                        <Skeleton width="100px" />
+                    ) : (
+                        <Typography truncate>
+                            {ensName || shortenAddress(kpiToken.owner)}
+                        </Typography>
+                    )}
+                </div>
+                <div className="flex flex-col gap-2 w-full py-3 px-4">
+                    <Typography uppercase variant="xs">
+                        {t("overview.description.label")}
+                    </Typography>
+                    <Markdown>{kpiToken.specification.description}</Markdown>
+                </div>
                 <div className="p-4 flex flex-wrap gap-3">
                     {kpiToken.specification.tags.map((tag) => (
                         <Chip key={tag}>{tag}</Chip>
                     ))}
                 </div>
                 <div className="w-full h-36 md:h-auto flex flex-col md:flex-row border-t border-black">
-                    <div className="py-3 px-4 flex items-center justify-between flex-1 border-b md:border-r md:border-b-0 border-black">
+                    <div className="py-3 px-4 flex items-center justify-between w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
                         <Typography uppercase>
                             {t("overview.rewards.label")}
                         </Typography>
@@ -76,7 +94,7 @@ export const CampaignCard = ({
                             )}
                         </div>
                     </div>
-                    <div className="py-3 px-4 flex items-center justify-between flex-1 border-b md:border-r md:border-b-0 border-black">
+                    <div className="py-3 px-4 flex items-center justify-between w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
                         <Typography uppercase>
                             {t("overview.minimumPayout.label")}
                         </Typography>
@@ -99,45 +117,54 @@ export const CampaignCard = ({
                             )}
                         </div>
                     </div>
-                    <div className="py-3 px-4 flex items-center justify-between flex-1">
-                        <Typography uppercase>
+                    <div className="py-3 px-4 flex items-center justify-between w-1/3 gap-8">
+                        <Typography
+                            uppercase
+                            className={{ root: "whitespace-nowrap flex-1" }}
+                        >
                             {t("overview.token.label")}
                         </Typography>
                         {loading || !erc20Name || !erc20Symbol ? (
                             <Skeleton width="40px" />
                         ) : (
-                            <Typography>
+                            <Typography truncate>
                                 {erc20Name} ({erc20Symbol})
                             </Typography>
                         )}
                     </div>
                 </div>
                 <div className="w-full h-36 md:h-auto flex flex-col md:flex-row border-t border-black">
-                    <div className="h-12 px-4 flex items-center justify-between flex-1 border-b md:border-r md:border-b-0 border-black">
-                        <Typography uppercase>
+                    <div className="h-12 px-4 flex items-center justify-between w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
+                        <Typography
+                            uppercase
+                            className={{ root: "whitespace-nowrap flex-1" }}
+                        >
                             {t("overview.supply.initial.label")}
                         </Typography>
                         {loading || !initialSupply ? (
                             <Skeleton />
                         ) : (
-                            <Typography uppercase>
+                            <Typography uppercase truncate>
                                 {commify(formatUnits(initialSupply, 18))}
                             </Typography>
                         )}
                     </div>
-                    <div className="h-12 px-4 flex items-center justify-between flex-1 border-b md:border-r md:border-b-0 border-black">
-                        <Typography uppercase>
+                    <div className="h-12 px-4 flex items-center justify-between w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
+                        <Typography
+                            uppercase
+                            className={{ root: "whitespace-nowrap flex-1" }}
+                        >
                             {t("overview.supply.current.label")}
                         </Typography>
                         {loading || !erc20Supply ? (
                             <Skeleton width="60px" />
                         ) : (
-                            <Typography uppercase>
+                            <Typography uppercase truncate>
                                 {commify(formatUnits(erc20Supply, 18))}
                             </Typography>
                         )}
                     </div>
-                    <div className="h-12 px-4 flex items-center justify-between flex-1">
+                    <div className="h-12 px-4 flex items-center justify-between w-1/3 gap-8">
                         <Typography uppercase>
                             {t("overview.time.label")}
                         </Typography>
