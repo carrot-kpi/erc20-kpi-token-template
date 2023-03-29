@@ -14,7 +14,7 @@ import {
     SingleConfiguration,
     SingleConfigurationProps,
 } from "../single-configuration";
-import { RawOutcomeDataMap } from "..";
+import { OutcomesConfigurationStepState } from "../../../types";
 
 interface OraclesAccordionProps {
     t: NamespacedTranslateFunction;
@@ -22,7 +22,7 @@ interface OraclesAccordionProps {
     onLowerBoundChange: SingleConfigurationProps["onLowerBoundChange"];
     onHigherBoundChange: SingleConfigurationProps["onHigherBoundChange"];
     templates: Template[];
-    data: RawOutcomeDataMap;
+    data: OutcomesConfigurationStepState;
 }
 
 export const OraclesAccordion = ({

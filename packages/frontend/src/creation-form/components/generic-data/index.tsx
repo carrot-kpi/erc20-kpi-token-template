@@ -1,5 +1,10 @@
-import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
-import { NumberFormatValue, SpecificationData, TokenData } from "../../types";
+import { ReactElement, useCallback, useEffect, useState } from "react";
+import {
+    GenericDataStepState,
+    NumberFormatValue,
+    SpecificationData,
+    TokenData,
+} from "../../types";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import {
     MarkdownInput,
@@ -20,47 +25,27 @@ import {
     MAX_KPI_TOKEN_TAG_CHARS,
     MAX_KPI_TOKEN_TITLE_CHARS,
 } from "../../constants";
-
-const stripHtml = (value: string) => value.replace(/(<([^>]+)>)/gi, "");
+import {
+    isGenericDataStepStateInvalid,
+    stripHtml,
+} from "../../utils/validation";
 
 interface GenericDataProps {
     t: NamespacedTranslateFunction;
-    specificationData: SpecificationData | null;
-    tokenData: TokenData | null;
+    state: GenericDataStepState;
+    onStateChange: (state: GenericDataStepState) => void;
     onNext: (
-        specificationData: SpecificationData,
-        tokenData: TokenData
+        partialSpecificationData: SpecificationData,
+        partialTokenData: TokenData
     ) => void;
 }
 
 export const GenericData = ({
     t,
-    specificationData,
-    tokenData,
+    state,
+    onStateChange,
     onNext,
 }: GenericDataProps): ReactElement => {
-    const [title, setTitle] = useState(specificationData?.title || "");
-    const [description, setDescription] = useState(
-        specificationData?.description || ""
-    );
-    const [tags, setTags] = useState<string[]>(specificationData?.tags || []);
-    const [expiration, setExpiration] = useState<Date | null>(null);
-    const [erc20Name, setERC20Name] = useState(tokenData?.name || "");
-    const [erc20Symbol, setERC20Symbol] = useState(tokenData?.symbol || "");
-    const { defaultValue, defaultFormattedValue } = useMemo(() => {
-        const defaultValue =
-            !!tokenData && !!tokenData.supply
-                ? utils.formatUnits(tokenData.supply.toString(), 18)
-                : "";
-        const defaultFormattedValue = !!defaultValue
-            ? utils.commify(defaultValue)
-            : "";
-        return { defaultValue, defaultFormattedValue };
-    }, [tokenData]);
-    const [erc20Supply, setERC20Supply] = useState<NumberFormatValue>({
-        formattedValue: defaultFormattedValue,
-        value: defaultValue,
-    });
     const [titleErrorText, setTitleErrorText] = useState("");
     const [descriptionErrorText, setDescriptionErrorText] = useState("");
     const [tagsErrorText, setTagsErrorText] = useState("");
@@ -81,40 +66,11 @@ export const GenericData = ({
     }, []);
 
     useEffect(() => {
-        setDisabled(
-            !title ||
-                !description ||
-                !erc20Name ||
-                !erc20Symbol ||
-                !title.trim() ||
-                title.trim().length > MAX_KPI_TOKEN_TITLE_CHARS ||
-                !stripHtml(description).trim() ||
-                stripHtml(description).trim().length >
-                    MAX_KPI_TOKEN_DESCRIPTION_CHARS ||
-                tags.length === 0 ||
-                tags.length > MAX_KPI_TOKEN_TAGS_COUNT ||
-                !expiration ||
-                isInThePast(expiration) ||
-                !erc20Name.trim() ||
-                erc20Name.trim().length > MAX_KPI_TOKEN_ERC20_NAME_CHARS ||
-                !erc20Symbol.trim() ||
-                erc20Symbol.trim().length > MAX_KPI_TOKEN_ERC20_SYMBOL_CHARS ||
-                !erc20Supply.value ||
-                parseFloat(erc20Supply.value) === 0
-        );
-    }, [
-        description,
-        erc20Name,
-        erc20Supply.value,
-        erc20Symbol,
-        expiration,
-        tags.length,
-        title,
-    ]);
+        setDisabled(isGenericDataStepStateInvalid(state));
+    }, [state]);
 
     const handleTitleChange = useCallback(
         (value: string): void => {
-            setTitle(value);
             setTitleErrorText(
                 !value
                     ? t("error.title.empty")
@@ -124,14 +80,14 @@ export const GenericData = ({
                       })
                     : ""
             );
+            onStateChange({ ...state, title: value });
         },
-        [t]
+        [onStateChange, state, t]
     );
 
     const handleDescriptionChange = useCallback(
         (value: string) => {
             const trimmedValue = stripHtml(value).trim();
-            setDescription(value);
             setDescriptionErrorText(
                 !trimmedValue
                     ? t("error.description.empty")
@@ -141,8 +97,9 @@ export const GenericData = ({
                       })
                     : ""
             );
+            onStateChange({ ...state, description: value });
         },
-        [t]
+        [onStateChange, state, t]
     );
 
     const handleTagsChange = useCallback(
@@ -159,7 +116,6 @@ export const GenericData = ({
                 setTagsErrorText(t("error.tags.duplicated"));
                 return;
             }
-            setTags(value);
             setTagsErrorText(
                 value.length === 0
                     ? t("error.tags.empty")
@@ -169,23 +125,23 @@ export const GenericData = ({
                       })
                     : ""
             );
+            onStateChange({ ...state, tags: value });
         },
-        [t]
+        [onStateChange, state, t]
     );
 
     const handleExpirationChange = useCallback(
         (value: Date) => {
-            setExpiration(value);
             setExpirationErrorText(
                 isInThePast(value) ? t("error.expiration.past") : ""
             );
+            onStateChange({ ...state, expiration: value });
         },
-        [t]
+        [onStateChange, state, t]
     );
 
     const handleERC20NameChange = useCallback(
         (value: string) => {
-            setERC20Name(value);
             setERC20NameErrorText(
                 !value
                     ? t("error.erc20.name.empty")
@@ -195,13 +151,16 @@ export const GenericData = ({
                       })
                     : ""
             );
+            onStateChange({
+                ...state,
+                erc20Name: value,
+            });
         },
-        [t]
+        [onStateChange, state, t]
     );
 
     const handleERC20SymbolChange = useCallback(
         (value: string) => {
-            setERC20Symbol(value);
             setERC20SymbolErrorText(
                 !value
                     ? t("error.erc20.symbol.empty")
@@ -211,56 +170,64 @@ export const GenericData = ({
                       })
                     : ""
             );
+            onStateChange({
+                ...state,
+                erc20Symbol: value,
+            });
         },
-        [t]
+        [onStateChange, state, t]
     );
 
     const handleERC20SupplyChange = useCallback(
         (value: NumberFormatValue) => {
-            setERC20Supply(value);
             setERC20SupplyErrorText(
                 !value || !value.value || BigNumber.from(value.value).isZero()
                     ? t("error.erc20.supply.zero")
                     : ""
             );
+            onStateChange({
+                ...state,
+                erc20Supply: value,
+            });
         },
-        [t]
+        [onStateChange, state, t]
     );
 
     const handleNext = useCallback(() => {
         if (
-            !title ||
-            !description ||
-            tags.length === 0 ||
-            !expiration ||
-            !erc20Name ||
-            !erc20Supply ||
-            !erc20Supply.value ||
-            !erc20Symbol
+            !state.title ||
+            !state.description ||
+            !state.tags ||
+            state.tags.length === 0 ||
+            !state.expiration ||
+            !state.erc20Name ||
+            !state.erc20Supply ||
+            !state.erc20Supply.value ||
+            !state.erc20Symbol
         )
             return;
         onNext(
             {
-                title,
-                description,
-                tags,
-                expiration,
+                title: state.title,
+                description: state.description,
+                tags: state.tags,
+                expiration: state.expiration,
             },
             {
-                name: erc20Name,
-                supply: utils.parseUnits(erc20Supply.value, 18),
-                symbol: erc20Symbol,
+                name: state.erc20Name,
+                supply: utils.parseUnits(state.erc20Supply.value, 18),
+                symbol: state.erc20Symbol,
             }
         );
     }, [
-        description,
-        erc20Name,
-        erc20Supply,
-        erc20Symbol,
-        expiration,
         onNext,
-        tags,
-        title,
+        state.description,
+        state.erc20Name,
+        state.erc20Supply,
+        state.erc20Symbol,
+        state.expiration,
+        state.tags,
+        state.title,
     ]);
 
     return (
@@ -269,7 +236,7 @@ export const GenericData = ({
                 label={t("general.label.title")}
                 placeholder={t("general.placeholder.title")}
                 onChange={handleTitleChange}
-                value={title}
+                value={state.title}
                 error={!!titleErrorText}
                 errorText={titleErrorText}
                 className={{
@@ -283,7 +250,7 @@ export const GenericData = ({
                 onChange={handleDescriptionChange}
                 error={!!descriptionErrorText}
                 errorText={descriptionErrorText}
-                value={description}
+                value={state.description}
                 className={{
                     input: "w-full",
                     inputWrapper: "w-full",
@@ -293,7 +260,7 @@ export const GenericData = ({
                 label={t("general.label.tags")}
                 placeholder={t("general.placeholder.tags")}
                 onChange={handleTagsChange}
-                value={tags}
+                value={state.tags}
                 error={!!tagsErrorText}
                 errorText={tagsErrorText}
                 messages={{ add: t("add") }}
@@ -307,7 +274,7 @@ export const GenericData = ({
                 label={t("general.label.expiration")}
                 placeholder={t("general.placeholder.expiration")}
                 onChange={handleExpirationChange}
-                value={expiration}
+                value={state.expiration}
                 error={!!expirationErrorText}
                 errorText={expirationErrorText}
                 info={
@@ -332,7 +299,7 @@ export const GenericData = ({
                     label={t("general.label.token.name")}
                     placeholder={"Example"}
                     onChange={handleERC20NameChange}
-                    value={erc20Name}
+                    value={state.erc20Name}
                     error={!!erc20NameErrorText}
                     errorText={erc20NameErrorText}
                     className={{
@@ -345,7 +312,7 @@ export const GenericData = ({
                     label={t("general.label.token.symbol")}
                     placeholder={"XMPL"}
                     onChange={handleERC20SymbolChange}
-                    value={erc20Symbol}
+                    value={state.erc20Symbol}
                     error={!!erc20SymbolErrorText}
                     errorText={erc20SymbolErrorText}
                     className={{
@@ -359,7 +326,7 @@ export const GenericData = ({
                     label={t("general.label.token.supply")}
                     placeholder={"1,000,000"}
                     onValueChange={handleERC20SupplyChange}
-                    value={erc20Supply.formattedValue}
+                    value={state.erc20Supply?.formattedValue}
                     error={!!erc20SupplyErrorText}
                     errorText={erc20SupplyErrorText}
                     className={{

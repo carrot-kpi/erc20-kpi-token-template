@@ -7,7 +7,7 @@ import {
     OracleInitializationBundleGetter,
     useResolvedTemplate,
 } from "@carrot-kpi/react";
-import { AugmentedOracleDataMap } from "..";
+import { OraclesConfigurationStepState } from "../../../types";
 
 interface OracleCreationFormProps {
     t: NamespacedTranslateFunction;
@@ -21,7 +21,7 @@ interface OracleCreationFormProps {
         initializationBundleGetter?: OracleInitializationBundleGetter
     ) => void;
     template: Template;
-    data: AugmentedOracleDataMap;
+    data: OraclesConfigurationStepState;
 }
 
 export const OracleCreationForm = ({

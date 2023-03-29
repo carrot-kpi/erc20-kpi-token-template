@@ -11,8 +11,12 @@ import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
 import { OraclesPicker } from "./components/oracles-picker";
 import {
     CollateralData,
+    CollateralsStepState,
+    GenericDataStepState,
     OracleData,
+    OraclesConfigurationStepState,
     OutcomeData,
+    OutcomesConfigurationStepState,
     SpecificationData,
     TokenData as TokenDataType,
 } from "./types";
@@ -28,6 +32,9 @@ import { ConnectWallet } from "./components/connect-wallet";
 
 // TODO: add a check that displays an error message if the creation
 // proxy address is 0 for more than x time
+
+// TODO: when we have more than one oracle template, implement state
+// and state change features for the oracle picker state too
 export const Component = ({
     i18n,
     t,
@@ -68,17 +75,33 @@ export const Component = ({
 
     const [step, setStep] = useState(0);
     const [mostUpdatedStep, setMostUpdatedStep] = useState(0);
+
+    const [genericDataStepState, setGenericDataStepState] =
+        useState<GenericDataStepState>({});
     const [specificationData, setSpecificationData] =
         useState<SpecificationData | null>(null);
+    const [tokenData, setTokenData] = useState<TokenDataType | null>(null);
+
+    const [collateralsStepState, setCollateralsStepState] =
+        useState<CollateralsStepState>({
+            collaterals: [],
+        });
     const [collateralsData, setCollateralsData] = useState<CollateralData[]>(
         []
     );
-    const [tokenData, setTokenData] = useState<TokenDataType | null>(null);
+
     const [oracleTemplatesData, setOracleTemplatesData] = useState<Template[]>(
         []
     );
+
+    const [oraclesConfigurationStepState, setOraclesConfigurationStepState] =
+        useState<OraclesConfigurationStepState>({});
     const [oraclesData, setOraclesData] = useState<OracleData[]>([]);
+
+    const [outcomesConfigurationStepState, setOutcomesConfigurationStepState] =
+        useState<OutcomesConfigurationStepState>({});
     const [outcomesData, setOutcomesData] = useState<OutcomeData[]>([]);
+
     const [createdKPITokenAddress, setCreatedKPITokenAddress] = useState("");
 
     // on wallet disconnect, reset EVERYTHING
@@ -204,8 +227,8 @@ export const Component = ({
                     >
                         <GenericData
                             t={t}
-                            specificationData={specificationData}
-                            tokenData={tokenData}
+                            state={genericDataStepState}
+                            onStateChange={setGenericDataStepState}
                             onNext={handleGenericDataNext}
                         />
                     </StepCard>
@@ -220,7 +243,8 @@ export const Component = ({
                         ) : (
                             <Collaterals
                                 t={t}
-                                collaterals={collateralsData}
+                                state={collateralsStepState}
+                                onStateChange={setCollateralsStepState}
                                 onNext={handleCollateralsNext}
                             />
                         )}
@@ -253,9 +277,10 @@ export const Component = ({
                             <OraclesConfiguration
                                 t={t}
                                 i18n={i18n}
-                                oraclesData={oraclesData}
                                 specificationData={specificationData}
                                 templates={oracleTemplatesData}
+                                state={oraclesConfigurationStepState}
+                                onStateChange={setOraclesConfigurationStepState}
                                 onNext={handleOraclesConfigurationNext}
                                 navigate={navigate}
                                 onTx={onTx}
@@ -270,7 +295,8 @@ export const Component = ({
                     >
                         <OutcomesConfiguration
                             t={t}
-                            outcomesData={outcomesData}
+                            state={outcomesConfigurationStepState}
+                            onStateChange={setOutcomesConfigurationStepState}
                             templates={oracleTemplatesData}
                             onNext={handleOutcomesConfigurationNext}
                         />
