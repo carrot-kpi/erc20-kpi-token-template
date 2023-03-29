@@ -25,8 +25,10 @@ import {
     MAX_KPI_TOKEN_TAG_CHARS,
     MAX_KPI_TOKEN_TITLE_CHARS,
 } from "../../constants";
-
-const stripHtml = (value: string) => value.replace(/(<([^>]+)>)/gi, "");
+import {
+    isGenericDataStepStateInvalid,
+    stripHtml,
+} from "../../utils/validation";
 
 interface GenericDataProps {
     t: NamespacedTranslateFunction;
@@ -64,40 +66,8 @@ export const GenericData = ({
     }, []);
 
     useEffect(() => {
-        setDisabled(
-            !state.title ||
-                !state.description ||
-                !state.erc20Name ||
-                !state.erc20Symbol ||
-                !state.title.trim() ||
-                state.title.trim().length > MAX_KPI_TOKEN_TITLE_CHARS ||
-                !stripHtml(state.description).trim() ||
-                stripHtml(state.description).trim().length >
-                    MAX_KPI_TOKEN_DESCRIPTION_CHARS ||
-                !state.tags ||
-                state.tags.length === 0 ||
-                state.tags.length > MAX_KPI_TOKEN_TAGS_COUNT ||
-                !state.expiration ||
-                isInThePast(state.expiration) ||
-                !state.erc20Name.trim() ||
-                state.erc20Name.trim().length >
-                    MAX_KPI_TOKEN_ERC20_NAME_CHARS ||
-                !state.erc20Symbol.trim() ||
-                state.erc20Symbol.trim().length >
-                    MAX_KPI_TOKEN_ERC20_SYMBOL_CHARS ||
-                !state.erc20Supply ||
-                !state.erc20Supply.value ||
-                parseFloat(state.erc20Supply.value) === 0
-        );
-    }, [
-        state.description,
-        state.expiration,
-        state.tags,
-        state.title,
-        state.erc20Name,
-        state.erc20Supply,
-        state.erc20Symbol,
-    ]);
+        setDisabled(isGenericDataStepStateInvalid(state));
+    }, [state]);
 
     const handleTitleChange = useCallback(
         (value: string): void => {
