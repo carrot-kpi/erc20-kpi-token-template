@@ -1069,10 +1069,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@carrot-kpi/frontend@^1.0.0-rc.58":
-  version "1.0.0-rc.58"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/frontend/-/frontend-1.0.0-rc.58.tgz#912215af185d4f2b49bd3ca11d153ae151913672"
-  integrity sha512-mkt+Z4A3GBdj905dsguuKFcTUzUzi9+DeZ5wD3gJ8fClum+IEyr4pvZMzQNIy1S3LFcCigF/Isw8IZ0Cde7eRw==
+"@carrot-kpi/frontend@^1.0.0-rc.59":
+  version "1.0.0-rc.59"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/frontend/-/frontend-1.0.0-rc.59.tgz#ef6fe9615786606d349db4f6f80981c814743ec3"
+  integrity sha512-YQl600CuAy4YcKQKPM+hoj7EAkDhQR+a6tKHFQLVDdjaVmHhWADWlRsrhec+dIZwcL9SJO0C//zAPE/9Ty1yJw==
   dependencies:
     "@carrot-kpi/react" "*"
     "@carrot-kpi/sdk" "*"
@@ -1117,10 +1117,10 @@
     class-variance-authority "^0.4.0"
     react-use "^17.4.0"
 
-"@carrot-kpi/react@^0.37.1":
-  version "0.37.1"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.37.1.tgz#7f8a4d3b3560f8b153c7d44ea8d6eecced549ffb"
-  integrity sha512-ChqU9NvRL/3KVyCC6inrK5d7bihzHYmrpChAFh1+Yh/gQv4Aa9DMkNvLSg3xwtLEgMlxUCneQb7Ifk4WRhduzA==
+"@carrot-kpi/react@^0.37.2":
+  version "0.37.2"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.37.2.tgz#2ef48ec36cf2e7a5f2bd4247a02d2c32a9096c6d"
+  integrity sha512-Fg2tFCqrRtBCPvIQXP3eWnEEv3kI4JSu5Eq/Q29cLpWE6kP3feWL5CFcTDz3mH+41Nv4kA4/D3fOJOFbP0MBsw==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@ethersproject/bignumber" "^5.7.0"
@@ -1130,10 +1130,24 @@
     class-variance-authority "^0.4.0"
     react-use "^17.4.0"
 
-"@carrot-kpi/sdk@*", "@carrot-kpi/sdk@^1.18.3", "@carrot-kpi/sdk@^1.23.0":
+"@carrot-kpi/sdk@*", "@carrot-kpi/sdk@^1.18.3":
   version "1.23.0"
   resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.23.0.tgz#15b2c386aae2ce89375ae1b2c09afb70ce311af4"
   integrity sha512-ij9vJMEMOxIPyXlIcIYm8bZeWUtw6HqmtFdEVRRQi9fy5hkd/sxQvJoN8VItqPqPgjQSfsCD53UlhvC9kGUbeg==
+  dependencies:
+    "@ethersproject/address" "^5.7.0"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/contracts" "^5.7.0"
+    "@ethersproject/providers" "^5.7.2"
+    "@ethersproject/units" "^5.7.0"
+    "@ethersproject/wallet" "^5.7.0"
+    decimal.js-light "^2.5.1"
+    multiformats "^9.9.0"
+
+"@carrot-kpi/sdk@^1.23.1":
+  version "1.23.1"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.23.1.tgz#f4779b7bf2b59c23f9a673d1df840329a0bc58a2"
+  integrity sha512-MgYDxPqsUFay0qo3I0gWp/EdTKPE7JX9ZarUDhzSfmz11XZDaq9BWl0b9UlsG4JkjDzbLGvD5tcAeWUVnSO43w==
   dependencies:
     "@ethersproject/address" "^5.7.0"
     "@ethersproject/bignumber" "^5.7.0"
@@ -3673,7 +3687,7 @@
   dependencies:
     "@tanstack/query-persist-client-core" "4.27.0"
 
-"@tanstack/react-query@^4.14.5":
+"@tanstack/react-query@^4.14.5", "@tanstack/react-query@^4.28.0":
   version "4.28.0"
   resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-4.28.0.tgz#01cb9969b15cbcbd5dcfcd4b264dc18ef0a35f86"
   integrity sha512-8cGBV5300RHlvYdS4ea+G1JcZIt5CIuprXYFnsWggkmGoC0b5JaqG0fIX3qwDL9PTNkKvG76NGThIWbpXivMrQ==
