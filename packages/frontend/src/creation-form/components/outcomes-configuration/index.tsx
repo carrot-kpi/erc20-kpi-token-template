@@ -123,6 +123,9 @@ export const OutcomesConfiguration = ({
                 <SingleConfiguration
                     t={t}
                     templateId={templates[0].id}
+                    automaticallyFilled={
+                        state[templates[0].id]?.automaticallyFilled
+                    }
                     binary={state[templates[0].id]?.binary}
                     onBinaryChange={handleBinaryChange}
                     lowerBound={state[templates[0].id]?.lowerBound}
