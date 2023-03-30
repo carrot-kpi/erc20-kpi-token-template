@@ -75,10 +75,13 @@ export interface OutcomeData {
     higherBound: BigNumber;
 }
 
+export interface OutcomeConfigurationState {
+    automaticallyFilled?: boolean;
+    binary: boolean;
+    lowerBound: NumberFormatValue;
+    higherBound: NumberFormatValue;
+}
+
 export type OutcomesConfigurationStepState = {
-    [id: number]: {
-        binary: boolean;
-        lowerBound: NumberFormatValue;
-        higherBound: NumberFormatValue;
-    };
+    [templateId: number]: OutcomeConfigurationState;
 };

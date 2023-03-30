@@ -15,6 +15,7 @@ const boundsWrapperStyles = cva(["flex gap-4 opacity-100 transition-opacity"], {
 export interface SingleConfigurationProps {
     t: NamespacedTranslateFunction;
     templateId: number;
+    automaticallyFilled?: boolean;
     binary?: boolean;
     onBinaryChange?: (id: number, value: boolean) => void;
     lowerBound?: NumberFormatValue;
@@ -26,6 +27,7 @@ export interface SingleConfigurationProps {
 export const SingleConfiguration = ({
     t,
     templateId,
+    automaticallyFilled,
     binary,
     onBinaryChange,
     lowerBound,
@@ -56,6 +58,13 @@ export const SingleConfiguration = ({
 
     return (
         <div className="flex flex-col gap-4">
+            {automaticallyFilled && (
+                <div className="rounded-xl flex p-4 border border-orange bg-orange bg-opacity-20">
+                    <Typography className={{ root: "text-orange" }}>
+                        {t("warning.autofilled")}
+                    </Typography>
+                </div>
+            )}
             <div className="flex justify-between items-center">
                 <Typography>{t("label.binary")}</Typography>
                 <Switch checked={binary} onChange={handleBinaryChange} />

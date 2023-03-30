@@ -1,5 +1,6 @@
 import { ChainId } from "@carrot-kpi/sdk";
 import { Address } from "wagmi";
+import { OutcomeConfigurationState } from "../types";
 
 export const NO_SPECIAL_CHARACTERS_REGEX =
     /^[A-Z0-9@~`!@#$%^&*()_=+\\';:"\/?>.<,-\s]*$/i;
@@ -26,4 +27,17 @@ export const CREATION_PROXY_ADDRESS: Record<ChainId, Address> = {
 export const DEFAULT_NUMBER_FORMAT_VALUE = {
     value: "",
     formattedValue: "",
+};
+
+export const DEFAULT_OUTCOME_CONFIGURATION: OutcomeConfigurationState = {
+    automaticallyFilled: false,
+    binary: false,
+    lowerBound: {
+        value: "",
+        formattedValue: "",
+    },
+    higherBound: {
+        value: "",
+        formattedValue: "",
+    },
 };

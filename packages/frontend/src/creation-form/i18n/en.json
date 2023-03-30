@@ -84,5 +84,6 @@
     "step": "Step",
     "add": "Add",
     "success.text": "Your Carrot Campaign has successfully been created!",
-    "success.button.label": "Go to campaign"
+    "success.button.label": "Go to campaign",
+    "warning.autofilled": "This outcome configuration has been automatically determined based on its respective oracle configuration. Please manually double check for any discrepancies, it's important."
 }
