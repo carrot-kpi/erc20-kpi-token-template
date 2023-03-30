@@ -22,7 +22,9 @@ export const Success = ({
 
     return (
         <div className="flex flex-col items-center gap-6">
-            <Typography>{t("success.text")}</Typography>
+            <Typography className={{ root: "text-center" }}>
+                {t("success.text")}
+            </Typography>
             <Button size="small" onClick={handleClick}>
                 {t("success.button.label")}
             </Button>

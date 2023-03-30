@@ -24,6 +24,11 @@ export const CREATION_PROXY_ADDRESS: Record<ChainId, Address> = {
     [ChainId.SEPOLIA]: "0xd5192f7DB2c20764aa66336F61f711e3Fe9CC43C",
 };
 
+export const DEFAULT_NUMBER_FORMAT_VALUE = {
+    value: "",
+    formattedValue: "",
+};
+
 export const DEFAULT_OUTCOME_CONFIGURATION: OutcomeConfigurationState = {
     automaticallyFilled: false,
     binary: false,

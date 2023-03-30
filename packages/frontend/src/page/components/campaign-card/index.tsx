@@ -72,8 +72,11 @@ export const CampaignCard = ({
                     ))}
                 </div>
                 <div className="w-full h-36 md:h-auto flex flex-col md:flex-row border-t border-black">
-                    <div className="py-3 px-4 flex items-center justify-between w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
-                        <Typography uppercase>
+                    <div className="py-3 px-4 flex items-center justify-between w-full md:w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
+                        <Typography
+                            uppercase
+                            className={{ root: "whitespace-nowrap flex-1" }}
+                        >
                             {t("overview.rewards.label")}
                         </Typography>
                         <div className="flex flex-col gap-2">
@@ -94,8 +97,11 @@ export const CampaignCard = ({
                             )}
                         </div>
                     </div>
-                    <div className="py-3 px-4 flex items-center justify-between w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
-                        <Typography uppercase>
+                    <div className="py-3 px-4 flex items-center justify-between w-full md:w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
+                        <Typography
+                            uppercase
+                            className={{ root: "whitespace-nowrap flex-1" }}
+                        >
                             {t("overview.minimumPayout.label")}
                         </Typography>
                         <div className="flex flex-col gap-2">
@@ -117,7 +123,7 @@ export const CampaignCard = ({
                             )}
                         </div>
                     </div>
-                    <div className="py-3 px-4 flex items-center justify-between w-1/3 gap-8">
+                    <div className="py-3 px-4 flex items-center justify-between w-full md:w-1/3 gap-8">
                         <Typography
                             uppercase
                             className={{ root: "whitespace-nowrap flex-1" }}
@@ -134,7 +140,7 @@ export const CampaignCard = ({
                     </div>
                 </div>
                 <div className="w-full h-36 md:h-auto flex flex-col md:flex-row border-t border-black">
-                    <div className="h-12 px-4 flex items-center justify-between w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
+                    <div className="h-12 px-4 flex items-center justify-between w-full md:w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
                         <Typography
                             uppercase
                             className={{ root: "whitespace-nowrap flex-1" }}
@@ -149,7 +155,7 @@ export const CampaignCard = ({
                             </Typography>
                         )}
                     </div>
-                    <div className="h-12 px-4 flex items-center justify-between w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
+                    <div className="h-12 px-4 flex items-center justify-between w-full md:w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
                         <Typography
                             uppercase
                             className={{ root: "whitespace-nowrap flex-1" }}
@@ -164,7 +170,7 @@ export const CampaignCard = ({
                             </Typography>
                         )}
                     </div>
-                    <div className="h-12 px-4 flex items-center justify-between w-1/3 gap-8">
+                    <div className="h-12 px-4 flex items-center justify-between w-full md:w-1/3 gap-8">
                         <Typography uppercase>
                             {t("overview.time.label")}
                         </Typography>
