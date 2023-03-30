@@ -16,11 +16,11 @@ export const outcomeConfigurationFromOracleData = (
                       automaticallyFilled: true,
                       binary: true,
                       lowerBound: {
-                          value: "",
+                          value: "0",
                           formattedValue: "",
                       },
                       higherBound: {
-                          value: "",
+                          value: "1",
                           formattedValue: "",
                       },
                   }
