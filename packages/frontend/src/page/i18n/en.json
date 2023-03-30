@@ -31,5 +31,7 @@
     "widgets.title": "Widgets",
     "open.explorer": "Open in explorer",
     "redeem": "Redeem",
-    "burn": "Burn"
+    "burn": "Burn",
+    "error.initializing.oraclePage.title": "Something went wrong",
+    "error.initializing.oraclePage.description": "Error while bootstrapping the Reality oracle page, please try again later."
 }

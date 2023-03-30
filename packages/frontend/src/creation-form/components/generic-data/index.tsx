@@ -181,7 +181,13 @@ export const GenericData = ({
     const handleERC20SupplyChange = useCallback(
         (value: NumberFormatValue) => {
             setERC20SupplyErrorText(
-                !value || !value.value || BigNumber.from(value.value).isZero()
+                !value ||
+                    !value.value ||
+                    BigNumber.from(
+                        !isNaN(parseInt(value.value))
+                            ? parseFloat(value.value)
+                            : "0"
+                    ).isZero()
                     ? t("error.erc20.supply.zero")
                     : ""
             );

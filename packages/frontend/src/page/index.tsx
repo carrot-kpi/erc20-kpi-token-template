@@ -190,10 +190,10 @@ export const Component = ({
                                                         <ErrorFeedback
                                                             messages={{
                                                                 title: t(
-                                                                    "error.initializing.creation.title"
+                                                                    "error.initializing.oraclePage.title"
                                                                 ),
                                                                 description: t(
-                                                                    "error.initializing.creation.description"
+                                                                    "error.initializing.oraclePage.description"
                                                                 ),
                                                             }}
                                                         />
