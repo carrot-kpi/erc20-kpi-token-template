@@ -1195,10 +1195,10 @@
     react-window "^1.8.8"
     tailwind-merge "^1.10.0"
 
-"@carrot-kpi/ui@^0.36.0":
-  version "0.36.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.36.0.tgz#c6f9469f30f053c9dbd8d2e0846140f971c0b278"
-  integrity sha512-zWyzRL8hnEWpBdduktRIIpeN7jwxyioz+RyUYvaKJS+wKUF6Bin/+dbYPpeS/jJp3xZJ7RbaS1trEjxuuUUYMA==
+"@carrot-kpi/ui@^0.36.1":
+  version "0.36.1"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.36.1.tgz#3058794cb07df2a15da975c457ed49556b99fd20"
+  integrity sha512-h+zlC7dAzNWV3IWkwEX0ODvV08x+tcloGM+qJpNKg5pAV0RXGGVBoOU7Z32Q5+5OD8FvUdEb6Yp2qkZgyBPvBQ==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@ethersproject/address" "^5.7.0"
