@@ -30,10 +30,7 @@ export const TokenAmount = ({
                         symbol={amount.currency.symbol}
                         size="sm"
                     />
-                    <Typography
-                        truncate
-                        className={{ root: "whitespace-nowrap flex-1" }}
-                    >
+                    <Typography truncate>
                         {formatTokenAmount(amount, withSymbol)}
                     </Typography>
                 </>
