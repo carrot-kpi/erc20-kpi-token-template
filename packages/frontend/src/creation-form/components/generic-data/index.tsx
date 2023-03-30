@@ -294,7 +294,7 @@ export const GenericData = ({
                     inputWrapper: "w-full",
                 }}
             />
-            <div className="flex w-full gap-4">
+            <div className="flex flex-col md:flex-row w-full gap-4">
                 <NoSpecialCharactersTextInput
                     label={t("general.label.token.name")}
                     placeholder={"Example"}
