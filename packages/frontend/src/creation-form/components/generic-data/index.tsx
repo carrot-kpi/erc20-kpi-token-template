@@ -184,7 +184,9 @@ export const GenericData = ({
                 !value ||
                     !value.value ||
                     BigNumber.from(
-                        !isNaN(parseInt(value.value)) ? value.value : "0"
+                        !isNaN(parseInt(value.value))
+                            ? parseFloat(value.value)
+                            : "0"
                     ).isZero()
                     ? t("error.erc20.supply.zero")
                     : ""
