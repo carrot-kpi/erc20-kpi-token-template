@@ -20,7 +20,11 @@ import {
 } from "../../types";
 import { Amount, Token, formatTokenAmount } from "@carrot-kpi/sdk";
 import { Address, useAccount, useBalance, useNetwork } from "wagmi";
-import { PROTOCOL_FEE_BPS, TOKEN_LIST_URLS } from "../../constants";
+import {
+    DEFAULT_NUMBER_FORMAT_VALUE,
+    PROTOCOL_FEE_BPS,
+    TOKEN_LIST_URLS,
+} from "../../constants";
 import { ReactComponent as ArrowDown } from "../../../assets/arrow-down.svg";
 import { CollateralsTable } from "./table";
 import { parseUnits } from "ethers/lib/utils.js";
@@ -231,8 +235,8 @@ export const Collaterals = ({
                 },
             ],
             pickerToken: undefined,
-            pickerAmount: undefined,
-            pickerMinimumPayout: undefined,
+            pickerAmount: DEFAULT_NUMBER_FORMAT_VALUE,
+            pickerMinimumPayout: DEFAULT_NUMBER_FORMAT_VALUE,
         });
     }, [chain, onStateChange, state]);
 
@@ -400,7 +404,9 @@ export const Collaterals = ({
                                     <Typography>
                                         {t("label.collateral.picker.fee")}
                                     </Typography>
-                                    <Typography>
+                                    <Typography
+                                        className={{ root: "text-right" }}
+                                    >
                                         {PROTOCOL_FEE_BPS / 100}%{" "}
                                         {protocolFeeAmount &&
                                             state.pickerToken &&
@@ -419,6 +425,7 @@ export const Collaterals = ({
                         icon={ArrowDown}
                         onClick={handleCollateralAdd}
                         disabled={addDisabled}
+                        className={{ root: "w-full md:w-fit" }}
                     >
                         {t("label.collateral.picker.apply")}
                     </Button>
