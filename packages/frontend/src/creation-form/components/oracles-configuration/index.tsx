@@ -85,7 +85,6 @@ export const OraclesConfiguration = ({
             onStateChange({
                 ...state,
                 [templateId]: {
-                    ...state?.[templateId],
                     state: oracleState,
                     initializationBundleGetter,
                 },
@@ -103,10 +102,11 @@ export const OraclesConfiguration = ({
                     Object.values(state).map(async (item) => {
                         const initializationBundle =
                             await item.initializationBundleGetter();
-                        return {
-                            ...item,
+                        const oracleData: OracleData = {
+                            state: item.state,
                             initializationBundle,
                         };
+                        return oracleData;
                     })
                 );
                 onNext(oracles);

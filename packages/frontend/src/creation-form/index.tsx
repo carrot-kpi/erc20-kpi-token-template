@@ -29,6 +29,7 @@ import { Deploy } from "./components/deploy";
 import { CREATION_PROXY_ADDRESS } from "./constants";
 import { Success } from "./components/success";
 import { ConnectWallet } from "./components/connect-wallet";
+import { outcomeConfigurationFromOracleData } from "./utils/outcomes-configuration";
 
 // TODO: add a check that displays an error message if the creation
 // proxy address is 0 for more than x time
@@ -122,6 +123,31 @@ export const Component = ({
         if (oracleTemplates.length === 1 && oracleTemplatesData.length === 0)
             setOracleTemplatesData([oracleTemplates[0]]);
     }, [oracleTemplates, oracleTemplatesData.length]);
+
+    // when oracles have been configured, we TRY to configure outcomes
+    // automatically based on the specific picked oracle templates.
+    // if we can't do that, we just fallback to a default value and the
+    // user has to specify the configuration himself
+    useEffect(() => {
+        const outcomesConfigurationStepState = Object.entries(
+            oraclesConfigurationStepState
+        ).reduce(
+            (
+                accumulator: OutcomesConfigurationStepState,
+                [templateId, data]
+            ) => {
+                const parsedTemplateID = parseInt(templateId);
+                if (isNaN(parsedTemplateID))
+                    // this should never happen, it's here just for extra safety
+                    return accumulator;
+                accumulator[parsedTemplateID] =
+                    outcomeConfigurationFromOracleData(parsedTemplateID, data);
+                return accumulator;
+            },
+            {}
+        );
+        setOutcomesConfigurationStepState(outcomesConfigurationStepState);
+    }, [oraclesConfigurationStepState]);
 
     const handleStepClick = useCallback((clickedStep: number) => {
         setStep(clickedStep);

@@ -54,6 +54,9 @@ export const OraclesAccordion = ({
                             <SingleConfiguration
                                 t={t}
                                 templateId={template.id}
+                                automaticallyFilled={
+                                    data[id]?.automaticallyFilled
+                                }
                                 binary={data[id]?.binary}
                                 onBinaryChange={onBinaryChange}
                                 lowerBound={data[id]?.lowerBound}
