@@ -1,9 +1,10 @@
+import "../global.css";
+import "@carrot-kpi/ui/styles.css";
+
 import { Amount, Token } from "@carrot-kpi/sdk";
 import { Button, ErrorFeedback, Typography } from "@carrot-kpi/ui";
 import { ReactElement, useEffect, useState } from "react";
 import { OraclePage, KPITokenRemotePageProps } from "@carrot-kpi/react";
-
-import "../global.css";
 import { CollateralData } from "../creation-form/types";
 import { Address, useNetwork, useProvider, useToken } from "wagmi";
 import { ReactComponent as External } from "../assets/external.svg";

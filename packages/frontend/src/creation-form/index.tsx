@@ -1,4 +1,5 @@
 import "../global.css";
+import "@carrot-kpi/ui/styles.css";
 
 import { Loader, MultiStepCards, StepCard, Stepper } from "@carrot-kpi/ui";
 import {

@@ -61,15 +61,13 @@ export const getTemplateComponentWebpackConfig = (
                             options: {
                                 postcssOptions: {
                                     plugins: {
-                                        tailwindcss: {
-                                            config: {
-                                                ...tailwindPostCssConfig,
-                                                important: `#carrot-template-${longCommitHash(
-                                                    __dirname
-                                                )}-${type}`,
-                                            },
-                                        },
+                                        tailwindcss: {},
                                         autoprefixer: {},
+                                        "postcss-prefix-selector": {
+                                            prefix: `#carrot-template-${longCommitHash(
+                                                __dirname
+                                            )}-${type}`,
+                                        },
                                         ...(process.env.NODE_ENV ===
                                         "production"
                                             ? { cssnano: {} }
