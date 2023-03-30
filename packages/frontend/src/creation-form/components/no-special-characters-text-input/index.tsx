@@ -15,7 +15,7 @@ export const NoSpecialCharactersTextInput = ({
         (event: ChangeEvent<HTMLInputElement>) => {
             if (!onChange) return;
             const value = event.target.value;
-            if (!value.match(NO_SPECIAL_CHARACTERS_REGEX)) return;
+            if (value.match(NO_SPECIAL_CHARACTERS_REGEX)) return;
             onChange(value);
         },
         [onChange]
