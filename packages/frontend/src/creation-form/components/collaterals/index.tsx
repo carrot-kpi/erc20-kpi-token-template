@@ -8,6 +8,7 @@ import {
     TokenListWithBalance,
     NextStepButton,
     Skeleton,
+    ErrorText,
 } from "@carrot-kpi/ui";
 import { NamespacedTranslateFunction, useTokenLists } from "@carrot-kpi/react";
 import { ReactElement, useCallback, useEffect, useState } from "react";
@@ -27,7 +28,6 @@ import {
 } from "../../constants";
 import { ReactComponent as ArrowDown } from "../../../assets/arrow-down.svg";
 import { CollateralsTable } from "./table";
-import { parseUnits } from "ethers/lib/utils.js";
 
 interface CollateralProps {
     t: NamespacedTranslateFunction;
@@ -54,6 +54,10 @@ export const Collaterals = ({
     // picker state
     const [tokenPickerOpen, setTokenPickerOpen] = useState(false);
     const [addDisabled, setAddDisabled] = useState(true);
+    const [collateralAmountErrorMessage, setCollateralAmountErrorMessage] =
+        useState("");
+    const [minimumPayoutErrorMessage, setMinimumPayoutErrorMessage] =
+        useState("");
     const [protocolFeeAmount, setProtocolFeeAmount] = useState("");
 
     // fetch picked erc20 token balance
@@ -148,7 +152,7 @@ export const Collaterals = ({
             formatTokenAmount(
                 new Amount(
                     state.pickerToken as unknown as Token,
-                    parseUnits(
+                    utils.parseUnits(
                         ((parsedRawAmount * PROTOCOL_FEE_BPS) / 10_000).toFixed(
                             state.pickerToken.decimals
                         ),
@@ -172,29 +176,70 @@ export const Collaterals = ({
             onStateChange({
                 ...state,
                 pickerToken: newSelectedToken,
+                pickerAmount: DEFAULT_NUMBER_FORMAT_VALUE,
+                pickerMinimumPayout: DEFAULT_NUMBER_FORMAT_VALUE,
             });
+            setCollateralAmountErrorMessage("");
+            setMinimumPayoutErrorMessage("");
         },
         [onStateChange, state]
     );
 
     const handlePickerRawAmountChange = useCallback(
         (newPickerRawAmount: NumberFormatValue): void => {
+            let errorMessage = "";
+
+            if (!data) return;
+            if (
+                !newPickerRawAmount ||
+                !newPickerRawAmount.value ||
+                parseFloat(newPickerRawAmount.value) === 0
+            )
+                errorMessage = t("error.collaterals.empty");
+            else if (
+                data.value.lt(
+                    utils.parseUnits(newPickerRawAmount.value, data.decimals)
+                )
+            )
+                errorMessage = t("error.collaterals.insufficient");
+
+            setCollateralAmountErrorMessage(errorMessage);
             onStateChange({
                 ...state,
                 pickerAmount: newPickerRawAmount,
             });
         },
-        [onStateChange, state]
+        [onStateChange, state, data, t]
     );
 
     const handlePickerRawMinimumAmountChange = useCallback(
         (newPickerRawMinimumPayout: NumberFormatValue): void => {
+            let errorMessage = "";
+
+            if (!state.pickerAmount) return;
+
+            const parsedAmount = parseFloat(state.pickerAmount.value);
+            const amountMinusFees =
+                parsedAmount - (parsedAmount * PROTOCOL_FEE_BPS) / 10_000;
+            const parsedMinimumAmount = parseFloat(
+                newPickerRawMinimumPayout.value
+            );
+
+            if (!newPickerRawMinimumPayout || !newPickerRawMinimumPayout.value)
+                errorMessage = t("error.collaterals.minimumPayoutEmpty");
+            else if (
+                amountMinusFees === 0 ||
+                parsedMinimumAmount >= amountMinusFees
+            )
+                errorMessage = t("error.collaterals.minimumPayoutTooHigh");
+
+            setMinimumPayoutErrorMessage(errorMessage);
             onStateChange({
                 ...state,
                 pickerMinimumPayout: newPickerRawMinimumPayout,
             });
         },
-        [onStateChange, state]
+        [onStateChange, state, t]
     );
 
     const handleCollateralAdd = useCallback((): void => {
@@ -256,17 +301,14 @@ export const Collaterals = ({
 
     const handleMaxClick = useCallback(() => {
         if (!data || !state.pickerToken) return;
-        onStateChange({
-            ...state,
-            pickerAmount: {
-                formattedValue: data.formatted,
-                value: utils.formatUnits(
-                    data.value.toString(),
-                    state.pickerToken.decimals
-                ),
-            },
+        handlePickerRawAmountChange({
+            formattedValue: data.formatted,
+            value: utils.formatUnits(
+                data.value.toString(),
+                state.pickerToken.decimals
+            ),
         });
-    }, [data, onStateChange, state]);
+    }, [data, handlePickerRawAmountChange, state]);
 
     return (
         <>
@@ -420,15 +462,32 @@ export const Collaterals = ({
                             </div>
                         </div>
                     </div>
-                    <Button
-                        size="small"
-                        icon={ArrowDown}
-                        onClick={handleCollateralAdd}
-                        disabled={addDisabled}
-                        className={{ root: "w-full md:w-fit" }}
-                    >
-                        {t("label.collateral.picker.apply")}
-                    </Button>
+                    <div className="flex gap-3 items-start">
+                        <Button
+                            size="small"
+                            icon={ArrowDown}
+                            onClick={handleCollateralAdd}
+                            disabled={addDisabled}
+                            className={{ root: "w-full md:w-fit" }}
+                        >
+                            {t("label.collateral.picker.apply")}
+                        </Button>
+                        {(!!collateralAmountErrorMessage ||
+                            !!minimumPayoutErrorMessage) && (
+                            <div className="flex flex-col">
+                                {collateralAmountErrorMessage && (
+                                    <ErrorText>
+                                        {collateralAmountErrorMessage}
+                                    </ErrorText>
+                                )}
+                                {minimumPayoutErrorMessage && (
+                                    <ErrorText>
+                                        {minimumPayoutErrorMessage}
+                                    </ErrorText>
+                                )}
+                            </div>
+                        )}
+                    </div>
                 </div>
                 <CollateralsTable
                     t={t}
