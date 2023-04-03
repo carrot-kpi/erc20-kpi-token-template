@@ -123,7 +123,7 @@ export const Component = ({
                 />
             </div>
             <div className="bg-white dark:bg-black">
-                <div className="bg-grid-light dark:bg-grid-dark flex flex-col gap-7 md:gap-9 lg:gap-28 bg-white px-4 py-4 dark:bg-black sm:px-9 sm:py-6 lg:px-36 md:py-24">
+                <div className="bg-grid-light dark:bg-grid-dark flex flex-col gap-7 md:gap-9 lg:gap-28 bg-white px-4 pt-4 pb-20 dark:bg-black sm:px-9 sm:pt-6 sm:pb-28 lg:px-36 md:pt-24 md:pb-40">
                     <div className="flex flex-col mt-5 sm:mt-0 gap-6 md:gap-8 max-w-6xl">
                         <Typography variant="h2">
                             {t("position.title")}
