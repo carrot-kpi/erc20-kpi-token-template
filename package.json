@@ -24,6 +24,6 @@
         "@commitlint/config-conventional": "^17.4.3",
         "carrot-scripts": "^0.15.5",
         "husky": "^8.0.3",
-        "turbo": "^1.8.6"
+        "turbo": "^1.8.8"
     }
 }

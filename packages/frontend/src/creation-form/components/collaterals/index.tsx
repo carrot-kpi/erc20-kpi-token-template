@@ -28,6 +28,7 @@ import {
 import { ReactComponent as ArrowDown } from "../../../assets/arrow-down.svg";
 import { CollateralsTable } from "./table";
 import { parseUnits } from "ethers/lib/utils.js";
+import { USDValue } from "./usd-value";
 
 interface CollateralProps {
     t: NamespacedTranslateFunction;
@@ -142,7 +143,7 @@ export const Collaterals = ({
             !state.pickerAmount.value
         )
             return;
-        const parsedRawAmount = parseFloat(state.pickerAmount.value);
+        const parsedRawAmount = parseFloat(state.pickerAmount.formattedValue);
         if (isNaN(parsedRawAmount)) return;
         setProtocolFeeAmount(
             formatTokenAmount(
@@ -300,7 +301,7 @@ export const Collaterals = ({
                     <div className="rounded-xxl border border-black p-4">
                         <div className="flex flex-col gap-3">
                             <div className="flex flex-col gap-2">
-                                <div className="flex justify-between">
+                                <div className="flex justify-between items-center">
                                     <div
                                         onClick={handleOpenERC20TokenPicker}
                                         className="cursor-pointer"
@@ -324,7 +325,7 @@ export const Collaterals = ({
                                         label=""
                                         placeholder="0.0"
                                         className={{
-                                            input: "w-full border-none text-right",
+                                            input: "w-full border-none text-right p-0",
                                         }}
                                         variant="xl"
                                         allowNegative={false}
@@ -337,7 +338,7 @@ export const Collaterals = ({
                                         }
                                     />
                                 </div>
-                                <div className="flex justify-end">
+                                <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-2">
                                         <Typography variant="sm">
                                             {t("label.collateral.balance")}:{" "}
@@ -368,34 +369,53 @@ export const Collaterals = ({
                                             </Typography>
                                         )}
                                     </div>
-                                    {/* <Typography size="sm">$ 7,068.31</Typography> */}
+                                    <div className="flex justify-end h-5">
+                                        <USDValue
+                                            tokenAddress={
+                                                state.pickerToken?.address
+                                            }
+                                            rawTokenAmount={state.pickerAmount}
+                                        />
+                                    </div>
                                 </div>
 
                                 <div className="h-px w-full bg-black" />
 
-                                <div className="flex items-center justify-between">
-                                    <Typography>
-                                        {t(
-                                            "label.collateral.picker.minimum.payout"
-                                        )}
-                                    </Typography>
-                                    <NumberInput
-                                        label=""
-                                        placeholder="0.0"
-                                        className={{
-                                            input: "border-none text-right w-full",
-                                        }}
-                                        variant="xl"
-                                        disabled={!!!state.pickerToken}
-                                        allowNegative={false}
-                                        value={
-                                            state.pickerMinimumPayout
-                                                ?.formattedValue
-                                        }
-                                        onValueChange={
-                                            handlePickerRawMinimumAmountChange
-                                        }
-                                    />
+                                <div className="flex-col gap-2 pt-1.5">
+                                    <div className="flex items-center justify-between">
+                                        <Typography>
+                                            {t(
+                                                "label.collateral.picker.minimum.payout"
+                                            )}
+                                        </Typography>
+                                        <NumberInput
+                                            label=""
+                                            placeholder="0.0"
+                                            className={{
+                                                input: "border-none text-right w-full p-0",
+                                            }}
+                                            variant="xl"
+                                            disabled={!!!state.pickerToken}
+                                            allowNegative={false}
+                                            value={
+                                                state.pickerMinimumPayout
+                                                    ?.formattedValue
+                                            }
+                                            onValueChange={
+                                                handlePickerRawMinimumAmountChange
+                                            }
+                                        />
+                                    </div>
+                                    <div className="flex justify-end h-5">
+                                        <USDValue
+                                            tokenAddress={
+                                                state.pickerToken?.address
+                                            }
+                                            rawTokenAmount={
+                                                state.pickerMinimumPayout
+                                            }
+                                        />
+                                    </div>
                                 </div>
 
                                 <div className="h-px w-full bg-black" />
@@ -413,10 +433,6 @@ export const Collaterals = ({
                                             `(${protocolFeeAmount})`}
                                     </Typography>
                                 </div>
-                                {/* TODO: implement price fetching */}
-                                {/* <div className="flex justify-end">
-                                <Typography size="sm">$ 7,068.31</Typography>
-                            </div> */}
                             </div>
                         </div>
                     </div>
