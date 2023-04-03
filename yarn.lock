@@ -1117,10 +1117,10 @@
     class-variance-authority "^0.4.0"
     react-use "^17.4.0"
 
-"@carrot-kpi/react@^0.38.0":
-  version "0.38.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.38.0.tgz#b63a42a617211c9cbeffe82743f62563ddaad8ad"
-  integrity sha512-bX7FE6BG2qBX3IA8HltX3ZBEGhUUj8A8h3EcPeYTZPYWTYYVyT+09QYeKGfSg0wMW4ievpOcCkoK+8evL9AQjA==
+"@carrot-kpi/react@^0.38.1":
+  version "0.38.1"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.38.1.tgz#b14600cae5c521beaeedf4f9bfa98cc3524cdae2"
+  integrity sha512-rp386J9HtewbBAKM4x5ohR6wqBMgnWPMnMJo6SibJTA5D/GqzRqMLpRBR++F7rCyW0p33eWe5J5SnLYxlS9kYg==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@ethersproject/address" "^5.7.0"
