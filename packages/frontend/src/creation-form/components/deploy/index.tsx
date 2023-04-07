@@ -106,6 +106,7 @@ export const Deploy = ({
         const newToApprove = [];
         for (let i = 0; i < collateralsData.length; i++) {
             const collateralData = collateralsData[i];
+            if (!allowances[i]) return;
             if (
                 (allowances[i] as unknown as BigNumber).gte(
                     collateralData.amount.raw

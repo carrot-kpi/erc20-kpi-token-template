@@ -1,4 +1,11 @@
-import { ReactElement, useCallback, useEffect, useState } from "react";
+import {
+    Dispatch,
+    ReactElement,
+    SetStateAction,
+    useCallback,
+    useEffect,
+    useState,
+} from "react";
 import {
     KPITokenCreationFormProps,
     NamespacedTranslateFunction,
@@ -37,7 +44,7 @@ interface OraclesConfigurationProps {
     templates: Template[];
     specificationData?: SpecificationData | null;
     state: OraclesConfigurationStepState;
-    onStateChange: (state: OraclesConfigurationStepState) => void;
+    onStateChange: Dispatch<SetStateAction<OraclesConfigurationStepState>>;
     onNext: (oraclesData: OracleData[]) => void;
     navigate: KPITokenCreationFormProps["navigate"];
     onTx: KPITokenCreationFormProps["onTx"];
@@ -82,15 +89,15 @@ export const OraclesConfiguration = ({
             oracleState: Partial<unknown>,
             initializationBundleGetter?: OracleInitializationBundleGetter
         ) => {
-            onStateChange({
-                ...state,
+            onStateChange((prevState) => ({
+                ...prevState,
                 [templateId]: {
                     state: oracleState,
                     initializationBundleGetter,
                 },
-            });
+            }));
         },
-        [onStateChange, state]
+        [onStateChange]
     );
 
     const handleNext = useCallback(() => {
