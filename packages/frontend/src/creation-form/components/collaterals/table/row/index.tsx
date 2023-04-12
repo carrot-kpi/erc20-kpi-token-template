@@ -58,6 +58,7 @@ export const CollateralRow = ({
         ),
         false
     );
+
     return (
         <div key={token.address} className="h-10 grid grid-cols-3 items-center">
             <div className="flex gap-2 items-center">
@@ -110,14 +111,14 @@ export const CollateralRow = ({
                     </Typography>
                 </div>
             </Popover>
-            <Typography
-                ref={anchorRef}
-                className={{ root: "text-center" }}
+            <div
                 onMouseEnter={handleFeeSplitPopoverOpen}
                 onMouseLeave={handleFeeSplitPopoverClose}
             >
-                {formattedAmountAfterFees}
-            </Typography>
+                <Typography ref={anchorRef} className={{ root: "text-center" }}>
+                    {formattedAmountAfterFees}
+                </Typography>
+            </div>
             <Typography className={{ root: "text-right" }}>
                 {formatTokenAmount(minimumPayout, false)}
             </Typography>
