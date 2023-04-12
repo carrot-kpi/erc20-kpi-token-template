@@ -208,7 +208,7 @@ export const Deploy = ({
             setLoading(true);
             try {
                 const tx = await writeAsync();
-                const receipt = await tx.wait();
+                const receipt = await tx.wait(__DEV__ ? 1 : 3);
                 let createdKPITokenAddress =
                     getKPITokenAddressFromReceipt(receipt);
                 if (!createdKPITokenAddress) {
