@@ -130,7 +130,7 @@ export const WalletPosition = ({
                     )}
                 </div>
                 <div className="w-full flex flex-col sm:flex-row justify-between">
-                    <div className="w-full md:w-1/3 p-6 flex-col border-b sm:border-r md:border-r">
+                    <div className="w-full md:w-1/3 p-6 flex-col border-b border-black sm:border-r md:border-r">
                         <Typography
                             variant="xs"
                             uppercase
@@ -159,7 +159,7 @@ export const WalletPosition = ({
                             )}
                         </div>
                     </div>
-                    <div className="w-full md:w-1/3 p-6 flex-col border-b sm:border-r md:border-r">
+                    <div className="w-full md:w-1/3 p-6 flex-col border-b border-black sm:border-r md:border-r">
                         <Typography
                             variant="xs"
                             uppercase
@@ -188,7 +188,7 @@ export const WalletPosition = ({
                             )}
                         </div>
                     </div>
-                    <div className="w-full md:w-1/3 p-6 flex-col border-b">
+                    <div className="w-full md:w-1/3 p-6 flex-col border-black border-b">
                         <Typography
                             variant="xs"
                             uppercase
@@ -219,7 +219,7 @@ export const WalletPosition = ({
                     </div>
                 </div>
                 <div className="w-full flex flex-col md:flex-row justify-between gap-4 border-black border-b">
-                    <div className="w-full md:w-1/2 p-6 flex-col border-b md:border-b-0 md:border-r">
+                    <div className="w-full md:w-1/2 p-6 flex-col border-b border-black md:border-b-0 md:border-r">
                         <Typography
                             variant="xs"
                             uppercase
