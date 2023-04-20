@@ -152,6 +152,7 @@ export const Component = ({
 
     const handleStepClick = useCallback((clickedStep: number) => {
         setStep(clickedStep);
+        setMostUpdatedStep(clickedStep);
     }, []);
 
     const handleGenericDataNext = useCallback(
@@ -159,37 +160,34 @@ export const Component = ({
             setSpecificationData(specificationData);
             setTokenData(tokenData);
             setStep(1);
-            if (mostUpdatedStep < 1) setMostUpdatedStep(1);
+            setMostUpdatedStep(1);
         },
-        [mostUpdatedStep]
+        []
     );
 
     const handleCollateralsNext = useCallback(
         (collaterals: CollateralData[]) => {
             setCollateralsData(collaterals);
             setStep(2);
-            if (mostUpdatedStep < 2) setMostUpdatedStep(2);
+            setMostUpdatedStep(2);
         },
-        [mostUpdatedStep]
+        []
     );
 
-    const handleOraclesPickerNext = useCallback(
-        (templates: Template[]) => {
-            setOracleTemplatesData(templates);
-            setStep(3);
-            if (mostUpdatedStep < 3) setMostUpdatedStep(3);
-        },
-        [mostUpdatedStep]
-    );
+    const handleOraclesPickerNext = useCallback((templates: Template[]) => {
+        setOracleTemplatesData(templates);
+        setStep(3);
+        setMostUpdatedStep(3);
+    }, []);
 
     const handleOraclesConfigurationNext = useCallback(
         (oracleData: OracleData[]) => {
             setOraclesData(oracleData);
             const nextStep = enableOraclePickStep ? 4 : 3;
             setStep(nextStep);
-            if (mostUpdatedStep < nextStep) setMostUpdatedStep(nextStep);
+            setMostUpdatedStep(nextStep);
         },
-        [enableOraclePickStep, mostUpdatedStep]
+        [enableOraclePickStep]
     );
 
     const handleOutcomesConfigurationNext = useCallback(
@@ -197,9 +195,9 @@ export const Component = ({
             setOutcomesData(outcomesData);
             const nextStep = enableOraclePickStep ? 5 : 4;
             setStep(nextStep);
-            if (mostUpdatedStep < nextStep) setMostUpdatedStep(nextStep);
+            setMostUpdatedStep(nextStep);
         },
-        [enableOraclePickStep, mostUpdatedStep]
+        [enableOraclePickStep]
     );
 
     const handleDeployNext = useCallback(
@@ -207,9 +205,9 @@ export const Component = ({
             setCreatedKPITokenAddress(address);
             const nextStep = enableOraclePickStep ? 6 : 5;
             setStep(nextStep);
-            if (mostUpdatedStep < nextStep) setMostUpdatedStep(nextStep);
+            setMostUpdatedStep(nextStep);
         },
-        [enableOraclePickStep, mostUpdatedStep]
+        [enableOraclePickStep]
     );
 
     if (loading) {
