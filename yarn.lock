@@ -1196,10 +1196,10 @@
     react-window "^1.8.8"
     tailwind-merge "^1.10.0"
 
-"@carrot-kpi/ui@^0.37.0":
-  version "0.37.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.37.0.tgz#aaaacacf2cfb923b1526cc13c7aba4a19ce0c137"
-  integrity sha512-9JQqBAeYnBPEI2hzP8S2wbTwkhzRaDhz66CWx03pcJQxYUIW6Ecl6/fujjxcY5k45lGZx2yE0Yswr7skfMV4pQ==
+"@carrot-kpi/ui@^0.39.0":
+  version "0.39.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.39.0.tgz#c0a216b77a812a99c08b311ef90aa36e5d0be1ca"
+  integrity sha512-9h2VaAi6VCYESULVWW4KWuacBjCPMuf7npr37rInkGwlhtum8S5U9LlwKjQRd7EbjAn2xILza/74ZcJ8bGsHWw==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@ethersproject/address" "^5.7.0"
@@ -1222,7 +1222,7 @@
     react-use "^17.4.0"
     react-virtualized-auto-sizer "^1.0.7"
     react-window "^1.8.8"
-    tailwind-merge "^1.10.0"
+    tailwind-merge "^1.12.0"
 
 "@chainsafe/is-ip@^2.0.1":
   version "2.0.1"
@@ -14806,6 +14806,11 @@ tailwind-merge@^1.10.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tailwind-merge/-/tailwind-merge-1.10.0.tgz#535541c7373d8a31afa81a4267e2ab9b4afa9429"
   integrity sha512-WFnDXSS4kFTZwjKg5/oZSGzBRU/l+qcbv5NVTzLUQvJ9yovDAP05h0F2+ZFW0Lw9EcgRoc2AfURUdZvnEFrXKg==
+
+tailwind-merge@^1.12.0:
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/tailwind-merge/-/tailwind-merge-1.12.0.tgz#747d09d64a25a4864150e8930f8e436866066cc8"
+  integrity sha512-Y17eDp7FtN1+JJ4OY0Bqv9OA41O+MS8c1Iyr3T6JFLnOgLg3EvcyMKZAnQ8AGyvB5Nxm3t9Xb5Mhe139m8QT/g==
 
 tailwindcss@^3.3.1:
   version "3.3.1"

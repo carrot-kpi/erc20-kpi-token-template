@@ -228,6 +228,11 @@ export const Component = ({
                         activeStep={step}
                         lastStepCompleted={mostUpdatedStep}
                         onClick={handleStepClick}
+                        // FIXME: find a better way to avoid the !
+                        className={{
+                            stepLabel: "!hidden",
+                            step: "[&:first-of-type]:items-start [&:first-of-type]:w-6 [&:last-of-type]:items-end [&:alst-of-type]:w-6",
+                        }}
                     />
                 </div>
                 <div className="absolute left-10 top-40 hidden lg:flex">
