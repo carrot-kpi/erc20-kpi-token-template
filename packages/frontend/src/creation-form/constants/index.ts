@@ -6,7 +6,7 @@ export const NO_SPECIAL_CHARACTERS_REGEX =
     /^[A-Z0-9@~`!@#$%^&*()_=+\\';:"\/?>.<,-\s]*$/i;
 
 const COINGECKO_LIST = "https://tokens.coingecko.com/uniswap/all.json";
-const CARROT_LIST = "https://carrot-kpi.dev/token-list.json";
+const CARROT_LIST = "https://tokens.carrot-kpi.dev";
 
 export const TOKEN_LIST_URLS: string[] = [CARROT_LIST, COINGECKO_LIST];
 
