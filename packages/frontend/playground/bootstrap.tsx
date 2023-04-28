@@ -44,7 +44,7 @@ createRoot(document.getElementById("root")!).render(
             }) as Connector,
         ]}
         ipfsGatewayURL={CCT_IPFS_GATEWAY_URL}
-        kpiTokenTemplateBaseURL="http://localhost:9002"
+        kpiTokenTemplateBaseURL={CCT_TEMPLATE_URL}
         templateId={CCT_TEMPLATE_ID as unknown as number}
     />
 );
