@@ -24,18 +24,8 @@ export const startPlayground = async (
     const templateFirstCompilation = true;
 
     const templateCompiler = webpack([
-        getTemplateComponentWebpackConfig(
-            "creationForm",
-            join(__dirname, "../src/creation-form/index.tsx"),
-            join(__dirname, "../src/creation-form/i18n/index.ts"),
-            globals
-        ),
-        getTemplateComponentWebpackConfig(
-            "page",
-            join(__dirname, "../src/page/index.tsx"),
-            join(__dirname, "../src/page/i18n/index.ts"),
-            globals
-        ),
+        getTemplateComponentWebpackConfig("creationForm", globals),
+        getTemplateComponentWebpackConfig("page", globals),
     ]);
 
     const templateDevServer = new WebpackDevServer(
