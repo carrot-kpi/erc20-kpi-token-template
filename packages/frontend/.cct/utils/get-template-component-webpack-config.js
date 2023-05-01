@@ -13,9 +13,7 @@ const shared = require("@carrot-kpi/frontend/shared-dependencies.json");
 const hash = createHash("sha256");
 hash.update(Date.now().toString());
 
-const POSTCSS_PREFIX = `carrot-template-${hash
-    .digest("hex")
-    .slice(0, 32)}`;
+const POSTCSS_PREFIX = `carrot-template-${hash.digest("hex").slice(0, 32)}`;
 
 export const getTemplateComponentWebpackConfig = (type, globals, outDir) => {
     if (type !== "page" && type !== "creationForm")
