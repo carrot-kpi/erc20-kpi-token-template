@@ -3,7 +3,6 @@
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { rm, writeFile } from "fs/promises";
-import { long as longCommitHash } from "git-rev-sync";
 import chalk from "chalk";
 import ora from "ora";
 import { createRequire } from "module";
@@ -21,7 +20,6 @@ const main = async () => {
     const outDir = join(__dirname, "../dist");
 
     let spinner = ora();
-    const commitHash = longCommitHash(join(__dirname, "../"));
 
     spinner = ora(`Removing previous ${chalk.blue("dist")} folder`);
     const dist = join(__dirname, "../dist");
@@ -92,13 +90,9 @@ const main = async () => {
     spinner.succeed(`${chalk.blue("Federated modules")} successfully built`);
 
     spinner = ora(`Building ${chalk.blue("base.json")}`);
-    const partialBase = require("../src/base.json");
     await writeFile(
         join(outDir, "base.json"),
-        JSON.stringify({
-            ...partialBase,
-            commitHash,
-        })
+        JSON.stringify(require("../src/base.json"))
     );
     spinner.succeed(`${chalk.blue("base.json")} built`);
 };
