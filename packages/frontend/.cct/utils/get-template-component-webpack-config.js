@@ -104,7 +104,7 @@ export const getTemplateComponentWebpackConfig = (type, globals, outDir) => {
             // TODO: further globals might be passed by carrot-scripts??
             new webpack.DefinePlugin({
                 ...globals,
-                ROOT_ID: JSON.stringify(POSTCSS_PREFIX),
+                __ROOT_ID__: JSON.stringify(POSTCSS_PREFIX),
                 __DEV__: JSON.stringify(!!devMode),
             }),
             new MiniCssExtractPlugin(),

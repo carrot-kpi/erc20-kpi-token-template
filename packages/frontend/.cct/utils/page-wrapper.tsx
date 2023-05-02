@@ -3,7 +3,7 @@ import { Component as Page } from "../../src/page";
 
 export const Component = (props: KPITokenRemotePageProps) => {
     return (
-        <div id={ROOT_ID} className="w-full h-full">
+        <div id={__ROOT_ID__} className="w-full h-full">
             <Page {...props} />
         </div>
     );

@@ -3,7 +3,7 @@ import { Component as CreationForm } from "../../src/creation-form";
 
 export const Component = (props: KPITokenRemoteCreationFormProps) => {
     return (
-        <div id={ROOT_ID} className="w-full h-full">
+        <div id={__ROOT_ID__} className="w-full h-full">
             <CreationForm {...props} />
         </div>
     );
