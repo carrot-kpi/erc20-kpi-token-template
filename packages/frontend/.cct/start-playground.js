@@ -11,7 +11,7 @@ import { getTemplateComponentWebpackConfig } from "./utils/get-template-componen
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
-const shared = require("@carrot-kpi/frontend/shared-dependencies.json");
+const shared = require("@carrot-kpi/host-frontend/shared-dependencies.json");
 
 export const startPlayground = async (
     forkedNetworkChainId,
