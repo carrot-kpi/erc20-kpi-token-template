@@ -37,7 +37,7 @@ export const ApproveCollateralsButton = ({
     }, [currentIndex, toApprove]);
 
     const { config } = usePrepareContractWrite({
-        address: approvingCollateral?.amount.currency.address,
+        address: approvingCollateral?.amount.currency.address as Address,
         abi: erc20ABI,
         functionName: "approve",
         args: approvingCollateral

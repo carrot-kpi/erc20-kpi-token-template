@@ -1,7 +1,7 @@
 import { Amount, Token } from "@carrot-kpi/sdk";
 import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
-import { erc20ABI, useContractReads } from "wagmi";
+import { erc20ABI, useContractReads, Address } from "wagmi";
 import { CollateralData } from "../../creation-form/types";
 
 export const useWatchKPITokenCollateralBalances = (
@@ -13,7 +13,7 @@ export const useWatchKPITokenCollateralBalances = (
     const { data: rawBalances, isLoading: loading } = useContractReads({
         contracts: collaterals?.map((collateral) => {
             return {
-                address: collateral.amount.currency.address,
+                address: collateral.amount.currency.address as Address,
                 abi: erc20ABI,
                 functionName: "balanceOf",
                 args: [kpiTokenAddress],

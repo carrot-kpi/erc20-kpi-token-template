@@ -53,7 +53,7 @@
         "ts-jest": "^29.1.0",
         "ts-loader": "^9.4.1",
         "typescript": "^5.0.4",
-        "wagmi": "^0.9.5",
+        "wagmi": "^0.12.12",
         "webpack": "^5.81.0",
         "webpack-dev-server": "^4.13.3"
     },

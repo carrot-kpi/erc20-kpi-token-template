@@ -74,7 +74,7 @@ export const Deploy = ({
     const { data: allowances } = useContractReads({
         contracts: collateralsData.map((collateralData) => {
             return {
-                address: collateralData.amount.currency.address,
+                address: collateralData.amount.currency.address as Address,
                 abi: erc20ABI,
                 functionName: "allowance",
                 args: [address ?? constants.AddressZero, targetAddress],

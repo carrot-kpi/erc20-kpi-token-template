@@ -12,7 +12,12 @@ import {
 } from "@carrot-kpi/sdk";
 import { Button, Typography } from "@carrot-kpi/ui";
 import { useCallback, useEffect, useState } from "react";
-import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
+import {
+    useAccount,
+    useContractWrite,
+    usePrepareContractWrite,
+    Address,
+} from "wagmi";
 import { defaultAbiCoder } from "@ethersproject/abi";
 import { unixTimestamp } from "../../../../utils/dates";
 
@@ -39,7 +44,7 @@ export const WalletActions = ({
     const [text, setText] = useState("");
 
     const { config: redeemConfig } = usePrepareContractWrite({
-        address: kpiToken.address,
+        address: kpiToken.address as Address,
         abi: KPI_TOKEN_ABI,
         functionName: "redeem",
         args: [defaultAbiCoder.encode(["address"], [address]) as `0x${string}`],
