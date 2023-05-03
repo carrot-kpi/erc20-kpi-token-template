@@ -8,7 +8,7 @@ import { createHash } from "crypto";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const require = createRequire(import.meta.url);
-const shared = require("@carrot-kpi/frontend/shared-dependencies.json");
+const shared = require("@carrot-kpi/host-frontend/shared-dependencies.json");
 
 const hash = createHash("sha256");
 hash.update(Date.now().toString());
