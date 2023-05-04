@@ -54,7 +54,7 @@
         "ts-loader": "^9.4.1",
         "typescript": "^5.0.4",
         "wagmi": "^0.12.12",
-        "webpack": "^5.81.0",
+        "webpack": "^5.82.0",
         "webpack-dev-server": "^4.13.3"
     },
     "devDependencies": {
