@@ -26,7 +26,7 @@
         "size-limit": "size-limit"
     },
     "dependencies": {
-        "@carrot-kpi/react": "^0.41.0",
+        "@carrot-kpi/react": "^0.42.0",
         "@carrot-kpi/sdk": "^1.24.1",
         "@carrot-kpi/shared-state": "^0.3.1",
         "@carrot-kpi/ui": "^0.41.1",
@@ -58,7 +58,7 @@
         "webpack-dev-server": "^4.13.3"
     },
     "devDependencies": {
-        "@carrot-kpi/host-frontend": "^0.1.0",
+        "@carrot-kpi/host-frontend": "^0.2.0",
         "@fontsource/inter": "^4.5.15",
         "@size-limit/file": "^8.2.4",
         "@svgr/webpack": "^7.0.0",
