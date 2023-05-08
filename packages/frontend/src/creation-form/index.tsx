@@ -6,9 +6,8 @@ import {
     KPITokenRemoteCreationFormProps,
     useOracleTemplates,
 } from "@carrot-kpi/react";
-import { ChainId, Template } from "@carrot-kpi/sdk";
-import { constants } from "ethers";
-import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
+import { Template } from "@carrot-kpi/sdk";
+import { ReactElement, useCallback, useEffect, useState } from "react";
 import { OraclesPicker } from "./components/oracles-picker";
 import {
     CollateralData,
@@ -21,19 +20,18 @@ import {
     SpecificationData,
     TokenData as TokenDataType,
 } from "./types";
-import { useAccount, useNetwork } from "wagmi";
+import { Address, useAccount } from "wagmi";
 import { GenericData } from "./components/generic-data";
 import { Collaterals } from "./components/collaterals";
 import { OraclesConfiguration } from "./components/oracles-configuration";
 import { OutcomesConfiguration } from "./components/outcomes-configuration";
-import { Deploy } from "./components/deploy";
-import { CREATION_PROXY_ADDRESS } from "./constants";
+import { Deploy, assertRequiredOraclesData } from "./components/deploy";
 import { Success } from "./components/success";
 import { ConnectWallet } from "./components/connect-wallet";
 import { outcomeConfigurationFromOracleData } from "./utils/outcomes-configuration";
-
-// TODO: add a check that displays an error message if the creation
-// proxy address is 0 for more than x time
+import { predictKPITokenAddress } from "./utils/address-prediction";
+import { unixTimestamp } from "../utils/dates";
+import { encodeKPITokenData, encodeOraclesData } from "./utils/data-encoding";
 
 // TODO: when we have more than one oracle template, implement state
 // and state change features for the oracle picker state too
@@ -46,14 +44,6 @@ export const Component = ({
 }: KPITokenRemoteCreationFormProps): ReactElement => {
     const { address: connectedAddress } = useAccount();
     const { loading, templates: oracleTemplates } = useOracleTemplates();
-
-    const { chain } = useNetwork();
-    const creationProxyAddress = useMemo(() => {
-        if (__DEV__) return CCT_CREATION_PROXY_ADDRESS;
-        return chain && chain.id in ChainId
-            ? CREATION_PROXY_ADDRESS[chain.id as ChainId]
-            : constants.AddressZero;
-    }, [chain]);
 
     const enableOraclePickStep = !loading && oracleTemplates.length > 1;
     const stepTitles = enableOraclePickStep
@@ -77,6 +67,8 @@ export const Component = ({
 
     const [step, setStep] = useState(0);
     const [mostUpdatedStep, setMostUpdatedStep] = useState(0);
+    const [kpiTokenDeploymentAddress, setKPITokenDeploymentAddress] =
+        useState("");
 
     const [genericDataStepState, setGenericDataStepState] =
         useState<GenericDataStepState>({});
@@ -193,11 +185,44 @@ export const Component = ({
     const handleOutcomesConfigurationNext = useCallback(
         (outcomesData: OutcomeData[]) => {
             setOutcomesData(outcomesData);
+            if (!specificationData || !tokenData || !connectedAddress) return;
+            try {
+                assertRequiredOraclesData(oraclesData);
+            } catch (error) {
+                console.warn("not all required oracles data is present");
+                return;
+            }
             const nextStep = enableOraclePickStep ? 5 : 4;
             setStep(nextStep);
             setMostUpdatedStep(nextStep);
+            setKPITokenDeploymentAddress(
+                predictKPITokenAddress(
+                    connectedAddress,
+                    "",
+                    unixTimestamp(specificationData?.expiration),
+                    encodeKPITokenData(
+                        collateralsData,
+                        tokenData.name,
+                        tokenData.symbol,
+                        tokenData.supply
+                    ),
+                    encodeOraclesData(
+                        oracleTemplatesData,
+                        outcomesData,
+                        oraclesData
+                    )
+                )
+            );
         },
-        [enableOraclePickStep]
+        [
+            collateralsData,
+            connectedAddress,
+            enableOraclePickStep,
+            oracleTemplatesData,
+            oraclesData,
+            specificationData,
+            tokenData,
+        ]
     );
 
     const handleDeployNext = useCallback(
@@ -343,7 +368,9 @@ export const Component = ({
                             ) : (
                                 <Deploy
                                     t={t}
-                                    targetAddress={creationProxyAddress}
+                                    targetAddress={
+                                        kpiTokenDeploymentAddress as Address
+                                    }
                                     specificationData={specificationData}
                                     tokenData={tokenData}
                                     collateralsData={collateralsData}

@@ -29,7 +29,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, true, "Token", "TKN", 100 ether),
+                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 100 ether),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -132,7 +132,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, true, "Token", "TKN", 10 ether),
+                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 10 ether),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -154,7 +154,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, true, "Token", "TKN", 10 ether),
+                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 10 ether),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -179,7 +179,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, true, "", "TKN", 10 ether),
+                kpiTokenData: abi.encode(collaterals, "", "TKN", 10 ether),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -204,7 +204,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, true, "Token", "", 10 ether),
+                kpiTokenData: abi.encode(collaterals, "Token", "", 10 ether),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -229,7 +229,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, true, "Token", "TKN", 0 ether),
+                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 0 ether),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -253,7 +253,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, true, "Token", "TKN", 10 ether),
+                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 10 ether),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -276,7 +276,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, true, "Token", "TKN", 10 ether),
+                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 10 ether),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -299,7 +299,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, true, "Token", "TKN", 10 ether),
+                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 10 ether),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -322,7 +322,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, true, "Token", "TKN", 10 ether),
+                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 10 ether),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -345,7 +345,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, true, "Token", "TKN", 10 ether),
+                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 10 ether),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -379,7 +379,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, true, "Token", "TKN", 100 ether),
+                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 100 ether),
                 oraclesData: abi.encode(oracleData, false)
             })
         );
@@ -406,7 +406,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
     function testInitializationSuccess() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 110 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] =
@@ -429,7 +429,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
     function testInitializationSuccessWithValue() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 110 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({

@@ -28,17 +28,19 @@ import {
     TxType,
     useDecentralizedStorageUploader,
 } from "@carrot-kpi/react";
-import { Template } from "@carrot-kpi/sdk";
+import { FACTORY_ABI, Template } from "@carrot-kpi/sdk";
 import { CollateralsTable } from "../collaterals/table";
 import { ReactComponent as Info } from "../../../assets/info.svg";
-import { encodeOraclesData } from "../../utils/data-encoding";
-import CREATION_PROXY_ABI from "../../../abis/creation-proxy.json";
+import {
+    encodeKPITokenData,
+    encodeOraclesData,
+} from "../../utils/data-encoding";
 import { ApproveCollateralsButton } from "../approve-collaterals-button";
 import { unixTimestamp } from "../../../utils/dates";
 import { getKPITokenAddressFromReceipt } from "../../../utils/logs";
 
 type Assert = (data: OracleData[]) => asserts data is Required<OracleData>[];
-const assertRequiredOraclesData: Assert = (data) => {
+export const assertRequiredOraclesData: Assert = (data) => {
     for (const item of data) if (!item.initializationBundle) throw new Error();
 };
 
@@ -85,7 +87,9 @@ export const Deploy = ({
     const [toApprove, setToApprove] = useState<CollateralData[]>([]);
     const [approved, setApproved] = useState(false);
     const [specificationCID, setSpecificationCID] = useState("");
-    const [creationArgs, setCreationArgs] = useState<unknown[]>([]);
+    const [creationArgs, setCreationArgs] = useState<
+        [BigNumber, string, BigNumber, `0x${string}`, `0x${string}`] | undefined
+    >(undefined);
     const [loading, setLoading] = useState(false);
 
     const {
@@ -94,10 +98,10 @@ export const Deploy = ({
         isFetching: fetchingTxConfig,
     } = usePrepareContractWrite({
         address: targetAddress,
-        abi: CREATION_PROXY_ABI,
-        functionName: "createERC20KPIToken",
+        abi: FACTORY_ABI,
+        functionName: "createToken",
         args: creationArgs,
-        enabled: approved && creationArgs.length > 0,
+        enabled: approved && !!creationArgs,
     });
     const { writeAsync } = useContractWrite(config);
 
@@ -173,17 +177,20 @@ export const Deploy = ({
         }
 
         setCreationArgs([
+            __TEMPLATE_ID__,
             specificationCID,
-            unixTimestamp(specificationData.expiration),
-            collateralsData.map((collateral) => ({
-                token: collateral.amount.currency.address,
-                amount: collateral.amount.raw,
-                minimumPayout: collateral.minimumPayout.raw,
-            })),
-            tokenData.name,
-            tokenData.symbol,
-            tokenData.supply,
-            encodeOraclesData(oracleTemplatesData, outcomesData, oraclesData),
+            BigNumber.from(unixTimestamp(specificationData.expiration)),
+            encodeKPITokenData(
+                collateralsData,
+                tokenData.name,
+                tokenData.symbol,
+                tokenData.supply
+            ) as `0x${string}`,
+            encodeOraclesData(
+                oracleTemplatesData,
+                outcomesData,
+                oraclesData
+            ) as `0x${string}`,
         ]);
     }, [
         approved,
