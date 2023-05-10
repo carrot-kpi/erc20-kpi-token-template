@@ -11,16 +11,22 @@ import {
     ErrorText,
 } from "@carrot-kpi/ui";
 import { NamespacedTranslateFunction, useTokenLists } from "@carrot-kpi/react";
-import { ReactElement, useCallback, useEffect, useState } from "react";
-import { utils } from "ethers";
+import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
+import { BigNumber, utils } from "ethers";
 import {
     CollateralData,
     CollateralsStepState,
     NumberFormatValue,
     TokenWithLogoURI,
 } from "../../types";
-import { Amount, Token, formatTokenAmount } from "@carrot-kpi/sdk";
-import { Address, useAccount, useBalance, useNetwork } from "wagmi";
+import { Amount, ERC20_ABI, Token, formatTokenAmount } from "@carrot-kpi/sdk";
+import {
+    Address,
+    useAccount,
+    useBalance,
+    useContractReads,
+    useNetwork,
+} from "wagmi";
 import {
     DEFAULT_NUMBER_FORMAT_VALUE,
     PROTOCOL_FEE_BPS,
@@ -29,6 +35,12 @@ import {
 import { ReactComponent as ArrowDown } from "../../../assets/arrow-down.svg";
 import { CollateralsTable } from "./table";
 import { USDValue } from "./usd-value";
+import { useImportableToken } from "./hooks/useImportableToken";
+import {
+    cacheTokenInfoWithBalance,
+    cachedTokenInfoWithBalanceInChain,
+    tokenInfoWithBalanceEquals,
+} from "../../utils/cache";
 
 interface CollateralProps {
     t: NamespacedTranslateFunction;
@@ -55,6 +67,7 @@ export const Collaterals = ({
     // picker state
     const [tokenPickerOpen, setTokenPickerOpen] = useState(false);
     const [addDisabled, setAddDisabled] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
     const [collateralAmountErrorMessage, setCollateralAmountErrorMessage] =
         useState("");
     const [minimumPayoutErrorMessage, setMinimumPayoutErrorMessage] =
@@ -68,6 +81,56 @@ export const Collaterals = ({
             ? (state.pickerToken.address as Address)
             : undefined,
     });
+
+    const { importableToken, loadingBalance: loadingImportableTokenBalance } =
+        useImportableToken(searchQuery, CCT_CHAIN_ID, true, address);
+
+    const {
+        data: rawBalances,
+        isLoading: loadingBalances,
+        isFetching: fetchingBalances,
+    } = useContractReads({
+        contracts: selectedTokenList?.tokens.map((token) => {
+            return {
+                abi: ERC20_ABI,
+                address: token.address as Address,
+                chainId: CCT_CHAIN_ID,
+                functionName: "balanceOf",
+                args: [address],
+            };
+        }),
+        allowFailure: true,
+        enabled: !!(selectedTokenList && address),
+    });
+
+    const selectedTokenListWithBalances = useMemo(() => {
+        if (importableToken) {
+            return {
+                ...selectedTokenList,
+                tokens: [importableToken],
+            } as TokenListWithBalance;
+        }
+        if (
+            rawBalances &&
+            rawBalances.length === selectedTokenList?.tokens.length
+        ) {
+            return {
+                ...selectedTokenList,
+                tokens: [
+                    ...selectedTokenList?.tokens.map((token, index) => {
+                        return {
+                            ...token,
+                            balance: rawBalances[
+                                index
+                            ] as unknown as BigNumber | null,
+                        };
+                    }),
+                    ...cachedTokenInfoWithBalanceInChain(CCT_CHAIN_ID),
+                ],
+            };
+        }
+        return selectedTokenList;
+    }, [selectedTokenList, importableToken, rawBalances]);
 
     useEffect(() => {
         setDisabled(state.collaterals.length === 0);
@@ -174,6 +237,9 @@ export const Collaterals = ({
 
     const handleSelectedTokenChange = useCallback(
         (newSelectedToken: TokenInfoWithBalance): void => {
+            if (tokenInfoWithBalanceEquals(importableToken, newSelectedToken)) {
+                cacheTokenInfoWithBalance(newSelectedToken);
+            }
             onStateChange({
                 ...state,
                 pickerToken: newSelectedToken,
@@ -183,7 +249,7 @@ export const Collaterals = ({
             setCollateralAmountErrorMessage("");
             setMinimumPayoutErrorMessage("");
         },
-        [onStateChange, state]
+        [onStateChange, importableToken, state]
     );
 
     const handlePickerRawAmountChange = useCallback(
@@ -317,14 +383,18 @@ export const Collaterals = ({
                 open={tokenPickerOpen}
                 onDismiss={handleERC20TokenPickerDismiss}
                 selectedToken={state.pickerToken}
+                searchQueryObserver={setSearchQuery}
                 onSelectedTokenChange={handleSelectedTokenChange}
                 lists={tokenLists as TokenListWithBalance[]}
-                loading={loading}
-                selectedList={selectedTokenList}
+                loading={
+                    loading ||
+                    loadingBalances ||
+                    fetchingBalances ||
+                    loadingImportableTokenBalance
+                }
+                selectedList={selectedTokenListWithBalances}
                 onSelectedListChange={setSelectedTokenList}
                 chainId={chain?.id}
-                withBalances
-                accountAddress={address}
                 messages={{
                     search: {
                         title: t("erc20.picker.search.title"),
