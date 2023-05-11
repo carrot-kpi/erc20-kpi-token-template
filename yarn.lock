@@ -1078,20 +1078,9 @@
     bufferutil "4.0.5"
     utf-8-validate "5.0.7"
 
-"@carrot-kpi/host-frontend@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/host-frontend/-/host-frontend-0.2.0.tgz#50b587b311bd2f5c7c5415e52d726bcb6eef4c26"
-  integrity sha512-rWW379NUcksCp92A9d/qIGZmrSo3DB/miDGLVscZFAFOep0Ah/3i/lgO9f4R2+MJUk8LfibtO/oHKoLcXvpwxw==
-  dependencies:
-    "@carrot-kpi/react" "*"
-    "@carrot-kpi/sdk" "*"
-    "@carrot-kpi/ui" "*"
-    class-variance-authority "^0.6.0"
-    dayjs "^1.11.7"
-    ethereum-blockies-base64 "^1.0.2"
-    ethers "^5.7.1"
-    react-router-dom "^6.11.0"
-    sanitize-html "^2.9.0"
+"@carrot-kpi/host-frontend@link:../carrot-v1-monorepo/packages/frontend":
+  version "0.0.0"
+  uid ""
 
 "@carrot-kpi/react@*":
   version "0.41.0"
@@ -1107,21 +1096,11 @@
     class-variance-authority "^0.6.0"
     react-use "^17.4.0"
 
-"@carrot-kpi/react@^0.42.0":
-  version "0.42.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.42.0.tgz#75e58a08823ad832384d92275ce025bfe2fe7e83"
-  integrity sha512-nMSmjU/S+jbFuWQNI2Ar9quk7/N8wK9zz6aqrig9ECLNo0oiomPVHIRMraFj9TSZaLR57rf16xFqkaTm6Ggd3w==
-  dependencies:
-    "@carrot-kpi/sdk" "*"
-    "@ethersproject/address" "^5.7.0"
-    "@ethersproject/bignumber" "^5.7.0"
-    "@tanstack/query-sync-storage-persister" "^4.29.5"
-    "@tanstack/react-query-persist-client" "^4.29.5"
-    "@uniswap/token-lists" "1.0.0-beta.31"
-    class-variance-authority "^0.6.0"
-    react-use "^17.4.0"
+"@carrot-kpi/react@link:../carrot-v1-monorepo/packages/react":
+  version "0.0.0"
+  uid ""
 
-"@carrot-kpi/sdk@*", "@carrot-kpi/sdk@^1.18.3", "@carrot-kpi/sdk@^1.24.1":
+"@carrot-kpi/sdk@*", "@carrot-kpi/sdk@^1.24.1":
   version "1.24.1"
   resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.24.1.tgz#4ca7ee9fade5f7157e41ddf22ef26582feb62244"
   integrity sha512-Yujg2q08LDcBipVpxAOeqEgMjIK6Nj/rvBuqJP3g/g9l1xau4mezfWKSZxDszH/MKKeZ21aPe/ZSQipnzxI5gQ==
@@ -6218,20 +6197,18 @@ capital-case@^1.0.4:
     tslib "^2.0.3"
     upper-case-first "^2.0.2"
 
-carrot-scripts@^0.15.6:
+"carrot-scripts@file:../cct/packages/carrot-scripts":
   version "0.15.6"
-  resolved "https://registry.yarnpkg.com/carrot-scripts/-/carrot-scripts-0.15.6.tgz#56e962688252beaa491b2fdaf636cc8915b1ddfc"
-  integrity sha512-nYOhjS8Ff4ijvECo0Imlt+4vKtgo4kpUlFJr4HX6NAGDVg6JVPsU0NHrnsQJY2Nc9uui2HlSVEMPHnGvmkBL9w==
   dependencies:
     "@carrot-kpi/ganache" "^0.1.0"
-    "@carrot-kpi/sdk" "^1.18.3"
-    chalk "^4.1.2"
+    "@carrot-kpi/sdk" "^1.24.1"
+    chalk "^5.2.0"
     ethers "^5.7.1"
     git-rev-sync "^3.0.2"
     ipfs "^0.66.0"
     ipfs-http-gateway "^0.13.0"
     ipfs-http-server "^0.15.0"
-    ora "^6.1.2"
+    ora "^6.3.0"
 
 case-anything@^2.1.10:
   version "2.1.10"
@@ -6278,7 +6255,7 @@ chalk@^4.0.0, chalk@^4.0.2, chalk@^4.1.0, chalk@^4.1.2:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-chalk@^5.0.0, chalk@^5.0.1:
+chalk@^5.0.0, chalk@^5.0.1, chalk@^5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-5.2.0.tgz#249623b7d66869c673699fb66d65723e54dfcfb3"
   integrity sha512-ree3Gqw/nazQAPuJJEy+avdl7QfZMcUvmHIKgEZkGL+xOBzRvup5Hxo6LHuMceSxOabuJLJm5Yp/92R9eMmMvA==
@@ -12521,7 +12498,7 @@ optionator@^0.9.1:
     type-check "^0.4.0"
     word-wrap "^1.2.3"
 
-ora@^6.1.2, ora@^6.3.0:
+ora@^6.3.0:
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/ora/-/ora-6.3.0.tgz#a314600999f514a989a0904f5c17c8b7c1f7c878"
   integrity sha512-1/D8uRFY0ay2kgBpmAwmSA404w4OoPVhHMqRqtjvrcK/dnzcEZxMJ+V4DUbyICu8IIVRclHcOf5wlD1tMY4GUQ==

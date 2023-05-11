@@ -5,7 +5,10 @@ import {
     SpecificationData,
     TokenData,
 } from "../../types";
-import { NamespacedTranslateFunction } from "@carrot-kpi/react";
+import {
+    NamespacedTranslateFunction,
+    useDecentralizedStorageUploader,
+} from "@carrot-kpi/react";
 import {
     MarkdownInput,
     NumberInput,
@@ -36,6 +39,7 @@ interface GenericDataProps {
     onStateChange: (state: GenericDataStepState) => void;
     onNext: (
         partialSpecificationData: SpecificationData,
+        specificationCID: string,
         partialTokenData: TokenData
     ) => void;
 }
@@ -46,6 +50,9 @@ export const GenericData = ({
     onStateChange,
     onNext,
 }: GenericDataProps): ReactElement => {
+    const uploadToDecentralizedStorage =
+        useDecentralizedStorageUploader("ipfs");
+
     const [titleErrorText, setTitleErrorText] = useState("");
     const [descriptionErrorText, setDescriptionErrorText] = useState("");
     const [tagsErrorText, setTagsErrorText] = useState("");
@@ -55,6 +62,7 @@ export const GenericData = ({
     const [erc20SupplyErrorText, setERC20SupplyErrorText] = useState("");
     const [disabled, setDisabled] = useState(true);
     const [minimumDate, setMinimumDate] = useState(new Date());
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -199,7 +207,7 @@ export const GenericData = ({
         [onStateChange, state, t]
     );
 
-    const handleNext = useCallback(() => {
+    const handleNext = useCallback(async () => {
         if (
             !state.title ||
             !state.description ||
@@ -212,19 +220,29 @@ export const GenericData = ({
             !state.erc20Symbol
         )
             return;
-        onNext(
-            {
-                title: state.title,
-                description: state.description,
-                tags: state.tags,
-                expiration: state.expiration,
-            },
-            {
-                name: state.erc20Name,
-                supply: utils.parseUnits(state.erc20Supply.value, 18),
-                symbol: state.erc20Symbol,
-            }
-        );
+        const specificationData: SpecificationData = {
+            title: state.title,
+            description: state.description,
+            tags: state.tags,
+            expiration: state.expiration,
+        };
+        let specificationCID;
+        try {
+            setLoading(true);
+            specificationCID = await uploadToDecentralizedStorage(
+                JSON.stringify(specificationData)
+            );
+        } catch (error) {
+            console.warn("error while uploading specification to ipfs", error);
+            return;
+        } finally {
+            setLoading(false);
+        }
+        onNext(specificationData, specificationCID, {
+            name: state.erc20Name,
+            supply: utils.parseUnits(state.erc20Supply.value, 18),
+            symbol: state.erc20Symbol,
+        });
     }, [
         onNext,
         state.description,
@@ -234,6 +252,7 @@ export const GenericData = ({
         state.expiration,
         state.tags,
         state.title,
+        uploadToDecentralizedStorage,
     ]);
 
     return (
@@ -342,7 +361,11 @@ export const GenericData = ({
                     }}
                 />
             </div>
-            <NextStepButton onClick={handleNext} disabled={disabled}>
+            <NextStepButton
+                onClick={handleNext}
+                disabled={disabled}
+                loading={loading}
+            >
                 {t("next")}
             </NextStepButton>
         </div>

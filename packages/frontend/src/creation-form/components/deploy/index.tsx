@@ -3,12 +3,15 @@ import {
     useCallback,
     useEffect,
     useLayoutEffect,
+    useMemo,
     useState,
 } from "react";
 import {
     Address,
     erc20ABI,
     useAccount,
+    useNetwork,
+    useContractRead,
     useContractReads,
     useContractWrite,
     usePrepareContractWrite,
@@ -17,7 +20,6 @@ import {
     CollateralData,
     OracleData,
     OutcomeData,
-    SpecificationData,
     TokenData,
 } from "../../types";
 import { BigNumber, constants } from "ethers";
@@ -26,9 +28,14 @@ import {
     KPITokenCreationFormProps,
     NamespacedTranslateFunction,
     TxType,
-    useDecentralizedStorageUploader,
 } from "@carrot-kpi/react";
-import { FACTORY_ABI, Template } from "@carrot-kpi/sdk";
+import {
+    CHAIN_ADDRESSES,
+    ChainId,
+    FACTORY_ABI,
+    KPI_TOKENS_MANAGER_ABI,
+    Template,
+} from "@carrot-kpi/sdk";
 import { CollateralsTable } from "../collaterals/table";
 import { ReactComponent as Info } from "../../../assets/info.svg";
 import {
@@ -46,13 +53,14 @@ export const assertRequiredOraclesData: Assert = (data) => {
 
 interface DeployProps {
     t: NamespacedTranslateFunction;
-    targetAddress: Address;
-    specificationData: SpecificationData;
+    templateId: number;
+    specificationCID: string;
+    expiration: Date;
     tokenData: TokenData;
     collateralsData: CollateralData[];
     oracleTemplatesData: Template[];
     outcomesData: OutcomeData[];
-    oraclesData: OracleData[];
+    oraclesData: Required<OracleData>[];
     onNext: (address: string) => void;
     onCreate: KPITokenCreationFormProps["onCreate"];
     onTx: KPITokenCreationFormProps["onTx"];
@@ -60,8 +68,9 @@ interface DeployProps {
 
 export const Deploy = ({
     t,
-    targetAddress,
-    specificationData,
+    templateId,
+    specificationCID,
+    expiration,
     tokenData,
     collateralsData,
     oracleTemplatesData,
@@ -72,24 +81,63 @@ export const Deploy = ({
     onTx,
 }: DeployProps): ReactElement => {
     const { address } = useAccount();
-    const uploadToDecentralizeStorage = useDecentralizedStorageUploader("ipfs");
+    const { chain } = useNetwork();
+
+    const { factoryAddress, kpiTokensManagerAddress } = useMemo(() => {
+        if (!chain)
+            return {
+                factoryAddress: undefined,
+                kpiTokensManagerAddress: undefined,
+            };
+        const chainAddresses = CHAIN_ADDRESSES[chain.id as ChainId];
+        return chainAddresses
+            ? {
+                  factoryAddress: chainAddresses.factory as Address,
+                  kpiTokensManagerAddress:
+                      chainAddresses.kpiTokensManager as Address,
+              }
+            : { factoryAddress: undefined, kpiTokensManagerAddress: undefined };
+    }, [chain]);
+
+    const { data: predictedKPITokenAddress } = useContractRead({
+        address: kpiTokensManagerAddress,
+        abi: KPI_TOKENS_MANAGER_ABI,
+        functionName: "predictInstanceAddress",
+        args: address && [
+            address,
+            BigNumber.from(templateId),
+            specificationCID,
+            BigNumber.from(unixTimestamp(expiration)),
+            encodeKPITokenData(
+                collateralsData,
+                tokenData.name,
+                tokenData.symbol,
+                tokenData.supply
+            ) as `0x${string}`,
+            encodeOraclesData(
+                oracleTemplatesData,
+                outcomesData,
+                oraclesData
+            ) as `0x${string}`,
+        ],
+        enabled: !!address,
+    });
     const { data: allowances } = useContractReads({
         contracts: collateralsData.map((collateralData) => {
             return {
                 address: collateralData.amount.currency.address as Address,
                 abi: erc20ABI,
                 functionName: "allowance",
-                args: [address ?? constants.AddressZero, targetAddress],
+                args: [
+                    address ?? constants.AddressZero,
+                    predictedKPITokenAddress,
+                ],
             };
         }),
     });
 
     const [toApprove, setToApprove] = useState<CollateralData[]>([]);
     const [approved, setApproved] = useState(false);
-    const [specificationCID, setSpecificationCID] = useState("");
-    const [creationArgs, setCreationArgs] = useState<
-        [BigNumber, string, BigNumber, `0x${string}`, `0x${string}`] | undefined
-    >(undefined);
     const [loading, setLoading] = useState(false);
 
     const {
@@ -97,11 +145,26 @@ export const Deploy = ({
         isLoading: loadingTxConfig,
         isFetching: fetchingTxConfig,
     } = usePrepareContractWrite({
-        address: targetAddress,
+        address: factoryAddress,
         abi: FACTORY_ABI,
         functionName: "createToken",
-        args: creationArgs,
-        enabled: approved && !!creationArgs,
+        args: [
+            BigNumber.from(templateId),
+            specificationCID,
+            BigNumber.from(unixTimestamp(expiration)),
+            encodeKPITokenData(
+                collateralsData,
+                tokenData.name,
+                tokenData.symbol,
+                tokenData.supply
+            ) as `0x${string}`,
+            encodeOraclesData(
+                oracleTemplatesData,
+                outcomesData,
+                oraclesData
+            ) as `0x${string}`,
+        ],
+        enabled: approved,
     });
     const { writeAsync } = useContractWrite(config);
 
@@ -126,84 +189,6 @@ export const Deploy = ({
         if (!allowances) return;
         setApproved(toApprove.length === 0);
     }, [allowances, toApprove.length]);
-
-    // once the collaterals are approved, this uploads the question spec
-    // to ipfs and sets creation args
-    useEffect(() => {
-        if (specificationCID || !approved) return;
-        let cancelled = false;
-        const uploadAndSetSpecificationCid = async () => {
-            if (!cancelled) setLoading(true);
-            try {
-                const specificationCID = await uploadToDecentralizeStorage(
-                    JSON.stringify(specificationData)
-                );
-                if (!cancelled) setSpecificationCID(specificationCID);
-            } catch (error) {
-                console.warn(
-                    "error while uploading specification to ipfs",
-                    error
-                );
-            } finally {
-                if (!cancelled) setLoading(false);
-            }
-        };
-        void uploadAndSetSpecificationCid();
-        return () => {
-            cancelled = true;
-        };
-    }, [
-        approved,
-        collateralsData,
-        oracleTemplatesData,
-        oraclesData,
-        outcomesData,
-        specificationCID,
-        specificationData,
-        tokenData.name,
-        tokenData.supply,
-        tokenData.symbol,
-        uploadToDecentralizeStorage,
-    ]);
-
-    useEffect(() => {
-        if (!specificationCID || !approved) return;
-
-        try {
-            assertRequiredOraclesData(oraclesData);
-        } catch (error) {
-            console.warn("not all required oracles data is present");
-            return;
-        }
-
-        setCreationArgs([
-            __TEMPLATE_ID__,
-            specificationCID,
-            BigNumber.from(unixTimestamp(specificationData.expiration)),
-            encodeKPITokenData(
-                collateralsData,
-                tokenData.name,
-                tokenData.symbol,
-                tokenData.supply
-            ) as `0x${string}`,
-            encodeOraclesData(
-                oracleTemplatesData,
-                outcomesData,
-                oraclesData
-            ) as `0x${string}`,
-        ]);
-    }, [
-        approved,
-        collateralsData,
-        oracleTemplatesData,
-        oraclesData,
-        outcomesData,
-        specificationCID,
-        specificationData.expiration,
-        tokenData.name,
-        tokenData.supply,
-        tokenData.symbol,
-    ]);
 
     const handleApproved = useCallback(() => {
         setToApprove([]);
@@ -266,7 +251,7 @@ export const Deploy = ({
                 <ApproveCollateralsButton
                     t={t}
                     toApprove={toApprove}
-                    spender={targetAddress}
+                    spender={predictedKPITokenAddress as Address}
                     onApproved={handleApproved}
                     onTx={onTx}
                 />

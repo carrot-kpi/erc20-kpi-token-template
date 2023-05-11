@@ -20,7 +20,7 @@ import {
     SpecificationData,
     TokenData as TokenDataType,
 } from "./types";
-import { Address, useAccount } from "wagmi";
+import { useAccount } from "wagmi";
 import { GenericData } from "./components/generic-data";
 import { Collaterals } from "./components/collaterals";
 import { OraclesConfiguration } from "./components/oracles-configuration";
@@ -29,15 +29,13 @@ import { Deploy, assertRequiredOraclesData } from "./components/deploy";
 import { Success } from "./components/success";
 import { ConnectWallet } from "./components/connect-wallet";
 import { outcomeConfigurationFromOracleData } from "./utils/outcomes-configuration";
-import { predictKPITokenAddress } from "./utils/address-prediction";
-import { unixTimestamp } from "../utils/dates";
-import { encodeKPITokenData, encodeOraclesData } from "./utils/data-encoding";
 
 // TODO: when we have more than one oracle template, implement state
 // and state change features for the oracle picker state too
 export const Component = ({
     i18n,
     t,
+    template,
     onCreate,
     navigate,
     onTx,
@@ -67,13 +65,12 @@ export const Component = ({
 
     const [step, setStep] = useState(0);
     const [mostUpdatedStep, setMostUpdatedStep] = useState(0);
-    const [kpiTokenDeploymentAddress, setKPITokenDeploymentAddress] =
-        useState("");
 
     const [genericDataStepState, setGenericDataStepState] =
         useState<GenericDataStepState>({});
     const [specificationData, setSpecificationData] =
         useState<SpecificationData | null>(null);
+    const [specificationCID, setSpecificationCID] = useState("");
     const [tokenData, setTokenData] = useState<TokenDataType | null>(null);
 
     const [collateralsStepState, setCollateralsStepState] =
@@ -90,7 +87,10 @@ export const Component = ({
 
     const [oraclesConfigurationStepState, setOraclesConfigurationStepState] =
         useState<OraclesConfigurationStepState>({});
-    const [oraclesData, setOraclesData] = useState<OracleData[]>([]);
+    const [partialOraclesData, setPartialOraclesData] = useState<OracleData[]>(
+        []
+    );
+    const [oraclesData, setOraclesData] = useState<Required<OracleData>[]>([]);
 
     const [outcomesConfigurationStepState, setOutcomesConfigurationStepState] =
         useState<OutcomesConfigurationStepState>({});
@@ -148,8 +148,13 @@ export const Component = ({
     }, []);
 
     const handleGenericDataNext = useCallback(
-        (specificationData: SpecificationData, tokenData: TokenDataType) => {
+        (
+            specificationData: SpecificationData,
+            specificationCID: string,
+            tokenData: TokenDataType
+        ) => {
             setSpecificationData(specificationData);
+            setSpecificationCID(specificationCID);
             setTokenData(tokenData);
             setStep(1);
             setMostUpdatedStep(1);
@@ -174,7 +179,7 @@ export const Component = ({
 
     const handleOraclesConfigurationNext = useCallback(
         (oracleData: OracleData[]) => {
-            setOraclesData(oracleData);
+            setPartialOraclesData(oracleData);
             const nextStep = enableOraclePickStep ? 4 : 3;
             setStep(nextStep);
             setMostUpdatedStep(nextStep);
@@ -185,41 +190,30 @@ export const Component = ({
     const handleOutcomesConfigurationNext = useCallback(
         (outcomesData: OutcomeData[]) => {
             setOutcomesData(outcomesData);
-            if (!specificationData || !tokenData || !connectedAddress) return;
+            if (
+                !specificationData ||
+                !specificationCID ||
+                !tokenData ||
+                !connectedAddress
+            )
+                return;
             try {
-                assertRequiredOraclesData(oraclesData);
+                assertRequiredOraclesData(partialOraclesData);
             } catch (error) {
                 console.warn("not all required oracles data is present");
                 return;
             }
+            setOraclesData(partialOraclesData);
+
             const nextStep = enableOraclePickStep ? 5 : 4;
             setStep(nextStep);
             setMostUpdatedStep(nextStep);
-            setKPITokenDeploymentAddress(
-                predictKPITokenAddress(
-                    connectedAddress,
-                    "",
-                    unixTimestamp(specificationData?.expiration),
-                    encodeKPITokenData(
-                        collateralsData,
-                        tokenData.name,
-                        tokenData.symbol,
-                        tokenData.supply
-                    ),
-                    encodeOraclesData(
-                        oracleTemplatesData,
-                        outcomesData,
-                        oraclesData
-                    )
-                )
-            );
         },
         [
-            collateralsData,
             connectedAddress,
             enableOraclePickStep,
-            oracleTemplatesData,
-            oraclesData,
+            partialOraclesData,
+            specificationCID,
             specificationData,
             tokenData,
         ]
@@ -368,10 +362,9 @@ export const Component = ({
                             ) : (
                                 <Deploy
                                     t={t}
-                                    targetAddress={
-                                        kpiTokenDeploymentAddress as Address
-                                    }
-                                    specificationData={specificationData}
+                                    templateId={template.id}
+                                    specificationCID={specificationCID}
+                                    expiration={specificationData.expiration}
                                     tokenData={tokenData}
                                     collateralsData={collateralsData}
                                     oracleTemplatesData={oracleTemplatesData}

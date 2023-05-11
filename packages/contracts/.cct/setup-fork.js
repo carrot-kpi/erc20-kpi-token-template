@@ -62,11 +62,6 @@ export const setupFork = async (
             },
         ],
         frontendGlobals: {
-            __TEMPLATE_ID__: BigNumber.from(predictedTemplateId),
-            __INIT_CODE_HASH__: utils.keccak256(
-                require("../artifacts/ERC20KPIToken.sol/ERC20KPIToken.json")
-                    .bytecode.object
-            ),
             CCT_ERC20_1_ADDRESS: testToken1Contract.address,
             CCT_ERC20_2_ADDRESS: testToken2Contract.address,
         },
