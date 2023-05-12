@@ -128,12 +128,10 @@ export const Deploy = ({
                 address: collateralData.amount.currency.address as Address,
                 abi: erc20ABI,
                 functionName: "allowance",
-                args: [
-                    address ?? constants.AddressZero,
-                    predictedKPITokenAddress,
-                ],
+                args: [address, predictedKPITokenAddress],
             };
         }),
+        enabled: !!address && !!predictedKPITokenAddress,
     });
 
     const [toApprove, setToApprove] = useState<CollateralData[]>([]);
