@@ -1078,10 +1078,10 @@
     bufferutil "4.0.5"
     utf-8-validate "5.0.7"
 
-"@carrot-kpi/host-frontend@^0.3.2":
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/host-frontend/-/host-frontend-0.3.2.tgz#f7114abe3163a798e92284625d8122d9c1ec1289"
-  integrity sha512-/Jx0fozmmM3iSVf5lXA/RTjZzJ8E/d+TLD9oyWpSFnSGebqC8DzmVwFwjZOAEVFaTdXf5BmlMRasC/u3naSalw==
+"@carrot-kpi/host-frontend@^0.3.3":
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/host-frontend/-/host-frontend-0.3.3.tgz#d1dac11a2664f0ff43d8de0642951b06ad021689"
+  integrity sha512-q4QIlLPNkYjCEM1XfCX0JZZBe88omLoLwaYA3POAtY7PCVVRNayNj134+gDD1GgwuTiAN/qjG6wsWRTe9JYhPw==
   dependencies:
     "@carrot-kpi/react" "*"
     "@carrot-kpi/sdk" "*"
@@ -1108,10 +1108,10 @@
     class-variance-authority "^0.6.0"
     react-use "^17.4.0"
 
-"@carrot-kpi/react@^0.43.0":
-  version "0.43.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.43.0.tgz#6b612ae03a6e4fa63c075a2143a432edbf27de63"
-  integrity sha512-1pijW+9JyB2y4uqcqENixVDcJc8umQ3EpI9CvpVJYR/Jyz1laNicyFpOu5r8lgoSd9Hds0Tplf4thWbAvdcduA==
+"@carrot-kpi/react@^0.44.0":
+  version "0.44.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.44.0.tgz#45d7252b75596a6c6768ec197b3ead1606de75ac"
+  integrity sha512-hEAMkUyZau54qa5Sc8iyzIrk67+9r1FcTBIBiMMsRNN+zeiBOxeNQLP7aS6HCAcbSlWZf54GiScAGhoevBWGoA==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@ethersproject/address" "^5.7.0"
@@ -1126,6 +1126,20 @@
   version "1.24.1"
   resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.24.1.tgz#4ca7ee9fade5f7157e41ddf22ef26582feb62244"
   integrity sha512-Yujg2q08LDcBipVpxAOeqEgMjIK6Nj/rvBuqJP3g/g9l1xau4mezfWKSZxDszH/MKKeZ21aPe/ZSQipnzxI5gQ==
+  dependencies:
+    "@ethersproject/address" "^5.7.0"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/contracts" "^5.7.0"
+    "@ethersproject/providers" "^5.7.2"
+    "@ethersproject/units" "^5.7.0"
+    "@ethersproject/wallet" "^5.7.0"
+    decimal.js-light "^2.5.1"
+    multiformats "^9.9.0"
+
+"@carrot-kpi/sdk@^1.25.0":
+  version "1.25.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.25.0.tgz#eac1cd5184f8a8895429e59cc2b5b73118078a19"
+  integrity sha512-mhz7xV6o2QNHSPPjMCmCrNn8AdP9zba2+EKTpyip+q4yMm8YBPmMUzFyAIhBJvS64lEMM05s15SiWnPIgWyVUQ==
   dependencies:
     "@ethersproject/address" "^5.7.0"
     "@ethersproject/bignumber" "^5.7.0"
