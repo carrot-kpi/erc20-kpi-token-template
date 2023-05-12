@@ -34,7 +34,7 @@ contract ERC20KPITokenBaseFinalizeTest is BaseTestSetup {
     function testValidCallerAlreadyFinalizedKpiToken() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] =

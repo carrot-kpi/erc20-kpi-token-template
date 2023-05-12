@@ -1,6 +1,34 @@
 import { Template } from "@carrot-kpi/sdk";
 import { BigNumber, utils } from "ethers";
-import { OracleData, OutcomeData } from "../types";
+import { CollateralData, OracleData, OutcomeData } from "../types";
+
+export const encodeKPITokenData = (
+    collateralsData: CollateralData[],
+    erc20Name: string,
+    erc20Symbol: string,
+    supply: BigNumber
+) => {
+    return utils.defaultAbiCoder.encode(
+        [
+            "tuple(address token,uint256 amount,uint256 minimumPayout)[]",
+            "string",
+            "string",
+            "uint256",
+        ],
+        [
+            collateralsData.map((collateralData) => {
+                return {
+                    token: collateralData.amount.currency.address,
+                    amount: collateralData.amount.raw,
+                    minimumPayout: collateralData.minimumPayout.raw,
+                };
+            }),
+            erc20Name,
+            erc20Symbol,
+            supply,
+        ]
+    );
+};
 
 export const encodeOraclesData = (
     templatesData: Template[],

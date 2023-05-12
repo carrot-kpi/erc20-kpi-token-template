@@ -8,8 +8,6 @@ import {OraclesManager1} from "carrot/oracles-managers/OraclesManager1.sol";
 import {KPITokensFactory} from "carrot/KPITokensFactory.sol";
 import {IERC20KPIToken, Collateral, OracleData} from "../../src/interfaces/IERC20KPIToken.sol";
 import {MockOracle} from "tests/mocks/MockOracle.sol";
-import {DeployCreationProxy} from "../../scripts/DeployCreationProxy.sol";
-import {CreationProxy} from "../../src/CreationProxy.sol";
 
 /// SPDX-License-Identifier: GPL-3.0-or-later
 /// @title Base test setup
@@ -25,7 +23,6 @@ abstract contract BaseTestSetup is Test {
     ERC20KPIToken internal erc20KpiTokenTemplate;
     KPITokensManager1 internal kpiTokensManager;
     OraclesManager1 internal oraclesManager;
-    CreationProxy internal creationProxy;
 
     function setUp() external {
         firstErc20 = new ERC20PresetMinterPauser("Token 1", "TKN1");
@@ -41,8 +38,6 @@ abstract contract BaseTestSetup is Test {
         oraclesManager = new OraclesManager1(address(factory));
         oraclesManager.addTemplate(address(new MockOracle()), "test-specification-mock");
 
-        creationProxy = CreationProxy(new DeployCreationProxy().run(address(factory), address(kpiTokensManager), 1));
-
         factory.setKpiTokensManager(address(kpiTokensManager));
         factory.setOraclesManager(address(oraclesManager));
     }
@@ -50,7 +45,7 @@ abstract contract BaseTestSetup is Test {
     function createKpiToken(string memory _description) public returns (ERC20KPIToken) {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 1});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] =

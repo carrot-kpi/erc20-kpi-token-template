@@ -1,4 +1,4 @@
-import { utils, ContractFactory } from "ethers";
+import { utils, ContractFactory, BigNumber } from "ethers";
 import { createRequire } from "module";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
@@ -26,24 +26,7 @@ export const setupFork = async (
     const templateContract = await templateFactory.deploy();
     await templateContract.deployed();
 
-    const chainId = await signer.getChainId();
-    execSync(
-        `node ./packages/contracts/codegen-chain-specific-contracts.js ${chainId} ${factory.address} ${kpiTokensManager.address} ${predictedTemplateId}`
-    );
     execSync("yarn build:contracts");
-
-    // deploy creation proxy
-    const {
-        abi: creationProxyAbi,
-        bytecode: creationProxyBytecode,
-    } = require(`../artifacts/CreationProxy${chainId}.sol/CreationProxy.json`);
-    const creationProxyFactory = new ContractFactory(
-        creationProxyAbi,
-        creationProxyBytecode,
-        signer
-    );
-    const creationProxy = await creationProxyFactory.deploy();
-    await creationProxy.deployed();
 
     // deploy test erc20 tokens
     const {
@@ -70,10 +53,6 @@ export const setupFork = async (
         templateContract,
         customContracts: [
             {
-                name: "Creation proxy",
-                address: creationProxy.address,
-            },
-            {
                 name: "ERC20 1",
                 address: testToken1Contract.address,
             },
@@ -83,7 +62,6 @@ export const setupFork = async (
             },
         ],
         frontendGlobals: {
-            CCT_CREATION_PROXY_ADDRESS: creationProxy.address,
             CCT_ERC20_1_ADDRESS: testToken1Contract.address,
             CCT_ERC20_2_ADDRESS: testToken2Contract.address,
         },

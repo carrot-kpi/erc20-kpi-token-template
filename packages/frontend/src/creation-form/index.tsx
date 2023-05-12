@@ -6,9 +6,8 @@ import {
     KPITokenRemoteCreationFormProps,
     useOracleTemplates,
 } from "@carrot-kpi/react";
-import { ChainId, Template } from "@carrot-kpi/sdk";
-import { constants } from "ethers";
-import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
+import { Template } from "@carrot-kpi/sdk";
+import { ReactElement, useCallback, useEffect, useState } from "react";
 import { OraclesPicker } from "./components/oracles-picker";
 import {
     CollateralData,
@@ -21,39 +20,28 @@ import {
     SpecificationData,
     TokenData as TokenDataType,
 } from "./types";
-import { useAccount, useNetwork } from "wagmi";
+import { useAccount } from "wagmi";
 import { GenericData } from "./components/generic-data";
 import { Collaterals } from "./components/collaterals";
 import { OraclesConfiguration } from "./components/oracles-configuration";
 import { OutcomesConfiguration } from "./components/outcomes-configuration";
-import { Deploy } from "./components/deploy";
-import { CREATION_PROXY_ADDRESS } from "./constants";
+import { Deploy, assertRequiredOraclesData } from "./components/deploy";
 import { Success } from "./components/success";
 import { ConnectWallet } from "./components/connect-wallet";
 import { outcomeConfigurationFromOracleData } from "./utils/outcomes-configuration";
-
-// TODO: add a check that displays an error message if the creation
-// proxy address is 0 for more than x time
 
 // TODO: when we have more than one oracle template, implement state
 // and state change features for the oracle picker state too
 export const Component = ({
     i18n,
     t,
+    template,
     onCreate,
     navigate,
     onTx,
 }: KPITokenRemoteCreationFormProps): ReactElement => {
     const { address: connectedAddress } = useAccount();
     const { loading, templates: oracleTemplates } = useOracleTemplates();
-
-    const { chain } = useNetwork();
-    const creationProxyAddress = useMemo(() => {
-        if (__DEV__) return CCT_CREATION_PROXY_ADDRESS;
-        return chain && chain.id in ChainId
-            ? CREATION_PROXY_ADDRESS[chain.id as ChainId]
-            : constants.AddressZero;
-    }, [chain]);
 
     const enableOraclePickStep = !loading && oracleTemplates.length > 1;
     const stepTitles = enableOraclePickStep
@@ -82,6 +70,7 @@ export const Component = ({
         useState<GenericDataStepState>({});
     const [specificationData, setSpecificationData] =
         useState<SpecificationData | null>(null);
+    const [specificationCID, setSpecificationCID] = useState("");
     const [tokenData, setTokenData] = useState<TokenDataType | null>(null);
 
     const [collateralsStepState, setCollateralsStepState] =
@@ -98,7 +87,10 @@ export const Component = ({
 
     const [oraclesConfigurationStepState, setOraclesConfigurationStepState] =
         useState<OraclesConfigurationStepState>({});
-    const [oraclesData, setOraclesData] = useState<OracleData[]>([]);
+    const [partialOraclesData, setPartialOraclesData] = useState<OracleData[]>(
+        []
+    );
+    const [oraclesData, setOraclesData] = useState<Required<OracleData>[]>([]);
 
     const [outcomesConfigurationStepState, setOutcomesConfigurationStepState] =
         useState<OutcomesConfigurationStepState>({});
@@ -156,8 +148,13 @@ export const Component = ({
     }, []);
 
     const handleGenericDataNext = useCallback(
-        (specificationData: SpecificationData, tokenData: TokenDataType) => {
+        (
+            specificationData: SpecificationData,
+            specificationCID: string,
+            tokenData: TokenDataType
+        ) => {
             setSpecificationData(specificationData);
+            setSpecificationCID(specificationCID);
             setTokenData(tokenData);
             setStep(1);
             setMostUpdatedStep(1);
@@ -182,7 +179,7 @@ export const Component = ({
 
     const handleOraclesConfigurationNext = useCallback(
         (oracleData: OracleData[]) => {
-            setOraclesData(oracleData);
+            setPartialOraclesData(oracleData);
             const nextStep = enableOraclePickStep ? 4 : 3;
             setStep(nextStep);
             setMostUpdatedStep(nextStep);
@@ -193,11 +190,33 @@ export const Component = ({
     const handleOutcomesConfigurationNext = useCallback(
         (outcomesData: OutcomeData[]) => {
             setOutcomesData(outcomesData);
+            if (
+                !specificationData ||
+                !specificationCID ||
+                !tokenData ||
+                !connectedAddress
+            )
+                return;
+            try {
+                assertRequiredOraclesData(partialOraclesData);
+            } catch (error) {
+                console.warn("not all required oracles data is present");
+                return;
+            }
+            setOraclesData(partialOraclesData);
+
             const nextStep = enableOraclePickStep ? 5 : 4;
             setStep(nextStep);
             setMostUpdatedStep(nextStep);
         },
-        [enableOraclePickStep]
+        [
+            connectedAddress,
+            enableOraclePickStep,
+            partialOraclesData,
+            specificationCID,
+            specificationData,
+            tokenData,
+        ]
     );
 
     const handleDeployNext = useCallback(
@@ -343,8 +362,9 @@ export const Component = ({
                             ) : (
                                 <Deploy
                                     t={t}
-                                    targetAddress={creationProxyAddress}
-                                    specificationData={specificationData}
+                                    templateId={template.id}
+                                    specificationCID={specificationCID}
+                                    expiration={specificationData.expiration}
                                     tokenData={tokenData}
                                     collateralsData={collateralsData}
                                     oracleTemplatesData={oracleTemplatesData}

@@ -37,7 +37,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, true, "Token", "TKN", 100 ether),
+                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 100 ether),
                 oraclesData: oracleData
             })
         );

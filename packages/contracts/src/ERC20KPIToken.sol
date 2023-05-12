@@ -153,10 +153,10 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
             _params.kpiTokenData
         );
 
-        (Collateral[] memory _collaterals, bool _takeFromCreator,,,) =
-            abi.decode(_params.kpiTokenData, (Collateral[], bool, string, string, uint256));
+        (Collateral[] memory _collaterals,,,) =
+            abi.decode(_params.kpiTokenData, (Collateral[], string, string, uint256));
 
-        collectCollateralsAndFees(_params.creator, _collaterals, _takeFromCreator, _params.feeReceiver);
+        collectCollateralsAndFees(_params.creator, _collaterals, _params.feeReceiver);
         initializeOracles(_params.creator, _params.oraclesManager, _params.oraclesData);
 
         emit Initialize();
@@ -184,8 +184,8 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
         if (bytes(_description).length == 0) revert InvalidDescription();
         if (_expiration <= block.timestamp) revert InvalidExpiration();
 
-        (,, string memory _erc20Name, string memory _erc20Symbol, uint256 _erc20Supply) =
-            abi.decode(_data, (Collateral[], bool, string, string, uint256));
+        (, string memory _erc20Name, string memory _erc20Symbol, uint256 _erc20Supply) =
+            abi.decode(_data, (Collateral[], string, string, uint256));
 
         if (bytes(_erc20Name).length == 0) revert InvalidName();
         if (bytes(_erc20Symbol).length == 0) revert InvalidSymbol();
@@ -211,12 +211,10 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     /// @param _collaterals The collaterals array as taken from the ABI-encoded data
     /// passed in by the KPI token creator.
     /// @param _feeReceiver The factory-forwarded address of the fee receiver.
-    function collectCollateralsAndFees(
-        address _creator,
-        Collateral[] memory _collaterals,
-        bool _takeFromCreator,
-        address _feeReceiver
-    ) internal onlyInitializing {
+    function collectCollateralsAndFees(address _creator, Collateral[] memory _collaterals, address _feeReceiver)
+        internal
+        onlyInitializing
+    {
         if (_collaterals.length == 0) revert NoCollaterals();
         if (_collaterals.length > 5) revert TooManyCollaterals();
         if (_feeReceiver == address(0)) revert InvalidFeeReceiver();
@@ -250,13 +248,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
             collateral[_collateral.token].minimumPayout = _collateral.minimumPayout;
             collateral[_collateral.token].postFinalizationAmount = 0;
             collateralAddressByIndex[_i] = _collateral.token;
-            if (_takeFromCreator) {
-                IERC20Upgradeable(_collateral.token).safeTransferFrom(
-                    _creator, address(this), _collateralAmountBeforeFee
-                );
-            } else if (IERC20Upgradeable(_collateral.token).balanceOf(address(this)) < _collateralAmountBeforeFee) {
-                revert NotEnoughCollateral();
-            }
+            IERC20Upgradeable(_collateral.token).safeTransferFrom(_creator, address(this), _collateralAmountBeforeFee);
             if (_fee > 0) {
                 IERC20Upgradeable(_collateral.token).safeTransfer(_feeReceiver, _fee);
                 emit CollectProtocolFee(_collateral.token, _fee, _feeReceiver);

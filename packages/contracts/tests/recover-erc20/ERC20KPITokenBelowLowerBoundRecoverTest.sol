@@ -12,7 +12,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
     function testBelowLowerBoundAndRelationshipSingleOracleZeroMinimumPayout() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] =
@@ -46,7 +46,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
     function testBelowLowerBoundAndRelationshipSingleOracleZeroMinimumPayoutExpired() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] =
@@ -83,7 +83,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
     function testBelowLowerBoundAndRelationshipSingleOracleNonZeroMinimumPayout() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 1});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] =
@@ -117,7 +117,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
     function testBelowLowerBoundAndRelationshipSingleOracleNonZeroMinimumPayoutExpired() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2 ether, minimumPayout: 1 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] =
@@ -154,7 +154,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
     function testBelowLowerBoundOrRelationshipSingleOracleZeroMinimumPayout() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] =
@@ -188,7 +188,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
     function testBelowLowerBoundOrRelationshipSingleOracleZeroMinimumPayoutExpired() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] =
@@ -225,7 +225,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
     function testBelowLowerBoundOrRelationshipSingleOracleNonZeroMinimumPayout() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 1});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] =
@@ -259,7 +259,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
     function testBelowLowerBoundOrRelationshipSingleOracleNonZeroMinimumPayoutExpired() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 1});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] =
@@ -296,7 +296,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
     function testBelowLowerBoundAndRelationshipMultipleOraclesZeroMinimumPayout() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] =
@@ -332,7 +332,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
     function testBelowLowerBoundAndRelationshipMultipleOraclesZeroMinimumPayoutExpired() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] =
@@ -371,7 +371,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
     function testBelowLowerBoundAndRelationshipMultipleOraclesNonZeroMinimumPayout() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 1});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] =
@@ -407,7 +407,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
     function testBelowLowerBoundAndRelationshipMultipleOraclesNonZeroMinimumPayoutExpired() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 1});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] =
@@ -448,7 +448,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
         Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
         _collaterals[1] = Collateral({token: address(secondErc20), amount: 4, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] =
@@ -487,7 +487,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
         Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
         _collaterals[1] = Collateral({token: address(secondErc20), amount: 4, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] =
@@ -529,7 +529,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
         Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 1});
         _collaterals[1] = Collateral({token: address(secondErc20), amount: 7 ether, minimumPayout: 6 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] =
@@ -568,7 +568,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
         Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 1});
         _collaterals[1] = Collateral({token: address(secondErc20), amount: 7 ether, minimumPayout: 6 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] =
@@ -610,7 +610,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
         Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
         _collaterals[1] = Collateral({token: address(secondErc20), amount: 1 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] =
@@ -649,7 +649,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
         Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
         _collaterals[1] = Collateral({token: address(secondErc20), amount: 1 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] =
@@ -691,7 +691,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
         Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 1});
         _collaterals[1] = Collateral({token: address(secondErc20), amount: 3.5 ether, minimumPayout: 1.2 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] =
@@ -730,7 +730,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
         Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2 ether, minimumPayout: 1 ether});
         _collaterals[1] = Collateral({token: address(secondErc20), amount: 3.5 ether, minimumPayout: 1.2 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] =
@@ -772,7 +772,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
         Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
         _collaterals[1] = Collateral({token: address(secondErc20), amount: 23 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] =
@@ -813,7 +813,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
         Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
         _collaterals[1] = Collateral({token: address(secondErc20), amount: 23 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] =
@@ -857,7 +857,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
         Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 1});
         _collaterals[1] = Collateral({token: address(secondErc20), amount: 40 ether, minimumPayout: 32.398938393 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] =
@@ -898,7 +898,7 @@ contract ERC20KPITokenBelowLowerBoundRecoverTest is BaseTestSetup {
         Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 1});
         _collaterals[1] = Collateral({token: address(secondErc20), amount: 40 ether, minimumPayout: 32.398938393 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, true, "Test", "TST", 100 ether);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] =
