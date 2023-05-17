@@ -1,69 +1,84 @@
-import { utils, ContractFactory, BigNumber } from "ethers";
 import { createRequire } from "module";
 import { fileURLToPath } from "url";
-import { execSync } from "child_process";
+import { parseUnits, getContract } from "viem";
 
 const require = createRequire(fileURLToPath(import.meta.url));
 
-export const setupFork = async (
-    factory,
-    kpiTokensManager,
-    _oraclesManager,
-    _multicall,
-    predictedTemplateId,
-    signer
-) => {
+export const setupFork = async ({ nodeClient, walletClient }) => {
     // deploy template
     const {
         abi: templateAbi,
-        bytecode: templateBytecode,
+        bytecode: { object: templateBytecode },
     } = require("../artifacts/ERC20KPIToken.sol/ERC20KPIToken.json");
-    const templateFactory = new ContractFactory(
-        templateAbi,
-        templateBytecode,
-        signer
-    );
-    const templateContract = await templateFactory.deploy();
-    await templateContract.deployed();
 
-    execSync("yarn build:contracts");
+    const { contractAddress: templateAddress } =
+        await nodeClient.getTransactionReceipt({
+            hash: await walletClient.deployContract({
+                abi: templateAbi,
+                bytecode: templateBytecode,
+            }),
+        });
 
     // deploy test erc20 tokens
     const {
         abi: erc20Abi,
-        bytecode: erc20Bytecode,
+        bytecode: { object: erc20Bytecode },
     } = require("../artifacts/ERC20PresetMinterPauser.sol/ERC20PresetMinterPauser.json");
-    const erc20Factory = new ContractFactory(erc20Abi, erc20Bytecode, signer);
-    const testToken1Contract = await erc20Factory.deploy(
-        "Test token 1",
-        "TST1"
-    );
-    await testToken1Contract.deployed();
-    const testToken2Contract = await erc20Factory.deploy(
-        "Test token 2",
-        "TST2"
-    );
-    await testToken2Contract.deployed();
+    const { contractAddress: tst1Address } =
+        await nodeClient.getTransactionReceipt({
+            hash: await walletClient.deployContract({
+                abi: erc20Abi,
+                bytecode: erc20Bytecode,
+                args: ["Test token 1", "TST1"],
+            }),
+        });
+    const tst1Contract = getContract({
+        abi: erc20Abi,
+        address: tst1Address,
+        publicClient: nodeClient,
+        walletClient: walletClient,
+    });
+
+    const { contractAddress: tst2Address } =
+        await nodeClient.getTransactionReceipt({
+            hash: await walletClient.deployContract({
+                abi: erc20Abi,
+                bytecode: erc20Bytecode,
+                args: ["Test token 2", "TST2"],
+            }),
+        });
+    const tst2Contract = getContract({
+        abi: erc20Abi,
+        address: tst2Address,
+        publicClient: nodeClient,
+        walletClient: walletClient,
+    });
 
     // mint some test erc20 tokens to signer
-    await testToken1Contract.mint(signer.address, utils.parseUnits("100", 18));
-    await testToken2Contract.mint(signer.address, utils.parseUnits("100", 18));
+    await tst1Contract.write.mint([
+        walletClient.account.address,
+        parseUnits("100", 18),
+    ]);
+    await tst2Contract.write.mint([
+        walletClient.account.address,
+        parseUnits("100", 18),
+    ]);
 
     return {
-        templateContract,
+        templateAddress,
         customContracts: [
             {
                 name: "ERC20 1",
-                address: testToken1Contract.address,
+                address: tst1Contract.address,
             },
             {
                 name: "ERC20 2",
-                address: testToken2Contract.address,
+                address: tst2Contract.address,
             },
         ],
         frontendGlobals: {
-            CCT_ERC20_1_ADDRESS: testToken1Contract.address,
-            CCT_ERC20_2_ADDRESS: testToken2Contract.address,
+            CCT_ERC20_1_ADDRESS: tst1Contract.address,
+            CCT_ERC20_2_ADDRESS: tst2Contract.address,
         },
     };
 };
