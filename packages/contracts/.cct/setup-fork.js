@@ -69,16 +69,16 @@ export const setupFork = async ({ nodeClient, walletClient }) => {
         customContracts: [
             {
                 name: "ERC20 1",
-                address: tst1Contract.address,
+                address: tst1Address,
             },
             {
                 name: "ERC20 2",
-                address: tst2Contract.address,
+                address: tst2Address,
             },
         ],
         frontendGlobals: {
-            CCT_ERC20_1_ADDRESS: tst1Contract.address,
-            CCT_ERC20_2_ADDRESS: tst2Contract.address,
+            CCT_ERC20_1_ADDRESS: tst1Address,
+            CCT_ERC20_2_ADDRESS: tst2Address,
         },
     };
 };

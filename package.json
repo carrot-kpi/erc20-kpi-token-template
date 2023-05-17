@@ -22,8 +22,8 @@
     "devDependencies": {
         "@commitlint/cli": "^17.6.3",
         "@commitlint/config-conventional": "^17.6.3",
-        "carrot-scripts": "^0.15.7",
+        "carrot-scripts": "^0.16.2",
         "husky": "^8.0.3",
-        "turbo": "^1.9.4"
+        "turbo": "^1.9.7"
     }
 }
