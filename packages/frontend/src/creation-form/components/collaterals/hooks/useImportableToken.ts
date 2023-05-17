@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { isAddress } from "@ethersproject/address";
+import { isAddress } from "viem";
 import { Address, useBalance, useToken } from "wagmi";
 import { TokenInfoWithBalance } from "@carrot-kpi/ui";
 

@@ -9,7 +9,7 @@ import {
 } from "@carrot-kpi/react";
 import { PROTOCOL_FEE_BPS } from "../../../../constants";
 import { Amount, formatTokenAmount } from "@carrot-kpi/sdk";
-import { parseUnits } from "ethers/lib/utils.js";
+import { parseUnits } from "viem";
 
 type CollateralRowProps = CollateralData & {
     t: NamespacedTranslateFunction;
@@ -52,7 +52,7 @@ export const CollateralRow = ({
             parseUnits(
                 amount
                     .sub(amount.mul(PROTOCOL_FEE_BPS).div(10_000))
-                    .toFixed(amount.currency.decimals),
+                    .toFixed(amount.currency.decimals) as `${number}`,
                 amount.currency.decimals
             )
         ),

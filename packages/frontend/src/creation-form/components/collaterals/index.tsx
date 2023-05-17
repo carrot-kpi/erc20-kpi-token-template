@@ -12,7 +12,6 @@ import {
 } from "@carrot-kpi/ui";
 import { NamespacedTranslateFunction, useTokenLists } from "@carrot-kpi/react";
 import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
-import { BigNumber, utils } from "ethers";
 import {
     CollateralData,
     CollateralsStepState,
@@ -41,6 +40,7 @@ import {
     cachedTokenInfoWithBalanceInChain,
     tokenInfoWithBalanceEquals,
 } from "../../utils/cache";
+import { formatUnits, parseUnits } from "viem";
 
 interface CollateralProps {
     t: NamespacedTranslateFunction;
@@ -90,15 +90,17 @@ export const Collaterals = ({
         isLoading: loadingBalances,
         isFetching: fetchingBalances,
     } = useContractReads({
-        contracts: selectedTokenList?.tokens.map((token) => {
-            return {
-                abi: ERC20_ABI,
-                address: token.address as Address,
-                chainId: CCT_CHAIN_ID,
-                functionName: "balanceOf",
-                args: [address],
-            };
-        }),
+        contracts:
+            address &&
+            selectedTokenList?.tokens.map((token) => {
+                return {
+                    abi: ERC20_ABI,
+                    address: token.address as Address,
+                    chainId: CCT_CHAIN_ID,
+                    functionName: "balanceOf",
+                    args: [address],
+                };
+            }),
         allowFailure: true,
         enabled: !!(selectedTokenList && address),
     });
@@ -120,9 +122,9 @@ export const Collaterals = ({
                     ...selectedTokenList?.tokens.map((token, index) => {
                         return {
                             ...token,
-                            balance: rawBalances[
-                                index
-                            ] as unknown as BigNumber | null,
+                            balance: rawBalances[index]?.result as
+                                | bigint
+                                | null,
                         };
                     }),
                     ...cachedTokenInfoWithBalanceInChain(CCT_CHAIN_ID),
@@ -172,11 +174,11 @@ export const Collaterals = ({
         const parsedAmount = parseFloat(state.pickerAmount.value);
         if (data) {
             // check if the user has enough balance of the picked token
-            const bnPickerAmount = utils.parseUnits(
-                state.pickerAmount.value,
+            const bnPickerAmount = parseUnits(
+                state.pickerAmount.value as `${number}`,
                 state.pickerToken.decimals
             );
-            if (data.value.lt(bnPickerAmount)) {
+            if (data.value < bnPickerAmount) {
                 setAddDisabled(true);
                 return;
             }
@@ -216,10 +218,10 @@ export const Collaterals = ({
             formatTokenAmount(
                 new Amount(
                     state.pickerToken as unknown as Token,
-                    utils.parseUnits(
+                    parseUnits(
                         ((parsedRawAmount * PROTOCOL_FEE_BPS) / 10_000).toFixed(
                             state.pickerToken.decimals
-                        ),
+                        ) as `${number}`,
                         state.pickerToken.decimals
                     )
                 )
@@ -264,8 +266,10 @@ export const Collaterals = ({
             )
                 errorMessage = t("error.collaterals.empty");
             else if (
-                data.value.lt(
-                    utils.parseUnits(newPickerRawAmount.value, data.decimals)
+                data.value <
+                parseUnits(
+                    newPickerRawAmount.value as `${number}`,
+                    data.decimals
                 )
             )
                 errorMessage = t("error.collaterals.insufficient");
@@ -319,7 +323,7 @@ export const Collaterals = ({
             return;
         const token = new TokenWithLogoURI(
             chain.id,
-            state.pickerToken.address,
+            state.pickerToken.address as Address,
             state.pickerToken.decimals,
             state.pickerToken.symbol,
             state.pickerToken.name,
@@ -332,15 +336,15 @@ export const Collaterals = ({
                 {
                     amount: new Amount(
                         token,
-                        utils.parseUnits(
-                            state.pickerAmount.value,
+                        parseUnits(
+                            state.pickerAmount.value as `${number}`,
                             token.decimals
                         )
                     ),
                     minimumPayout: new Amount(
                         token,
-                        utils.parseUnits(
-                            state.pickerMinimumPayout.value,
+                        parseUnits(
+                            state.pickerMinimumPayout.value as `${number}`,
                             token.decimals
                         )
                     ),
@@ -370,10 +374,7 @@ export const Collaterals = ({
         if (!data || !state.pickerToken) return;
         handlePickerRawAmountChange({
             formattedValue: data.formatted,
-            value: utils.formatUnits(
-                data.value.toString(),
-                state.pickerToken.decimals
-            ),
+            value: formatUnits(data.value, state.pickerToken.decimals),
         });
     }, [data, handlePickerRawAmountChange, state]);
 

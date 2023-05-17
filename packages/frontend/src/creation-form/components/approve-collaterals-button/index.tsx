@@ -10,7 +10,9 @@ import {
     erc20ABI,
     useContractWrite,
     Address,
+    usePublicClient,
 } from "wagmi";
+import { zeroAddress } from "viem";
 import { unixTimestamp } from "../../../utils/dates";
 import { CollateralData } from "../../types";
 
@@ -29,6 +31,8 @@ export const ApproveCollateralsButton = ({
     onApproved,
     onTx,
 }: ApproveCollateralsButtonProps): ReactElement => {
+    const publicClient = usePublicClient();
+
     const [approving, setApproving] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -54,7 +58,9 @@ export const ApproveCollateralsButton = ({
             if (!cancelled) setApproving(true);
             try {
                 const tx = await approveAsync();
-                const receipt = await tx.wait();
+                const receipt = await publicClient.waitForTransactionReceipt({
+                    hash: tx.hash,
+                });
                 if (cancelled) return;
                 onTx({
                     type: TxType.ERC20_APPROVAL,
@@ -65,7 +71,13 @@ export const ApproveCollateralsButton = ({
                         spender,
                         token: approvingCollateral.amount.currency.address,
                     },
-                    receipt,
+                    receipt: {
+                        ...receipt,
+                        to: receipt.to || zeroAddress,
+                        contractAddress: receipt.contractAddress || zeroAddress,
+                        blockNumber: Number(receipt.blockNumber),
+                        status: receipt.status === "success" ? 1 : 0,
+                    },
                     timestamp: unixTimestamp(new Date()),
                 });
                 if (currentIndex < toApprove.length - 1)
@@ -85,6 +97,7 @@ export const ApproveCollateralsButton = ({
         currentIndex,
         onApproved,
         onTx,
+        publicClient,
         spender,
         toApprove.length,
     ]);

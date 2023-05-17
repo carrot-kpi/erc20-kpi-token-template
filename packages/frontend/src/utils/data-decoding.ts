@@ -1,40 +1,52 @@
 import { Amount, Fetcher } from "@carrot-kpi/sdk";
-import { Provider } from "@wagmi/core";
-import { BigNumber } from "ethers";
-import { defaultAbiCoder } from "ethers/lib/utils.js";
+import { type PublicClient } from "wagmi";
 import { CollateralData } from "../creation-form/types";
+import { Hex, decodeAbiParameters } from "viem";
 import { FinalizableOracle } from "../page/types";
-
-interface OnChainCollateral {
-    token: string;
-    amount: BigNumber;
-    minimumPayout: BigNumber;
-}
 
 interface DecodedData {
     collaterals: CollateralData[];
     finalizableOracles: FinalizableOracle[];
     allOrNone: boolean;
-    initialSupply: BigNumber;
+    initialSupply: bigint;
 }
 
 export const decodeKPITokenData = async (
-    provider: Provider,
-    data: string
+    publicClient: PublicClient,
+    data: Hex
 ): Promise<DecodedData | null> => {
     const [rawCollaterals, finalizableOracles, allOrNone, initialSupply] =
-        defaultAbiCoder.decode(
+        decodeAbiParameters(
             [
-                "tuple(address token,uint256 amount,uint256 minimumPayout)[]",
-                "tuple(address addrezz,uint256 lowerBound,uint256 higherBound,uint256 finalResult,uint256 weight,bool finalized)[]",
-                "bool",
-                "uint256",
+                {
+                    type: "tuple[]",
+                    name: "collaterals",
+                    components: [
+                        { type: "address", name: "token" },
+                        { type: "uint256", name: "amount" },
+                        { type: "uint256", name: "minimumPayout" },
+                    ],
+                },
+                {
+                    type: "tuple[]",
+                    name: "finalizableOracles",
+                    components: [
+                        { type: "address", name: "addrezz" },
+                        { type: "uint256", name: "lowerBound" },
+                        { type: "uint256", name: "higherBound" },
+                        { type: "uint256", name: "finalResult" },
+                        { type: "uint256", name: "weight" },
+                        { type: "bool", name: "finalized" },
+                    ],
+                },
+                { type: "bool", name: "allOrNone" },
+                { type: "uint256", name: "initialSupply" },
             ],
             data
-        ) as [OnChainCollateral[], FinalizableOracle[], boolean, BigNumber];
+        );
 
     const erc20Tokens = await Fetcher.fetchERC20Tokens({
-        provider,
+        publicClient,
         addresses: rawCollaterals.map((collateral) => collateral.token),
     });
 
@@ -50,9 +62,9 @@ export const decodeKPITokenData = async (
     return collaterals.some((collateral) => !collateral)
         ? null
         : {
-              collaterals: collaterals as CollateralData[],
+              collaterals: collaterals.slice() as CollateralData[],
               allOrNone,
-              finalizableOracles,
+              finalizableOracles: finalizableOracles.slice(),
               initialSupply,
           };
 };

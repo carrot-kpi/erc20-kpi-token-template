@@ -1,16 +1,19 @@
-import { providers, utils } from "ethers";
+import {
+    Address,
+    TransactionReceipt,
+    decodeAbiParameters,
+    getEventSelector,
+} from "viem";
 
-const CREATE_TOKEN_EVENT_HASH = utils.keccak256(
-    utils.toUtf8Bytes("CreateToken(address)")
-);
+const CREATE_TOKEN_EVENT_HASH = getEventSelector("CreateToken(address)");
 
 export const getKPITokenAddressFromReceipt = (
-    receipt: providers.TransactionReceipt
-): string | null => {
+    receipt: TransactionReceipt
+): Address | null => {
     for (const log of receipt.logs) {
         const [hash] = log.topics;
         if (hash === CREATE_TOKEN_EVENT_HASH)
-            return utils.defaultAbiCoder.decode(["address"], log.data)[0];
+            return decodeAbiParameters([{ type: "address" }], log.data)[0];
     }
     return null;
 };

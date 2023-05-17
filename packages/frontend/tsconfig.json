@@ -13,7 +13,7 @@
         "outDir": "./dist",
         "module": "ESNext",
         "lib": ["DOM", "ESNext"],
-        "target": "ES6",
+        "target": "ESNext",
         "sourceMap": true,
         "strict": true,
         "rootDirs": ["./src"],

@@ -15,6 +15,7 @@ import {
     useContractReads,
     useContractWrite,
     usePrepareContractWrite,
+    usePublicClient,
 } from "wagmi";
 import {
     CollateralData,
@@ -22,7 +23,6 @@ import {
     OutcomeData,
     TokenData,
 } from "../../types";
-import { BigNumber, constants } from "ethers";
 import { Button, Typography } from "@carrot-kpi/ui";
 import {
     KPITokenCreationFormProps,
@@ -45,6 +45,7 @@ import {
 import { ApproveCollateralsButton } from "../approve-collaterals-button";
 import { unixTimestamp } from "../../../utils/dates";
 import { getKPITokenAddressFromReceipt } from "../../../utils/logs";
+import { zeroAddress } from "viem";
 
 type Assert = (data: OracleData[]) => asserts data is Required<OracleData>[];
 export const assertRequiredOraclesData: Assert = (data) => {
@@ -82,6 +83,7 @@ export const Deploy = ({
 }: DeployProps): ReactElement => {
     const { address } = useAccount();
     const { chain } = useNetwork();
+    const publicClient = usePublicClient();
 
     const { factoryAddress, kpiTokensManagerAddress } = useMemo(() => {
         if (!chain)
@@ -105,32 +107,31 @@ export const Deploy = ({
         functionName: "predictInstanceAddress",
         args: address && [
             address,
-            BigNumber.from(templateId),
+            BigInt(templateId),
             specificationCID,
-            BigNumber.from(unixTimestamp(expiration)),
+            BigInt(unixTimestamp(expiration)),
             encodeKPITokenData(
                 collateralsData,
                 tokenData.name,
                 tokenData.symbol,
                 tokenData.supply
-            ) as `0x${string}`,
-            encodeOraclesData(
-                oracleTemplatesData,
-                outcomesData,
-                oraclesData
-            ) as `0x${string}`,
+            ),
+            encodeOraclesData(oracleTemplatesData, outcomesData, oraclesData),
         ],
         enabled: !!address,
     });
     const { data: allowances } = useContractReads({
-        contracts: collateralsData.map((collateralData) => {
-            return {
-                address: collateralData.amount.currency.address as Address,
-                abi: erc20ABI,
-                functionName: "allowance",
-                args: [address, predictedKPITokenAddress],
-            };
-        }),
+        contracts:
+            address &&
+            predictedKPITokenAddress &&
+            collateralsData.map((collateralData) => {
+                return {
+                    address: collateralData.amount.currency.address as Address,
+                    abi: erc20ABI,
+                    functionName: "allowance",
+                    args: [address, predictedKPITokenAddress],
+                };
+            }),
         enabled: !!address && !!predictedKPITokenAddress,
     });
 
@@ -147,9 +148,9 @@ export const Deploy = ({
         abi: FACTORY_ABI,
         functionName: "createToken",
         args: [
-            BigNumber.from(templateId),
+            BigInt(templateId),
             specificationCID,
-            BigNumber.from(unixTimestamp(expiration)),
+            BigInt(unixTimestamp(expiration)),
             encodeKPITokenData(
                 collateralsData,
                 tokenData.name,
@@ -163,6 +164,7 @@ export const Deploy = ({
             ) as `0x${string}`,
         ],
         enabled: approved,
+        value: 0n,
     });
     const { writeAsync } = useContractWrite(config);
 
@@ -171,12 +173,8 @@ export const Deploy = ({
         const newToApprove = [];
         for (let i = 0; i < collateralsData.length; i++) {
             const collateralData = collateralsData[i];
-            if (!allowances[i]) return;
-            if (
-                (allowances[i] as unknown as BigNumber).gte(
-                    collateralData.amount.raw
-                )
-            )
+            if (!allowances[i]?.result) return;
+            if ((allowances[i].result as bigint) >= collateralData.amount.raw)
                 continue;
             newToApprove.push(collateralData);
         }
@@ -198,14 +196,17 @@ export const Deploy = ({
             setLoading(true);
             try {
                 const tx = await writeAsync();
-                const receipt = await tx.wait(__DEV__ ? 1 : 3);
+                const receipt = await publicClient.waitForTransactionReceipt({
+                    hash: tx.hash,
+                    confirmations: __DEV__ ? 1 : 3,
+                });
                 let createdKPITokenAddress =
                     getKPITokenAddressFromReceipt(receipt);
                 if (!createdKPITokenAddress) {
                     console.warn(
                         "could not extract created kpi token address from logs"
                     );
-                    createdKPITokenAddress = constants.AddressZero;
+                    createdKPITokenAddress = zeroAddress;
                 }
                 onCreate();
                 onTx({
@@ -215,7 +216,13 @@ export const Deploy = ({
                     payload: {
                         address: createdKPITokenAddress,
                     },
-                    receipt,
+                    receipt: {
+                        ...receipt,
+                        to: receipt.to || zeroAddress,
+                        contractAddress: receipt.contractAddress || zeroAddress,
+                        blockNumber: Number(receipt.blockNumber),
+                        status: receipt.status === "success" ? 1 : 0,
+                    },
                     timestamp: unixTimestamp(new Date()),
                 });
                 onNext(createdKPITokenAddress);
@@ -226,7 +233,7 @@ export const Deploy = ({
             }
         };
         void create();
-    }, [onCreate, onNext, onTx, writeAsync]);
+    }, [onCreate, onNext, onTx, publicClient, writeAsync]);
 
     return (
         <div className="flex flex-col gap-6">

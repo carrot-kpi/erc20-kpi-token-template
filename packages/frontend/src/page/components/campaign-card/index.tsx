@@ -8,15 +8,14 @@ import {
     Skeleton,
     Typography,
 } from "@carrot-kpi/ui";
-import { commify, formatUnits } from "ethers/lib/utils.js";
 import { ReactElement } from "react";
 import { CollateralData } from "../../../creation-form/types";
 import { shortenAddress } from "../../../utils/address";
 import { CollateralRow } from "../collateral-row";
-import { BigNumber } from "ethers";
 import { TimeLeft } from "./time-left";
 import { Address, useEnsName } from "wagmi";
 import { mainnet } from "wagmi/chains";
+import { formatUnits } from "viem";
 
 interface CampaignCardProps {
     t: NamespacedTranslateFunction;
@@ -24,10 +23,10 @@ interface CampaignCardProps {
     kpiToken: ResolvedKPIToken;
     collaterals?: CollateralData[] | null;
     allOrNone?: boolean | null;
-    initialSupply?: BigNumber | null;
+    initialSupply?: bigint | null;
     erc20Name?: string | null;
     erc20Symbol?: string | null;
-    erc20Supply?: BigNumber | null;
+    erc20Supply?: bigint | null;
 }
 
 export const CampaignCard = ({
@@ -151,7 +150,8 @@ export const CampaignCard = ({
                             <Skeleton />
                         ) : (
                             <Typography uppercase truncate>
-                                {commify(formatUnits(initialSupply, 18))}
+                                {/* FIXME: reintroduce commify to make number easier to read */}
+                                {formatUnits(initialSupply, 18)}
                             </Typography>
                         )}
                     </div>
@@ -166,7 +166,8 @@ export const CampaignCard = ({
                             <Skeleton width="60px" />
                         ) : (
                             <Typography uppercase truncate>
-                                {commify(formatUnits(erc20Supply, 18))}
+                                {/* FIXME: reintroduce commify to make number easier to read */}
+                                {formatUnits(erc20Supply, 18)}
                             </Typography>
                         )}
                     </div>

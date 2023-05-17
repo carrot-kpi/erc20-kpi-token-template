@@ -17,7 +17,6 @@ import {
     DateTimeInput,
     Typography,
 } from "@carrot-kpi/ui";
-import { BigNumber, utils } from "ethers";
 import { isInThePast } from "../../../utils/dates";
 import { NoSpecialCharactersTextInput } from "../no-special-characters-text-input";
 import {
@@ -32,6 +31,7 @@ import {
     isGenericDataStepStateInvalid,
     stripHtml,
 } from "../../utils/validation";
+import { parseUnits } from "viem";
 
 interface GenericDataProps {
     t: NamespacedTranslateFunction;
@@ -191,11 +191,11 @@ export const GenericData = ({
             setERC20SupplyErrorText(
                 !value ||
                     !value.value ||
-                    BigNumber.from(
+                    BigInt(
                         !isNaN(parseInt(value.value))
                             ? parseFloat(value.value)
-                            : "0"
-                    ).isZero()
+                            : 0
+                    ) === 0n
                     ? t("error.erc20.supply.zero")
                     : ""
             );
@@ -240,7 +240,7 @@ export const GenericData = ({
         }
         onNext(specificationData, specificationCID, {
             name: state.erc20Name,
-            supply: utils.parseUnits(state.erc20Supply.value, 18),
+            supply: parseUnits(state.erc20Supply.value as `${number}`, 18),
             symbol: state.erc20Symbol,
         });
     }, [

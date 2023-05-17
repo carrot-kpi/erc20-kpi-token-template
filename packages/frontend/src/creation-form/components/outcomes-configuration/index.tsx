@@ -1,4 +1,3 @@
-import { BigNumber, utils } from "ethers";
 import { ReactElement, useCallback, useEffect, useState } from "react";
 import { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Typography, NextStepButton } from "@carrot-kpi/ui";
@@ -10,6 +9,7 @@ import {
 import { SingleConfiguration } from "./single-configuration";
 import { Template } from "@carrot-kpi/sdk";
 import { OraclesAccordion } from "./oracles-accordion";
+import { parseUnits } from "viem";
 
 interface OutcomesConfigurationProps {
     t: NamespacedTranslateFunction;
@@ -96,11 +96,14 @@ export const OutcomesConfiguration = ({
             Object.values(state).map((value) => {
                 return {
                     lowerBound: value.binary
-                        ? BigNumber.from(0)
-                        : utils.parseUnits(value.lowerBound.value, 18),
+                        ? 0n
+                        : parseUnits(value.lowerBound.value as `${number}`, 18),
                     higherBound: value.binary
-                        ? BigNumber.from(1)
-                        : utils.parseUnits(value.higherBound.value, 18),
+                        ? 1n
+                        : parseUnits(
+                              value.higherBound.value as `${number}`,
+                              18
+                          ),
                 };
             })
         );

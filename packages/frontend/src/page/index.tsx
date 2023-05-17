@@ -6,7 +6,7 @@ import { Button, ErrorFeedback, Typography } from "@carrot-kpi/ui";
 import { ReactElement, useEffect, useState } from "react";
 import { OraclePage, KPITokenRemotePageProps } from "@carrot-kpi/react";
 import { CollateralData } from "../creation-form/types";
-import { Address, useNetwork, useProvider, useToken } from "wagmi";
+import { Address, useNetwork, usePublicClient, useToken } from "wagmi";
 import { ReactComponent as External } from "../assets/external.svg";
 import { Loader } from "../ui/loader";
 import { CampaignCard } from "./components/campaign-card";
@@ -21,7 +21,7 @@ export const Component = ({
     kpiToken,
     onTx,
 }: KPITokenRemotePageProps): ReactElement => {
-    const provider = useProvider();
+    const publicClient = usePublicClient();
     const { chain } = useNetwork();
 
     const { data: tokenData } = useToken({
@@ -44,7 +44,7 @@ export const Component = ({
             if (!cancelled) setDecodingKPITokenData(true);
             let decoded;
             try {
-                decoded = await decodeKPITokenData(provider, kpiToken.data);
+                decoded = await decodeKPITokenData(publicClient, kpiToken.data);
             } catch (error) {
                 console.warn("could not decode kpi token data", error);
             } finally {
@@ -70,7 +70,7 @@ export const Component = ({
         return () => {
             cancelled = true;
         };
-    }, [kpiToken, provider, tokenData?.name, tokenData?.symbol]);
+    }, [kpiToken, publicClient, tokenData?.name, tokenData?.symbol]);
 
     useEffect(() => {
         if (!chain || !chain.blockExplorers || !kpiToken) return;
