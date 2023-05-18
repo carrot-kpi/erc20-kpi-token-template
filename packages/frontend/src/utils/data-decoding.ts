@@ -64,7 +64,7 @@ export const decodeKPITokenData = async (
         : {
               collaterals: collaterals.slice() as CollateralData[],
               allOrNone,
-              finalizableOracles: finalizableOracles.slice(),
+              finalizableOracles: finalizableOracles as FinalizableOracle[],
               initialSupply,
           };
 };
