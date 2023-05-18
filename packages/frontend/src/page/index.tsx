@@ -91,7 +91,7 @@ export const Component = ({
         <div className="overflow-x-hidden">
             <div className="bg-grid-light bg-orange flex flex-col items-center gap-6 px-3 py-4 sm:px-9 sm:py-5 md:items-start lg:px-36 md:py-24">
                 <Typography
-                    variant="h2"
+                    variant="h3"
                     className={{ root: "dark:text-black max-w-6xl" }}
                     truncate
                 >
@@ -125,7 +125,7 @@ export const Component = ({
             <div className="bg-white dark:bg-black">
                 <div className="bg-grid-light dark:bg-grid-dark flex flex-col gap-7 md:gap-9 lg:gap-28 bg-white px-4 pt-4 pb-20 dark:bg-black sm:px-9 sm:pt-6 sm:pb-28 lg:px-36 md:pt-24 md:pb-40">
                     <div className="flex flex-col mt-5 sm:mt-0 gap-6 md:gap-8 max-w-6xl">
-                        <Typography variant="h2">
+                        <Typography variant="h3">
                             {t("position.title")}
                         </Typography>
                         <WalletPosition
@@ -141,7 +141,7 @@ export const Component = ({
                         />
                     </div>
                     <div className="flex flex-col gap-6 md:gap-8 max-w-6xl">
-                        <Typography variant="h2">
+                        <Typography variant="h3">
                             {t("oracle.title", {
                                 count: kpiToken.oracles.length,
                             })}

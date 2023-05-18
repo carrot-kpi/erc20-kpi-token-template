@@ -46,7 +46,7 @@ export const ExpandableContent = ({
                 expandIcon={icon}
             >
                 <div className="flex flex-col gap-6 md:gap-6">
-                    <Typography variant="md">{summary}</Typography>
+                    <Typography>{summary}</Typography>
                 </div>
             </AccordionSummary>
             <AccordionDetails

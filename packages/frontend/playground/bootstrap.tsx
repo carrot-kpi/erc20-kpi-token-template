@@ -37,7 +37,6 @@ createRoot(document.getElementById("root")!).render(
                 chains: supportedChains,
                 options: {
                     rpcURL: CCT_RPC_URL,
-                    chainId: CCT_CHAIN_ID,
                     privateKey: CCT_DEPLOYMENT_ACCOUNT_PRIVATE_KEY,
                 },
             }),
