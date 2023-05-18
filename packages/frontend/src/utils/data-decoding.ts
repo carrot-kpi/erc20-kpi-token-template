@@ -1,7 +1,7 @@
 import { Amount, Fetcher } from "@carrot-kpi/sdk";
 import { type PublicClient } from "wagmi";
 import { CollateralData } from "../creation-form/types";
-import { Hex, decodeAbiParameters } from "viem";
+import { type Hex, decodeAbiParameters } from "viem";
 import { FinalizableOracle } from "../page/types";
 
 interface DecodedData {
