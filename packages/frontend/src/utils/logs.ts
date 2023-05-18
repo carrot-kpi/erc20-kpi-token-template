@@ -1,9 +1,5 @@
-import {
-    Address,
-    TransactionReceipt,
-    decodeAbiParameters,
-    getEventSelector,
-} from "viem";
+import { decodeAbiParameters, getEventSelector } from "viem";
+import type { Address, TransactionReceipt } from "viem";
 
 const CREATE_TOKEN_EVENT_HASH = getEventSelector("CreateToken(address)");
 
