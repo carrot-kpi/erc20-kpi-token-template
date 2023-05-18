@@ -6,7 +6,7 @@ import { Button, ErrorFeedback, Typography } from "@carrot-kpi/ui";
 import { ReactElement, useEffect, useState } from "react";
 import { OraclePage, KPITokenRemotePageProps } from "@carrot-kpi/react";
 import { CollateralData } from "../creation-form/types";
-import { Address, useNetwork, usePublicClient, useToken } from "wagmi";
+import { type Address, useNetwork, usePublicClient, useToken } from "wagmi";
 import { ReactComponent as External } from "../assets/external.svg";
 import { Loader } from "../ui/loader";
 import { CampaignCard } from "./components/campaign-card";
