@@ -129,7 +129,7 @@ export const Collaterals = ({
                     }),
                     ...cachedTokenInfoWithBalanceInChain(CCT_CHAIN_ID),
                 ],
-            } as TokenListWithBalance;
+            };
         }
         return selectedTokenList;
     }, [selectedTokenList, importableToken, rawBalances]);
