@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import { isAddress } from "viem";
-import { Address, useBalance, useToken } from "wagmi";
+import { Address, useBalance, useNetwork, useToken } from "wagmi";
 import { TokenInfoWithBalance } from "@carrot-kpi/ui";
 
 export const useImportableToken = (
     debouncedQuery?: string,
-    chainId?: number,
     withBalances?: boolean,
     connectedAccountAddress?: string
 ): {
     importableToken?: TokenInfoWithBalance | null;
     loadingBalance: boolean;
 } => {
+    const { chain } = useNetwork();
+
     const [importableToken, setImportableToken] =
         useState<TokenInfoWithBalance | null>(null);
 
@@ -21,8 +22,7 @@ export const useImportableToken = (
         isFetching: fetchingImportableToken,
     } = useToken({
         address: debouncedQuery as Address,
-        chainId,
-        enabled: !!(chainId && debouncedQuery && isAddress(debouncedQuery)),
+        enabled: !!(debouncedQuery && isAddress(debouncedQuery)),
     });
 
     const {
@@ -50,15 +50,15 @@ export const useImportableToken = (
     // the internal state
     useEffect(() => {
         if (
-            !chainId ||
+            !chain ||
             !rawImportableToken ||
             loadingImportableToken ||
             fetchingImportableToken
         )
             return;
-        setImportableToken({ ...rawImportableToken, chainId });
+        setImportableToken({ ...rawImportableToken, chainId: chain.id });
     }, [
-        chainId,
+        chain,
         fetchingImportableToken,
         loadingImportableToken,
         rawImportableToken,
@@ -67,29 +67,12 @@ export const useImportableToken = (
     // whenever the wagmi hook fetches the importable token balance,
     // update it
     useEffect(() => {
-        if (
-            !chainId ||
-            !rawImportableToken ||
-            loadingImportableToken ||
-            fetchingImportableToken ||
-            !rawBalance ||
-            loadingBalance ||
-            fetchingBalance
-        )
-            return;
+        if (!rawBalance || loadingBalance || fetchingBalance) return;
         setImportableToken((prevState) => {
             if (!prevState) return null;
             return { ...prevState, balance: rawBalance.value };
         });
-    }, [
-        chainId,
-        fetchingBalance,
-        fetchingImportableToken,
-        loadingBalance,
-        loadingImportableToken,
-        rawBalance,
-        rawImportableToken,
-    ]);
+    }, [fetchingBalance, loadingBalance, rawBalance]);
 
     return {
         importableToken,

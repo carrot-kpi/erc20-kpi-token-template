@@ -28,6 +28,7 @@ import {
     KPITokenCreationFormProps,
     NamespacedTranslateFunction,
     TxType,
+    useDevMode,
 } from "@carrot-kpi/react";
 import {
     CHAIN_ADDRESSES,
@@ -84,6 +85,7 @@ export const Deploy = ({
     const { address } = useAccount();
     const { chain } = useNetwork();
     const publicClient = usePublicClient();
+    const devMode = useDevMode();
 
     const { factoryAddress, kpiTokensManagerAddress } = useMemo(() => {
         if (!chain)
@@ -198,7 +200,7 @@ export const Deploy = ({
                 const tx = await writeAsync();
                 const receipt = await publicClient.waitForTransactionReceipt({
                     hash: tx.hash,
-                    confirmations: __DEV__ ? 1 : 3,
+                    confirmations: devMode ? 1 : 3,
                 });
                 let createdKPITokenAddress =
                     getKPITokenAddressFromReceipt(receipt);
@@ -233,7 +235,7 @@ export const Deploy = ({
             }
         };
         void create();
-    }, [onCreate, onNext, onTx, publicClient, writeAsync]);
+    }, [devMode, onCreate, onNext, onTx, publicClient, writeAsync]);
 
     return (
         <div className="flex flex-col gap-6">
