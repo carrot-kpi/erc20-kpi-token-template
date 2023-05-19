@@ -96,9 +96,8 @@ export const Deploy = ({
         const chainAddresses = CHAIN_ADDRESSES[chain.id as ChainId];
         return chainAddresses
             ? {
-                  factoryAddress: chainAddresses.factory as Address,
-                  kpiTokensManagerAddress:
-                      chainAddresses.kpiTokensManager as Address,
+                  factoryAddress: chainAddresses.factory,
+                  kpiTokensManagerAddress: chainAddresses.kpiTokensManager,
               }
             : { factoryAddress: undefined, kpiTokensManagerAddress: undefined };
     }, [chain]);
@@ -128,7 +127,7 @@ export const Deploy = ({
             predictedKPITokenAddress &&
             collateralsData.map((collateralData) => {
                 return {
-                    address: collateralData.amount.currency.address as Address,
+                    address: collateralData.amount.currency.address,
                     abi: erc20ABI,
                     functionName: "allowance",
                     args: [address, predictedKPITokenAddress],
@@ -140,6 +139,15 @@ export const Deploy = ({
     const [toApprove, setToApprove] = useState<CollateralData[]>([]);
     const [approved, setApproved] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    // FIXME: remove once debugging is done
+    console.log({
+        predictedKPITokenAddress,
+        toApprove,
+        allowances,
+        factoryAddress,
+        kpiTokensManagerAddress,
+    });
 
     const {
         config,
@@ -158,12 +166,8 @@ export const Deploy = ({
                 tokenData.name,
                 tokenData.symbol,
                 tokenData.supply
-            ) as `0x${string}`,
-            encodeOraclesData(
-                oracleTemplatesData,
-                outcomesData,
-                oraclesData
-            ) as `0x${string}`,
+            ),
+            encodeOraclesData(oracleTemplatesData, outcomesData, oraclesData),
         ],
         enabled: approved,
         value: 0n,
