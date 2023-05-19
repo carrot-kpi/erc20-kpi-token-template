@@ -3,8 +3,8 @@ import {
     OracleInitializationBundle,
     OracleInitializationBundleGetter,
 } from "@carrot-kpi/react";
-import { BigNumber } from "ethers";
 import { TokenInfoWithBalance } from "@carrot-kpi/ui";
+import { type Address } from "viem";
 
 export type SpecificationData = Omit<KPITokenSpecification, "ipfsHash"> & {
     expiration: Date;
@@ -28,7 +28,7 @@ export class TokenWithLogoURI extends Token {
 
     constructor(
         chainId: number,
-        address: string,
+        address: Address,
         decimals: number,
         symbol: string,
         name: string,
@@ -54,7 +54,7 @@ export interface CollateralsStepState {
 export interface TokenData {
     name: string;
     symbol: string;
-    supply: BigNumber;
+    supply: bigint;
 }
 
 export interface OracleData {
@@ -71,8 +71,8 @@ export type OraclesConfigurationStepState = {
 };
 
 export interface OutcomeData {
-    lowerBound: BigNumber;
-    higherBound: BigNumber;
+    lowerBound: bigint;
+    higherBound: bigint;
 }
 
 export interface OutcomeConfigurationState {

@@ -1,19 +1,27 @@
 import { Template } from "@carrot-kpi/sdk";
-import { BigNumber, utils } from "ethers";
 import { CollateralData, OracleData, OutcomeData } from "../types";
+import { encodeAbiParameters } from "viem";
 
 export const encodeKPITokenData = (
     collateralsData: CollateralData[],
     erc20Name: string,
     erc20Symbol: string,
-    supply: BigNumber
+    supply: bigint
 ) => {
-    return utils.defaultAbiCoder.encode(
+    return encodeAbiParameters(
         [
-            "tuple(address token,uint256 amount,uint256 minimumPayout)[]",
-            "string",
-            "string",
-            "uint256",
+            {
+                type: "tuple[]",
+                components: [
+                    { type: "address", name: "token" },
+                    { type: "uint256", name: "amount" },
+                    { type: "uint256", name: "minimumPayout" },
+                ],
+                name: "collaterals",
+            },
+            { type: "string", name: "erc20Name" },
+            { type: "string", name: "erc20Symbol" },
+            { type: "uint256", name: "supply" },
         ],
         [
             collateralsData.map((collateralData) => {
@@ -35,21 +43,32 @@ export const encodeOraclesData = (
     outcomesData: OutcomeData[],
     oraclesData: Required<OracleData>[]
 ) => {
-    return utils.defaultAbiCoder.encode(
+    return encodeAbiParameters(
         [
-            "tuple(uint256 templateId,uint256 lowerBound,uint256 higherBound,uint256 weight,uint256 value,bytes data)[]",
-            "bool",
+            {
+                type: "tuple[]",
+                components: [
+                    { type: "uint256", name: "templateId" },
+                    { type: "uint256", name: "lowerBound" },
+                    { type: "uint256", name: "higherBound" },
+                    { type: "uint256", name: "weight" },
+                    { type: "uint256", name: "value" },
+                    { type: "bytes", name: "data" },
+                ],
+                name: "oraclesData",
+            },
+            { type: "bool", name: "allOrNone" },
         ],
         [
             templatesData.map(({ id: templateId }, index) => {
                 const { lowerBound, higherBound } = outcomesData[index];
                 const { initializationBundle } = oraclesData[index];
                 return {
-                    templateId,
+                    templateId: BigInt(templateId),
                     lowerBound,
                     higherBound,
                     // TODO: dynamic weight
-                    weight: BigNumber.from("1"),
+                    weight: 1n,
                     value: initializationBundle.value,
                     data: initializationBundle.data,
                 };

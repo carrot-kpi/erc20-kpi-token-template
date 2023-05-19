@@ -17,9 +17,10 @@ import {
     useContractWrite,
     usePrepareContractWrite,
     Address,
+    usePublicClient,
 } from "wagmi";
-import { defaultAbiCoder } from "@ethersproject/abi";
 import { unixTimestamp } from "../../../../utils/dates";
+import { encodeAbiParameters, zeroAddress } from "viem";
 
 interface WalletActionsProps {
     t: NamespacedTranslateFunction;
@@ -37,6 +38,7 @@ export const WalletActions = ({
     redeemableRewards,
 }: WalletActionsProps) => {
     const { address } = useAccount();
+    const publicClient = usePublicClient();
 
     const [loading, setLoading] = useState(false);
     const [redeemable, setRedeemable] = useState(false);
@@ -47,7 +49,12 @@ export const WalletActions = ({
         address: kpiToken.address as Address,
         abi: KPI_TOKEN_ABI,
         functionName: "redeem",
-        args: [defaultAbiCoder.encode(["address"], [address]) as `0x${string}`],
+        args: address && [
+            encodeAbiParameters(
+                [{ type: "address", name: "redeemer" }],
+                [address]
+            ) as `0x${string}`,
+        ],
         enabled: !!address && (redeemable || burnable),
     });
     const { writeAsync } = useContractWrite(redeemConfig);
@@ -124,7 +131,9 @@ export const WalletActions = ({
         setLoading(true);
         try {
             const tx = await writeAsync();
-            const receipt = await tx.wait();
+            const receipt = await publicClient.waitForTransactionReceipt({
+                hash: tx.hash,
+            });
             onTx({
                 type: TxType.KPI_TOKEN_REDEMPTION,
                 from: receipt.from,
@@ -132,14 +141,20 @@ export const WalletActions = ({
                 payload: {
                     address: kpiToken.address,
                 },
-                receipt,
+                receipt: {
+                    ...receipt,
+                    to: receipt.to || zeroAddress,
+                    contractAddress: receipt.contractAddress || zeroAddress,
+                    blockNumber: Number(receipt.blockNumber),
+                    status: receipt.status === "success" ? 1 : 0,
+                },
                 timestamp: unixTimestamp(new Date()),
             });
         } catch (error) {
         } finally {
             setLoading(false);
         }
-    }, [kpiToken.address, onTx, writeAsync]);
+    }, [kpiToken.address, onTx, publicClient, writeAsync]);
 
     return (
         <div className="flex flex-col gap-4">

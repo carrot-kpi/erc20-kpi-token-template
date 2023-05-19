@@ -1,10 +1,8 @@
-import { BigNumber } from "ethers";
-
 export interface FinalizableOracle {
     addrezz: string;
-    lowerBound: BigNumber;
-    higherBound: BigNumber;
-    finalResult: BigNumber;
-    weight: BigNumber;
+    lowerBound: bigint;
+    higherBound: bigint;
+    finalResult: bigint;
+    weight: bigint;
     finalized: boolean;
 }

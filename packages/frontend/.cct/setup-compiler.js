@@ -17,7 +17,8 @@ export const setupCompiler = (
                 printInstructions(
                     writableStream,
                     globals,
-                    `Compiling playground -> ${type}...`
+                    `Compiling playground -> ${type}...`,
+                    frontendPort
                 );
             }
         });
@@ -42,7 +43,8 @@ export const setupCompiler = (
                     globals,
                     `Failed to compile playground -> ${type}.\n${messages.errors.join(
                         "\n\n"
-                    )}`
+                    )}`,
+                    frontendPort
                 );
 
                 return;
@@ -56,7 +58,8 @@ export const setupCompiler = (
                         `Playground compiled with warnings -> ${type}:\n${messages.warnings.join(
                             "\n\n"
                         )}`
-                    )
+                    ),
+                    frontendPort
                 );
 
                 return;
