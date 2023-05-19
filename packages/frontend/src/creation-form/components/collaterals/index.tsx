@@ -10,7 +10,11 @@ import {
     Skeleton,
     ErrorText,
 } from "@carrot-kpi/ui";
-import { NamespacedTranslateFunction, useTokenLists } from "@carrot-kpi/react";
+import {
+    NamespacedTranslateFunction,
+    useDevMode,
+    useTokenLists,
+} from "@carrot-kpi/react";
 import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
 import {
     CollateralData,
@@ -58,6 +62,7 @@ export const Collaterals = ({
     const { address } = useAccount();
     const { chain } = useNetwork();
     const { lists: tokenLists, loading } = useTokenLists(TOKEN_LIST_URLS);
+    const devMode = useDevMode();
 
     const [selectedTokenList, setSelectedTokenList] = useState<
         TokenListWithBalance | undefined
@@ -83,7 +88,7 @@ export const Collaterals = ({
     });
 
     const { importableToken, loadingBalance: loadingImportableTokenBalance } =
-        useImportableToken(searchQuery, CCT_CHAIN_ID, true, address);
+        useImportableToken(searchQuery, true, address);
 
     const {
         data: rawBalances,
@@ -96,7 +101,6 @@ export const Collaterals = ({
                 return {
                     abi: ERC20_ABI,
                     address: token.address as Address,
-                    chainId: CCT_CHAIN_ID,
                     functionName: "balanceOf",
                     args: [address],
                 };
@@ -127,12 +131,12 @@ export const Collaterals = ({
                                 | null,
                         };
                     }),
-                    ...cachedTokenInfoWithBalanceInChain(CCT_CHAIN_ID),
+                    ...cachedTokenInfoWithBalanceInChain(chain),
                 ],
             };
         }
         return selectedTokenList;
-    }, [selectedTokenList, importableToken, rawBalances]);
+    }, [importableToken, rawBalances, selectedTokenList, chain]);
 
     useEffect(() => {
         setDisabled(state.collaterals.length === 0);
@@ -141,7 +145,7 @@ export const Collaterals = ({
     useEffect(() => {
         if (!!selectedTokenList || tokenLists.length === 0) return;
         const defaultSelectedList = tokenLists[0];
-        if (__DEV__) {
+        if (devMode) {
             defaultSelectedList.tokens.push({
                 chainId: CCT_CHAIN_ID,
                 address: CCT_ERC20_1_ADDRESS,
@@ -158,7 +162,7 @@ export const Collaterals = ({
             });
         }
         setSelectedTokenList(defaultSelectedList as TokenListWithBalance);
-    }, [selectedTokenList, tokenLists]);
+    }, [devMode, selectedTokenList, tokenLists]);
 
     useEffect(() => {
         if (

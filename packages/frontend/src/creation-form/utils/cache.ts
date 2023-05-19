@@ -1,5 +1,6 @@
 import { CACHER } from "@carrot-kpi/sdk";
 import { TokenInfoWithBalance } from "@carrot-kpi/ui";
+import { type Chain } from "viem";
 
 export const tokenInfoWithBalanceEquals = (
     tokenA?: TokenInfoWithBalance | null,
@@ -37,8 +38,8 @@ export const cacheTokenInfoWithBalance = (
 };
 
 export const cachedTokenInfoWithBalanceInChain = (
-    chainId?: number | null
+    chain?: Chain
 ): TokenInfoWithBalance[] => {
-    if (!chainId) return [];
-    return CACHER.getOrDefault(`imported-erc20-tokens-${chainId}`, []);
+    if (!chain?.id) return [];
+    return CACHER.getOrDefault(`imported-erc20-tokens-${chain.id}`, []);
 };
