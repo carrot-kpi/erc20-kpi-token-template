@@ -45,7 +45,7 @@ export const ApproveCollateralsButton = ({
         abi: erc20ABI,
         functionName: "approve",
         args: approvingCollateral
-            ? [spender, approvingCollateral?.amount.raw]
+            ? [spender, approvingCollateral.amount.raw]
             : undefined,
         enabled: !!approvingCollateral,
     });

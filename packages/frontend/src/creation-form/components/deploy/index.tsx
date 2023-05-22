@@ -166,7 +166,7 @@ export const Deploy = ({
     const { writeAsync } = useContractWrite(config);
 
     // FIXME: remove debug console log
-    console.log({ approved, toApprove, allowances });
+    console.log({ predictedKPITokenAddress, approved, toApprove, allowances });
 
     useLayoutEffect(() => {
         if (!allowances || allowances.length !== collateralsData.length) return;
@@ -179,6 +179,7 @@ export const Deploy = ({
                 allowances[i]?.result === undefined
             )
                 return;
+            console.log(allowances[i].result, collateralData.amount.raw);
             if ((allowances[i].result as bigint) >= collateralData.amount.raw)
                 continue;
             newToApprove.push(collateralData);
