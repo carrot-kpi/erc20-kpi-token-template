@@ -166,13 +166,14 @@ export const Deploy = ({
     const { writeAsync } = useContractWrite(config);
 
     // FIXME: remove debug console log
-    console.log({ approved });
+    console.log({ approved, toApprove, allowances });
 
     useLayoutEffect(() => {
         if (!allowances || allowances.length !== collateralsData.length) return;
         const newToApprove = [];
         for (let i = 0; i < collateralsData.length; i++) {
             const collateralData = collateralsData[i];
+            console.log(allowances[i]);
             if (
                 allowances[i]?.result === null ||
                 allowances[i]?.result === undefined
