@@ -140,17 +140,6 @@ export const Deploy = ({
     const [approved, setApproved] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    // FIXME: remove once debugging is done
-    console.log({
-        address,
-        predictedKPITokenAddress,
-        collateralsData,
-        toApprove,
-        allowances,
-        factoryAddress,
-        kpiTokensManagerAddress,
-    });
-
     const {
         config,
         isLoading: loadingTxConfig,
@@ -181,7 +170,11 @@ export const Deploy = ({
         const newToApprove = [];
         for (let i = 0; i < collateralsData.length; i++) {
             const collateralData = collateralsData[i];
-            if (!allowances[i]?.result) return;
+            if (
+                allowances[i]?.result === null ||
+                allowances[i]?.result === undefined
+            )
+                return;
             if ((allowances[i].result as bigint) >= collateralData.amount.raw)
                 continue;
             newToApprove.push(collateralData);
