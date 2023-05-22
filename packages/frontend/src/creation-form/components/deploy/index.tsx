@@ -121,7 +121,7 @@ export const Deploy = ({
         ],
         enabled: !!address,
     });
-    const { data: allowances } = useContractReads({
+    const { data: allowances, isLoading } = useContractReads({
         contracts:
             address &&
             predictedKPITokenAddress &&
@@ -165,21 +165,16 @@ export const Deploy = ({
     });
     const { writeAsync } = useContractWrite(config);
 
-    // FIXME: remove debug console log
-    console.log({ predictedKPITokenAddress, approved, toApprove, allowances });
-
     useLayoutEffect(() => {
         if (!allowances || allowances.length !== collateralsData.length) return;
         const newToApprove = [];
         for (let i = 0; i < collateralsData.length; i++) {
             const collateralData = collateralsData[i];
-            console.log(allowances[i]);
             if (
                 allowances[i]?.result === null ||
                 allowances[i]?.result === undefined
             )
                 return;
-            console.log(allowances[i].result, collateralData.amount.raw);
             if ((allowances[i].result as bigint) >= collateralData.amount.raw)
                 continue;
             newToApprove.push(collateralData);
