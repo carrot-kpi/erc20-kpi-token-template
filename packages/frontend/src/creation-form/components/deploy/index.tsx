@@ -218,7 +218,10 @@ export const Deploy = ({
                         address: createdKPITokenAddress,
                     },
                     receipt: {
-                        ...receipt,
+                        from: receipt.from,
+                        transactionIndex: receipt.transactionIndex,
+                        blockHash: receipt.blockHash,
+                        transactionHash: receipt.transactionHash,
                         to: receipt.to || zeroAddress,
                         contractAddress: receipt.contractAddress || zeroAddress,
                         blockNumber: Number(receipt.blockNumber),
