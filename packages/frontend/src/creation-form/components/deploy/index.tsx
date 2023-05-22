@@ -165,6 +165,9 @@ export const Deploy = ({
     });
     const { writeAsync } = useContractWrite(config);
 
+    // FIXME: remove debug console log
+    console.log({ approved });
+
     useLayoutEffect(() => {
         if (!allowances || allowances.length !== collateralsData.length) return;
         const newToApprove = [];
