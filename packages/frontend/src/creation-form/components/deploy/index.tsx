@@ -142,7 +142,9 @@ export const Deploy = ({
 
     // FIXME: remove once debugging is done
     console.log({
+        address,
         predictedKPITokenAddress,
+        collateralsData,
         toApprove,
         allowances,
         factoryAddress,
