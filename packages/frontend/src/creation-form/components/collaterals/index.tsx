@@ -10,11 +10,7 @@ import {
     Skeleton,
     ErrorText,
 } from "@carrot-kpi/ui";
-import {
-    NamespacedTranslateFunction,
-    useDevMode,
-    useTokenLists,
-} from "@carrot-kpi/react";
+import { NamespacedTranslateFunction, useTokenLists } from "@carrot-kpi/react";
 import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
 import {
     CollateralData,
@@ -62,7 +58,6 @@ export const Collaterals = ({
     const { address } = useAccount();
     const { chain } = useNetwork();
     const { lists: tokenLists, loading } = useTokenLists(TOKEN_LIST_URLS);
-    const devMode = useDevMode();
 
     const [selectedTokenList, setSelectedTokenList] = useState<
         TokenListWithBalance | undefined
@@ -145,7 +140,12 @@ export const Collaterals = ({
     useEffect(() => {
         if (!!selectedTokenList || tokenLists.length === 0) return;
         const defaultSelectedList = tokenLists[0];
-        if (devMode) {
+        // it's right that we don't use `devMode` here, we don't want
+        // to include undefined globals when this snippet of code is
+        // executed in dev mode in the context of another template
+        // being tested. In short, the following branch should NEVER
+        // be present in a prod bundle
+        if (__DEV__) {
             defaultSelectedList.tokens.push({
                 chainId: CCT_CHAIN_ID,
                 address: CCT_ERC20_1_ADDRESS,
@@ -162,7 +162,7 @@ export const Collaterals = ({
             });
         }
         setSelectedTokenList(defaultSelectedList as TokenListWithBalance);
-    }, [devMode, selectedTokenList, tokenLists]);
+    }, [selectedTokenList, tokenLists]);
 
     useEffect(() => {
         if (
