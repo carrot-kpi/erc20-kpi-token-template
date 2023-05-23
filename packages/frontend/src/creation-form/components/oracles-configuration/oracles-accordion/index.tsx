@@ -45,7 +45,9 @@ export const OraclesAccordion = ({
         useResolvedTemplates(templates);
 
     return resolvingTemplates || !resolvedTemplates ? (
-        <Loader />
+        <div className="w-full flex justify-center">
+            <Loader />
+        </div>
     ) : (
         <>
             {resolvedTemplates.map((resolvedTemplate) => (
@@ -58,7 +60,11 @@ export const OraclesAccordion = ({
                     <AccordionDetails>
                         <OracleCreationFormWrapper
                             i18n={i18n}
-                            fallback={<Loader />}
+                            fallback={
+                                <div className="w-full flex justify-center">
+                                    <Loader />
+                                </div>
+                            }
                             error={
                                 <div className="flex justify-center">
                                     <ErrorFeedback
