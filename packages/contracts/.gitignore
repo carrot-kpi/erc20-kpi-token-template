@@ -156,6 +156,7 @@ yarn-error.log*
 generated
 
 artifacts
+out
 coverage*
 .gas-snapshot*
 broadcast
