@@ -81,40 +81,5 @@ doing that, you can finally execute the following command to initiate the
 deployment:
 
 ```
-forge script --broadcast --slow --private-key $PRIVATE_KEY --fork-url $RPC_ENDPOINT ./scripts/Deploy.sol
-```
-
-### Deploying the creation proxy
-
-In order to facilitate KPI token creations through the template, a proxy
-contract is used to manage approvals in a deterministic way. In order to deplot
-the contract to a given network you can go ahead and create a
-.env.<NETWORK_NAME> file exporting 3 env variables:
-
-```
-export PRIVATE_KEY=""
-export RPC_ENDPOINT=""
-export FACTORY_ADDRESS=""
-export KPI_TOKENS_MANAGER_ADDRESS=""
-export TEMPLATE_ID=""
-```
-
-brief explainer of the env variables:
-
-- `PRIVATE_KEY`: the private key related to the account that will perform the
-  deployment.
-- `RPC_ENDPOINT`: the RPC endpoint that will be used to broadcast transactions.
-  This will also determine the network where the deployment will happen.
-- `FACTORY_ADDRESS`: the Carrot factory address.
-- `KPI_TOKENS_MANAGER_ADDRESS`: the Carrot KPI tokens manager address.
-- `TEMPLATE_ID`: the template the id will have.
-
-Once you have one instance of this file for each network you're interested in
-(e.g. .`env.goerli`, `.env.gnosis`, `env.mainnet` etc etc), you can go ahead and
-locally load the env variables by executing `source .env.<NETWORK_NAME>`. After
-doing that, you can finally execute the following command to initiate the
-deployment:
-
-```
-forge script --ffi --broadcast --slow --private-key $PRIVATE_KEY --fork-url $RPC_ENDPOINT --sig 'run(address,address,uint256)' ./scripts/DeployCreationProxy.sol $FACTORY_ADDRESS $KPI_TOKENS_MANAGER_ADDRESS $TEMPLATE_ID
+FOUNDRY_PROFILE=production forge script --broadcast --slow --private-key $PRIVATE_KEY --fork-url $RPC_ENDPOINT ./scripts/Deploy.sol
 ```
