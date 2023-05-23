@@ -1070,7 +1070,7 @@
     react-use "^17.4.0"
     viem "^0.3.24"
 
-"@carrot-kpi/sdk@*", "@carrot-kpi/sdk@^1.26.0":
+"@carrot-kpi/sdk@*":
   version "1.26.0"
   resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.26.0.tgz#0366d10c5d7eb528e2d5031b1a216d84b8206e9c"
   integrity sha512-0nTEQopJFnWBYr/Agjfj/CxjVa1DipaZTmWsvKhOsMMq3qV9vQ+P29EklFwkRYH0ObRxodDGjdUyPp219l9IDw==
@@ -4855,19 +4855,19 @@ caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001449, caniuse-lite@^1.0.30001464:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001488.tgz#d19d7b6e913afae3e98f023db97c19e9ddc5e91f"
   integrity sha512-NORIQuuL4xGpIy6iCCQGN4iFjlBXtfKWIenlUuyZJumLRIindLb7wXM+GO8erEhb7vXfcnf4BAg2PrSDN5TNLQ==
 
-carrot-scripts@^0.18.1:
-  version "0.18.1"
-  resolved "https://registry.yarnpkg.com/carrot-scripts/-/carrot-scripts-0.18.1.tgz#c8048ca889adef3993df3398bb15f765c827568e"
-  integrity sha512-+HN3GCpT5LHOvvgOgxz9Si5FkHV5Pm4c4nOLN9WVjZZFPhfZxsCWA/8z8NJy90Eze0HFGJrkdL/YqA/iYYrBjQ==
+carrot-scripts@^0.19.2:
+  version "0.19.2"
+  resolved "https://registry.yarnpkg.com/carrot-scripts/-/carrot-scripts-0.19.2.tgz#3050e7bc023e15ddde67c8a729a087e3fe4d0bdf"
+  integrity sha512-agJFGseJDSNPYAENx7IeKxCaE6lOeC2C6t0GCPdbR1L+Qh7GC/e3OMNzw3gC/HCs4j8nlMXml/ibs4cKZaAsEg==
   dependencies:
-    "@carrot-kpi/sdk" "^1.26.0"
+    "@carrot-kpi/sdk" "^1.27.0"
     "@viem/anvil" "^0.0.5"
     chalk "^5.2.0"
     execa "^7.1.1"
     ipfs-http-client "^60.0.0"
     ora "^6.3.1"
     tsconfig "*"
-    viem "^0.3.30"
+    viem "^0.3.35"
 
 case-anything@^2.1.10:
   version "2.1.11"
@@ -11965,7 +11965,7 @@ vary@~1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-viem@^0.3.24, viem@^0.3.30:
+viem@^0.3.24:
   version "0.3.33"
   resolved "https://registry.yarnpkg.com/viem/-/viem-0.3.33.tgz#baba139fc656cf66e3a58710fbf47e6c01627975"
   integrity sha512-ITB7wiYIWMxSyOQePPVa+6YcCrQiBLY/S758iZcjIZFqyqF8i/9PBhAPiqbiUrdfydaqjjRtWR1PAaXlMxmgtg==
