@@ -56,7 +56,13 @@ export const useImportableToken = (
             fetchingImportableToken
         )
             return;
-        setImportableToken({ ...rawImportableToken, chainId: chain.id });
+        setImportableToken({
+            address: rawImportableToken.address,
+            name: rawImportableToken.name,
+            decimals: rawImportableToken.decimals,
+            symbol: rawImportableToken.symbol,
+            chainId: chain.id,
+        });
     }, [
         chain,
         fetchingImportableToken,
