@@ -27,7 +27,7 @@
     },
     "dependencies": {
         "@carrot-kpi/react": "^0.46.0",
-        "@carrot-kpi/sdk": "^1.27.0",
+        "@carrot-kpi/sdk": "^1.27.1",
         "@carrot-kpi/shared-state": "^0.3.1",
         "@carrot-kpi/ui": "^0.45.1",
         "@fontsource/ibm-plex-mono": "^5.0.1",
@@ -58,7 +58,7 @@
         "webpack-dev-server": "^4.15.0"
     },
     "devDependencies": {
-        "@carrot-kpi/host-frontend": "^0.5.0",
+        "@carrot-kpi/host-frontend": "^0.5.2",
         "@carrot-kpi/switzer-font": "^0.1.0",
         "@size-limit/file": "^8.2.4",
         "@svgr/webpack": "^8.0.1",
