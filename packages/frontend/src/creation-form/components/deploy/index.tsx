@@ -121,7 +121,7 @@ export const Deploy = ({
         ],
         enabled: !!address,
     });
-    const { data: allowances, isLoading } = useContractReads({
+    const { data: allowances } = useContractReads({
         contracts:
             address &&
             predictedKPITokenAddress &&
