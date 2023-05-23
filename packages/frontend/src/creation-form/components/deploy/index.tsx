@@ -183,9 +183,9 @@ export const Deploy = ({
     }, [allowances, collateralsData]);
 
     useEffect(() => {
-        if (!allowances) return;
+        if (!allowances || allowances.length !== collateralsData.length) return;
         setApproved(toApprove.length === 0);
-    }, [allowances, toApprove.length]);
+    }, [allowances, collateralsData.length, toApprove.length]);
 
     const handleApproved = useCallback(() => {
         setToApprove([]);

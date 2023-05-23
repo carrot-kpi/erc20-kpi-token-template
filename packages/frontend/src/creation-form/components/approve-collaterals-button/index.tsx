@@ -11,6 +11,7 @@ import {
     useContractWrite,
     Address,
     usePublicClient,
+    useNetwork,
 } from "wagmi";
 import { zeroAddress } from "viem";
 import { unixTimestamp } from "../../../utils/dates";
@@ -32,6 +33,7 @@ export const ApproveCollateralsButton = ({
     onTx,
 }: ApproveCollateralsButtonProps): ReactElement => {
     const publicClient = usePublicClient();
+    const { chain } = useNetwork();
 
     const [approving, setApproving] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -41,13 +43,14 @@ export const ApproveCollateralsButton = ({
     }, [currentIndex, toApprove]);
 
     const { config } = usePrepareContractWrite({
+        chainId: chain?.id,
         address: approvingCollateral?.amount.currency.address,
         abi: erc20ABI,
         functionName: "approve",
         args: approvingCollateral
             ? [spender, approvingCollateral.amount.raw]
             : undefined,
-        enabled: !!approvingCollateral,
+        enabled: !!chain?.id && !!approvingCollateral,
     });
     const { writeAsync: approveAsync } = useContractWrite(config);
 
