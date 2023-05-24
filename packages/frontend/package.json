@@ -26,15 +26,15 @@
         "size-limit": "size-limit"
     },
     "dependencies": {
-        "@carrot-kpi/react": "^0.46.0",
-        "@carrot-kpi/sdk": "^1.27.2",
+        "@carrot-kpi/react": "^0.46.1",
+        "@carrot-kpi/sdk": "^1.27.3",
         "@carrot-kpi/shared-state": "^0.3.1",
-        "@carrot-kpi/ui": "^0.45.1",
+        "@carrot-kpi/ui": "^0.45.2",
         "@fontsource/ibm-plex-mono": "^5.0.1",
         "@testing-library/jest-dom": "^5.16.5",
         "@testing-library/react": "^14.0.0",
         "@types/jest": "^29.5.1",
-        "@types/react": "^18.2.6",
+        "@types/react": "^18.2.7",
         "@types/react-dom": "^18.2.4",
         "chalk": "^5.0.1",
         "eslint-config-custom": "*",
@@ -58,7 +58,7 @@
         "webpack-dev-server": "^4.15.0"
     },
     "devDependencies": {
-        "@carrot-kpi/host-frontend": "^0.6.0",
+        "@carrot-kpi/host-frontend": "^0.6.1",
         "@carrot-kpi/switzer-font": "^0.1.0",
         "@size-limit/file": "^8.2.4",
         "@svgr/webpack": "^8.0.1",
