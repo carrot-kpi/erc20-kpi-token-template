@@ -18,6 +18,7 @@ import {
     usePrepareContractWrite,
     Address,
     usePublicClient,
+    useNetwork,
 } from "wagmi";
 import { unixTimestamp } from "../../../../utils/dates";
 import { encodeAbiParameters, zeroAddress } from "viem";
@@ -38,6 +39,7 @@ export const WalletActions = ({
     redeemableRewards,
 }: WalletActionsProps) => {
     const { address } = useAccount();
+    const { chain } = useNetwork();
     const publicClient = usePublicClient();
 
     const [loading, setLoading] = useState(false);
@@ -46,6 +48,7 @@ export const WalletActions = ({
     const [text, setText] = useState("");
 
     const { config: redeemConfig } = usePrepareContractWrite({
+        chainId: chain?.id,
         address: kpiToken.address as Address,
         abi: KPI_TOKEN_ABI,
         functionName: "redeem",
@@ -55,7 +58,7 @@ export const WalletActions = ({
                 [address]
             ) as `0x${string}`,
         ],
-        enabled: !!address && (redeemable || burnable),
+        enabled: !!chain?.id && !!address && (redeemable || burnable),
     });
     const { writeAsync } = useContractWrite(redeemConfig);
 

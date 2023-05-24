@@ -145,6 +145,7 @@ export const Deploy = ({
         isLoading: loadingTxConfig,
         isFetching: fetchingTxConfig,
     } = usePrepareContractWrite({
+        chainId: chain?.id,
         address: factoryAddress,
         abi: FACTORY_ABI,
         functionName: "createToken",
@@ -160,7 +161,7 @@ export const Deploy = ({
             ),
             encodeOraclesData(oracleTemplatesData, outcomesData, oraclesData),
         ],
-        enabled: approved,
+        enabled: !!chain?.id && approved,
         value: 0n,
     });
     const { writeAsync } = useContractWrite(config);
