@@ -85,6 +85,13 @@ export const Collaterals = ({
     const { importableToken, loadingBalance: loadingImportableTokenBalance } =
         useImportableToken(searchQuery, true, address);
 
+    const selectedTokenListTokensInChain = useMemo(() => {
+        if (!selectedTokenList || !chain) return [];
+        return selectedTokenList.tokens.filter(
+            (token) => token.chainId === chain.id
+        );
+    }, [chain, selectedTokenList]);
+
     const {
         data: rawBalances,
         isLoading: loadingBalances,
@@ -92,7 +99,7 @@ export const Collaterals = ({
     } = useContractReads({
         contracts:
             address &&
-            selectedTokenList?.tokens.map((token) => {
+            selectedTokenListTokensInChain.map((token) => {
                 return {
                     abi: ERC20_ABI,
                     address: token.address as Address,
@@ -101,7 +108,11 @@ export const Collaterals = ({
                 };
             }),
         allowFailure: true,
-        enabled: !!(selectedTokenList && address),
+        enabled: !!(
+            chain?.id &&
+            selectedTokenListTokensInChain.length > 0 &&
+            address
+        ),
     });
 
     const selectedTokenListWithBalances = useMemo(() => {
@@ -111,27 +122,47 @@ export const Collaterals = ({
                 tokens: [importableToken],
             } as TokenListWithBalance;
         }
+        if (!selectedTokenList) return;
         if (
-            rawBalances &&
-            rawBalances.length === selectedTokenList?.tokens.length
-        ) {
-            return {
-                ...selectedTokenList,
-                tokens: [
-                    ...selectedTokenList?.tokens.map((token, index) => {
-                        return {
-                            ...token,
-                            balance: rawBalances[index]?.result as
-                                | bigint
-                                | null,
-                        };
-                    }),
-                    ...cachedTokenInfoWithBalanceInChain(chain),
-                ],
-            };
-        }
-        return selectedTokenList;
-    }, [importableToken, rawBalances, selectedTokenList, chain]);
+            !rawBalances ||
+            rawBalances.length !== selectedTokenListTokensInChain.length
+        )
+            return selectedTokenList;
+        const tokensInChainWithBalance = selectedTokenListTokensInChain.reduce(
+            (accumulator: Record<string, TokenInfoWithBalance>, token, i) => {
+                const rawBalance = rawBalances[i];
+                accumulator[`${token.address.toLowerCase()}-${token.chainId}`] =
+                    rawBalance.status !== "failure"
+                        ? {
+                              ...token,
+                              balance: rawBalance.result as bigint,
+                          }
+                        : token;
+                return accumulator;
+            },
+            {}
+        );
+
+        return {
+            ...selectedTokenList,
+            tokens: [
+                ...selectedTokenList.tokens.map((token) => {
+                    const tokenInChainWithBalance =
+                        tokensInChainWithBalance[
+                            `${token.address.toLowerCase()}-${token.chainId}`
+                        ];
+                    return tokenInChainWithBalance || token;
+                }),
+                ...cachedTokenInfoWithBalanceInChain(chain),
+            ],
+        };
+    }, [
+        chain,
+        importableToken,
+        rawBalances,
+        selectedTokenList,
+        selectedTokenListTokensInChain,
+    ]);
 
     useEffect(() => {
         setDisabled(state.collaterals.length === 0);
