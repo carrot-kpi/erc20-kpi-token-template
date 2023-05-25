@@ -1091,16 +1091,7 @@
     react-use "^17.4.0"
     viem "^0.3.36"
 
-"@carrot-kpi/sdk@*":
-  version "1.27.2"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.27.2.tgz#8af709e13fc3d09711a9101df7493e6e53133d92"
-  integrity sha512-bzvqFaNs1W1o+upuO7I/OSdgTPa5MhB5IMf5ZhCC4img4bnVjcmjKapehz8G8NtW6aJoqYYYwcR796bBQbKJ8A==
-  dependencies:
-    decimal.js-light "^2.5.1"
-    multiformats "^9.9.0"
-    viem "^0.3.24"
-
-"@carrot-kpi/sdk@^1.27.3":
+"@carrot-kpi/sdk@*", "@carrot-kpi/sdk@^1.27.3":
   version "1.27.3"
   resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.27.3.tgz#c79cf7fbd84631c22c7616df7ba53034bffd0b1b"
   integrity sha512-5UOz3d5mEFqZinzWtcnSgmvWJbKde9++O2L9lrQUzu/7RJAb6j+ZibonvP160HNPv0w5RmQumLYhPERP1Gs0PQ==
@@ -1123,32 +1114,7 @@
   resolved "https://registry.yarnpkg.com/@carrot-kpi/switzer-font/-/switzer-font-0.1.0.tgz#2046a14543d382d06b88ccc36354fff3648c0563"
   integrity sha512-BMDeIYgXPTRGYc67EnUJiZqRedHUvQkSFBt7yFx0LxgdDjcW/Xb//KB+4NS0KRM1iiWTaJarfIz3wfHrTcbrGQ==
 
-"@carrot-kpi/ui@*":
-  version "0.45.1"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.45.1.tgz#bd3a294a010321247a57ea616ee63f0b9672caee"
-  integrity sha512-ymNSHeLR9FZ53o1y3iixzVd7XnPXOU89lVPBgLZobF0jXKY2QwdbKP15oxhrEe5PNsk9TrafZ5+2CGeqsBHC/w==
-  dependencies:
-    "@carrot-kpi/sdk" "*"
-    "@popperjs/core" "^2.11.7"
-    "@tiptap/extension-placeholder" "2.0.3"
-    "@tiptap/pm" "^2.0.3"
-    "@tiptap/react" "2.0.3"
-    "@tiptap/starter-kit" "2.0.3"
-    "@types/react-virtualized-auto-sizer" "^1.0.1"
-    "@uniswap/token-lists" "1.0.0-beta.31"
-    class-variance-authority "^0.6.0"
-    dayjs "^1.11.7"
-    decimal.js-light "^2.5.1"
-    rc-switch "^4.1.0"
-    react-number-format "^5.2.1"
-    react-popper "^2.3.0"
-    react-use "^17.4.0"
-    react-virtualized-auto-sizer "^1.0.16"
-    react-window "^1.8.9"
-    tailwind-merge "^1.12.0"
-    viem "^0.3.24"
-
-"@carrot-kpi/ui@^0.45.3":
+"@carrot-kpi/ui@*", "@carrot-kpi/ui@^0.45.3":
   version "0.45.3"
   resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.45.3.tgz#14c6838990432ceb9fa9b22ff35e9d1369d82981"
   integrity sha512-TyWu1GZX71/7jda4WA9IzKRrPUbLZZEa8PP3dzCNjsD8esvv0SUMlYvauUWyhm+KxXYjmv3bGxMvhLMh508gEg==
@@ -2586,9 +2552,9 @@
     buffer "~6.0.3"
 
 "@solana/web3.js@^1.70.1":
-  version "1.76.0"
-  resolved "https://registry.yarnpkg.com/@solana/web3.js/-/web3.js-1.76.0.tgz#0f888e25d727d0dadf3dd8a01967347555200b2b"
-  integrity sha512-aJtF/nTs+9St+KtTK/wgVJ+SinfjYzn+3w1ygYIPw8ST6LH+qHBn8XkodgDTwlv/xzNkaVz1kkUDOZ8BPXyZWA==
+  version "1.77.0"
+  resolved "https://registry.yarnpkg.com/@solana/web3.js/-/web3.js-1.77.0.tgz#f199453712edaedbdacb30db50b0409923b01ef2"
+  integrity sha512-APV5ru9vsWSvIPEmL6YmF20cJexcoZXRQOkKSXoKFK2yoyxMiTfAUDSxuwou3WInLzjsuh9hveWE4q2iexgpOg==
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@noble/curves" "^1.0.0"
@@ -3438,16 +3404,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*":
-  version "18.2.6"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.6.tgz#5cd53ee0d30ffc193b159d3516c8c8ad2f19d571"
-  integrity sha512-wRZClXn//zxCFW+ye/D2qY65UsYP1Fpex2YXorHc8awoNamkMZSvBxwxdYVInsHOZZd2Ppq8isnSzJL5Mpf8OA==
-  dependencies:
-    "@types/prop-types" "*"
-    "@types/scheduler" "*"
-    csstype "^3.0.2"
-
-"@types/react@^18.2.7":
+"@types/react@*", "@types/react@^18.2.7":
   version "18.2.7"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.7.tgz#dfb4518042a3117a045b8c222316f83414a783b3"
   integrity sha512-ojrXpSH2XFCmHm7Jy3q44nXDyN54+EYKP2lBhJ2bqfyPj6cIUW/FZW/Csdia34NQgq7KYcAlHi5184m4X88+yw==
@@ -5906,9 +5863,9 @@ electron-fetch@^1.7.2:
     encoding "^0.1.13"
 
 electron-to-chromium@^1.4.284:
-  version "1.4.405"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.405.tgz#487bdba2d82a59b092d6b6e4602bf733cec6a7ef"
-  integrity sha512-JdDgnwU69FMZURoesf9gNOej2Cms1XJFfLk24y1IBtnAdhTcJY/mXnokmpmxHN59PcykBP4bgUU98vLY44Lhuw==
+  version "1.4.407"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.407.tgz#087e2ab97b3eb092aa6217c05986086b7dd370cc"
+  integrity sha512-5smEvFSFYMv90tICOzRVP7Opp98DAC4KW7RRipg3BuNpGbbV3N+x24Zh3sbLb1T5haGtOSy/hrBfXsWnIM9aCg==
 
 elliptic@6.5.4, elliptic@^6.5.4:
   version "6.5.4"
@@ -5972,15 +5929,7 @@ end-of-stream@^1.4.1:
   dependencies:
     once "^1.4.0"
 
-enhanced-resolve@^5.0.0:
-  version "5.14.0"
-  resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-5.14.0.tgz#0b6c676c8a3266c99fa281e4433a706f5c0c61c4"
-  integrity sha512-+DCows0XNwLDcUhbFJPdlQEVnT2zXlCv7hPxemTz86/O+B/hCQ+mb7ydkPKiflpVraqLPCAfu7lDy+hBXueojw==
-  dependencies:
-    graceful-fs "^4.2.4"
-    tapable "^2.2.0"
-
-enhanced-resolve@^5.14.1:
+enhanced-resolve@^5.0.0, enhanced-resolve@^5.14.1:
   version "5.14.1"
   resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-5.14.1.tgz#de684b6803724477a4af5d74ccae5de52c25f6b3"
   integrity sha512-Vklwq2vDKtl0y/vtwjSesgJ5MYS7Etuk5txS8VdKL4AOS1aUlD96zqIfsOSLQsdv3xgMRbtkWM8eG9XDfKUPow==
@@ -10353,9 +10302,9 @@ rc-switch@^4.1.0:
     rc-util "^5.30.0"
 
 rc-util@^5.30.0:
-  version "5.31.2"
-  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.31.2.tgz#3910570fa709bbbce1275f0aa4fae0cf25ee71dd"
-  integrity sha512-Cg+TSCWXd72YipwWXIHJiS2I/NIaQvh6LD6SbN5TO/UgQkO2zwsZlSg2EvK29YPW2eQjFhIIDVXbmdrhWozoyA==
+  version "5.32.0"
+  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.32.0.tgz#4da6c4e94956f9c589a99fd7ad837dd8bb197109"
+  integrity sha512-/AJTm1Na+ltHsfhUWodb9Gm1/cYyw0Cx8LrDBO6H0JT35WSMx3/2zXxFwmcVI1M8QnFKecwQNDBeVT1m2iw/vg==
   dependencies:
     "@babel/runtime" "^7.18.3"
     react-is "^16.12.0"
