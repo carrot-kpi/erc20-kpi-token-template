@@ -10,8 +10,8 @@ export const outcomeConfigurationFromOracleData = (
         case 1: {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const usedRealityTemplate = (oracleData.state as any)
-                .realityTemplateId as string;
-            return usedRealityTemplate === "0"
+                .realityTemplateId as number;
+            return usedRealityTemplate === 0
                 ? {
                       automaticallyFilled: true,
                       binary: true,
