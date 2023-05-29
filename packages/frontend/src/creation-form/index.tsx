@@ -274,12 +274,16 @@ export const Component = ({
                         className={{ root: "relative pb-10" }}
                         messages={{ step: t("step") }}
                     >
-                        <GenericData
-                            t={t}
-                            state={genericDataStepState}
-                            onStateChange={setGenericDataStepState}
-                            onNext={handleGenericDataNext}
-                        />
+                        {!connectedAddress ? (
+                            <ConnectWallet t={t} />
+                        ) : (
+                            <GenericData
+                                t={t}
+                                state={genericDataStepState}
+                                onStateChange={setGenericDataStepState}
+                                onNext={handleGenericDataNext}
+                            />
+                        )}
                     </StepCard>
                     <StepCard
                         title={t("card.collateral.title")}
@@ -287,16 +291,12 @@ export const Component = ({
                         className={{ root: "relative pb-10" }}
                         messages={{ step: t("step") }}
                     >
-                        {!connectedAddress ? (
-                            <ConnectWallet t={t} />
-                        ) : (
-                            <Collaterals
-                                t={t}
-                                state={collateralsStepState}
-                                onStateChange={setCollateralsStepState}
-                                onNext={handleCollateralsNext}
-                            />
-                        )}
+                        <Collaterals
+                            t={t}
+                            state={collateralsStepState}
+                            onStateChange={setCollateralsStepState}
+                            onNext={handleCollateralsNext}
+                        />
                     </StepCard>
                     {enableOraclePickStep && (
                         <StepCard
