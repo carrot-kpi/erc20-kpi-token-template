@@ -7,14 +7,14 @@ import {
 } from "@carrot-kpi/ui";
 import { Template } from "@carrot-kpi/sdk";
 import {
-    NamespacedTranslateFunction,
+    type NamespacedTranslateFunction,
     useResolvedTemplates,
 } from "@carrot-kpi/react";
 import {
     SingleConfiguration,
-    SingleConfigurationProps,
+    type SingleConfigurationProps,
 } from "../single-configuration";
-import { OutcomesConfigurationStepState } from "../../../types";
+import type { OutcomesConfigurationStepState } from "../../../types";
 
 interface OraclesAccordionProps {
     t: NamespacedTranslateFunction;

@@ -1,5 +1,5 @@
 import { DEFAULT_OUTCOME_CONFIGURATION } from "../constants";
-import { OracleData, OutcomeConfigurationState } from "../types";
+import type { OracleData, OutcomeConfigurationState } from "../types";
 
 export const outcomeConfigurationFromOracleData = (
     templateId: number,

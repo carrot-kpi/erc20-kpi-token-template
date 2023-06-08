@@ -1,5 +1,5 @@
 import {
-    ReactElement,
+    type ReactElement,
     useCallback,
     useEffect,
     useLayoutEffect,
@@ -7,7 +7,7 @@ import {
     useState,
 } from "react";
 import {
-    Address,
+    type Address,
     erc20ABI,
     useAccount,
     useNetwork,
@@ -17,7 +17,7 @@ import {
     usePrepareContractWrite,
     usePublicClient,
 } from "wagmi";
-import {
+import type {
     CollateralData,
     OracleData,
     OutcomeData,
@@ -25,8 +25,8 @@ import {
 } from "../../types";
 import { Button, Typography } from "@carrot-kpi/ui";
 import {
-    KPITokenCreationFormProps,
-    NamespacedTranslateFunction,
+    type KPITokenCreationFormProps,
+    type NamespacedTranslateFunction,
     TxType,
     useDevMode,
 } from "@carrot-kpi/react";

@@ -1,21 +1,21 @@
 import {
-    KPITokenCreationFormProps,
-    NamespacedTranslateFunction,
+    type KPITokenCreationFormProps,
+    type NamespacedTranslateFunction,
     TxType,
 } from "@carrot-kpi/react";
 import { Button } from "@carrot-kpi/ui";
-import { ReactElement, useCallback, useMemo, useState } from "react";
+import { type ReactElement, useCallback, useMemo, useState } from "react";
 import {
     usePrepareContractWrite,
     erc20ABI,
     useContractWrite,
-    Address,
+    type Address,
     usePublicClient,
     useNetwork,
 } from "wagmi";
 import { zeroAddress } from "viem";
 import { unixTimestamp } from "../../../utils/dates";
-import { CollateralData } from "../../types";
+import type { CollateralData } from "../../types";
 
 interface ApproveCollateralsButtonProps {
     t: NamespacedTranslateFunction;

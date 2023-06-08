@@ -1,8 +1,8 @@
-import { NamespacedTranslateFunction } from "@carrot-kpi/react";
+import type { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { NumberInput, Switch, Typography } from "@carrot-kpi/ui";
 import { cva } from "class-variance-authority";
 import { useCallback } from "react";
-import { NumberFormatValue } from "../../../types";
+import type { NumberFormatValue } from "../../../types";
 
 const boundsWrapperStyles = cva(["flex gap-4 opacity-100 transition-opacity"], {
     variants: {

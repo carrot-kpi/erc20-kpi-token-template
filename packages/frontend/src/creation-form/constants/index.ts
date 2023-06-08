@@ -1,4 +1,4 @@
-import { OutcomeConfigurationState } from "../types";
+import type { OutcomeConfigurationState } from "../types";
 
 export const NO_SPECIAL_CHARACTERS_REGEX =
     /^[A-Z0-9@~`!@#$%^&*()_=+\\';:"\/?>.<,-\s]*$/i;

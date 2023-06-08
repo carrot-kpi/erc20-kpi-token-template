@@ -4,7 +4,7 @@ import {
     AccordionSummary,
     Typography,
 } from "@carrot-kpi/ui";
-import { ReactElement, ReactNode, useMemo, useState } from "react";
+import { type ReactElement, type ReactNode, useMemo, useState } from "react";
 import { ReactComponent as Plus } from "../../assets/plus.svg";
 import { ReactComponent as Minus } from "../../assets/minus.svg";
 

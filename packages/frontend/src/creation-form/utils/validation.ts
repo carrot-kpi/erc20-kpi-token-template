@@ -6,7 +6,7 @@ import {
     MAX_KPI_TOKEN_TAGS_COUNT,
     MAX_KPI_TOKEN_TITLE_CHARS,
 } from "../constants";
-import { GenericDataStepState } from "../types";
+import type { GenericDataStepState } from "../types";
 
 export const stripHtml = (value: string) => value.replace(/(<([^>]+)>)/gi, "");
 

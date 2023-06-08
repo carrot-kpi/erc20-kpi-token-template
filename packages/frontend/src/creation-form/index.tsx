@@ -3,13 +3,13 @@ import "@carrot-kpi/ui/styles.css";
 
 import { Loader, MultiStepCards, StepCard, Stepper } from "@carrot-kpi/ui";
 import {
-    KPITokenRemoteCreationFormProps,
+    type KPITokenRemoteCreationFormProps,
     useOracleTemplates,
 } from "@carrot-kpi/react";
 import { Template } from "@carrot-kpi/sdk";
-import { ReactElement, useCallback, useEffect, useState } from "react";
+import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { OraclesPicker } from "./components/oracles-picker";
-import {
+import type {
     CollateralData,
     CollateralsStepState,
     GenericDataStepState,

@@ -1,5 +1,5 @@
-import { TextInput, TextInputProps } from "@carrot-kpi/ui";
-import { ChangeEvent, FocusEvent, useCallback } from "react";
+import { TextInput, type TextInputProps } from "@carrot-kpi/ui";
+import { type ChangeEvent, type FocusEvent, useCallback } from "react";
 import { NO_SPECIAL_CHARACTERS_REGEX } from "../../constants";
 
 interface NoSpecialCharactersTextInputProps

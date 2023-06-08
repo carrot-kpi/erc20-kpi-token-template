@@ -1,4 +1,4 @@
-import { KPITokenRemoteCreationFormProps } from "@carrot-kpi/react";
+import type { KPITokenRemoteCreationFormProps } from "@carrot-kpi/react";
 import { Component as CreationForm } from "../../src/creation-form";
 
 export const Component = (props: KPITokenRemoteCreationFormProps) => {

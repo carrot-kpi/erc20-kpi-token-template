@@ -1,12 +1,12 @@
-import { ReactElement, useCallback, useEffect, useState } from "react";
-import {
+import { type ReactElement, useCallback, useEffect, useState } from "react";
+import type {
     GenericDataStepState,
     NumberFormatValue,
     SpecificationData,
     TokenData,
 } from "../../types";
 import {
-    NamespacedTranslateFunction,
+    type NamespacedTranslateFunction,
     useDecentralizedStorageUploader,
 } from "@carrot-kpi/react";
 import {

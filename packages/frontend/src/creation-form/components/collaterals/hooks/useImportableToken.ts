@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { isAddress } from "viem";
-import { Address, useBalance, useNetwork, useToken } from "wagmi";
-import { TokenInfoWithBalance } from "@carrot-kpi/ui";
+import { type Address, useBalance, useNetwork, useToken } from "wagmi";
+import type { TokenInfoWithBalance } from "@carrot-kpi/ui";
 
 export const useImportableToken = (
     debouncedQuery?: string,

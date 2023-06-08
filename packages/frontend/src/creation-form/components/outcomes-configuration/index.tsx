@@ -1,7 +1,7 @@
-import { ReactElement, useCallback, useEffect, useState } from "react";
-import { NamespacedTranslateFunction } from "@carrot-kpi/react";
+import { type ReactElement, useCallback, useEffect, useState } from "react";
+import type { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Typography, NextStepButton } from "@carrot-kpi/ui";
-import {
+import type {
     NumberFormatValue,
     OutcomeData,
     OutcomesConfigurationStepState,

@@ -9,12 +9,12 @@ import {
 import { Template } from "@carrot-kpi/sdk";
 import { OracleCreationFormWrapper } from "../oracle-creation-form-wrapper";
 import {
-    NamespacedTranslateFunction,
-    OracleCreationFormProps,
-    OracleInitializationBundleGetter,
+    type NamespacedTranslateFunction,
+    type OracleCreationFormProps,
+    type OracleInitializationBundleGetter,
     useResolvedTemplates,
 } from "@carrot-kpi/react";
-import { OraclesConfigurationStepState } from "../../../types";
+import type { OraclesConfigurationStepState } from "../../../types";
 
 interface OraclesAccordionProps {
     t: NamespacedTranslateFunction;

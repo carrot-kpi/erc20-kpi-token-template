@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from "react";
+import { type ReactElement, useEffect, useState } from "react";
 import { ReactComponent as Copy } from "../../assets/copy.svg";
 import { ReactComponent as CircleOk } from "../../assets/circle-ok.svg";
 import { useCopyToClipboard } from "../../utils/clipboard";

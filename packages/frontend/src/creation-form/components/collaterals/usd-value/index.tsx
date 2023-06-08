@@ -1,7 +1,7 @@
 import { useERC20TokenPrice } from "@carrot-kpi/react";
 import { formatDecimals } from "@carrot-kpi/sdk";
 import { Skeleton, Typography } from "@carrot-kpi/ui";
-import { NumberFormatValue } from "../../../types";
+import type { NumberFormatValue } from "../../../types";
 
 interface USDValueProps {
     tokenAddress?: string;

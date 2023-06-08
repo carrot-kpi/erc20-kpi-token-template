@@ -1,6 +1,6 @@
 import {
-    KPITokenPageProps,
-    NamespacedTranslateFunction,
+    type KPITokenPageProps,
+    type NamespacedTranslateFunction,
     TxType,
 } from "@carrot-kpi/react";
 import {
@@ -16,7 +16,7 @@ import {
     useAccount,
     useContractWrite,
     usePrepareContractWrite,
-    Address,
+    type Address,
     usePublicClient,
     useNetwork,
 } from "wagmi";

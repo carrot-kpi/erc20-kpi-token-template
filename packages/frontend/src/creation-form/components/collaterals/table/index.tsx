@@ -1,7 +1,7 @@
-import { NamespacedTranslateFunction } from "@carrot-kpi/react";
+import type { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Typography } from "@carrot-kpi/ui";
 import { cva } from "class-variance-authority";
-import { CollateralData } from "../../../types";
+import type { CollateralData } from "../../../types";
 import { CollateralRow } from "./row";
 
 const containerStyles = cva(
