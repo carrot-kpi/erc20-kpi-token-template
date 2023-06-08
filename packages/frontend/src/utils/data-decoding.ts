@@ -1,7 +1,7 @@
 import { Amount, Fetcher } from "@carrot-kpi/sdk";
 import { type PublicClient } from "wagmi";
 import { CollateralData } from "../creation-form/types";
-import { type Hex, decodeAbiParameters } from "viem";
+import { type Hex, decodeAbiParameters, type Address } from "viem";
 import { FinalizableOracle } from "../page/types";
 
 interface DecodedData {
@@ -43,7 +43,23 @@ export const decodeKPITokenData = async (
                 { type: "uint256", name: "initialSupply" },
             ],
             data
-        );
+        ) as [
+            readonly {
+                token: Address;
+                amount: bigint;
+                minimumPayout: bigint;
+            }[],
+            readonly {
+                addrezz: Address;
+                lowerBound: bigint;
+                higherBound: bigint;
+                finalResult: bigint;
+                weight: bigint;
+                finalized: boolean;
+            }[],
+            boolean,
+            bigint
+        ];
 
     const erc20Tokens = await Fetcher.fetchERC20Tokens({
         publicClient,

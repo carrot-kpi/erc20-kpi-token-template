@@ -9,7 +9,10 @@ export const getKPITokenAddressFromReceipt = (
     for (const log of receipt.logs) {
         const [hash] = log.topics;
         if (hash === CREATE_TOKEN_EVENT_HASH)
-            return decodeAbiParameters([{ type: "address" }], log.data)[0];
+            return decodeAbiParameters(
+                [{ type: "address" }],
+                log.data
+            )[0] as Address;
     }
     return null;
 };
