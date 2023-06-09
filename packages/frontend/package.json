@@ -22,7 +22,7 @@
         "lint": "eslint --ext .js,.ts,.tsx ./src ./scripts ./.cct ./jest.config.js",
         "format": "eslint --fix --ext .tsx,.ts,.js ./ && prettier --write .",
         "build": "NODE_ENV=production node ./scripts/build.js",
-        "test": "jest",
+        "test": "echo 'No tests implemented yet...'",
         "size-limit": "size-limit"
     },
     "dependencies": {
