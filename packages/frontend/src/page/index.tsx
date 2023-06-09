@@ -3,9 +3,9 @@ import "@carrot-kpi/ui/styles.css";
 
 import { Amount, Token } from "@carrot-kpi/sdk";
 import { Button, ErrorFeedback, Typography } from "@carrot-kpi/ui";
-import { ReactElement, useEffect, useState } from "react";
-import { OraclePage, KPITokenRemotePageProps } from "@carrot-kpi/react";
-import { CollateralData } from "../creation-form/types";
+import { type ReactElement, useEffect, useState } from "react";
+import { OraclePage, type KPITokenRemotePageProps } from "@carrot-kpi/react";
+import type { CollateralData } from "../creation-form/types";
 import { type Address, useNetwork, usePublicClient, useToken } from "wagmi";
 import { ReactComponent as External } from "../assets/external.svg";
 import { Loader } from "../ui/loader";
@@ -13,7 +13,7 @@ import { CampaignCard } from "./components/campaign-card";
 import { WalletPosition } from "./components/wallet-position";
 import { ExpandableContent } from "../ui/expandable-content";
 import { decodeKPITokenData } from "../utils/data-decoding";
-import { FinalizableOracle } from "./types";
+import type { FinalizableOracle } from "./types";
 
 export const Component = ({
     i18n,

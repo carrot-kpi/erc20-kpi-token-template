@@ -1,4 +1,4 @@
-import { Popover, Typography, TypographyProps } from "@carrot-kpi/ui";
+import { Popover, Typography, type TypographyProps } from "@carrot-kpi/ui";
 import { useCallback, useRef, useState } from "react";
 
 type PopoverTextProps = {

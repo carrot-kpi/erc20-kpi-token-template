@@ -1,6 +1,6 @@
-import { ReactElement, useCallback } from "react";
+import { type ReactElement, useCallback } from "react";
 import { Button, Typography } from "@carrot-kpi/ui";
-import {
+import type {
     KPITokenCreationFormProps,
     NamespacedTranslateFunction,
 } from "@carrot-kpi/react";

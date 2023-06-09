@@ -1,19 +1,19 @@
 import {
-    Dispatch,
-    ReactElement,
-    SetStateAction,
+    type Dispatch,
+    type ReactElement,
+    type SetStateAction,
     useCallback,
     useEffect,
     useState,
 } from "react";
-import {
+import type {
     KPITokenCreationFormProps,
     NamespacedTranslateFunction,
     OracleInitializationBundleGetter,
 } from "@carrot-kpi/react";
 import { NextStepButton } from "@carrot-kpi/ui";
-import { i18n } from "i18next";
-import {
+import type { i18n } from "i18next";
+import type {
     OracleConfigurationState,
     OracleData,
     OraclesConfigurationStepState,

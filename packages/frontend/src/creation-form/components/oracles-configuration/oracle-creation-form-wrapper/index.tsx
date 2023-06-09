@@ -11,8 +11,8 @@
 
 import {
     OracleCreationForm,
-    OracleCreationFormProps,
-    OracleInitializationBundleGetter,
+    type OracleCreationFormProps,
+    type OracleInitializationBundleGetter,
 } from "@carrot-kpi/react";
 import { useCallback } from "react";
 

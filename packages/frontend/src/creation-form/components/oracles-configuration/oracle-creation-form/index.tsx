@@ -2,12 +2,12 @@ import { ErrorFeedback, Loader } from "@carrot-kpi/ui";
 import { Template } from "@carrot-kpi/sdk";
 import { OracleCreationFormWrapper } from "../oracle-creation-form-wrapper";
 import {
-    NamespacedTranslateFunction,
-    OracleCreationFormProps as ReactOracleCreationFormProps,
-    OracleInitializationBundleGetter,
+    type NamespacedTranslateFunction,
+    type OracleCreationFormProps as ReactOracleCreationFormProps,
+    type OracleInitializationBundleGetter,
     useResolvedTemplate,
 } from "@carrot-kpi/react";
-import { OraclesConfigurationStepState } from "../../../types";
+import type { OraclesConfigurationStepState } from "../../../types";
 
 interface OracleCreationFormProps {
     t: NamespacedTranslateFunction;

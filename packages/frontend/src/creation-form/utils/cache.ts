@@ -1,5 +1,5 @@
 import { CACHER } from "@carrot-kpi/sdk";
-import { TokenInfoWithBalance } from "@carrot-kpi/ui";
+import type { TokenInfoWithBalance } from "@carrot-kpi/ui";
 import { type Chain } from "viem";
 
 export const tokenInfoWithBalanceEquals = (

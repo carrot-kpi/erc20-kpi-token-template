@@ -1,5 +1,5 @@
 import { Template } from "@carrot-kpi/sdk";
-import { CollateralData, OracleData, OutcomeData } from "../types";
+import type { CollateralData, OracleData, OutcomeData } from "../types";
 import { encodeAbiParameters } from "viem";
 
 export const encodeKPITokenData = (

@@ -1,10 +1,10 @@
 import { useCallback, useRef, useState } from "react";
-import { CollateralData } from "../../../../types";
+import type { CollateralData } from "../../../../types";
 import { ReactComponent as X } from "../../../../../assets/x.svg";
 import { Popover, RemoteLogo, Typography } from "@carrot-kpi/ui";
 import { getDefaultERC20TokenLogoURL } from "../../../../../utils/erc20";
 import {
-    NamespacedTranslateFunction,
+    type NamespacedTranslateFunction,
     useIPFSGatewayURL,
 } from "@carrot-kpi/react";
 import { PROTOCOL_FEE_BPS } from "../../../../constants";

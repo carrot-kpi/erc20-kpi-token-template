@@ -1,9 +1,9 @@
-import { Amount, KPITokenSpecification, Token } from "@carrot-kpi/sdk";
-import {
+import { Amount, type KPITokenSpecification, Token } from "@carrot-kpi/sdk";
+import type {
     OracleInitializationBundle,
     OracleInitializationBundleGetter,
 } from "@carrot-kpi/react";
-import { TokenInfoWithBalance } from "@carrot-kpi/ui";
+import type { TokenInfoWithBalance } from "@carrot-kpi/ui";
 import { type Address } from "viem";
 
 export type SpecificationData = Omit<KPITokenSpecification, "ipfsHash"> & {

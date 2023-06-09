@@ -1,20 +1,20 @@
-import {
+import type {
     KPITokenPageProps,
     NamespacedTranslateFunction,
 } from "@carrot-kpi/react";
 import { Amount, ResolvedKPIToken, Token } from "@carrot-kpi/sdk";
 import { Skeleton, Typography } from "@carrot-kpi/ui";
-import { ReactElement, useEffect, useState } from "react";
-import { Address, useAccount, useBalance, useEnsName } from "wagmi";
+import { type ReactElement, useEffect, useState } from "react";
+import { type Address, useAccount, useBalance, useEnsName } from "wagmi";
 import { mainnet } from "wagmi/chains";
-import { CollateralData } from "../../../creation-form/types";
+import type { CollateralData } from "../../../creation-form/types";
 import {
     getGuaranteedRewards,
     getMaximumRewards,
     getRedeemableRewards,
 } from "../../../utils/collaterals";
 import { useWatchKPITokenCollateralBalances } from "../../hooks/useWatchKPITokenCollateralBalances";
-import { FinalizableOracle } from "../../types";
+import type { FinalizableOracle } from "../../types";
 import { TokenAmount } from "../token-amount";
 import { WalletActions } from "./actions";
 

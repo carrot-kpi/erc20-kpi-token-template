@@ -1,10 +1,10 @@
 import {
-    NamespacedTranslateFunction,
+    type NamespacedTranslateFunction,
     useResolvedTemplate,
 } from "@carrot-kpi/react";
 import { Template } from "@carrot-kpi/sdk";
 import { Skeleton, Typography } from "@carrot-kpi/ui";
-import { ReactElement } from "react";
+import type { ReactElement } from "react";
 import { shortenAddress } from "../../utils/address";
 
 interface OracleTemplateProps {

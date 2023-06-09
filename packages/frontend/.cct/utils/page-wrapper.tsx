@@ -1,4 +1,4 @@
-import { KPITokenRemotePageProps } from "@carrot-kpi/react";
+import type { KPITokenRemotePageProps } from "@carrot-kpi/react";
 import { Component as Page } from "../../src/page";
 
 export const Component = (props: KPITokenRemotePageProps) => {

@@ -1,8 +1,8 @@
 import { Amount, Token } from "@carrot-kpi/sdk";
 import { useEffect, useState } from "react";
 import { erc20ABI, useContractReads } from "wagmi";
-import { type Address } from "viem";
-import { CollateralData } from "../../creation-form/types";
+import type { Address } from "viem";
+import type { CollateralData } from "../../creation-form/types";
 
 export const useWatchKPITokenCollateralBalances = (
     kpiTokenAddress?: Address,

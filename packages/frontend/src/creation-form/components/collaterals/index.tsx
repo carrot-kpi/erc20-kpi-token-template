@@ -4,23 +4,32 @@ import {
     NumberInput,
     TextInput,
     Typography,
-    TokenInfoWithBalance,
-    TokenListWithBalance,
+    type TokenInfoWithBalance,
+    type TokenListWithBalance,
     NextStepButton,
     Skeleton,
     ErrorText,
 } from "@carrot-kpi/ui";
-import { NamespacedTranslateFunction, useTokenLists } from "@carrot-kpi/react";
-import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
 import {
-    CollateralData,
-    CollateralsStepState,
-    NumberFormatValue,
+    type NamespacedTranslateFunction,
+    useTokenLists,
+} from "@carrot-kpi/react";
+import {
+    type ReactElement,
+    useCallback,
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
+import {
+    type CollateralData,
+    type CollateralsStepState,
+    type NumberFormatValue,
     TokenWithLogoURI,
 } from "../../types";
 import { Amount, ERC20_ABI, Token, formatTokenAmount } from "@carrot-kpi/sdk";
 import {
-    Address,
+    type Address,
     useAccount,
     useBalance,
     useContractReads,

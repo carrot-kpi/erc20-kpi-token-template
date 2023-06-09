@@ -1,4 +1,4 @@
-import { NamespacedTranslateFunction } from "@carrot-kpi/react";
+import type { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { ResolvedKPIToken } from "@carrot-kpi/sdk";
 import { Timer, Typography } from "@carrot-kpi/ui";
 

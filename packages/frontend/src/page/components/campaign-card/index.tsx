@@ -1,4 +1,4 @@
-import { NamespacedTranslateFunction } from "@carrot-kpi/react";
+import type { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { ResolvedKPIToken } from "@carrot-kpi/sdk";
 import {
     Card,
@@ -8,12 +8,12 @@ import {
     Skeleton,
     Typography,
 } from "@carrot-kpi/ui";
-import { ReactElement } from "react";
-import { CollateralData } from "../../../creation-form/types";
+import type { ReactElement } from "react";
+import type { CollateralData } from "../../../creation-form/types";
 import { shortenAddress } from "../../../utils/address";
 import { CollateralRow } from "../collateral-row";
 import { TimeLeft } from "./time-left";
-import { Address, useEnsName } from "wagmi";
+import { type Address, useEnsName } from "wagmi";
 import { mainnet } from "wagmi/chains";
 import { formatUnits } from "viem";
 
