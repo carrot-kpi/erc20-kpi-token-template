@@ -26,6 +26,7 @@ export const Component = ({
 
     const { data: tokenData } = useToken({
         address: kpiToken?.address as Address,
+        staleTime: 2_000,
     });
 
     const [decodingKPITokenData, setDecodingKPITokenData] = useState(false);
@@ -116,7 +117,7 @@ export const Component = ({
                     kpiToken={kpiToken}
                     collaterals={collaterals}
                     allOrNone={allOrNone}
-                    initialSupply={tokenData?.totalSupply.value}
+                    initialSupply={initialSupply?.raw}
                     erc20Name={tokenData?.name}
                     erc20Symbol={tokenData?.symbol}
                     erc20Supply={tokenData?.totalSupply.value}
