@@ -162,7 +162,9 @@ export const CampaignCard = ({
                         >
                             {t("overview.supply.current.label")}
                         </Typography>
-                        {loading || !erc20Supply ? (
+                        {loading ||
+                        erc20Supply === null ||
+                        erc20Supply === undefined ? (
                             <Skeleton width="60px" />
                         ) : (
                             <Typography uppercase truncate>
