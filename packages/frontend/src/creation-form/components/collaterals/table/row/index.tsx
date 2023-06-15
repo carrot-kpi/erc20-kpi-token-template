@@ -8,7 +8,7 @@ import {
     useIPFSGatewayURL,
 } from "@carrot-kpi/react";
 import { PROTOCOL_FEE_BPS } from "../../../../constants";
-import { Amount, formatTokenAmount } from "@carrot-kpi/sdk";
+import { Amount, formatCurrencyAmount } from "@carrot-kpi/sdk";
 import { parseUnits } from "viem";
 
 type CollateralRowProps = CollateralData & {
@@ -45,8 +45,8 @@ export const CollateralRow = ({
     }, []);
 
     const token = amount.currency;
-    const formattedAmount = formatTokenAmount(amount, false);
-    const formattedAmountAfterFees = formatTokenAmount(
+    const formattedAmount = formatCurrencyAmount(amount, false);
+    const formattedAmountAfterFees = formatCurrencyAmount(
         new Amount(
             amount.currency,
             parseUnits(
@@ -120,7 +120,7 @@ export const CollateralRow = ({
                 </Typography>
             </div>
             <Typography className={{ root: "text-right" }}>
-                {formatTokenAmount(minimumPayout, false)}
+                {formatCurrencyAmount(minimumPayout, false)}
             </Typography>
         </div>
     );

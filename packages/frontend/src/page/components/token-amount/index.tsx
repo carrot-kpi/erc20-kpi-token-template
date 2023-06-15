@@ -1,4 +1,4 @@
-import { Amount, formatTokenAmount, Token } from "@carrot-kpi/sdk";
+import { Amount, formatCurrencyAmount, Token } from "@carrot-kpi/sdk";
 import { ERC20TokenLogo, Skeleton, Typography } from "@carrot-kpi/ui";
 import { useNetwork } from "wagmi";
 
@@ -31,7 +31,7 @@ export const TokenAmount = ({
                         size="sm"
                     />
                     <Typography truncate>
-                        {formatTokenAmount(amount, withSymbol)}
+                        {formatCurrencyAmount(amount, withSymbol)}
                     </Typography>
                 </>
             )}

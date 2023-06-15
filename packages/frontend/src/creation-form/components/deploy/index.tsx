@@ -102,6 +102,34 @@ export const Deploy = ({
             : { factoryAddress: undefined, kpiTokensManagerAddress: undefined };
     }, [chain]);
 
+    const { encodedOraclesData, encodedKPITokenData, totalValueRequired } =
+        useMemo(() => {
+            const { data: encodedOraclesData, totalValueRequired } =
+                encodeOraclesData(
+                    oracleTemplatesData,
+                    outcomesData,
+                    oraclesData
+                );
+            return {
+                encodedOraclesData,
+                encodedKPITokenData: encodeKPITokenData(
+                    collateralsData,
+                    tokenData.name,
+                    tokenData.symbol,
+                    tokenData.supply
+                ),
+                totalValueRequired,
+            };
+        }, [
+            collateralsData,
+            oracleTemplatesData,
+            oraclesData,
+            outcomesData,
+            tokenData.name,
+            tokenData.supply,
+            tokenData.symbol,
+        ]);
+
     const { data: predictedKPITokenAddress } = useContractRead({
         address: kpiTokensManagerAddress,
         abi: KPI_TOKENS_MANAGER_ABI,
@@ -111,13 +139,8 @@ export const Deploy = ({
             BigInt(templateId),
             specificationCID,
             BigInt(unixTimestamp(expiration)),
-            encodeKPITokenData(
-                collateralsData,
-                tokenData.name,
-                tokenData.symbol,
-                tokenData.supply
-            ),
-            encodeOraclesData(oracleTemplatesData, outcomesData, oraclesData),
+            encodedKPITokenData,
+            encodedOraclesData,
         ],
         enabled: !!address,
     });
@@ -153,16 +176,11 @@ export const Deploy = ({
             BigInt(templateId),
             specificationCID,
             BigInt(unixTimestamp(expiration)),
-            encodeKPITokenData(
-                collateralsData,
-                tokenData.name,
-                tokenData.symbol,
-                tokenData.supply
-            ),
-            encodeOraclesData(oracleTemplatesData, outcomesData, oraclesData),
+            encodedKPITokenData,
+            encodedOraclesData,
         ],
         enabled: !!chain?.id && approved,
-        value: 0n,
+        value: totalValueRequired,
     });
     const { writeAsync } = useContractWrite(config);
 

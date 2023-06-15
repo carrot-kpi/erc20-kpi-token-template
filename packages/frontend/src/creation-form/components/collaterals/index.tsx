@@ -27,7 +27,12 @@ import {
     type NumberFormatValue,
     TokenWithLogoURI,
 } from "../../types";
-import { Amount, ERC20_ABI, Token, formatTokenAmount } from "@carrot-kpi/sdk";
+import {
+    Amount,
+    ERC20_ABI,
+    Token,
+    formatCurrencyAmount,
+} from "@carrot-kpi/sdk";
 import {
     type Address,
     useAccount,
@@ -259,7 +264,7 @@ export const Collaterals = ({
         const parsedRawAmount = parseFloat(state.pickerAmount.formattedValue);
         if (isNaN(parsedRawAmount)) return;
         setProtocolFeeAmount(
-            formatTokenAmount(
+            formatCurrencyAmount(
                 new Amount(
                     state.pickerToken as unknown as Token,
                     parseUnits(
