@@ -8,7 +8,7 @@ import {
     Token,
     KPI_TOKEN_ABI,
     ResolvedKPIToken,
-    formatTokenAmount,
+    formatCurrencyAmount,
 } from "@carrot-kpi/sdk";
 import { Button, Typography } from "@carrot-kpi/ui";
 import { useCallback, useEffect, useState } from "react";
@@ -83,7 +83,7 @@ export const WalletActions = ({
             setText(
                 kpiTokenBalance && kpiTokenBalance.gt(0)
                     ? t("position.status.expired.withBalance", {
-                          amount: formatTokenAmount(kpiTokenBalance, false),
+                          amount: formatCurrencyAmount(kpiTokenBalance, false),
                           symbol: kpiTokenBalance.currency.symbol,
                       })
                     : t("position.status.expired.noBalance")
@@ -96,7 +96,7 @@ export const WalletActions = ({
                             t(
                                 "position.status.finalized.withBalance.burnable",
                                 {
-                                    amount: formatTokenAmount(
+                                    amount: formatCurrencyAmount(
                                         kpiTokenBalance,
                                         false
                                     ),
@@ -109,7 +109,7 @@ export const WalletActions = ({
                             t(
                                 "position.status.finalized.withBalance.redeemable",
                                 {
-                                    amount: formatTokenAmount(
+                                    amount: formatCurrencyAmount(
                                         kpiTokenBalance,
                                         false
                                     ),
