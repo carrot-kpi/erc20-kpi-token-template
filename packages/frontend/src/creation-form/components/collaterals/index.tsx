@@ -27,7 +27,12 @@ import {
     type NumberFormatValue,
     TokenWithLogoURI,
 } from "../../types";
-import { Amount, ERC20_ABI, Token, formatCurrencyAmount } from "@carrot-kpi/sdk";
+import {
+    Amount,
+    ERC20_ABI,
+    Token,
+    formatCurrencyAmount,
+} from "@carrot-kpi/sdk";
 import {
     type Address,
     useAccount,
