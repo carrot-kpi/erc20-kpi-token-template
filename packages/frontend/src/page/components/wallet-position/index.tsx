@@ -108,7 +108,7 @@ export const WalletPosition = ({
     ]);
 
     return !connectedAddress ? (
-        <div className="flex p-6 h-60 items-center justify-center w-full max-w-6xl bg-gray-200 dark:bg-black">
+        <div className="flex p-6 h-60 items-center justify-center w-full max-w-6xl bg-gray-200 dark:bg-black border border-black dark:border-gray-400">
             <Typography uppercase>{t("position.noWallet")}</Typography>
         </div>
     ) : (
