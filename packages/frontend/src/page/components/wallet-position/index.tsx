@@ -17,6 +17,7 @@ import { useWatchKPITokenCollateralBalances } from "../../hooks/useWatchKPIToken
 import type { FinalizableOracle } from "../../types";
 import { TokenAmount } from "../token-amount";
 import { WalletActions } from "./actions";
+import { RecoverCollateral } from "./recover-collateral";
 
 interface WalletPositionProps {
     t: NamespacedTranslateFunction;
@@ -218,7 +219,7 @@ export const WalletPosition = ({
                         )}
                     </div>
                 </div>
-                <div className="w-full flex flex-col md:flex-row justify-between gap-4 border-black border-b">
+                <div className="w-full flex flex-col md:flex-row justify-between border-black border-b">
                     <div className="w-full md:w-1/2 p-6 flex-col border-b border-black md:border-b-0 md:border-r">
                         <Typography
                             variant="xs"
@@ -266,6 +267,13 @@ export const WalletPosition = ({
                         redeemableRewards={redeemableRewards}
                     />
                 </div>
+                <RecoverCollateral
+                    t={t}
+                    onTx={onTx}
+                    kpiToken={kpiToken}
+                    collaterals={collaterals}
+                    kpiTokenCollateralBalances={kpiTokenCollateralBalances}
+                />
             </div>
         </div>
     );

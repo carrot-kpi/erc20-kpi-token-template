@@ -167,6 +167,7 @@ export const WalletActions = ({
             <Typography>{text}</Typography>
             {(redeemable || burnable) && (
                 <Button
+                    size="small"
                     loading={loading}
                     disabled={
                         !redeemableRewards ||

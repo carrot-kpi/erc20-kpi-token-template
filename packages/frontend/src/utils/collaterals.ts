@@ -104,3 +104,32 @@ export const getRedeemableRewards = (
         );
     });
 };
+
+export const getRecoverableRewards = (
+    collaterals: CollateralData[],
+    kpiTokenCollateralBalances: Amount<Token>[],
+    expired: boolean
+): Amount<Token>[] => {
+    return kpiTokenCollateralBalances
+        .map((balance) => {
+            const neededAmount = collaterals.find(
+                (collateral) => collateral.amount.currency === balance.currency
+            );
+            if (!neededAmount) return new Amount(balance.currency, 0n);
+
+            let recoverableAmount: Amount<Token>;
+            if (expired)
+                recoverableAmount = new Amount(
+                    balance.currency,
+                    balance.raw - neededAmount.minimumPayout.raw
+                );
+            else
+                recoverableAmount = new Amount(
+                    balance.currency,
+                    balance.raw - neededAmount.amount.raw
+                );
+
+            return recoverableAmount;
+        })
+        .filter((balance) => balance.gt(0));
+};

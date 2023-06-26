@@ -3,7 +3,7 @@ import type {
     OracleInitializationBundle,
     OracleInitializationBundleGetter,
 } from "@carrot-kpi/react";
-import type { TokenInfoWithBalance } from "@carrot-kpi/ui";
+import type { SelectOption, TokenInfoWithBalance } from "@carrot-kpi/ui";
 import { type Address } from "viem";
 
 export type SpecificationData = Omit<KPITokenSpecification, "ipfsHash"> & {
@@ -85,3 +85,7 @@ export interface OutcomeConfigurationState {
 export type OutcomesConfigurationStepState = {
     [templateId: number]: OutcomeConfigurationState;
 };
+
+export interface OptionForCollateral extends SelectOption<Address> {
+    amount: Amount<Token>;
+}
