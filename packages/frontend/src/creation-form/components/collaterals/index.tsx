@@ -10,10 +10,7 @@ import {
     Skeleton,
     ErrorText,
 } from "@carrot-kpi/ui";
-import {
-    type NamespacedTranslateFunction,
-    useTokenLists,
-} from "@carrot-kpi/react";
+import { useTokenLists } from "@carrot-kpi/react";
 import {
     type ReactElement,
     useCallback,
@@ -57,14 +54,12 @@ import {
 import { formatUnits, parseUnits } from "viem";
 
 interface CollateralProps {
-    t: NamespacedTranslateFunction;
     state: CollateralsStepState;
     onStateChange: (state: CollateralsStepState) => void;
     onNext: (collaterals: CollateralData[]) => void;
 }
 
 export const Collaterals = ({
-    t,
     state,
     onStateChange,
     onNext,
@@ -313,7 +308,7 @@ export const Collaterals = ({
                 !newPickerRawAmount.value ||
                 parseFloat(newPickerRawAmount.value) === 0
             )
-                errorMessage = t("error.collaterals.empty");
+                errorMessage = "test";
             else if (
                 data.value <
                 parseUnits(
@@ -321,7 +316,7 @@ export const Collaterals = ({
                     data.decimals
                 )
             )
-                errorMessage = t("error.collaterals.insufficient");
+                errorMessage = "test";
 
             setCollateralAmountErrorMessage(errorMessage);
             onStateChange({
@@ -329,7 +324,7 @@ export const Collaterals = ({
                 pickerAmount: newPickerRawAmount,
             });
         },
-        [onStateChange, state, data, t]
+        [onStateChange, state, data /*t*/]
     );
 
     const handlePickerRawMinimumAmountChange = useCallback(
@@ -346,12 +341,12 @@ export const Collaterals = ({
             );
 
             if (!newPickerRawMinimumPayout || !newPickerRawMinimumPayout.value)
-                errorMessage = t("error.collaterals.minimumPayoutEmpty");
+                errorMessage = "test";
             else if (
                 amountMinusFees === 0 ||
                 parsedMinimumAmount >= amountMinusFees
             )
-                errorMessage = t("error.collaterals.minimumPayoutTooHigh");
+                errorMessage = "test";
 
             setMinimumPayoutErrorMessage(errorMessage);
             onStateChange({
@@ -359,7 +354,7 @@ export const Collaterals = ({
                 pickerMinimumPayout: newPickerRawMinimumPayout,
             });
         },
-        [onStateChange, state, t]
+        [onStateChange, state /*t*/]
     );
 
     const handleCollateralAdd = useCallback((): void => {
@@ -447,14 +442,14 @@ export const Collaterals = ({
                 chainId={chain?.id}
                 messages={{
                     search: {
-                        title: t("erc20.picker.search.title"),
-                        inputPlaceholder: t("erc20.picker.search.placeholder"),
-                        noTokens: t("erc20.picker.search.no.token"),
-                        manageLists: t("erc20.picker.search.manage.lists"),
+                        title: "test",
+                        inputPlaceholder: "test",
+                        noTokens: "test",
+                        manageLists: "test",
                     },
                     manageLists: {
-                        title: t("erc20.picker.manage.lists.title"),
-                        noLists: t("erc20.picker.manage.lists.no.lists"),
+                        title: "test",
+                        noLists: "test",
                     },
                 }}
             />
@@ -471,9 +466,7 @@ export const Collaterals = ({
                                         <TextInput
                                             label=""
                                             autoComplete="off"
-                                            placeholder={t(
-                                                "label.collateral.picker.token.pick"
-                                            )}
+                                            placeholder={"test"}
                                             className={{
                                                 input: "w-full cursor-pointer",
                                             }}
@@ -503,7 +496,7 @@ export const Collaterals = ({
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-2">
                                         <Typography variant="sm">
-                                            {t("label.collateral.balance")}:{" "}
+                                            {"test"}:{" "}
                                         </Typography>
                                         {isLoading ? (
                                             <Skeleton variant="sm" />
@@ -520,9 +513,7 @@ export const Collaterals = ({
                                                     uppercase
                                                     onClick={handleMaxClick}
                                                 >
-                                                    {t(
-                                                        "label.collateral.picker.balance.max"
-                                                    )}
+                                                    {"test"}
                                                 </Typography>
                                             </>
                                         ) : (
@@ -545,11 +536,7 @@ export const Collaterals = ({
 
                                 <div className="flex-col gap-2 pt-1.5">
                                     <div className="flex items-center justify-between">
-                                        <Typography>
-                                            {t(
-                                                "label.collateral.picker.minimum.payout"
-                                            )}
-                                        </Typography>
+                                        <Typography>{"test"}</Typography>
                                         <NumberInput
                                             label=""
                                             placeholder="0.0"
@@ -583,9 +570,7 @@ export const Collaterals = ({
                                 <div className="h-px w-full bg-black" />
 
                                 <div className="flex items-center justify-between">
-                                    <Typography>
-                                        {t("label.collateral.picker.fee")}
-                                    </Typography>
+                                    <Typography>{"test"}</Typography>
                                     <Typography
                                         className={{ root: "text-right" }}
                                     >
@@ -606,7 +591,7 @@ export const Collaterals = ({
                             disabled={addDisabled}
                             className={{ root: "w-full md:w-fit" }}
                         >
-                            {t("label.collateral.picker.apply")}
+                            {"test"}
                         </Button>
                         {(!!collateralAmountErrorMessage ||
                             !!minimumPayoutErrorMessage) && (
@@ -626,13 +611,12 @@ export const Collaterals = ({
                     </div>
                 </div>
                 <CollateralsTable
-                    t={t}
                     collaterals={state.collaterals}
                     onRemove={handleRemoveCollateral}
                 />
             </div>
             <NextStepButton onClick={handleNext} disabled={disabled}>
-                {t("next")}
+                {"test"}
             </NextStepButton>
         </>
     );

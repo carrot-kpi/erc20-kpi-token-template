@@ -5,10 +5,7 @@ import type {
     SpecificationData,
     TokenData,
 } from "../../types";
-import {
-    type NamespacedTranslateFunction,
-    useDecentralizedStorageUploader,
-} from "@carrot-kpi/react";
+import { useDecentralizedStorageUploader } from "@carrot-kpi/react";
 import {
     MarkdownInput,
     NumberInput,
@@ -34,7 +31,6 @@ import {
 import { parseUnits } from "viem";
 
 interface GenericDataProps {
-    t: NamespacedTranslateFunction;
     state: GenericDataStepState;
     onStateChange: (state: GenericDataStepState) => void;
     onNext: (
@@ -45,7 +41,6 @@ interface GenericDataProps {
 }
 
 export const GenericData = ({
-    t,
     state,
     onStateChange,
     onNext,
@@ -81,16 +76,14 @@ export const GenericData = ({
         (value: string): void => {
             setTitleErrorText(
                 !value
-                    ? t("error.title.empty")
+                    ? "test"
                     : value.trim().length > MAX_KPI_TOKEN_TITLE_CHARS
-                    ? t("error.title.tooLong", {
-                          chars: MAX_KPI_TOKEN_TITLE_CHARS,
-                      })
+                    ? "test"
                     : ""
             );
             onStateChange({ ...state, title: value });
         },
-        [onStateChange, state, t]
+        [onStateChange, state]
     );
 
     const handleDescriptionChange = useCallback(
@@ -98,65 +91,53 @@ export const GenericData = ({
             const trimmedValue = stripHtml(value).trim();
             setDescriptionErrorText(
                 !trimmedValue
-                    ? t("error.description.empty")
+                    ? "test"
                     : trimmedValue.length > MAX_KPI_TOKEN_DESCRIPTION_CHARS
-                    ? t("error.description.tooLong", {
-                          chars: MAX_KPI_TOKEN_DESCRIPTION_CHARS,
-                      })
+                    ? "test"
                     : ""
             );
             onStateChange({ ...state, description: value });
         },
-        [onStateChange, state, t]
+        [onStateChange, state]
     );
 
     const handleTagsChange = useCallback(
         (value: string[]) => {
             if (value.some((tag) => tag.length > MAX_KPI_TOKEN_TAG_CHARS)) {
-                setTagsErrorText(
-                    t("error.tags.tooLong", {
-                        chars: MAX_KPI_TOKEN_TAG_CHARS,
-                    })
-                );
+                setTagsErrorText("test");
                 return;
             }
             if (value.some((tag, i) => value.indexOf(tag) !== i)) {
-                setTagsErrorText(t("error.tags.duplicated"));
+                setTagsErrorText("test");
                 return;
             }
             setTagsErrorText(
                 value.length === 0
-                    ? t("error.tags.empty")
+                    ? "test"
                     : value.length > MAX_KPI_TOKEN_TAGS_COUNT
-                    ? t("error.tags.tooMany", {
-                          count: MAX_KPI_TOKEN_TAGS_COUNT,
-                      })
+                    ? "test"
                     : ""
             );
             onStateChange({ ...state, tags: value });
         },
-        [onStateChange, state, t]
+        [onStateChange, state]
     );
 
     const handleExpirationChange = useCallback(
         (value: Date) => {
-            setExpirationErrorText(
-                isInThePast(value) ? t("error.expiration.past") : ""
-            );
+            setExpirationErrorText(isInThePast(value) ? "test" : "");
             onStateChange({ ...state, expiration: value });
         },
-        [onStateChange, state, t]
+        [onStateChange, state]
     );
 
     const handleERC20NameChange = useCallback(
         (value: string) => {
             setERC20NameErrorText(
                 !value
-                    ? t("error.erc20.name.empty")
+                    ? "test"
                     : value.trim().length > MAX_KPI_TOKEN_ERC20_NAME_CHARS
-                    ? t("error.erc20.name.tooLong", {
-                          chars: MAX_KPI_TOKEN_ERC20_NAME_CHARS,
-                      })
+                    ? "test"
                     : ""
             );
             onStateChange({
@@ -164,18 +145,16 @@ export const GenericData = ({
                 erc20Name: value,
             });
         },
-        [onStateChange, state, t]
+        [onStateChange, state]
     );
 
     const handleERC20SymbolChange = useCallback(
         (value: string) => {
             setERC20SymbolErrorText(
                 !value
-                    ? t("error.erc20.symbol.empty")
+                    ? "test"
                     : value.trim().length > MAX_KPI_TOKEN_ERC20_SYMBOL_CHARS
-                    ? t("error.erc20.symbol.tooLong", {
-                          chars: MAX_KPI_TOKEN_ERC20_SYMBOL_CHARS,
-                      })
+                    ? "test"
                     : ""
             );
             onStateChange({
@@ -183,7 +162,7 @@ export const GenericData = ({
                 erc20Symbol: value,
             });
         },
-        [onStateChange, state, t]
+        [onStateChange, state]
     );
 
     const handleERC20SupplyChange = useCallback(
@@ -196,7 +175,7 @@ export const GenericData = ({
                             ? parseFloat(value.value)
                             : 0
                     ) === 0n
-                    ? t("error.erc20.supply.zero")
+                    ? "test"
                     : ""
             );
             onStateChange({
@@ -204,7 +183,7 @@ export const GenericData = ({
                 erc20Supply: value,
             });
         },
-        [onStateChange, state, t]
+        [onStateChange, state]
     );
 
     const handleNext = useCallback(async () => {
@@ -258,8 +237,8 @@ export const GenericData = ({
     return (
         <div className="flex flex-col gap-6">
             <NoSpecialCharactersTextInput
-                label={t("general.label.title")}
-                placeholder={t("general.placeholder.title")}
+                label={"test"}
+                placeholder={"test"}
                 onChange={handleTitleChange}
                 value={state.title}
                 error={!!titleErrorText}
@@ -270,8 +249,8 @@ export const GenericData = ({
                 }}
             />
             <MarkdownInput
-                label={t("general.label.description")}
-                placeholder={t("general.placeholder.description")}
+                label={"test"}
+                placeholder={"test"}
                 onChange={handleDescriptionChange}
                 error={!!descriptionErrorText}
                 errorText={descriptionErrorText}
@@ -282,13 +261,13 @@ export const GenericData = ({
                 }}
             />
             <TagsInput
-                label={t("general.label.tags")}
-                placeholder={t("general.placeholder.tags")}
+                label={"test"}
+                placeholder={"test"}
                 onChange={handleTagsChange}
                 value={state.tags}
                 error={!!tagsErrorText}
                 errorText={tagsErrorText}
-                messages={{ add: t("add") }}
+                messages={{ add: "test" }}
                 className={{
                     root: "w-full",
                     input: "w-full",
@@ -296,8 +275,8 @@ export const GenericData = ({
                 }}
             />
             <DateTimeInput
-                label={t("general.label.expiration")}
-                placeholder={t("general.placeholder.expiration")}
+                label={"test"}
+                placeholder={"test"}
                 onChange={handleExpirationChange}
                 value={state.expiration}
                 error={!!expirationErrorText}
@@ -305,11 +284,9 @@ export const GenericData = ({
                 info={
                     <>
                         <Typography variant="sm" className={{ root: "mb-2" }}>
-                            {t("general.info.expiration.1")}
+                            {"test"}
                         </Typography>
-                        <Typography variant="sm">
-                            {t("general.info.expiration.2")}
-                        </Typography>
+                        <Typography variant="sm">{"test"}</Typography>
                     </>
                 }
                 min={minimumDate}
@@ -321,7 +298,7 @@ export const GenericData = ({
             />
             <div className="flex flex-col md:flex-row w-full gap-4">
                 <NoSpecialCharactersTextInput
-                    label={t("general.label.token.name")}
+                    label={"test"}
                     placeholder={"Example"}
                     onChange={handleERC20NameChange}
                     value={state.erc20Name}
@@ -334,7 +311,7 @@ export const GenericData = ({
                     }}
                 />
                 <NoSpecialCharactersTextInput
-                    label={t("general.label.token.symbol")}
+                    label={"test"}
                     placeholder={"XMPL"}
                     onChange={handleERC20SymbolChange}
                     value={state.erc20Symbol}
@@ -348,7 +325,7 @@ export const GenericData = ({
                 />
                 <NumberInput
                     allowNegative={false}
-                    label={t("general.label.token.supply")}
+                    label={"test"}
                     placeholder={"1,000,000"}
                     onValueChange={handleERC20SupplyChange}
                     value={state.erc20Supply?.formattedValue}
@@ -366,7 +343,7 @@ export const GenericData = ({
                 disabled={disabled}
                 loading={loading}
             >
-                {t("next")}
+                {"test"}
             </NextStepButton>
         </div>
     );
