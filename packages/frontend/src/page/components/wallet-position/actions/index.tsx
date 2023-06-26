@@ -157,6 +157,7 @@ export const WalletActions = ({
                 timestamp: unixTimestamp(new Date()),
             });
         } catch (error) {
+            console.error(`could not perform action`, error);
         } finally {
             setLoading(false);
         }
@@ -167,6 +168,7 @@ export const WalletActions = ({
             <Typography>{text}</Typography>
             {(redeemable || burnable) && (
                 <Button
+                    size="small"
                     loading={loading}
                     disabled={
                         !redeemableRewards ||

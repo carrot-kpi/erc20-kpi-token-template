@@ -2,10 +2,22 @@ import type {
     KPITokenPageProps,
     NamespacedTranslateFunction,
 } from "@carrot-kpi/react";
-import { Amount, ResolvedKPIToken, Token } from "@carrot-kpi/sdk";
+import {
+    Amount,
+    KPI_TOKEN_ABI,
+    ResolvedKPIToken,
+    Token,
+} from "@carrot-kpi/sdk";
 import { Skeleton, Typography } from "@carrot-kpi/ui";
 import { type ReactElement, useEffect, useState } from "react";
-import { type Address, useAccount, useBalance, useEnsName } from "wagmi";
+import {
+    type Address,
+    useAccount,
+    useBalance,
+    useEnsName,
+    useContractRead,
+    useNetwork,
+} from "wagmi";
 import { mainnet } from "wagmi/chains";
 import type { CollateralData } from "../../../creation-form/types";
 import {
@@ -17,6 +29,7 @@ import { useWatchKPITokenCollateralBalances } from "../../hooks/useWatchKPIToken
 import type { FinalizableOracle } from "../../types";
 import { TokenAmount } from "../token-amount";
 import { WalletActions } from "./actions";
+import { RecoverCollateral } from "./recover-collateral";
 
 interface WalletPositionProps {
     t: NamespacedTranslateFunction;
@@ -42,6 +55,7 @@ export const WalletPosition = ({
     erc20Name,
 }: WalletPositionProps): ReactElement => {
     const { address: connectedAddress } = useAccount();
+    const { chain } = useNetwork();
     const { data: ensName, isLoading: loadingENSName } = useEnsName({
         address: connectedAddress as Address,
         chainId: mainnet.id,
@@ -55,6 +69,14 @@ export const WalletPosition = ({
         balances: kpiTokenCollateralBalances,
         loading: loadingKPITokenCollateralBalances,
     } = useWatchKPITokenCollateralBalances(kpiToken.address, collaterals);
+
+    const { data: kpiTokenOwner } = useContractRead({
+        chainId: chain?.id,
+        address: kpiToken.address as Address,
+        abi: KPI_TOKEN_ABI,
+        functionName: "owner",
+        enabled: !!chain?.id && !!connectedAddress,
+    });
 
     const [balance, setBalance] = useState<Amount<Token> | null>(null);
     const [guaranteedRewards, setGuaranteedRewards] = useState<
@@ -106,6 +128,11 @@ export const WalletPosition = ({
         oracles,
         rawKpiTokenBalance,
     ]);
+
+    const owner =
+        !!kpiTokenOwner &&
+        !!connectedAddress &&
+        kpiTokenOwner === connectedAddress;
 
     return !connectedAddress ? (
         <div className="flex p-6 h-60 items-center justify-center w-full max-w-6xl bg-gray-200 dark:bg-black border border-black dark:border-gray-400">
@@ -218,7 +245,7 @@ export const WalletPosition = ({
                         )}
                     </div>
                 </div>
-                <div className="w-full flex flex-col md:flex-row justify-between gap-4 border-black border-b">
+                <div className="w-full flex flex-col md:flex-row justify-between border-black border-b">
                     <div className="w-full md:w-1/2 p-6 flex-col border-b border-black md:border-b-0 md:border-r">
                         <Typography
                             variant="xs"
@@ -266,6 +293,15 @@ export const WalletPosition = ({
                         redeemableRewards={redeemableRewards}
                     />
                 </div>
+                {owner && (
+                    <RecoverCollateral
+                        t={t}
+                        onTx={onTx}
+                        kpiToken={kpiToken}
+                        collaterals={collaterals}
+                        kpiTokenCollateralBalances={kpiTokenCollateralBalances}
+                    />
+                )}
             </div>
         </div>
     );
