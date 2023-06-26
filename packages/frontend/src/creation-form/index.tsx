@@ -250,7 +250,6 @@ export const Component = ({
                         // FIXME: find a better way to avoid the !
                         className={{
                             stepLabel: "!hidden",
-                            step: "[&:first-of-type]:items-start [&:first-of-type]:w-6 [&:last-of-type]:items-end [&:alst-of-type]:w-6",
                         }}
                     />
                 </div>
