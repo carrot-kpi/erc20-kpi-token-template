@@ -9,7 +9,7 @@ import {
     Token,
 } from "@carrot-kpi/sdk";
 import { Skeleton, Typography } from "@carrot-kpi/ui";
-import { type ReactElement, useEffect, useState, useMemo } from "react";
+import { type ReactElement, useEffect, useState } from "react";
 import {
     type Address,
     useAccount,
