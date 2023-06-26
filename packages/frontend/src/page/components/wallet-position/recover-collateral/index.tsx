@@ -17,7 +17,6 @@ import type {
 import { type Address, zeroAddress, formatUnits } from "viem";
 import {
     usePrepareContractWrite,
-    useContractRead,
     useContractWrite,
     useAccount,
     useNetwork,
@@ -53,14 +52,6 @@ export const RecoverCollateral = ({
     const [collateralToRecover, setCollateralToRecover] =
         useState<SelectOption<Address> | null>(null);
 
-    const { data: kpiTokenOwner } = useContractRead({
-        chainId: chain?.id,
-        address: kpiToken.address as Address,
-        abi: KPI_TOKEN_ABI,
-        functionName: "owner",
-        enabled: !!chain?.id && !!address,
-    });
-
     const { config: recoverConfig } = usePrepareContractWrite({
         chainId: chain?.id,
         address: kpiToken.address as Address,
@@ -73,11 +64,6 @@ export const RecoverCollateral = ({
         enabled: !!chain?.id && !!address && !!collateralToRecover,
     });
     const { writeAsync: recoverAsync } = useContractWrite(recoverConfig);
-
-    const owner = useMemo(
-        () => !!kpiTokenOwner && !!address && kpiTokenOwner === address,
-        [kpiTokenOwner, address]
-    );
 
     const collateralOptions: OptionForCollateral[] = useMemo(() => {
         if (!collaterals || !kpiTokenCollateralBalances) return [];
@@ -135,7 +121,6 @@ export const RecoverCollateral = ({
 
     return (
         (kpiToken.expired || kpiToken.finalized) &&
-        owner &&
         collateralOptions.length > 0 && (
             <div className="flex flex-col gap-4 p-6 border-black dark:border-white border-t">
                 <Typography>{t("collaterals.recover")}</Typography>

@@ -2,10 +2,22 @@ import type {
     KPITokenPageProps,
     NamespacedTranslateFunction,
 } from "@carrot-kpi/react";
-import { Amount, ResolvedKPIToken, Token } from "@carrot-kpi/sdk";
+import {
+    Amount,
+    KPI_TOKEN_ABI,
+    ResolvedKPIToken,
+    Token,
+} from "@carrot-kpi/sdk";
 import { Skeleton, Typography } from "@carrot-kpi/ui";
-import { type ReactElement, useEffect, useState } from "react";
-import { type Address, useAccount, useBalance, useEnsName } from "wagmi";
+import { type ReactElement, useEffect, useState, useMemo } from "react";
+import {
+    type Address,
+    useAccount,
+    useBalance,
+    useEnsName,
+    useContractRead,
+    useNetwork,
+} from "wagmi";
 import { mainnet } from "wagmi/chains";
 import type { CollateralData } from "../../../creation-form/types";
 import {
@@ -43,6 +55,7 @@ export const WalletPosition = ({
     erc20Name,
 }: WalletPositionProps): ReactElement => {
     const { address: connectedAddress } = useAccount();
+    const { chain } = useNetwork();
     const { data: ensName, isLoading: loadingENSName } = useEnsName({
         address: connectedAddress as Address,
         chainId: mainnet.id,
@@ -57,6 +70,14 @@ export const WalletPosition = ({
         loading: loadingKPITokenCollateralBalances,
     } = useWatchKPITokenCollateralBalances(kpiToken.address, collaterals);
 
+    const { data: kpiTokenOwner } = useContractRead({
+        chainId: chain?.id,
+        address: kpiToken.address as Address,
+        abi: KPI_TOKEN_ABI,
+        functionName: "owner",
+        enabled: !!chain?.id && !!connectedAddress,
+    });
+
     const [balance, setBalance] = useState<Amount<Token> | null>(null);
     const [guaranteedRewards, setGuaranteedRewards] = useState<
         Amount<Token>[] | null
@@ -67,6 +88,14 @@ export const WalletPosition = ({
     const [redeemableRewards, setRedeemableRewards] = useState<
         Amount<Token>[] | null
     >(null);
+
+    const owner = useMemo(
+        () =>
+            !!kpiTokenOwner &&
+            !!connectedAddress &&
+            kpiTokenOwner === connectedAddress,
+        [kpiTokenOwner, connectedAddress]
+    );
 
     useEffect(() => {
         if (!rawKpiTokenBalance || !initialSupply || !oracles) return;
@@ -267,13 +296,15 @@ export const WalletPosition = ({
                         redeemableRewards={redeemableRewards}
                     />
                 </div>
-                <RecoverCollateral
-                    t={t}
-                    onTx={onTx}
-                    kpiToken={kpiToken}
-                    collaterals={collaterals}
-                    kpiTokenCollateralBalances={kpiTokenCollateralBalances}
-                />
+                {owner && (
+                    <RecoverCollateral
+                        t={t}
+                        onTx={onTx}
+                        kpiToken={kpiToken}
+                        collaterals={collaterals}
+                        kpiTokenCollateralBalances={kpiTokenCollateralBalances}
+                    />
+                )}
             </div>
         </div>
     );
