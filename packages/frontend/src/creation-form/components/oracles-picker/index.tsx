@@ -1,4 +1,3 @@
-import type { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Template } from "@carrot-kpi/sdk";
 import { Typography, NextStepButton, Checkbox } from "@carrot-kpi/ui";
 import { type ReactElement, useCallback, useEffect, useState } from "react";
@@ -8,7 +7,6 @@ import { OracleTemplate } from "../../../ui/oracle-template";
 type TemplatesMap = { [id: number]: Template };
 
 interface OraclesPickerProps {
-    t: NamespacedTranslateFunction;
     loading?: boolean;
     templates: Template[];
     oracleTemplatesData: Template[];
@@ -16,7 +14,6 @@ interface OraclesPickerProps {
 }
 
 export const OraclesPicker = ({
-    t,
     loading,
     templates,
     oracleTemplatesData,
@@ -46,9 +43,7 @@ export const OraclesPicker = ({
                 </div>
             ) : (
                 <>
-                    <Typography weight="medium">
-                        {t("oracles.picker.label")}
-                    </Typography>
+                    <Typography weight="medium">{"test"}</Typography>
                     <div className="flex gap-7 overflow-x-auto">
                         {templates.map((template) => {
                             const checked = !!pickedTemplates[template.id];
@@ -58,7 +53,6 @@ export const OraclesPicker = ({
                                     className="flex flex-col items-center gap-3 p-2"
                                 >
                                     <OracleTemplate
-                                        t={t}
                                         key={template.id}
                                         template={template}
                                     />
@@ -87,13 +81,13 @@ export const OraclesPicker = ({
                     </div>
                     {/* TODO: make this a thing when multiple oracles will be properly supported */}
                     {/* <Typography weight="medium">
-                        {t("oracles.picker.selected")}{" "}
+                        {"test"}{" "}
                         {Object.keys(pickedTemplates).length}
                     </Typography> */}
                 </>
             )}
             <NextStepButton onClick={handleNext} disabled={disabled}>
-                {t("next")}
+                {"test"}
             </NextStepButton>
         </div>
     );

@@ -1,14 +1,9 @@
-import {
-    type KPITokenPageProps,
-    type NamespacedTranslateFunction,
-    TxType,
-} from "@carrot-kpi/react";
+import { type KPITokenPageProps, TxType } from "@carrot-kpi/react";
 import {
     Amount,
     Token,
     KPI_TOKEN_ABI,
     ResolvedKPIToken,
-    formatCurrencyAmount,
 } from "@carrot-kpi/sdk";
 import { Button, Typography } from "@carrot-kpi/ui";
 import { useCallback, useEffect, useState } from "react";
@@ -24,7 +19,6 @@ import { unixTimestamp } from "../../../../utils/dates";
 import { encodeAbiParameters, zeroAddress } from "viem";
 
 interface WalletActionsProps {
-    t: NamespacedTranslateFunction;
     onTx: KPITokenPageProps["onTx"];
     kpiToken: ResolvedKPIToken;
     kpiTokenBalance?: Amount<Token> | null;
@@ -32,7 +26,6 @@ interface WalletActionsProps {
 }
 
 export const WalletActions = ({
-    t,
     onTx,
     kpiToken,
     kpiTokenBalance,
@@ -80,45 +73,14 @@ export const WalletActions = ({
 
     useEffect(() => {
         if (kpiToken.expired) {
-            setText(
-                kpiTokenBalance && kpiTokenBalance.gt(0)
-                    ? t("position.status.expired.withBalance", {
-                          amount: formatCurrencyAmount(kpiTokenBalance, false),
-                          symbol: kpiTokenBalance.currency.symbol,
-                      })
-                    : t("position.status.expired.noBalance")
-            );
+            setText(kpiTokenBalance && kpiTokenBalance.gt(0) ? "test" : "test");
         } else {
             if (kpiToken.finalized) {
                 if (kpiTokenBalance && kpiTokenBalance.gt(0)) {
-                    if (burnable)
-                        setText(
-                            t(
-                                "position.status.finalized.withBalance.burnable",
-                                {
-                                    amount: formatCurrencyAmount(
-                                        kpiTokenBalance,
-                                        false
-                                    ),
-                                    symbol: kpiTokenBalance.currency.symbol,
-                                }
-                            )
-                        );
-                    else if (redeemable)
-                        setText(
-                            t(
-                                "position.status.finalized.withBalance.redeemable",
-                                {
-                                    amount: formatCurrencyAmount(
-                                        kpiTokenBalance,
-                                        false
-                                    ),
-                                    symbol: kpiTokenBalance.currency.symbol,
-                                }
-                            )
-                        );
-                } else setText(t("position.status.finalized.noBalance"));
-            } else setText(t("position.status.notFinalized"));
+                    if (burnable) setText("test");
+                    else if (redeemable) setText("test");
+                } else setText("test");
+            } else setText("test");
         }
     }, [
         burnable,
@@ -126,7 +88,6 @@ export const WalletActions = ({
         kpiToken.finalized,
         kpiTokenBalance,
         redeemable,
-        t,
     ]);
 
     const handleClick = useCallback(async () => {
@@ -178,8 +139,8 @@ export const WalletActions = ({
                     }
                     onClick={handleClick}
                 >
-                    {redeemable && t("redeem")}
-                    {burnable && t("burn")}
+                    {redeemable && "test"}
+                    {burnable && "test"}
                 </Button>
             )}
         </div>
