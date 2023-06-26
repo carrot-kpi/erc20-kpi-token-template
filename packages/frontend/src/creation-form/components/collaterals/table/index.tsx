@@ -1,4 +1,3 @@
-import type { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Typography } from "@carrot-kpi/ui";
 import { cva } from "class-variance-authority";
 import type { CollateralData } from "../../../types";
@@ -22,7 +21,6 @@ const containerStyles = cva(
 );
 
 interface CollateralsTableProps {
-    t: NamespacedTranslateFunction;
     onRemove?: (index: number) => void;
     collaterals: CollateralData[];
     noEdit?: boolean;
@@ -30,7 +28,6 @@ interface CollateralsTableProps {
 }
 
 export const CollateralsTable = ({
-    t,
     noEdit,
     noBorder = false,
     onRemove,
@@ -40,21 +37,21 @@ export const CollateralsTable = ({
         <div className="flex flex-col gap-2">
             <div className="grid grid-cols-3">
                 <Typography weight="medium" variant="sm">
-                    {t("label.collateral.table.collateral")}
+                    {"test"}
                 </Typography>
                 <Typography
                     weight="medium"
                     className={{ root: "text-center" }}
                     variant="sm"
                 >
-                    {t("label.collateral.table.amount")}
+                    {"test"}
                 </Typography>
                 <Typography
                     weight="medium"
                     className={{ root: "text-right" }}
                     variant="sm"
                 >
-                    {t("label.collateral.table.minimum.payout")}
+                    {"test"}
                 </Typography>
             </div>
             <div className={containerStyles({ noBorder })}>
@@ -66,13 +63,12 @@ export const CollateralsTable = ({
                         }}
                         weight="medium"
                     >
-                        {t("label.collateral.table.empty")}
+                        {"test"}
                     </Typography>
                 ) : (
                     collaterals.map((collateral, index) => {
                         return (
                             <CollateralRow
-                                t={t}
                                 noEdit={noEdit}
                                 key={collateral.amount.currency.address}
                                 index={index}
