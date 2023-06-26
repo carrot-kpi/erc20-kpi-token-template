@@ -1,7 +1,7 @@
 {
     "private": true,
     "name": "erc20-kpi-token-template",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "A Carrot template.",
     "license": "GPL-3.0",
     "templateType": "kpi-token",

@@ -1,7 +1,7 @@
 {
     "type": "module",
     "name": "erc20-kpi-token-template-contracts",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "A preset for developing Carrot KPI token template smart contracts with Foundry and Solidity.",
     "author": "Federico Luzzi <federico.luzzi@protonmail.com>",
     "license": "GPL-3.0-or-later",
