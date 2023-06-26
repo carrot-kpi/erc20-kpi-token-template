@@ -89,14 +89,6 @@ export const WalletPosition = ({
         Amount<Token>[] | null
     >(null);
 
-    const owner = useMemo(
-        () =>
-            !!kpiTokenOwner &&
-            !!connectedAddress &&
-            kpiTokenOwner === connectedAddress,
-        [kpiTokenOwner, connectedAddress]
-    );
-
     useEffect(() => {
         if (!rawKpiTokenBalance || !initialSupply || !oracles) return;
         const balance = new Amount(
@@ -136,6 +128,11 @@ export const WalletPosition = ({
         oracles,
         rawKpiTokenBalance,
     ]);
+
+    const owner =
+        !!kpiTokenOwner &&
+        !!connectedAddress &&
+        kpiTokenOwner === connectedAddress;
 
     return !connectedAddress ? (
         <div className="flex p-6 h-60 items-center justify-center w-full max-w-6xl bg-gray-200 dark:bg-black border border-black dark:border-gray-400">
