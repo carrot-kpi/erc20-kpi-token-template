@@ -323,13 +323,30 @@ export const Collaterals = ({
             )
                 errorMessage = t("error.collaterals.insufficient");
 
+            if (
+                !!minimumPayoutErrorMessage &&
+                !!state.pickerMinimumPayout &&
+                parseFloat(newPickerRawAmount.value) >
+                    parseFloat(state.pickerMinimumPayout.value)
+            )
+                setMinimumPayoutErrorMessage("");
+            else if (
+                !minimumPayoutErrorMessage &&
+                !!state.pickerMinimumPayout &&
+                parseFloat(newPickerRawAmount.value) <
+                    parseFloat(state.pickerMinimumPayout.value)
+            )
+                setMinimumPayoutErrorMessage(
+                    t("error.collaterals.minimumPayoutTooHigh")
+                );
+
             setCollateralAmountErrorMessage(errorMessage);
             onStateChange({
                 ...state,
                 pickerAmount: newPickerRawAmount,
             });
         },
-        [onStateChange, state, data, t]
+        [onStateChange, state, minimumPayoutErrorMessage, data, t]
     );
 
     const handlePickerRawMinimumAmountChange = useCallback(
