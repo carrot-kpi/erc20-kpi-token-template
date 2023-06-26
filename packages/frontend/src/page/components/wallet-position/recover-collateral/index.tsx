@@ -110,6 +110,10 @@ export const RecoverCollateral = ({
             });
             setCollateralToRecover(null);
         } catch (error) {
+            console.error(
+                `could not recover collateral ${collateralToRecover}`,
+                error
+            );
         } finally {
             setLoadingRecover(false);
         }

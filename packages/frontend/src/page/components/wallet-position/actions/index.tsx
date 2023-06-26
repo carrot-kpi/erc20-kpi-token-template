@@ -157,6 +157,7 @@ export const WalletActions = ({
                 timestamp: unixTimestamp(new Date()),
             });
         } catch (error) {
+            console.error(`could not perform action`, error);
         } finally {
             setLoading(false);
         }
