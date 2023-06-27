@@ -34,7 +34,7 @@ import { outcomeConfigurationFromOracleData } from "./utils/outcomes-configurati
 // and state change features for the oracle picker state too
 export const Component = ({
     i18n,
-    // t,
+    t,
     template,
     onCreate,
     navigate,
@@ -45,8 +45,23 @@ export const Component = ({
 
     const enableOraclePickStep = !loading && oracleTemplates.length > 1;
     const stepTitles = enableOraclePickStep
-        ? ["test", "test", "test", "test", "test", "test", "test"]
-        : ["test", "test", "test", "test", "test", "test"];
+        ? [
+              t("card.general.title"),
+              t("card.collateral.title"),
+              t("card.oracle.pick.title"),
+              t("card.oracle.configuration.title"),
+              t("card.outcome.configuration.title"),
+              t("card.deploy.title"),
+              t("card.success.title"),
+          ]
+        : [
+              t("card.general.title"),
+              t("card.collateral.title"),
+              t("card.oracle.configuration.title"),
+              t("card.outcome.configuration.title"),
+              t("card.deploy.title"),
+              t("card.success.title"),
+          ];
 
     const [step, setStep] = useState(0);
     const [mostUpdatedStep, setMostUpdatedStep] = useState(0);
@@ -250,19 +265,20 @@ export const Component = ({
                 </div>
                 <MultiStepCards
                     activeStep={step}
-                    messages={{ step: "test" }}
+                    messages={{ step: t("step") }}
                     className={{ root: "h-full justify-between z-[1]" }}
                 >
                     <StepCard
-                        title={"test"}
+                        title={t("card.general.title")}
                         step={1}
                         className={{ root: "relative pb-10" }}
-                        messages={{ step: "test" }}
+                        messages={{ step: t("step") }}
                     >
                         {!connectedAddress ? (
-                            <ConnectWallet />
+                            <ConnectWallet t={t} />
                         ) : (
                             <GenericData
+                                t={t}
                                 state={genericDataStepState}
                                 onStateChange={setGenericDataStepState}
                                 onNext={handleGenericDataNext}
@@ -270,12 +286,13 @@ export const Component = ({
                         )}
                     </StepCard>
                     <StepCard
-                        title={"test"}
+                        title={t("card.collateral.title")}
                         step={2}
                         className={{ root: "relative pb-10" }}
-                        messages={{ step: "test" }}
+                        messages={{ step: t("step") }}
                     >
                         <Collaterals
+                            t={t}
                             state={collateralsStepState}
                             onStateChange={setCollateralsStepState}
                             onNext={handleCollateralsNext}
@@ -283,12 +300,13 @@ export const Component = ({
                     </StepCard>
                     {enableOraclePickStep && (
                         <StepCard
-                            title={"test"}
+                            title={t("card.oracle.pick.title")}
                             step={3}
                             className={{ root: "relative pb-10" }}
-                            messages={{ step: "test" }}
+                            messages={{ step: t("step") }}
                         >
                             <OraclesPicker
+                                t={t}
                                 loading={loading}
                                 templates={oracleTemplates}
                                 oracleTemplatesData={oracleTemplatesData}
@@ -297,15 +315,16 @@ export const Component = ({
                         </StepCard>
                     )}
                     <StepCard
-                        title={"test"}
+                        title={t("card.oracle.configuration.title")}
                         step={enableOraclePickStep ? 4 : 3}
                         className={{ root: "relative pb-10" }}
-                        messages={{ step: "test" }}
+                        messages={{ step: t("step") }}
                     >
                         {!connectedAddress ? (
-                            <ConnectWallet />
+                            <ConnectWallet t={t} />
                         ) : (
                             <OraclesConfiguration
+                                t={t}
                                 i18n={i18n}
                                 specificationData={specificationData}
                                 templates={oracleTemplatesData}
@@ -318,12 +337,13 @@ export const Component = ({
                         )}
                     </StepCard>
                     <StepCard
-                        title={"test"}
+                        title={t("card.outcome.configuration.title")}
                         step={enableOraclePickStep ? 5 : 4}
                         className={{ root: "relative pb-10" }}
-                        messages={{ step: "test" }}
+                        messages={{ step: t("step") }}
                     >
                         <OutcomesConfiguration
+                            t={t}
                             state={outcomesConfigurationStepState}
                             onStateChange={setOutcomesConfigurationStepState}
                             templates={oracleTemplatesData}
@@ -332,15 +352,16 @@ export const Component = ({
                     </StepCard>
                     {!!specificationData && !!tokenData && (
                         <StepCard
-                            title={"test"}
+                            title={t("card.deploy.title")}
                             step={enableOraclePickStep ? 6 : 5}
                             className={{ root: "relative" }}
-                            messages={{ step: "test" }}
+                            messages={{ step: t("step") }}
                         >
                             {!connectedAddress ? (
-                                <ConnectWallet />
+                                <ConnectWallet t={t} />
                             ) : (
                                 <Deploy
+                                    t={t}
                                     templateId={template.id}
                                     specificationCID={specificationCID}
                                     expiration={specificationData.expiration}
@@ -357,11 +378,12 @@ export const Component = ({
                         </StepCard>
                     )}
                     <StepCard
-                        title={"test"}
+                        title={t("card.success.title")}
                         step={enableOraclePickStep ? 7 : 6}
-                        messages={{ step: "test" }}
+                        messages={{ step: t("step") }}
                     >
                         <Success
+                            t={t}
                             navigate={navigate}
                             kpiTokenAddress={createdKPITokenAddress}
                         />
