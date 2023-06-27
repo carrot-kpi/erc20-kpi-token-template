@@ -1,14 +1,19 @@
-import { useResolvedTemplate } from "@carrot-kpi/react";
+import {
+    type NamespacedTranslateFunction,
+    useResolvedTemplate,
+} from "@carrot-kpi/react";
 import { Template } from "@carrot-kpi/sdk";
 import { Skeleton, Typography } from "@carrot-kpi/ui";
 import type { ReactElement } from "react";
 import { shortenAddress } from "../../utils/address";
 
 interface OracleTemplateProps {
+    t: NamespacedTranslateFunction;
     template: Template;
 }
 
 export const OracleTemplate = ({
+    t,
     template,
 }: OracleTemplateProps): ReactElement => {
     const { loading: resolvingTemplate, resolvedTemplate } =
@@ -52,7 +57,9 @@ export const OracleTemplate = ({
                         </>
                     ) : (
                         <>
-                            <Typography uppercase>{"test"}</Typography>
+                            <Typography uppercase>
+                                {t("oracle.version")}
+                            </Typography>
                             <Typography>
                                 {resolvedTemplate.version.toString()}
                             </Typography>
@@ -67,7 +74,9 @@ export const OracleTemplate = ({
                         </>
                     ) : (
                         <>
-                            <Typography uppercase>{"test"}</Typography>
+                            <Typography uppercase>
+                                {t("oracle.address")}
+                            </Typography>
                             <Typography>
                                 {shortenAddress(template.address)}
                             </Typography>

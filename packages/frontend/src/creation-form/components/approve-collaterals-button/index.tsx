@@ -1,4 +1,8 @@
-import { type KPITokenCreationFormProps, TxType } from "@carrot-kpi/react";
+import {
+    type KPITokenCreationFormProps,
+    type NamespacedTranslateFunction,
+    TxType,
+} from "@carrot-kpi/react";
 import { Button } from "@carrot-kpi/ui";
 import { type ReactElement, useCallback, useMemo, useState } from "react";
 import {
@@ -14,6 +18,7 @@ import { unixTimestamp } from "../../../utils/dates";
 import type { CollateralData } from "../../types";
 
 interface ApproveCollateralsButtonProps {
+    t: NamespacedTranslateFunction;
     toApprove: CollateralData[];
     spender: Address;
     onApproved: () => void;
@@ -21,6 +26,7 @@ interface ApproveCollateralsButtonProps {
 }
 
 export const ApproveCollateralsButton = ({
+    t,
     toApprove,
     spender,
     onApproved,
@@ -103,9 +109,19 @@ export const ApproveCollateralsButton = ({
     ]);
 
     let message;
-    if (!approvingCollateral) message = "test";
-    else if (approving) message = "test";
-    else message = "test";
+    if (!approvingCollateral) message = t("label.collateral.approve.done");
+    else if (approving)
+        message = t("label.collateral.approving", {
+            symbol: approvingCollateral.amount.currency.symbol,
+            currentIndex: currentIndex + 1,
+            totalAmount: toApprove.length,
+        });
+    else
+        message = t("label.collateral.approve", {
+            symbol: approvingCollateral.amount.currency.symbol,
+            currentIndex: currentIndex + 1,
+            totalAmount: toApprove.length,
+        });
 
     return (
         <Button

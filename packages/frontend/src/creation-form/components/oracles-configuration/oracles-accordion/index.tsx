@@ -9,6 +9,7 @@ import {
 import { Template } from "@carrot-kpi/sdk";
 import { OracleCreationFormWrapper } from "../oracle-creation-form-wrapper";
 import {
+    type NamespacedTranslateFunction,
     type OracleCreationFormProps,
     type OracleInitializationBundleGetter,
     useResolvedTemplates,
@@ -16,6 +17,7 @@ import {
 import type { OraclesConfigurationStepState } from "../../../types";
 
 interface OraclesAccordionProps {
+    t: NamespacedTranslateFunction;
     i18n: OracleCreationFormProps<unknown>["i18n"];
     navigate: OracleCreationFormProps<unknown>["navigate"];
     onTx: OracleCreationFormProps<unknown>["onTx"];
@@ -30,6 +32,7 @@ interface OraclesAccordionProps {
 }
 
 export const OraclesAccordion = ({
+    t,
     i18n,
     navigate,
     onTx,
@@ -66,8 +69,12 @@ export const OraclesAccordion = ({
                                 <div className="flex justify-center">
                                     <ErrorFeedback
                                         messages={{
-                                            title: "test",
-                                            description: "test",
+                                            title: t(
+                                                "error.initializing.creation.title"
+                                            ),
+                                            description: t(
+                                                "error.initializing.creation.description"
+                                            ),
                                         }}
                                     />
                                 </div>

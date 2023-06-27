@@ -6,7 +6,10 @@ import {
     Typography,
 } from "@carrot-kpi/ui";
 import { Template } from "@carrot-kpi/sdk";
-import { useResolvedTemplates } from "@carrot-kpi/react";
+import {
+    type NamespacedTranslateFunction,
+    useResolvedTemplates,
+} from "@carrot-kpi/react";
 import {
     SingleConfiguration,
     type SingleConfigurationProps,
@@ -14,6 +17,7 @@ import {
 import type { OutcomesConfigurationStepState } from "../../../types";
 
 interface OraclesAccordionProps {
+    t: NamespacedTranslateFunction;
     onBinaryChange: SingleConfigurationProps["onBinaryChange"];
     onLowerBoundChange: SingleConfigurationProps["onLowerBoundChange"];
     onHigherBoundChange: SingleConfigurationProps["onHigherBoundChange"];
@@ -22,6 +26,7 @@ interface OraclesAccordionProps {
 }
 
 export const OraclesAccordion = ({
+    t,
     onBinaryChange,
     onLowerBoundChange,
     onHigherBoundChange,
@@ -47,6 +52,7 @@ export const OraclesAccordion = ({
                         </AccordionSummary>
                         <AccordionDetails>
                             <SingleConfiguration
+                                t={t}
                                 templateId={template.id}
                                 automaticallyFilled={
                                     data[id]?.automaticallyFilled

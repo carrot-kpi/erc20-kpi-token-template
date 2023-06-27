@@ -1,4 +1,8 @@
-import { TxType, type KPITokenPageProps } from "@carrot-kpi/react";
+import {
+    TxType,
+    type KPITokenPageProps,
+    type NamespacedTranslateFunction,
+} from "@carrot-kpi/react";
 import {
     KPI_TOKEN_ABI,
     type Amount,
@@ -24,6 +28,7 @@ import { unixTimestamp } from "../../../../utils/dates";
 import { TokenAmount } from "../../token-amount";
 
 interface RecoverCollateralProps {
+    t: NamespacedTranslateFunction;
     onTx: KPITokenPageProps["onTx"];
     kpiToken: ResolvedKPIToken;
     collaterals?: CollateralData[];
@@ -33,6 +38,7 @@ interface RecoverCollateralProps {
 }
 
 export const RecoverCollateral = ({
+    t,
     onTx,
     kpiToken,
     collaterals,
@@ -117,11 +123,11 @@ export const RecoverCollateral = ({
         (kpiToken.expired || kpiToken.finalized) &&
         collateralOptions.length > 0 && (
             <div className="flex flex-col gap-4 p-6 border-black dark:border-white border-t">
-                <Typography>{"test"}</Typography>
+                <Typography>{t("collaterals.recover")}</Typography>
                 <div className="flex flex-col gap-4">
                     <Select
-                        label={"test"}
-                        placeholder={"test"}
+                        label={t("collaterals.label")}
+                        placeholder={t("collaterals.recover.label")}
                         options={collateralOptions}
                         onChange={setCollateralToRecover}
                         value={collateralToRecover}
@@ -137,7 +143,7 @@ export const RecoverCollateral = ({
                         disabled={!recoverAsync}
                         onClick={handleCollateralRecoverClick}
                     >
-                        {"test"}
+                        {t("recover")}
                     </Button>
                 </div>
             </div>
