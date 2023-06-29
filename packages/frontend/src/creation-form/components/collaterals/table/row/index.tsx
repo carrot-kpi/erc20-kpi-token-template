@@ -3,23 +3,18 @@ import type { CollateralData } from "../../../../types";
 import { ReactComponent as X } from "../../../../../assets/x.svg";
 import { Popover, RemoteLogo, Typography } from "@carrot-kpi/ui";
 import { getDefaultERC20TokenLogoURL } from "../../../../../utils/erc20";
-import {
-    type NamespacedTranslateFunction,
-    useIPFSGatewayURL,
-} from "@carrot-kpi/react";
+import { useIPFSGatewayURL } from "@carrot-kpi/react";
 import { PROTOCOL_FEE_BPS } from "../../../../constants";
 import { Amount, formatCurrencyAmount } from "@carrot-kpi/sdk";
 import { parseUnits } from "viem";
 
 type CollateralRowProps = CollateralData & {
-    t: NamespacedTranslateFunction;
     index: number;
     noEdit?: boolean;
     onRemove?: (index: number) => void;
 };
 
 export const CollateralRow = ({
-    t,
     index,
     noEdit,
     onRemove,
@@ -88,24 +83,18 @@ export const CollateralRow = ({
                 className={{ root: "p-3 flex flex-col gap-2" }}
             >
                 <div className="flex gap-3 justify-between">
-                    <Typography variant="sm">
-                        {t("label.collateral.picker.fee")}
-                    </Typography>
+                    <Typography variant="sm">{"test"}</Typography>
                     <Typography variant="sm">
                         {PROTOCOL_FEE_BPS / 100}%
                     </Typography>
                 </div>
                 <div className="w-full h-[1px] bg-black dark:bg-white" />
                 <div className="flex gap-3 justify-between">
-                    <Typography variant="sm">
-                        {t("label.collateral.table.amount")}
-                    </Typography>
+                    <Typography variant="sm">{"test"}</Typography>
                     <Typography variant="sm">{formattedAmount}</Typography>
                 </div>
                 <div className="flex gap-3 justify-between">
-                    <Typography variant="sm">
-                        {t("label.collateral.table.amount.after.fees")}
-                    </Typography>
+                    <Typography variant="sm">{"test"}</Typography>
                     <Typography variant="sm">
                         {formattedAmountAfterFees}
                     </Typography>

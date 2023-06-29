@@ -2,7 +2,6 @@ import { ErrorFeedback, Loader } from "@carrot-kpi/ui";
 import { Template } from "@carrot-kpi/sdk";
 import { OracleCreationFormWrapper } from "../oracle-creation-form-wrapper";
 import {
-    type NamespacedTranslateFunction,
     type OracleCreationFormProps as ReactOracleCreationFormProps,
     type OracleInitializationBundleGetter,
     useResolvedTemplate,
@@ -10,7 +9,6 @@ import {
 import type { OraclesConfigurationStepState } from "../../../types";
 
 interface OracleCreationFormProps {
-    t: NamespacedTranslateFunction;
     i18n: ReactOracleCreationFormProps<unknown>["i18n"];
     navigate: ReactOracleCreationFormProps<unknown>["navigate"];
     onTx: ReactOracleCreationFormProps<unknown>["onTx"];
@@ -25,7 +23,6 @@ interface OracleCreationFormProps {
 }
 
 export const OracleCreationForm = ({
-    t,
     i18n,
     navigate,
     onTx,
@@ -48,10 +45,8 @@ export const OracleCreationForm = ({
                 <div className="flex justify-center">
                     <ErrorFeedback
                         messages={{
-                            title: t("error.initializing.creation.title"),
-                            description: t(
-                                "error.initializing.creation.description"
-                            ),
+                            title: "test",
+                            description: "test",
                         }}
                     />
                 </div>
