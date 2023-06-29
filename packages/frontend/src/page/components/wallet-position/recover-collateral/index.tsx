@@ -4,7 +4,6 @@ import {
     type NamespacedTranslateFunction,
 } from "@carrot-kpi/react";
 import {
-    KPI_TOKEN_ABI,
     type Amount,
     type ResolvedKPIToken,
     type Token,
@@ -14,6 +13,7 @@ import type {
     CollateralData,
     OptionForCollateral,
 } from "../../../../creation-form/types";
+import ERC20_KPI_TOKEN_ABI from "../../../../abis/erc20-kpi-token";
 import { type Address, zeroAddress, formatUnits } from "viem";
 import {
     usePrepareContractWrite,
@@ -55,7 +55,7 @@ export const RecoverCollateral = ({
     const { config: recoverConfig } = usePrepareContractWrite({
         chainId: chain?.id,
         address: kpiToken.address as Address,
-        abi: KPI_TOKEN_ABI,
+        abi: ERC20_KPI_TOKEN_ABI,
         functionName: "recoverERC20",
         args:
             !!address && !!collateralToRecover
