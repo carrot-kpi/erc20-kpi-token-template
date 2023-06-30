@@ -1,4 +1,7 @@
-import type { KPITokenPageProps } from "@carrot-kpi/react";
+import type {
+    KPITokenPageProps,
+    NamespacedTranslateFunction,
+} from "@carrot-kpi/react";
 import {
     Amount,
     KPI_TOKEN_ABI,
@@ -29,6 +32,7 @@ import { WalletActions } from "./actions";
 import { RecoverCollateral } from "./recover-collateral";
 
 interface WalletPositionProps {
+    t: NamespacedTranslateFunction;
     onTx: KPITokenPageProps["onTx"];
     loading?: boolean;
     kpiToken: ResolvedKPIToken;
@@ -40,6 +44,7 @@ interface WalletPositionProps {
 }
 
 export const WalletPosition = ({
+    t,
     onTx,
     loading,
     kpiToken,
@@ -131,7 +136,7 @@ export const WalletPosition = ({
 
     return !connectedAddress ? (
         <div className="flex p-6 h-60 items-center justify-center w-full max-w-6xl bg-gray-200 dark:bg-black border border-black dark:border-gray-400">
-            <Typography uppercase>{"test"}</Typography>
+            <Typography uppercase>{t("position.noWallet")}</Typography>
         </div>
     ) : (
         <div className="flex flex-col gap-6">
@@ -158,7 +163,7 @@ export const WalletPosition = ({
                             uppercase
                             className={{ root: "mb-2" }}
                         >
-                            {"test"}
+                            {t("position.rewards.guaranteed.label")}
                         </Typography>
                         <div className="flex flex-col gap-2">
                             {loading || !guaranteedRewards ? (
@@ -187,7 +192,7 @@ export const WalletPosition = ({
                             uppercase
                             className={{ root: "mb-2" }}
                         >
-                            {"test"}
+                            {t("position.rewards.maximum.label")}
                         </Typography>
                         <div className="flex flex-col gap-2">
                             {loading || !maximumRewards ? (
@@ -216,7 +221,7 @@ export const WalletPosition = ({
                             uppercase
                             className={{ root: "mb-2" }}
                         >
-                            {"test"}
+                            {t("position.rewards.remaining.label")}
                         </Typography>
                         {loading ||
                         !kpiTokenCollateralBalances ||
@@ -247,7 +252,7 @@ export const WalletPosition = ({
                             uppercase
                             className={{ root: "mb-2" }}
                         >
-                            {"test"}
+                            {t("position.balance.label")}
                         </Typography>
                         <TokenAmount amount={balance} loading={loading} />
                     </div>
@@ -257,7 +262,7 @@ export const WalletPosition = ({
                             uppercase
                             className={{ root: "mb-2" }}
                         >
-                            {"test"}
+                            {t("position.rewards.claimable.label")}
                         </Typography>
                         {loading || !redeemableRewards ? (
                             new Array(collaterals?.length || 1)
@@ -281,6 +286,7 @@ export const WalletPosition = ({
                 </div>
                 <div className="w-full p-6">
                     <WalletActions
+                        t={t}
                         onTx={onTx}
                         kpiToken={kpiToken}
                         kpiTokenBalance={balance}
@@ -289,6 +295,7 @@ export const WalletPosition = ({
                 </div>
                 {owner && (
                     <RecoverCollateral
+                        t={t}
                         onTx={onTx}
                         kpiToken={kpiToken}
                         collaterals={collaterals}

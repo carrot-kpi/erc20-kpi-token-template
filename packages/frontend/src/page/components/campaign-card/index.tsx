@@ -1,3 +1,4 @@
+import type { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { ResolvedKPIToken } from "@carrot-kpi/sdk";
 import {
     Card,
@@ -17,6 +18,7 @@ import { mainnet } from "wagmi/chains";
 import { formatUnits } from "viem";
 
 interface CampaignCardProps {
+    t: NamespacedTranslateFunction;
     loading?: boolean;
     kpiToken: ResolvedKPIToken;
     collaterals?: CollateralData[] | null;
@@ -28,6 +30,7 @@ interface CampaignCardProps {
 }
 
 export const CampaignCard = ({
+    t,
     loading,
     kpiToken,
     collaterals,
@@ -46,7 +49,7 @@ export const CampaignCard = ({
             <CardContent>
                 <div className="flex flex-col gap-1 border-b border-black w-full py-3 px-4">
                     <Typography uppercase variant="xs">
-                        {"test"}
+                        {t("overview.owner.label")}
                     </Typography>
                     {resolvingENSName ? (
                         <Skeleton width="100px" />
@@ -58,7 +61,7 @@ export const CampaignCard = ({
                 </div>
                 <div className="flex flex-col gap-2 w-full py-3 px-4">
                     <Typography uppercase variant="xs">
-                        {"test"}
+                        {t("overview.description.label")}
                     </Typography>
                     <Markdown>{kpiToken.specification.description}</Markdown>
                 </div>
@@ -73,7 +76,7 @@ export const CampaignCard = ({
                             uppercase
                             className={{ root: "whitespace-nowrap flex-1" }}
                         >
-                            {"test"}
+                            {t("overview.rewards.label")}
                         </Typography>
                         <div className="flex flex-col gap-2">
                             {loading || !collaterals ? (
@@ -98,7 +101,7 @@ export const CampaignCard = ({
                             uppercase
                             className={{ root: "whitespace-nowrap flex-1" }}
                         >
-                            {"test"}
+                            {t("overview.minimumPayout.label")}
                         </Typography>
                         <div className="flex flex-col gap-2">
                             {loading || !collaterals ? (
@@ -124,7 +127,7 @@ export const CampaignCard = ({
                             uppercase
                             className={{ root: "whitespace-nowrap flex-1" }}
                         >
-                            {"test"}
+                            {t("overview.token.label")}
                         </Typography>
                         {loading || !erc20Name || !erc20Symbol ? (
                             <Skeleton width="40px" />
@@ -141,7 +144,7 @@ export const CampaignCard = ({
                             uppercase
                             className={{ root: "whitespace-nowrap flex-1" }}
                         >
-                            {"test"}
+                            {t("overview.supply.initial.label")}
                         </Typography>
                         {loading || !initialSupply ? (
                             <Skeleton />
@@ -157,7 +160,7 @@ export const CampaignCard = ({
                             uppercase
                             className={{ root: "whitespace-nowrap flex-1" }}
                         >
-                            {"test"}
+                            {t("overview.supply.current.label")}
                         </Typography>
                         {loading ||
                         erc20Supply === null ||
@@ -171,8 +174,10 @@ export const CampaignCard = ({
                         )}
                     </div>
                     <div className="h-12 px-4 flex items-center justify-between w-full md:w-1/3 gap-8">
-                        <Typography uppercase>{"test"}</Typography>
-                        <TimeLeft kpiToken={kpiToken} />
+                        <Typography uppercase>
+                            {t("overview.time.label")}
+                        </Typography>
+                        <TimeLeft t={t} kpiToken={kpiToken} />
                     </div>
                 </div>
             </CardContent>

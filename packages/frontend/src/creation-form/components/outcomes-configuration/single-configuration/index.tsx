@@ -1,3 +1,4 @@
+import type { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { NumberInput, Switch, Typography } from "@carrot-kpi/ui";
 import { cva } from "class-variance-authority";
 import { useCallback } from "react";
@@ -12,6 +13,7 @@ const boundsWrapperStyles = cva(["flex gap-4 opacity-100 transition-opacity"], {
 });
 
 export interface SingleConfigurationProps {
+    t: NamespacedTranslateFunction;
     templateId: number;
     automaticallyFilled?: boolean;
     binary?: boolean;
@@ -23,6 +25,7 @@ export interface SingleConfigurationProps {
 }
 
 export const SingleConfiguration = ({
+    t,
     templateId,
     automaticallyFilled,
     binary,
@@ -58,17 +61,17 @@ export const SingleConfiguration = ({
             {automaticallyFilled && (
                 <div className="rounded-xl flex p-4 border border-orange bg-orange bg-opacity-20">
                     <Typography className={{ root: "text-orange" }}>
-                        {"test"}
+                        {t("warning.autofilled")}
                     </Typography>
                 </div>
             )}
             <div className="flex justify-between items-center">
-                <Typography>{"test"}</Typography>
+                <Typography>{t("label.binary")}</Typography>
                 <Switch checked={binary} onChange={handleBinaryChange} />
             </div>
             <div className={boundsWrapperStyles({ binary })}>
                 <NumberInput
-                    label={"test"}
+                    label={t("label.lower.bound")}
                     placeholder={"1,000,000"}
                     allowNegative={false}
                     onValueChange={handleLowerBoundChange}
@@ -80,7 +83,7 @@ export const SingleConfiguration = ({
                     }}
                 />
                 <NumberInput
-                    label={"test"}
+                    label={t("label.higher.bound")}
                     allowNegative={false}
                     placeholder={"1,000,000"}
                     onValueChange={handleHigherBoundChange}

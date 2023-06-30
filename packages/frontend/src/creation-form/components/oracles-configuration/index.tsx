@@ -8,6 +8,7 @@ import {
 } from "react";
 import type {
     KPITokenCreationFormProps,
+    NamespacedTranslateFunction,
     OracleInitializationBundleGetter,
 } from "@carrot-kpi/react";
 import { NextStepButton } from "@carrot-kpi/ui";
@@ -38,6 +39,7 @@ const assertInitializationBundleGetterPresent: Assert = (
 };
 
 interface OraclesConfigurationProps {
+    t: NamespacedTranslateFunction;
     i18n: i18n;
     templates: Template[];
     specificationData?: SpecificationData | null;
@@ -49,6 +51,7 @@ interface OraclesConfigurationProps {
 }
 
 export const OraclesConfiguration = ({
+    t,
     i18n,
     templates,
     specificationData,
@@ -127,6 +130,7 @@ export const OraclesConfiguration = ({
         <div className="flex flex-col gap-6">
             {templates.length === 1 ? (
                 <OracleCreationForm
+                    t={t}
                     i18n={i18n}
                     navigate={navigate}
                     onTx={onTx}
@@ -137,6 +141,7 @@ export const OraclesConfiguration = ({
                 />
             ) : (
                 <OraclesAccordion
+                    t={t}
                     i18n={i18n}
                     navigate={navigate}
                     onTx={onTx}
@@ -151,7 +156,7 @@ export const OraclesConfiguration = ({
                 disabled={disabled}
                 loading={loading}
             >
-                {"test"}
+                {t("next")}
             </NextStepButton>
         </div>
     );

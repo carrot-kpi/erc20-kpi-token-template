@@ -1,13 +1,18 @@
 import { type ReactElement, useCallback } from "react";
 import { Button, Typography } from "@carrot-kpi/ui";
-import type { KPITokenCreationFormProps } from "@carrot-kpi/react";
+import type {
+    KPITokenCreationFormProps,
+    NamespacedTranslateFunction,
+} from "@carrot-kpi/react";
 
 interface SuccessProps {
+    t: NamespacedTranslateFunction;
     navigate: KPITokenCreationFormProps["navigate"];
     kpiTokenAddress: string;
 }
 
 export const Success = ({
+    t,
     navigate,
     kpiTokenAddress,
 }: SuccessProps): ReactElement => {
@@ -18,10 +23,10 @@ export const Success = ({
     return (
         <div className="flex flex-col items-center gap-6">
             <Typography className={{ root: "text-center" }}>
-                {"test"}
+                {t("success.text")}
             </Typography>
             <Button size="small" onClick={handleClick}>
-                {"test"}
+                {t("success.button.label")}
             </Button>
         </div>
     );
