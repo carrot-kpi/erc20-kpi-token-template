@@ -47,6 +47,9 @@ import { unixTimestamp } from "../../../utils/dates";
 import { getKPITokenAddressFromReceipt } from "../../../utils/logs";
 import { zeroAddress } from "viem";
 
+// TODO: add error section to display any errors that happen when creating
+// (deploying) the KPI token
+
 type Assert = (data: OracleData[]) => asserts data is Required<OracleData>[];
 export const assertRequiredOraclesData: Assert = (data) => {
     for (const item of data) if (!item.initializationBundle) throw new Error();
@@ -217,13 +220,17 @@ export const Deploy = ({
                     hash: tx.hash,
                     confirmations: devMode ? 1 : 3,
                 });
-                let createdKPITokenAddress =
+                if (receipt.status === "reverted") {
+                    console.warn("creation transaction reverted");
+                    return;
+                }
+                const createdKPITokenAddress =
                     getKPITokenAddressFromReceipt(receipt);
                 if (!createdKPITokenAddress) {
                     console.warn(
                         "could not extract created kpi token address from logs"
                     );
-                    createdKPITokenAddress = zeroAddress;
+                    return;
                 }
                 onCreate();
                 onTx({
