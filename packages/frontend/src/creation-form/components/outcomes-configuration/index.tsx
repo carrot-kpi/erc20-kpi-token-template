@@ -1,4 +1,5 @@
 import { type ReactElement, useCallback, useEffect, useState } from "react";
+import type { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Typography, NextStepButton } from "@carrot-kpi/ui";
 import type {
     NumberFormatValue,
@@ -11,6 +12,7 @@ import { OraclesAccordion } from "./oracles-accordion";
 import { parseUnits } from "viem";
 
 interface OutcomesConfigurationProps {
+    t: NamespacedTranslateFunction;
     templates: Template[];
     state: OutcomesConfigurationStepState;
     onStateChange: (state: OutcomesConfigurationStepState) => void;
@@ -18,6 +20,7 @@ interface OutcomesConfigurationProps {
 }
 
 export const OutcomesConfiguration = ({
+    t,
     templates,
     state,
     onStateChange,
@@ -109,12 +112,19 @@ export const OutcomesConfiguration = ({
     return (
         <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-3">
-                <Typography variant="sm">{"test"}</Typography>
-                <Typography variant="sm">{"test"}</Typography>
-                <Typography variant="sm">{"test"}</Typography>
+                <Typography variant="sm">
+                    {t("card.outcome.configuration.description.1")}
+                </Typography>
+                <Typography variant="sm">
+                    {t("card.outcome.configuration.description.2")}
+                </Typography>
+                <Typography variant="sm">
+                    {t("card.outcome.configuration.description.3")}
+                </Typography>
             </div>
             {templates.length === 1 ? (
                 <SingleConfiguration
+                    t={t}
                     templateId={templates[0].id}
                     automaticallyFilled={
                         state[templates[0].id]?.automaticallyFilled
@@ -128,6 +138,7 @@ export const OutcomesConfiguration = ({
                 />
             ) : (
                 <OraclesAccordion
+                    t={t}
                     onBinaryChange={handleBinaryChange}
                     onLowerBoundChange={handleLowerBoundChange}
                     onHigherBoundChange={handleHigherBoundChange}
@@ -136,7 +147,7 @@ export const OutcomesConfiguration = ({
                 />
             )}
             <NextStepButton onClick={handleNext} disabled={disabled}>
-                {"test"}
+                {t("next")}
             </NextStepButton>
         </div>
     );

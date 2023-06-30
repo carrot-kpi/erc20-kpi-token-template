@@ -26,6 +26,7 @@ import type {
 import { Button, Typography } from "@carrot-kpi/ui";
 import {
     type KPITokenCreationFormProps,
+    type NamespacedTranslateFunction,
     TxType,
     useDevMode,
 } from "@carrot-kpi/react";
@@ -56,6 +57,7 @@ export const assertRequiredOraclesData: Assert = (data) => {
 };
 
 interface DeployProps {
+    t: NamespacedTranslateFunction;
     templateId: number;
     specificationCID: string;
     expiration: Date;
@@ -70,6 +72,7 @@ interface DeployProps {
 }
 
 export const Deploy = ({
+    t,
     templateId,
     specificationCID,
     expiration,
@@ -267,6 +270,7 @@ export const Deploy = ({
             <div className="rounded-xxl w-full flex flex-col gap-6 border border-black p-4">
                 <CollateralsTable
                     noBorder
+                    t={t}
                     collaterals={collateralsData}
                     noEdit
                 />
@@ -276,10 +280,11 @@ export const Deploy = ({
                         variant="sm"
                         className={{ root: "flex-1 text-gray-600" }}
                     >
-                        {"test"}
+                        {t("info.approve")}
                     </Typography>
                 </div>
                 <ApproveCollateralsButton
+                    t={t}
                     toApprove={toApprove}
                     spender={predictedKPITokenAddress as Address}
                     onApproved={handleApproved}
@@ -293,7 +298,7 @@ export const Deploy = ({
                     disabled={!writeAsync}
                     loading={loading || loadingTxConfig || fetchingTxConfig}
                 >
-                    {"test"}
+                    {t("label.create")}
                 </Button>
             </div>
         </div>
