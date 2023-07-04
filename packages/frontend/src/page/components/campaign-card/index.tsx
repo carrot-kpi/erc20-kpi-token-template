@@ -45,7 +45,7 @@ export const CampaignCard = ({
     });
 
     return (
-        <Card className={{ root: "w-full max-w-6xl dark:border-gray-400" }}>
+        <Card className={{ root: "w-full max-w-7xl dark:border-gray-400" }}>
             <CardContent>
                 <div className="flex flex-col gap-1 border-b border-black w-full py-3 px-4">
                     <Typography uppercase variant="xs">
@@ -70,8 +70,8 @@ export const CampaignCard = ({
                         <Chip key={tag}>{tag}</Chip>
                     ))}
                 </div>
-                <div className="w-full h-36 md:h-auto flex flex-col md:flex-row border-t border-black">
-                    <div className="py-3 px-4 flex items-center justify-between w-full md:w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
+                <div className="w-full md:h-auto flex flex-col md:flex-row border-t border-black">
+                    <div className="py-3 px-4 flex md:flex-col lg:flex-row items-center justify-between w-full md:w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
                         <Typography
                             uppercase
                             className={{ root: "whitespace-nowrap flex-1" }}
@@ -96,7 +96,7 @@ export const CampaignCard = ({
                             )}
                         </div>
                     </div>
-                    <div className="py-3 px-4 flex items-center justify-between w-full md:w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
+                    <div className="py-3 px-4 flex md:flex-col lg:flex-row items-center justify-between w-full md:w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
                         <Typography
                             uppercase
                             className={{ root: "whitespace-nowrap flex-1" }}
@@ -122,7 +122,7 @@ export const CampaignCard = ({
                             )}
                         </div>
                     </div>
-                    <div className="py-3 px-4 flex items-center justify-between w-full md:w-1/3 gap-8">
+                    <div className="py-3 px-4 flex md:flex-col lg:flex-row items-center justify-between w-full md:w-1/3 gap-8">
                         <Typography
                             uppercase
                             className={{ root: "whitespace-nowrap flex-1" }}
@@ -138,8 +138,8 @@ export const CampaignCard = ({
                         )}
                     </div>
                 </div>
-                <div className="w-full h-36 md:h-auto flex flex-col md:flex-row border-t border-black">
-                    <div className="h-12 px-4 flex items-center justify-between w-full md:w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
+                <div className="w-full md:h-auto flex flex-col md:flex-row border-t border-black">
+                    <div className="py-3 px-4 flex md:flex-col lg:flex-row items-center justify-between w-full md:w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
                         <Typography
                             uppercase
                             className={{ root: "whitespace-nowrap flex-1" }}
@@ -155,7 +155,7 @@ export const CampaignCard = ({
                             </Typography>
                         )}
                     </div>
-                    <div className="h-12 px-4 flex items-center justify-between w-full md:w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
+                    <div className="py-3 px-4 flex md:flex-col lg:flex-row items-center justify-between w-full md:w-1/3 gap-8 border-b md:border-r md:border-b-0 border-black">
                         <Typography
                             uppercase
                             className={{ root: "whitespace-nowrap flex-1" }}
@@ -173,7 +173,7 @@ export const CampaignCard = ({
                             </Typography>
                         )}
                     </div>
-                    <div className="h-12 px-4 flex items-center justify-between w-full md:w-1/3 gap-8">
+                    <div className="py-3 px-4 flex md:flex-col lg:flex-row items-center justify-between w-full md:w-1/3 gap-8">
                         <Typography uppercase>
                             {t("overview.time.label")}
                         </Typography>

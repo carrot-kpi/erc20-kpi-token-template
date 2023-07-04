@@ -7,6 +7,13 @@ module.exports = {
         join(__dirname, "./src/**/*.{js,jsx,ts,tsx}"),
     ],
     presets: [require("@carrot-kpi/ui/tailwind-preset")],
+    theme: {
+        extend: {
+            gridTemplateColumns: {
+                collaterals: "1.8fr 1fr 1fr",
+            },
+        },
+    },
     corePlugins: {
         preflight: false,
     },
