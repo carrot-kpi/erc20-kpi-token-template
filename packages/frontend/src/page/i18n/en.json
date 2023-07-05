@@ -30,6 +30,7 @@
     "oracle.title_other": "Oracles",
     "widgets.title": "Widgets",
     "open.explorer": "Open in explorer",
+    "erc20.track": "Add {{symbol}}",
     "redeem": "Redeem",
     "burn": "Burn",
     "recover": "Recover",
