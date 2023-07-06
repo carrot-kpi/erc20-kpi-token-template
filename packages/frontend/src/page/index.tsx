@@ -6,7 +6,13 @@ import { Button, ErrorFeedback, Typography } from "@carrot-kpi/ui";
 import { type ReactElement, useEffect, useState } from "react";
 import { OraclePage, type KPITokenRemotePageProps } from "@carrot-kpi/react";
 import type { CollateralData } from "../creation-form/types";
-import { type Address, useNetwork, usePublicClient, useToken } from "wagmi";
+import {
+    type Address,
+    useNetwork,
+    usePublicClient,
+    useToken,
+    useWalletClient,
+} from "wagmi";
 import { ReactComponent as External } from "../assets/external.svg";
 import { Loader } from "../ui/loader";
 import { CampaignCard } from "./components/campaign-card";
@@ -22,6 +28,7 @@ export const Component = ({
     onTx,
 }: KPITokenRemotePageProps): ReactElement => {
     const publicClient = usePublicClient();
+    const { data: walletClient } = useWalletClient();
     const { chain } = useNetwork();
 
     const { data: tokenData } = useToken({
@@ -88,6 +95,22 @@ export const Component = ({
         );
     }
 
+    const handleWatchERC20 = async () => {
+        if (!walletClient || !tokenData) return;
+        try {
+            await walletClient.watchAsset({
+                options: {
+                    address: tokenData.address,
+                    decimals: tokenData.decimals,
+                    symbol: tokenData.symbol,
+                },
+                type: "ERC20",
+            });
+        } catch (error) {
+            console.error("could not add KPI token to wallet", error);
+        }
+    };
+
     return (
         <div className="overflow-x-hidden">
             <div className="bg-grid-light bg-orange flex flex-col items-center gap-6 px-4 py-4 sm:px-9 sm:py-5 md:items-start lg:px-20 md:py-24">
@@ -113,6 +136,11 @@ export const Component = ({
                         rel="noopener noreferrer"
                     >
                         {t("open.explorer")}
+                    </Button>
+                    <Button size="xsmall" onClick={handleWatchERC20}>
+                        {t("erc20.track", {
+                            symbol: tokenData?.symbol,
+                        })}
                     </Button>
                 </div>
                 <CampaignCard
