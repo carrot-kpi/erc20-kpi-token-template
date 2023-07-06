@@ -38,7 +38,7 @@ export const CollateralsTable = ({
 }: CollateralsTableProps) => {
     return (
         <div className="flex flex-col gap-2">
-            <div className="grid grid-cols-3">
+            <div className="grid grid-cols-collaterals">
                 <Typography weight="medium" variant="sm">
                     {t("label.collateral.table.collateral")}
                 </Typography>

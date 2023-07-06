@@ -60,7 +60,10 @@ export const CollateralRow = ({
     );
 
     return (
-        <div key={token.address} className="h-10 grid grid-cols-3 items-center">
+        <div
+            key={token.address}
+            className="h-10 grid grid-cols-collaterals items-center"
+        >
             <div className="flex gap-2 items-center">
                 {!noEdit && (
                     <div

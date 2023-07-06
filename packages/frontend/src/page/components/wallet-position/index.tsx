@@ -135,12 +135,12 @@ export const WalletPosition = ({
         kpiTokenOwner === connectedAddress;
 
     return !connectedAddress ? (
-        <div className="flex p-6 h-60 items-center justify-center w-full max-w-6xl bg-gray-200 dark:bg-black border border-black dark:border-gray-400">
+        <div className="flex p-6 h-60 items-center justify-center w-full max-w-7xl bg-gray-200 dark:bg-black border border-black dark:border-gray-400">
             <Typography uppercase>{t("position.noWallet")}</Typography>
         </div>
     ) : (
         <div className="flex flex-col gap-6">
-            <div className="flex flex-col w-full max-w-6xl bg-white dark:bg-black border border-black dark:border-gray-400">
+            <div className="flex flex-col w-full max-w-7xl bg-white dark:bg-black border border-black dark:border-gray-400">
                 <div className="w-full p-6 bg-gray-200 dark:bg-gray-700 border-b border-black dark:border-gray-400">
                     {loadingENSName ? (
                         <Skeleton width="120px" />
@@ -156,8 +156,8 @@ export const WalletPosition = ({
                         </Typography>
                     )}
                 </div>
-                <div className="w-full flex flex-col sm:flex-row justify-between">
-                    <div className="w-full md:w-1/3 p-6 flex-col border-b border-black sm:border-r md:border-r">
+                <div className="w-full flex flex-col md:flex-row justify-between">
+                    <div className="w-full md:w-1/3 p-6 flex-col border-b border-black md:border-r">
                         <Typography
                             variant="xs"
                             uppercase
@@ -186,7 +186,7 @@ export const WalletPosition = ({
                             )}
                         </div>
                     </div>
-                    <div className="w-full md:w-1/3 p-6 flex-col border-b border-black sm:border-r md:border-r">
+                    <div className="w-full md:w-1/3 p-6 flex-col border-b border-black md:border-r">
                         <Typography
                             variant="xs"
                             uppercase

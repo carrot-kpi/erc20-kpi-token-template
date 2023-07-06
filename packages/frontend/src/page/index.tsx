@@ -90,14 +90,18 @@ export const Component = ({
 
     return (
         <div className="overflow-x-hidden">
-            <div className="bg-grid-light bg-orange flex flex-col items-center gap-6 px-3 py-4 sm:px-9 sm:py-5 md:items-start lg:px-36 md:py-24">
-                <Typography
-                    variant="h1"
-                    className={{ root: "dark:text-black max-w-6xl" }}
-                    truncate
-                >
-                    {kpiToken.specification.title}
-                </Typography>
+            <div className="bg-grid-light bg-orange flex flex-col items-center gap-6 px-4 py-4 sm:px-9 sm:py-5 md:items-start lg:px-20 md:py-24">
+                <div className="w-full">
+                    <Typography
+                        variant="h1"
+                        className={{
+                            root: "dark:text-black",
+                        }}
+                        truncate
+                    >
+                        {kpiToken.specification.title}
+                    </Typography>
+                </div>
                 <div className="flex gap-6">
                     <Button
                         size="xsmall"
@@ -124,8 +128,8 @@ export const Component = ({
                 />
             </div>
             <div className="bg-white dark:bg-black">
-                <div className="bg-grid-light dark:bg-grid-dark flex flex-col gap-7 md:gap-9 lg:gap-28 bg-white px-4 pt-4 pb-20 dark:bg-black sm:px-9 sm:pt-6 sm:pb-28 lg:px-36 md:pt-24 md:pb-40">
-                    <div className="flex flex-col mt-5 sm:mt-0 gap-6 md:gap-8 max-w-6xl">
+                <div className="bg-grid-light dark:bg-grid-dark flex flex-col gap-7 md:gap-9 lg:gap-28 bg-white px-4 pt-4 pb-20 dark:bg-black sm:px-9 sm:pt-6 sm:pb-28 lg:px-20 md:pt-24 md:pb-40">
+                    <div className="flex flex-col mt-5 sm:mt-0 gap-6 md:gap-8 max-w-7xl">
                         <Typography variant="h2">
                             {t("position.title")}
                         </Typography>
@@ -141,7 +145,7 @@ export const Component = ({
                             initialSupply={initialSupply}
                         />
                     </div>
-                    <div className="flex flex-col gap-6 md:gap-8 max-w-6xl">
+                    <div className="flex flex-col gap-6 md:gap-8 max-w-7xl">
                         <Typography variant="h2">
                             {t("oracle.title", {
                                 count: kpiToken.oracles.length,
@@ -182,7 +186,7 @@ export const Component = ({
                                         key={oracle.address}
                                         summary="Oracle template"
                                     >
-                                        <div className="w-full max-w-6xl p-10 bg-white dark:bg-black">
+                                        <div className="w-full max-w-7xl p-10 bg-white dark:bg-black">
                                             <OraclePage
                                                 i18n={i18n}
                                                 fallback={<Loader />}
