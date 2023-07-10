@@ -25,11 +25,11 @@ import {TokenAmount, InitializeKPITokenParams} from "carrot/commons/Types.sol";
 /// reaching the predetermined goals. In order to check if these goals are reached
 /// on-chain, oracles are employed, and based on the results conveyed back to
 /// the KPI token template, the collaterals are either unlocked, sent back to the
-/// KPI token owner, or a mix of the 2. Interesting logic is additionally tied to 
-/// the conditions and collaterals, such as the possibility to have a minimum 
-/// payout (a per-collateral sum that will always be paid out to KPI token holders 
-/// regardless of the fact that goals are reached or not), weighted conditions and 
-/// multiple detached resolution or all-in-one reaching of goals (explained more in 
+/// KPI token owner, or a mix of the 2. Interesting logic is additionally tied to
+/// the conditions and collaterals, such as the possibility to have a minimum
+/// payout (a per-collateral sum that will always be paid out to KPI token holders
+/// regardless of the fact that goals are reached or not), weighted conditions and
+/// multiple detached resolution or all-in-one reaching of goals (explained more in
 /// detail later).
 /// @author Federico Luzzi - <federico.luzzi@protonmail.com>
 contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgradeable {
@@ -103,7 +103,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     /// - `kpiTokensManager`: the factory forwarded address of the KPI tokens manager.
     /// - `feeReceiver`: the factory forwarded address of the fee receiver.
     /// - `kpiTokenTemplateId`: the id of the template.
-    /// - `description`: an IPFS cid pointing to a file describing what the created campaign 
+    /// - `description`: an IPFS cid pointing to a file describing what the created campaign
     ///    is about
     /// - `expiration`: a timestamp determining the expiration date of the KPI token.
     /// - `kpiTokenData`: an ABI-encoded structure forwarded by the factory from the KPI token
@@ -120,15 +120,15 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     ///   In particular the structure is formed in the following way:
     ///   - `OracleData[] memory _oracleDatas`: data about the oracle, such as:
     ///       - `uint256 _templateId`: the id of the chosen oracle template.
-    ///       - `uint256 _lowerBound`: the minimum value the oracle can report back for the 
+    ///       - `uint256 _lowerBound`: the minimum value the oracle can report back for the
     ///         goal attached to it to be considered reached.
-    ///       - `uint256 _higherBound`: the value the oracle can report back for the 
+    ///       - `uint256 _higherBound`: the value the oracle can report back for the
     ///         goal attached to it to be considered fully reached.
     ///       - `uint256 _weight`: The oracle's weight determines its importance goal and how
     ///         much of the collateral it "governs". If for example we have 2
     ///         oracles A and B with respective weights 1 and 2, a third of the deposited
     ///         collaterals goes towards incentivizing A, while the remaining 2/3rds go
-    ///         to B (i.e. the goal defined by the B oracle is valued as a more critical one 
+    ///         to B (i.e. the goal defined by the B oracle is valued as a more critical one
     ///         to reach compared to A).
     ///       - `uint256 _data`: ABI-encoded, oracle-specific data used to effectively
     ///         instantiate the oracle.
@@ -159,7 +159,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     /// @param _creator The factory forwarded KPI token creator.
     /// @param _kpiTokensManager The factory forwarded address of the KPI tokens manager.
     /// @param _kpiTokenTemplateId The id of the template.
-    /// @param _description An IPFS cid pointing to a structured file describing what the 
+    /// @param _description An IPFS cid pointing to a structured file describing what the
     /// KPI token is about.
     /// @param _expiration A timestamp determining the expiration date of the KPI token.
     /// @param _data ABI-encoded data used to configura the KPI token (see the doc of the
@@ -296,7 +296,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
         allOrNone = _allOrNone;
     }
 
-    /// @dev Returns a storage pointer to the `FinalizableOracle` struct 
+    /// @dev Returns a storage pointer to the `FinalizableOracle` struct
     /// associated with the given address, and reverts if there's none.
     /// @param _address The finalizable oracle address.
     /// @return The `FinalizableOracle` associated with the given address.
