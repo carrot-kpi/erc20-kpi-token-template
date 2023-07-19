@@ -102,7 +102,7 @@ export const Collaterals = ({
     const selectedTokenListTokensInChain = useMemo(() => {
         if (!selectedTokenList || !chain) return [];
         return selectedTokenList.tokens.filter(
-            (token) => token.chainId === chain.id
+            (token) => token.chainId === chain.id,
         );
     }, [chain, selectedTokenList]);
 
@@ -154,7 +154,7 @@ export const Collaterals = ({
                         : token;
                 return accumulator;
             },
-            {}
+            {},
         );
 
         return {
@@ -225,7 +225,7 @@ export const Collaterals = ({
             // check if the user has enough balance of the picked token
             const bnPickerAmount = parseUnits(
                 state.pickerAmount.value as `${number}`,
-                state.pickerToken.decimals
+                state.pickerToken.decimals,
             );
             if (data.value < bnPickerAmount) {
                 setAddDisabled(true);
@@ -243,8 +243,8 @@ export const Collaterals = ({
             !!state.collaterals.find(
                 (collateral) =>
                     collateral.amount.currency.address.toLowerCase() ===
-                    state.pickerToken?.address.toLowerCase()
-            )
+                    state.pickerToken?.address.toLowerCase(),
+            ),
         );
     }, [
         data,
@@ -269,12 +269,12 @@ export const Collaterals = ({
                     state.pickerToken as unknown as Token,
                     parseUnits(
                         ((parsedRawAmount * PROTOCOL_FEE_BPS) / 10_000).toFixed(
-                            state.pickerToken.decimals
+                            state.pickerToken.decimals,
                         ) as `${number}`,
-                        state.pickerToken.decimals
-                    )
-                )
-            )
+                        state.pickerToken.decimals,
+                    ),
+                ),
+            ),
         );
     }, [state.pickerToken, state.pickerAmount]);
 
@@ -300,7 +300,7 @@ export const Collaterals = ({
             setCollateralAmountErrorMessage("");
             setMinimumPayoutErrorMessage("");
         },
-        [onStateChange, importableToken, state]
+        [onStateChange, importableToken, state],
     );
 
     const handlePickerRawAmountChange = useCallback(
@@ -318,7 +318,7 @@ export const Collaterals = ({
                 data.value <
                 parseUnits(
                     newPickerRawAmount.value as `${number}`,
-                    data.decimals
+                    data.decimals,
                 )
             )
                 errorMessage = t("error.collaterals.insufficient");
@@ -337,7 +337,7 @@ export const Collaterals = ({
                     parseFloat(state.pickerMinimumPayout.value)
             )
                 setMinimumPayoutErrorMessage(
-                    t("error.collaterals.minimumPayoutTooHigh")
+                    t("error.collaterals.minimumPayoutTooHigh"),
                 );
 
             setCollateralAmountErrorMessage(errorMessage);
@@ -346,7 +346,7 @@ export const Collaterals = ({
                 pickerAmount: newPickerRawAmount,
             });
         },
-        [onStateChange, state, minimumPayoutErrorMessage, data, t]
+        [onStateChange, state, minimumPayoutErrorMessage, data, t],
     );
 
     const handlePickerRawMinimumAmountChange = useCallback(
@@ -359,7 +359,7 @@ export const Collaterals = ({
             const amountMinusFees =
                 parsedAmount - (parsedAmount * PROTOCOL_FEE_BPS) / 10_000;
             const parsedMinimumAmount = parseFloat(
-                newPickerRawMinimumPayout.value
+                newPickerRawMinimumPayout.value,
             );
 
             if (!newPickerRawMinimumPayout || !newPickerRawMinimumPayout.value)
@@ -376,7 +376,7 @@ export const Collaterals = ({
                 pickerMinimumPayout: newPickerRawMinimumPayout,
             });
         },
-        [onStateChange, state, t]
+        [onStateChange, state, t],
     );
 
     const handleCollateralAdd = useCallback((): void => {
@@ -393,7 +393,7 @@ export const Collaterals = ({
             state.pickerToken.decimals,
             state.pickerToken.symbol,
             state.pickerToken.name,
-            state.pickerToken.logoURI
+            state.pickerToken.logoURI,
         );
         onStateChange({
             ...state,
@@ -404,15 +404,15 @@ export const Collaterals = ({
                         token,
                         parseUnits(
                             state.pickerAmount.value as `${number}`,
-                            token.decimals
-                        )
+                            token.decimals,
+                        ),
                     ),
                     minimumPayout: new Amount(
                         token,
                         parseUnits(
                             state.pickerMinimumPayout.value as `${number}`,
-                            token.decimals
-                        )
+                            token.decimals,
+                        ),
                     ),
                 },
             ],
@@ -433,7 +433,7 @@ export const Collaterals = ({
                 collaterals: state.collaterals.filter((_, i) => i !== index),
             });
         },
-        [onStateChange, state]
+        [onStateChange, state],
     );
 
     const handleMaxClick = useCallback(() => {
@@ -489,7 +489,7 @@ export const Collaterals = ({
                                             label=""
                                             autoComplete="off"
                                             placeholder={t(
-                                                "label.collateral.picker.token.pick"
+                                                "label.collateral.picker.token.pick",
                                             )}
                                             className={{
                                                 input: "w-full cursor-pointer",
@@ -538,7 +538,7 @@ export const Collaterals = ({
                                                     onClick={handleMaxClick}
                                                 >
                                                     {t(
-                                                        "label.collateral.picker.balance.max"
+                                                        "label.collateral.picker.balance.max",
                                                     )}
                                                 </Typography>
                                             </>
@@ -564,7 +564,7 @@ export const Collaterals = ({
                                     <div className="flex items-center justify-between">
                                         <Typography>
                                             {t(
-                                                "label.collateral.picker.minimum.payout"
+                                                "label.collateral.picker.minimum.payout",
                                             )}
                                         </Typography>
                                         <NumberInput

@@ -111,7 +111,7 @@ export const Deploy = ({
                 encodeOraclesData(
                     oracleTemplatesData,
                     outcomesData,
-                    oraclesData
+                    oraclesData,
                 );
             return {
                 encodedOraclesData,
@@ -119,7 +119,7 @@ export const Deploy = ({
                     collateralsData,
                     tokenData.name,
                     tokenData.symbol,
-                    tokenData.supply
+                    tokenData.supply,
                 ),
                 totalValueRequired,
             };
@@ -231,7 +231,7 @@ export const Deploy = ({
                     getKPITokenAddressFromReceipt(receipt);
                 if (!createdKPITokenAddress) {
                     console.warn(
-                        "could not extract created kpi token address from logs"
+                        "could not extract created kpi token address from logs",
                     );
                     return;
                 }

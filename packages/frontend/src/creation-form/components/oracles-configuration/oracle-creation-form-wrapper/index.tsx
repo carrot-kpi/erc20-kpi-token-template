@@ -27,7 +27,7 @@ type OracleCreationFormWrapperProps<T> = Omit<
     onChange: (
         templateId: number,
         state: Partial<T>,
-        initializationBundleGetter?: OracleInitializationBundleGetter
+        initializationBundleGetter?: OracleInitializationBundleGetter,
     ) => void;
 };
 
@@ -39,12 +39,12 @@ export function OracleCreationFormWrapper<T>({
     const handleChange = useCallback(
         (
             state: Partial<T>,
-            initializationBundleGetter?: OracleInitializationBundleGetter
+            initializationBundleGetter?: OracleInitializationBundleGetter,
         ) => {
             if (!template) return;
             onChange(template.id, state, initializationBundleGetter);
         },
-        [onChange, template]
+        [onChange, template],
     );
 
     return (

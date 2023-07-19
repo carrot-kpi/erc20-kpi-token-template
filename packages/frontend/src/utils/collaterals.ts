@@ -5,30 +5,30 @@ import type { FinalizableOracle } from "../page/types";
 export const getGuaranteedRewards = (
     kpiTokenBalance: Amount<Token>,
     kpiTokenInitialSupply: Amount<Token>,
-    collaterals: CollateralData[]
+    collaterals: CollateralData[],
 ) => {
     return collaterals.map(
         (collateral) =>
             new Amount(
                 collateral.minimumPayout.currency,
                 (collateral.minimumPayout.raw * kpiTokenBalance.raw) /
-                    kpiTokenInitialSupply.raw
-            )
+                    kpiTokenInitialSupply.raw,
+            ),
     );
 };
 
 export const getMaximumRewards = (
     kpiTokenBalance: Amount<Token>,
     kpiTokenInitialSupply: Amount<Token>,
-    collaterals: CollateralData[]
+    collaterals: CollateralData[],
 ) => {
     return collaterals.map(
         (collateral) =>
             new Amount(
                 collateral.amount.currency,
                 (collateral.amount.raw * kpiTokenBalance.raw) /
-                    kpiTokenInitialSupply.raw
-            )
+                    kpiTokenInitialSupply.raw,
+            ),
     );
 };
 
@@ -39,11 +39,11 @@ export const getRedeemableRewards = (
     kpiTokenBalance: Amount<Token>,
     kpiTokenInitialSupply: Amount<Token>,
     collaterals: CollateralData[],
-    expired: boolean
+    expired: boolean,
 ): Amount<Token>[] => {
     if (kpiTokenBalance.isZero() || oracles.some((oracle) => !oracle.finalized))
         return collaterals.map(
-            (collateral) => new Amount(collateral.amount.currency, 0n)
+            (collateral) => new Amount(collateral.amount.currency, 0n),
         );
 
     if (expired) {
@@ -51,7 +51,7 @@ export const getRedeemableRewards = (
             return new Amount(
                 collateral.minimumPayout.currency,
                 (collateral.minimumPayout.raw * kpiTokenBalance.raw) /
-                    kpiTokenInitialSupply.raw
+                    kpiTokenInitialSupply.raw,
             );
         });
     }
@@ -60,7 +60,7 @@ export const getRedeemableRewards = (
     // after all the oracles have settled
     const totalWeight = oracles.reduce(
         (accumulator: bigint, oracle) => accumulator + oracle.weight,
-        0n
+        0n,
     );
     const remainingCollateralsAfterResolutions = [...collaterals];
     for (const oracle of oracles) {
@@ -86,7 +86,7 @@ export const getRedeemableRewards = (
                 remainingCollateralsAfterResolutions[i] = {
                     amount: new Amount(
                         collateral.amount.currency,
-                        collateral.amount.raw - reimboursement
+                        collateral.amount.raw - reimboursement,
                     ),
                     minimumPayout: collateral.minimumPayout,
                 };
@@ -100,7 +100,7 @@ export const getRedeemableRewards = (
         return new Amount(
             collateral.amount.currency,
             (collateral.amount.raw * kpiTokenBalance.raw) /
-                kpiTokenInitialSupply.raw
+                kpiTokenInitialSupply.raw,
         );
     });
 };
@@ -108,12 +108,12 @@ export const getRedeemableRewards = (
 export const getRecoverableRewards = (
     collaterals: CollateralData[],
     kpiTokenCollateralBalances: Amount<Token>[],
-    expired: boolean
+    expired: boolean,
 ): Amount<Token>[] => {
     return kpiTokenCollateralBalances
         .map((balance) => {
             const neededAmount = collaterals.find(
-                (collateral) => collateral.amount.currency === balance.currency
+                (collateral) => collateral.amount.currency === balance.currency,
             );
             if (!neededAmount) return new Amount(balance.currency, 0n);
 
@@ -121,12 +121,12 @@ export const getRecoverableRewards = (
             if (expired)
                 recoverableAmount = new Amount(
                     balance.currency,
-                    balance.raw - neededAmount.minimumPayout.raw
+                    balance.raw - neededAmount.minimumPayout.raw,
                 );
             else
                 recoverableAmount = new Amount(
                     balance.currency,
-                    balance.raw - neededAmount.amount.raw
+                    balance.raw - neededAmount.amount.raw,
                 );
 
             return recoverableAmount;

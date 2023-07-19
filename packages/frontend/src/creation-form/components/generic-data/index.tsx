@@ -40,7 +40,7 @@ interface GenericDataProps {
     onNext: (
         partialSpecificationData: SpecificationData,
         specificationCID: string,
-        partialTokenData: TokenData
+        partialTokenData: TokenData,
     ) => void;
 }
 
@@ -86,11 +86,11 @@ export const GenericData = ({
                     ? t("error.title.tooLong", {
                           chars: MAX_KPI_TOKEN_TITLE_CHARS,
                       })
-                    : ""
+                    : "",
             );
             onStateChange({ ...state, title: value });
         },
-        [onStateChange, state, t]
+        [onStateChange, state, t],
     );
 
     const handleDescriptionChange = useCallback(
@@ -103,11 +103,11 @@ export const GenericData = ({
                     ? t("error.description.tooLong", {
                           chars: MAX_KPI_TOKEN_DESCRIPTION_CHARS,
                       })
-                    : ""
+                    : "",
             );
             onStateChange({ ...state, description: value });
         },
-        [onStateChange, state, t]
+        [onStateChange, state, t],
     );
 
     const handleTagsChange = useCallback(
@@ -116,7 +116,7 @@ export const GenericData = ({
                 setTagsErrorText(
                     t("error.tags.tooLong", {
                         chars: MAX_KPI_TOKEN_TAG_CHARS,
-                    })
+                    }),
                 );
                 return;
             }
@@ -131,21 +131,21 @@ export const GenericData = ({
                     ? t("error.tags.tooMany", {
                           count: MAX_KPI_TOKEN_TAGS_COUNT,
                       })
-                    : ""
+                    : "",
             );
             onStateChange({ ...state, tags: value });
         },
-        [onStateChange, state, t]
+        [onStateChange, state, t],
     );
 
     const handleExpirationChange = useCallback(
         (value: Date) => {
             setExpirationErrorText(
-                isInThePast(value) ? t("error.expiration.past") : ""
+                isInThePast(value) ? t("error.expiration.past") : "",
             );
             onStateChange({ ...state, expiration: value });
         },
-        [onStateChange, state, t]
+        [onStateChange, state, t],
     );
 
     const handleERC20NameChange = useCallback(
@@ -157,14 +157,14 @@ export const GenericData = ({
                     ? t("error.erc20.name.tooLong", {
                           chars: MAX_KPI_TOKEN_ERC20_NAME_CHARS,
                       })
-                    : ""
+                    : "",
             );
             onStateChange({
                 ...state,
                 erc20Name: value,
             });
         },
-        [onStateChange, state, t]
+        [onStateChange, state, t],
     );
 
     const handleERC20SymbolChange = useCallback(
@@ -176,14 +176,14 @@ export const GenericData = ({
                     ? t("error.erc20.symbol.tooLong", {
                           chars: MAX_KPI_TOKEN_ERC20_SYMBOL_CHARS,
                       })
-                    : ""
+                    : "",
             );
             onStateChange({
                 ...state,
                 erc20Symbol: value,
             });
         },
-        [onStateChange, state, t]
+        [onStateChange, state, t],
     );
 
     const handleERC20SupplyChange = useCallback(
@@ -194,17 +194,17 @@ export const GenericData = ({
                     BigInt(
                         !isNaN(parseInt(value.value))
                             ? parseFloat(value.value)
-                            : 0
+                            : 0,
                     ) === 0n
                     ? t("error.erc20.supply.zero")
-                    : ""
+                    : "",
             );
             onStateChange({
                 ...state,
                 erc20Supply: value,
             });
         },
-        [onStateChange, state, t]
+        [onStateChange, state, t],
     );
 
     const handleNext = useCallback(async () => {
@@ -230,7 +230,7 @@ export const GenericData = ({
         try {
             setLoading(true);
             specificationCID = await uploadToDecentralizedStorage(
-                JSON.stringify(specificationData)
+                JSON.stringify(specificationData),
             );
         } catch (error) {
             console.warn("error while uploading specification to ipfs", error);

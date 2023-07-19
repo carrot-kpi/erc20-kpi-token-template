@@ -18,7 +18,7 @@ export const NoSpecialCharactersTextInput = ({
             if (!value.match(NO_SPECIAL_CHARACTERS_REGEX)) return;
             onChange(value);
         },
-        [onChange]
+        [onChange],
     );
 
     const handleBlur = useCallback(
@@ -26,7 +26,7 @@ export const NoSpecialCharactersTextInput = ({
             if (!onChange) return;
             onChange(event.target.value.trim());
         },
-        [onChange]
+        [onChange],
     );
 
     return <TextInput {...props} onChange={handleChange} onBlur={handleBlur} />;

@@ -93,7 +93,7 @@ export const WalletPosition = ({
         if (!rawKpiTokenBalance || !initialSupply || !oracles) return;
         const balance = new Amount(
             initialSupply.currency,
-            rawKpiTokenBalance.value
+            rawKpiTokenBalance.value,
         );
         setBalance(balance);
         if (!collaterals || !initialSupply) return;
@@ -103,10 +103,10 @@ export const WalletPosition = ({
             return;
         }
         setMaximumRewards(
-            getMaximumRewards(balance, initialSupply, collaterals)
+            getMaximumRewards(balance, initialSupply, collaterals),
         );
         setGuaranteedRewards(
-            getGuaranteedRewards(balance, initialSupply, collaterals)
+            getGuaranteedRewards(balance, initialSupply, collaterals),
         );
         setRedeemableRewards(
             getRedeemableRewards(
@@ -114,8 +114,8 @@ export const WalletPosition = ({
                 balance,
                 initialSupply,
                 collaterals,
-                kpiToken.expired
-            )
+                kpiToken.expired,
+            ),
         );
     }, [
         collaterals,

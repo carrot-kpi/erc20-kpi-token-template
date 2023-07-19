@@ -32,7 +32,7 @@ export class TokenWithLogoURI extends Token {
         decimals: number,
         symbol: string,
         name: string,
-        logoURI?: string
+        logoURI?: string,
     ) {
         super(chainId, address, decimals, symbol, name);
         this.logoURI = logoURI;

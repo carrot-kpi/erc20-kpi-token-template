@@ -18,7 +18,7 @@ export const startPlayground = async (
     templateId,
     secretKey,
     globals,
-    writableStream
+    writableStream,
 ) => {
     const playgroundFirstCompilation = true;
     const templateFirstCompilation = true;
@@ -36,7 +36,7 @@ export const startPlayground = async (
                 "Access-Control-Allow-Origin": "*",
             },
         },
-        templateCompiler
+        templateCompiler,
     );
 
     await templateDevServer.start();
@@ -105,7 +105,7 @@ export const startPlayground = async (
             new webpack.DefinePlugin({
                 ...globals,
                 CCT_TEMPLATE_URL: JSON.stringify(
-                    `http://localhost:${templatePort}`
+                    `http://localhost:${templatePort}`,
                 ),
             }),
             new webpack.container.ModuleFederationPlugin({
@@ -122,7 +122,7 @@ export const startPlayground = async (
             open: true,
             compress: true,
         },
-        playgroundCompiler
+        playgroundCompiler,
     );
 
     await playgroundDevServer.start();
@@ -135,7 +135,7 @@ export const startPlayground = async (
         writableStream,
         templateFirstCompilation,
         "Template",
-        templatePort
+        templatePort,
     );
 
     const playgroundCompilerPromise = setupCompiler(
@@ -144,7 +144,7 @@ export const startPlayground = async (
         writableStream,
         playgroundFirstCompilation,
         "Playground",
-        playgroundPort
+        playgroundPort,
     );
 
     // wait for the applications to be fully started

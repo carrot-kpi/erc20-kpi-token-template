@@ -4,14 +4,14 @@ import type { Address, TransactionReceipt } from "viem";
 const CREATE_TOKEN_EVENT_HASH = getEventSelector("CreateToken(address)");
 
 export const getKPITokenAddressFromReceipt = (
-    receipt: TransactionReceipt
+    receipt: TransactionReceipt,
 ): Address | null => {
     for (const log of receipt.logs) {
         const [hash] = log.topics;
         if (hash === CREATE_TOKEN_EVENT_HASH)
             return decodeAbiParameters(
                 [{ type: "address" }],
-                log.data
+                log.data,
             )[0] as Address;
     }
     return null;

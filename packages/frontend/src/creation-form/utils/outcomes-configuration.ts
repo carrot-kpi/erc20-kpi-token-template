@@ -3,7 +3,7 @@ import type { OracleData, OutcomeConfigurationState } from "../types";
 
 export const outcomeConfigurationFromOracleData = (
     templateId: number,
-    oracleData: OracleData
+    oracleData: OracleData,
 ): OutcomeConfigurationState => {
     switch (templateId) {
         // reality.eth oracle template

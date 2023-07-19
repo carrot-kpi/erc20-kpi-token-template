@@ -6,7 +6,7 @@ import type { CollateralData } from "../../creation-form/types";
 
 export const useWatchKPITokenCollateralBalances = (
     kpiTokenAddress?: Address,
-    collaterals?: CollateralData[]
+    collaterals?: CollateralData[],
 ) => {
     const [balances, setBalances] = useState<Amount<Token>[]>([]);
 
@@ -38,9 +38,9 @@ export const useWatchKPITokenCollateralBalances = (
             collaterals.map((collateral, i) => {
                 return new Amount(
                     collateral.amount.currency,
-                    rawBalances[i].result as bigint
+                    rawBalances[i].result as bigint,
                 );
-            })
+            }),
         );
     }, [collaterals, loading, rawBalances]);
 

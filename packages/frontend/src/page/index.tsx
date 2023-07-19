@@ -41,7 +41,7 @@ export const Component = ({
     const [oracles, setOracles] = useState<FinalizableOracle[]>([]);
     const [allOrNone, setAllOrNone] = useState(false);
     const [initialSupply, setInitialSupply] = useState<Amount<Token> | null>(
-        null
+        null,
     );
     const [openInExplorerHref, setOpenInExplorerHref] = useState("");
 
@@ -70,7 +70,7 @@ export const Component = ({
                 kpiToken.address,
                 18,
                 tokenData.symbol,
-                tokenData.name
+                tokenData.name,
             );
             setInitialSupply(new Amount(erc20KPIToken, decoded.initialSupply));
         };
@@ -83,7 +83,7 @@ export const Component = ({
     useEffect(() => {
         if (!chain || !chain.blockExplorers || !kpiToken) return;
         setOpenInExplorerHref(
-            `${chain.blockExplorers.default.url}/address/${kpiToken.address}`
+            `${chain.blockExplorers.default.url}/address/${kpiToken.address}`,
         );
     }, [chain, kpiToken]);
 
@@ -193,10 +193,10 @@ export const Component = ({
                                             <ErrorFeedback
                                                 messages={{
                                                     title: t(
-                                                        "error.initializing.creation.title"
+                                                        "error.initializing.creation.title",
                                                     ),
                                                     description: t(
-                                                        "error.initializing.creation.description"
+                                                        "error.initializing.creation.description",
                                                     ),
                                                 }}
                                             />
@@ -223,10 +223,10 @@ export const Component = ({
                                                         <ErrorFeedback
                                                             messages={{
                                                                 title: t(
-                                                                    "error.initializing.oraclePage.title"
+                                                                    "error.initializing.oraclePage.title",
                                                                 ),
                                                                 description: t(
-                                                                    "error.initializing.oraclePage.description"
+                                                                    "error.initializing.oraclePage.description",
                                                                 ),
                                                             }}
                                                         />

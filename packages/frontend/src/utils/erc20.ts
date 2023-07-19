@@ -7,7 +7,7 @@ const TRUST_WALLET_CHAIN: { [chainId: number]: string } = {
 
 export const getDefaultERC20TokenLogoURL = (
     chainId?: number,
-    address?: string
+    address?: string,
 ): string | null => {
     if (!chainId || !address) return null;
     const prefix = TRUST_WALLET_CHAIN[chainId];

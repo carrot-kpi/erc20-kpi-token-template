@@ -18,7 +18,7 @@ interface OracleCreationFormProps {
     onChange: (
         templateId: number,
         state: Partial<unknown>,
-        initializationBundleGetter?: OracleInitializationBundleGetter
+        initializationBundleGetter?: OracleInitializationBundleGetter,
     ) => void;
     template: Template;
     data: OraclesConfigurationStepState;
@@ -50,7 +50,7 @@ export const OracleCreationForm = ({
                         messages={{
                             title: t("error.initializing.creation.title"),
                             description: t(
-                                "error.initializing.creation.description"
+                                "error.initializing.creation.description",
                             ),
                         }}
                     />

@@ -4,7 +4,7 @@ import { type Chain } from "viem";
 
 export const tokenInfoWithBalanceEquals = (
     tokenA?: TokenInfoWithBalance | null,
-    tokenB?: TokenInfoWithBalance | null
+    tokenB?: TokenInfoWithBalance | null,
 ): boolean => {
     return !!(
         tokenA &&
@@ -15,7 +15,7 @@ export const tokenInfoWithBalanceEquals = (
 };
 
 export const cacheTokenInfoWithBalance = (
-    token: TokenInfoWithBalance
+    token: TokenInfoWithBalance,
 ): void => {
     const serializableToken = { ...token };
     const cachingKey = `imported-erc20-tokens-${serializableToken.chainId}`;
@@ -25,7 +25,7 @@ export const cacheTokenInfoWithBalance = (
     >(cachingKey, []);
     if (
         previouslyCachedTokensInChain.some((cachedToken) =>
-            tokenInfoWithBalanceEquals(serializableToken, cachedToken)
+            tokenInfoWithBalanceEquals(serializableToken, cachedToken),
         )
     )
         return;
@@ -33,12 +33,12 @@ export const cacheTokenInfoWithBalance = (
     CACHER.set(
         cachingKey,
         previouslyCachedTokensInChain,
-        Number.MAX_SAFE_INTEGER
+        Number.MAX_SAFE_INTEGER,
     );
 };
 
 export const cachedTokenInfoWithBalanceInChain = (
-    chain?: Chain
+    chain?: Chain,
 ): TokenInfoWithBalance[] => {
     if (!chain?.id) return [];
     return CACHER.getOrDefault(`imported-erc20-tokens-${chain.id}`, []);

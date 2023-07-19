@@ -70,7 +70,7 @@ export const RecoverCollateral = ({
         return getRecoverableRewards(
             collaterals,
             kpiTokenCollateralBalances,
-            kpiToken.expired
+            kpiToken.expired,
         ).map((collateral) => ({
             label: `${formatUnits(collateral.raw, 18)} ${
                 collateral.currency.symbol
@@ -112,7 +112,7 @@ export const RecoverCollateral = ({
         } catch (error) {
             console.error(
                 `could not recover collateral ${collateralToRecover}`,
-                error
+                error,
             );
         } finally {
             setLoadingRecover(false);

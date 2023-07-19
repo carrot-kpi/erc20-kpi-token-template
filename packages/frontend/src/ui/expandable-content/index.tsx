@@ -26,7 +26,7 @@ export const ExpandableContent = ({
             ) : (
                 <Plus className="stroke-black dark:stroke-white" />
             ),
-        [expanded]
+        [expanded],
     );
 
     const handleExpandClick = () => {

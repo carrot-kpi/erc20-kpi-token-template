@@ -78,17 +78,17 @@ export const Component = ({
             collaterals: [],
         });
     const [collateralsData, setCollateralsData] = useState<CollateralData[]>(
-        []
+        [],
     );
 
     const [oracleTemplatesData, setOracleTemplatesData] = useState<Template[]>(
-        []
+        [],
     );
 
     const [oraclesConfigurationStepState, setOraclesConfigurationStepState] =
         useState<OraclesConfigurationStepState>({});
     const [partialOraclesData, setPartialOraclesData] = useState<OracleData[]>(
-        []
+        [],
     );
     const [oraclesData, setOraclesData] = useState<Required<OracleData>[]>([]);
 
@@ -123,11 +123,11 @@ export const Component = ({
     // user has to specify the configuration himself
     useEffect(() => {
         const outcomesConfigurationStepState = Object.entries(
-            oraclesConfigurationStepState
+            oraclesConfigurationStepState,
         ).reduce(
             (
                 accumulator: OutcomesConfigurationStepState,
-                [templateId, data]
+                [templateId, data],
             ) => {
                 const parsedTemplateID = parseInt(templateId);
                 if (isNaN(parsedTemplateID))
@@ -137,7 +137,7 @@ export const Component = ({
                     outcomeConfigurationFromOracleData(parsedTemplateID, data);
                 return accumulator;
             },
-            {}
+            {},
         );
         setOutcomesConfigurationStepState(outcomesConfigurationStepState);
     }, [oraclesConfigurationStepState]);
@@ -151,7 +151,7 @@ export const Component = ({
         (
             specificationData: SpecificationData,
             specificationCID: string,
-            tokenData: TokenDataType
+            tokenData: TokenDataType,
         ) => {
             setSpecificationData(specificationData);
             setSpecificationCID(specificationCID);
@@ -159,7 +159,7 @@ export const Component = ({
             setStep(1);
             setMostUpdatedStep(1);
         },
-        []
+        [],
     );
 
     const handleCollateralsNext = useCallback(
@@ -168,7 +168,7 @@ export const Component = ({
             setStep(2);
             setMostUpdatedStep(2);
         },
-        []
+        [],
     );
 
     const handleOraclesPickerNext = useCallback((templates: Template[]) => {
@@ -184,7 +184,7 @@ export const Component = ({
             setStep(nextStep);
             setMostUpdatedStep(nextStep);
         },
-        [enableOraclePickStep]
+        [enableOraclePickStep],
     );
 
     const handleOutcomesConfigurationNext = useCallback(
@@ -216,7 +216,7 @@ export const Component = ({
             specificationCID,
             specificationData,
             tokenData,
-        ]
+        ],
     );
 
     const handleDeployNext = useCallback(
@@ -226,7 +226,7 @@ export const Component = ({
             setStep(nextStep);
             setMostUpdatedStep(nextStep);
         },
-        [enableOraclePickStep]
+        [enableOraclePickStep],
     );
 
     if (loading) {

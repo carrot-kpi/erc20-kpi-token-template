@@ -25,10 +25,10 @@ import { OraclesAccordion } from "./oracles-accordion";
 import { OracleCreationForm } from "./oracle-creation-form";
 
 type Assert = (
-    data: OraclesConfigurationStepState
+    data: OraclesConfigurationStepState,
 ) => asserts data is { [id: number]: Required<OracleConfigurationState> };
 const assertInitializationBundleGetterPresent: Assert = (
-    data: OraclesConfigurationStepState
+    data: OraclesConfigurationStepState,
 ) => {
     const dataValues = Object.values(data);
     if (
@@ -87,7 +87,7 @@ export const OraclesConfiguration = ({
         (
             templateId: number,
             oracleState: Partial<unknown>,
-            initializationBundleGetter?: OracleInitializationBundleGetter
+            initializationBundleGetter?: OracleInitializationBundleGetter,
         ) => {
             onStateChange((prevState) => ({
                 ...prevState,
@@ -97,7 +97,7 @@ export const OraclesConfiguration = ({
                 },
             }));
         },
-        [onStateChange]
+        [onStateChange],
     );
 
     const handleNext = useCallback(() => {
@@ -114,7 +114,7 @@ export const OraclesConfiguration = ({
                             initializationBundle,
                         };
                         return oracleData;
-                    })
+                    }),
                 );
                 onNext(oracles);
             } catch (error) {

@@ -53,10 +53,10 @@ export const CollateralRow = ({
                 amount
                     .sub(amount.mul(PROTOCOL_FEE_BPS).div(10_000))
                     .toFixed(amount.currency.decimals) as `${number}`,
-                amount.currency.decimals
-            )
+                amount.currency.decimals,
+            ),
         ),
-        false
+        false,
     );
 
     return (
@@ -78,7 +78,7 @@ export const CollateralRow = ({
                     src={token.logoURI}
                     defaultSrc={getDefaultERC20TokenLogoURL(
                         token.chainId,
-                        token.address
+                        token.address,
                     )}
                     defaultText={token.symbol}
                     ipfsGatewayURL={ipfsGatewayURL}

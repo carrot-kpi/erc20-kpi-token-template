@@ -25,7 +25,7 @@ interface OraclesAccordionProps {
     onChange: (
         templateId: number,
         state: Partial<unknown>,
-        initializationBundleGetter?: OracleInitializationBundleGetter
+        initializationBundleGetter?: OracleInitializationBundleGetter,
     ) => void;
     templates: Template[];
     data: OraclesConfigurationStepState;
@@ -70,10 +70,10 @@ export const OraclesAccordion = ({
                                     <ErrorFeedback
                                         messages={{
                                             title: t(
-                                                "error.initializing.creation.title"
+                                                "error.initializing.creation.title",
                                             ),
                                             description: t(
-                                                "error.initializing.creation.description"
+                                                "error.initializing.creation.description",
                                             ),
                                         }}
                                     />
