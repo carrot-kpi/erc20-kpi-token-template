@@ -50,8 +50,7 @@ export const GenericData = ({
     onStateChange,
     onNext,
 }: GenericDataProps): ReactElement => {
-    const uploadToDecentralizedStorage =
-        useDecentralizedStorageUploader("ipfs");
+    const uploadToDecentralizedStorage = useDecentralizedStorageUploader();
 
     const [titleErrorText, setTitleErrorText] = useState("");
     const [descriptionErrorText, setDescriptionErrorText] = useState("");
