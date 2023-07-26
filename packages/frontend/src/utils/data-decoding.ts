@@ -13,7 +13,7 @@ interface DecodedData {
 
 export const decodeKPITokenData = async (
     publicClient: PublicClient,
-    data: Hex
+    data: Hex,
 ): Promise<DecodedData | null> => {
     const [rawCollaterals, finalizableOracles, allOrNone, initialSupply] =
         decodeAbiParameters(
@@ -42,7 +42,7 @@ export const decodeKPITokenData = async (
                 { type: "bool", name: "allOrNone" },
                 { type: "uint256", name: "initialSupply" },
             ],
-            data
+            data,
         ) as [
             readonly {
                 token: Address;
@@ -58,7 +58,7 @@ export const decodeKPITokenData = async (
                 finalized: boolean;
             }[],
             boolean,
-            bigint
+            bigint,
         ];
 
     const erc20Tokens = await Fetcher.fetchERC20Tokens({

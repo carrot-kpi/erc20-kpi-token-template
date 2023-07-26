@@ -39,21 +39,21 @@ export const SingleConfiguration = ({
         (value: boolean) => {
             if (onBinaryChange) onBinaryChange(templateId, value);
         },
-        [onBinaryChange, templateId]
+        [onBinaryChange, templateId],
     );
 
     const handleLowerBoundChange = useCallback(
         (value: NumberFormatValue) => {
             if (onLowerBoundChange) onLowerBoundChange(templateId, value);
         },
-        [onLowerBoundChange, templateId]
+        [onLowerBoundChange, templateId],
     );
 
     const handleHigherBoundChange = useCallback(
         (value: NumberFormatValue) => {
             if (onHigherBoundChange) onHigherBoundChange(templateId, value);
         },
-        [onHigherBoundChange, templateId]
+        [onHigherBoundChange, templateId],
     );
 
     return (

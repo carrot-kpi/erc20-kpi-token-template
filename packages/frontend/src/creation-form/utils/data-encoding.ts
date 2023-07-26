@@ -6,7 +6,7 @@ export const encodeKPITokenData = (
     collateralsData: CollateralData[],
     erc20Name: string,
     erc20Symbol: string,
-    supply: bigint
+    supply: bigint,
 ) => {
     return encodeAbiParameters(
         [
@@ -34,14 +34,14 @@ export const encodeKPITokenData = (
             erc20Name,
             erc20Symbol,
             supply,
-        ]
+        ],
     );
 };
 
 export const encodeOraclesData = (
     templatesData: Template[],
     outcomesData: OutcomeData[],
-    oraclesData: Required<OracleData>[]
+    oraclesData: Required<OracleData>[],
 ): { data: Hex; totalValueRequired: bigint } => {
     let totalValueRequired = 0n;
     const oracleParams = templatesData.map(({ id: templateId }, index) => {
@@ -75,7 +75,7 @@ export const encodeOraclesData = (
                 },
                 { type: "bool", name: "allOrNone" },
             ],
-            [oracleParams, false]
+            [oracleParams, false],
         ),
         totalValueRequired,
     };

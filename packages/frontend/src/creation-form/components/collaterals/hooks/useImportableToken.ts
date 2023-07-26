@@ -6,7 +6,7 @@ import type { TokenInfoWithBalance } from "@carrot-kpi/ui";
 export const useImportableToken = (
     debouncedQuery?: string,
     withBalances?: boolean,
-    connectedAccountAddress?: string
+    connectedAccountAddress?: string,
 ): {
     importableToken?: TokenInfoWithBalance | null;
     loadingBalance: boolean;

@@ -37,10 +37,10 @@ export const OutcomesConfiguration = ({
                         return true;
                     }
                     const parsedLowerBoundAmount = parseFloat(
-                        value.lowerBound.value
+                        value.lowerBound.value,
                     );
                     const parsedHigherBoundAmount = parseFloat(
-                        value.higherBound.value
+                        value.higherBound.value,
                     );
                     if (
                         isNaN(parsedLowerBoundAmount) ||
@@ -52,7 +52,7 @@ export const OutcomesConfiguration = ({
                               parsedHigherBoundAmount !== 1
                         : parsedHigherBoundAmount === 0 ||
                               parsedLowerBoundAmount >= parsedHigherBoundAmount;
-                })
+                }),
         );
     }, [state, templates.length]);
 
@@ -70,7 +70,7 @@ export const OutcomesConfiguration = ({
             };
             onStateChange({ ...state, [id]: previousData });
         },
-        [state, onStateChange]
+        [state, onStateChange],
     );
 
     const handleLowerBoundChange = useCallback(
@@ -79,7 +79,7 @@ export const OutcomesConfiguration = ({
             previousData.lowerBound = value;
             onStateChange({ ...state, [id]: previousData });
         },
-        [state, onStateChange]
+        [state, onStateChange],
     );
 
     const handleHigherBoundChange = useCallback(
@@ -88,7 +88,7 @@ export const OutcomesConfiguration = ({
             previousData.higherBound = value;
             onStateChange({ ...state, [id]: previousData });
         },
-        [state, onStateChange]
+        [state, onStateChange],
     );
 
     const handleNext = useCallback(() => {
@@ -102,10 +102,10 @@ export const OutcomesConfiguration = ({
                         ? 1n
                         : parseUnits(
                               value.higherBound.value as `${number}`,
-                              18
+                              18,
                           ),
                 };
-            })
+            }),
         );
     }, [state, onNext]);
 

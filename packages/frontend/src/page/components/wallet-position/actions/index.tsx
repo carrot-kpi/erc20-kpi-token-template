@@ -55,7 +55,7 @@ export const WalletActions = ({
         args: address && [
             encodeAbiParameters(
                 [{ type: "address", name: "redeemer" }],
-                [address]
+                [address],
             ) as `0x${string}`,
         ],
         enabled: !!chain?.id && !!address && (redeemable || burnable),
@@ -86,7 +86,7 @@ export const WalletActions = ({
                           amount: formatCurrencyAmount(kpiTokenBalance, false),
                           symbol: kpiTokenBalance.currency.symbol,
                       })
-                    : t("position.status.expired.noBalance")
+                    : t("position.status.expired.noBalance"),
             );
         } else {
             if (kpiToken.finalized) {
@@ -98,11 +98,11 @@ export const WalletActions = ({
                                 {
                                     amount: formatCurrencyAmount(
                                         kpiTokenBalance,
-                                        false
+                                        false,
                                     ),
                                     symbol: kpiTokenBalance.currency.symbol,
-                                }
-                            )
+                                },
+                            ),
                         );
                     else if (redeemable)
                         setText(
@@ -111,11 +111,11 @@ export const WalletActions = ({
                                 {
                                     amount: formatCurrencyAmount(
                                         kpiTokenBalance,
-                                        false
+                                        false,
                                     ),
                                     symbol: kpiTokenBalance.currency.symbol,
-                                }
-                            )
+                                },
+                            ),
                         );
                 } else setText(t("position.status.finalized.noBalance"));
             } else setText(t("position.status.notFinalized"));

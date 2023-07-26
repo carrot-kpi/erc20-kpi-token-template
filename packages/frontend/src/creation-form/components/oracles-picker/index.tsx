@@ -26,7 +26,7 @@ export const OraclesPicker = ({
         oracleTemplatesData.reduce((accumulator: TemplatesMap, template) => {
             accumulator[template.id] = template;
             return accumulator;
-        }, {})
+        }, {}),
     );
     const [disabled, setDisabled] = useState(true);
 

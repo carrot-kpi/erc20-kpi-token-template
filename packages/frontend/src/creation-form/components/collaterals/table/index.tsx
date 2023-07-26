@@ -18,7 +18,7 @@ const containerStyles = cva(
                 ],
             },
         },
-    }
+    },
 );
 
 interface CollateralsTableProps {
