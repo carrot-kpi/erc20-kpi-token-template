@@ -1124,10 +1124,10 @@
     react-use "^17.4.0"
     viem "^1.1.7"
 
-"@carrot-kpi/react@^0.51.1":
-  version "0.51.1"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.51.1.tgz#6a9082c22245b20b062b4a38ff164d5f3689ef0d"
-  integrity sha512-NBSKkUAU6s/5zqJUYoDn3SFcTFDMymuGxj/NXerSD1MznRRYx3DKzIOErTmD/Gp5AmT5Hrt6JAhsI1k+LzxxeA==
+"@carrot-kpi/react@^0.51.2":
+  version "0.51.2"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.51.2.tgz#54526fc9de0ac73aec78585a9134e8659cc5e436"
+  integrity sha512-Wc+v/S0jrAzOyq06J+xrm/mC99FApXidekfDGDUjISzykan8HQJuynoJZ9331Tk9Vao2mJm3YPJrT0zR2MFi5w==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@tanstack/query-sync-storage-persister" "^4.32.0"
