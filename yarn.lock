@@ -1107,10 +1107,10 @@
     react-use "^17.4.0"
     viem "^1.4.1"
 
-"@carrot-kpi/react@^0.54.1":
-  version "0.54.1"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.54.1.tgz#2ba480aea92612413bd96b91f65a02abeda93647"
-  integrity sha512-0ny7IwXU3ZCWgTApCgS/jYSfJJyvnF661n4w6sYz7mtikvn8lF/uy/igAGe9XSuMIzepKHeJK7iUDGUe+2EjiQ==
+"@carrot-kpi/react@^0.55.0":
+  version "0.55.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.55.0.tgz#5c4e04ba93b76f023cd08d7322811050364c3688"
+  integrity sha512-SV11Ej3gxNw87gCXtK+pEagh1BnO+yNmPQQCfIykIRXtZICya7a2wK3QttyQh8dGWmH67flboOpcpeDGgWsSIQ==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@tanstack/query-sync-storage-persister" "^4.32.0"
@@ -1138,10 +1138,19 @@
     multiformats "^9.9.0"
     viem "^1.4.1"
 
-"@carrot-kpi/shared-state@^0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/shared-state/-/shared-state-0.4.1.tgz#7a3796b0c7b49ab060c15a420062e098f40fc55a"
-  integrity sha512-qEGkm6zSi7MAc2laGCDdrMFK7ihvus2D+fbv7zgPqVO8KeAYUdQEu/AOj1hALHRC48c/9V6Z3EqgzGPX8jkBPA==
+"@carrot-kpi/sdk@^1.33.2":
+  version "1.33.2"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.33.2.tgz#b7624a278a5c1c4eb983c6079ce086b4d7639f1b"
+  integrity sha512-PMzA4ndl8pRQV13CcEW9axzMEjnNIBJfmxdtFawDgBWn/LzJ/KZ/o2iS11Yrk9IDly+X5X0HypDbJ4PZX8faUw==
+  dependencies:
+    decimal.js-light "^2.5.1"
+    multiformats "^9.9.0"
+    viem "^1.4.1"
+
+"@carrot-kpi/shared-state@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/shared-state/-/shared-state-0.5.0.tgz#6c526143c06694fd31dbfc3b19b3121965bb510b"
+  integrity sha512-djNxWdjmJeAkYhzJBwTdOWSp442N19ivZf7ddF1AkvgLrB146xshxw2ooNs97YkeCUMs8N0uxJ0/QsGP5cpOjQ==
   dependencies:
     "@reduxjs/toolkit" "^1.9.5"
     lodash.debounce "^4.0.8"
@@ -1177,10 +1186,10 @@
     tailwind-merge "^1.14.0"
     viem "^1.4.1"
 
-"@carrot-kpi/ui@^0.52.1":
-  version "0.52.1"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.52.1.tgz#f8f8a56fcfbe9fa6ffd3139f9720a69cdfaa389d"
-  integrity sha512-4Hw3caf6bxGmCMHPeQ//FbXluanWjtHfIeOfEnzGjtEU4wbP9+Kg1r4++z5SLKHreMCtixMq2unvKFfnH9GuhA==
+"@carrot-kpi/ui@^0.53.0":
+  version "0.53.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.53.0.tgz#65cf9f6e0c9a6caabbaaf034a697105ee6498c03"
+  integrity sha512-JnoT7LY3ZvhnXBYbz7iv74KrqIlv6Sqk1mTi+T0FKvQDIcTGZiqInujUDbzI+G6W93dFowBG71QmBN3RdcX0hA==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@popperjs/core" "^2.11.8"
