@@ -166,24 +166,20 @@ export const WalletPosition = ({
                             {t("position.rewards.guaranteed.label")}
                         </Typography>
                         <div className="flex flex-col gap-2">
-                            {loading || !guaranteedRewards ? (
-                                new Array(collaterals?.length || 1)
-                                    .fill(null)
-                                    .map((_, index) => (
-                                        <TokenAmount key={index} loading />
-                                    ))
-                            ) : (
-                                <div className="flex items-center gap-2">
-                                    {guaranteedRewards.map((reward) => {
-                                        return (
-                                            <TokenAmount
-                                                key={reward.currency.address}
-                                                amount={reward}
-                                            />
-                                        );
-                                    })}
-                                </div>
-                            )}
+                            {loading || !guaranteedRewards
+                                ? new Array(collaterals?.length || 1)
+                                      .fill(null)
+                                      .map((_, index) => (
+                                          <TokenAmount key={index} loading />
+                                      ))
+                                : guaranteedRewards.map((reward) => {
+                                      return (
+                                          <TokenAmount
+                                              key={reward.currency.address}
+                                              amount={reward}
+                                          />
+                                      );
+                                  })}
                         </div>
                     </div>
                     <div className="w-full md:w-1/3 p-6 flex-col border-b border-black md:border-r">
@@ -195,24 +191,20 @@ export const WalletPosition = ({
                             {t("position.rewards.maximum.label")}
                         </Typography>
                         <div className="flex flex-col gap-2">
-                            {loading || !maximumRewards ? (
-                                new Array(collaterals?.length || 1)
-                                    .fill(null)
-                                    .map((_, index) => (
-                                        <TokenAmount key={index} loading />
-                                    ))
-                            ) : (
-                                <div className="flex items-center gap-2">
-                                    {maximumRewards.map((reward) => {
-                                        return (
-                                            <TokenAmount
-                                                key={reward.currency.address}
-                                                amount={reward}
-                                            />
-                                        );
-                                    })}
-                                </div>
-                            )}
+                            {loading || !maximumRewards
+                                ? new Array(collaterals?.length || 1)
+                                      .fill(null)
+                                      .map((_, index) => (
+                                          <TokenAmount key={index} loading />
+                                      ))
+                                : maximumRewards.map((reward) => {
+                                      return (
+                                          <TokenAmount
+                                              key={reward.currency.address}
+                                              amount={reward}
+                                          />
+                                      );
+                                  })}
                         </div>
                     </div>
                     <div className="w-full md:w-1/3 p-6 flex-col border-black border-b">
@@ -225,24 +217,20 @@ export const WalletPosition = ({
                         </Typography>
                         {loading ||
                         !kpiTokenCollateralBalances ||
-                        loadingKPITokenCollateralBalances ? (
-                            new Array(collaterals?.length || 1)
-                                .fill(null)
-                                .map((_, index) => (
-                                    <TokenAmount key={index} loading />
-                                ))
-                        ) : (
-                            <div className="flex items-center gap-2">
-                                {kpiTokenCollateralBalances.map((reward) => {
-                                    return (
-                                        <TokenAmount
-                                            key={reward.currency.address}
-                                            amount={reward}
-                                        />
-                                    );
-                                })}
-                            </div>
-                        )}
+                        loadingKPITokenCollateralBalances
+                            ? new Array(collaterals?.length || 1)
+                                  .fill(null)
+                                  .map((_, index) => (
+                                      <TokenAmount key={index} loading />
+                                  ))
+                            : kpiTokenCollateralBalances.map((reward) => {
+                                  return (
+                                      <TokenAmount
+                                          key={reward.currency.address}
+                                          amount={reward}
+                                      />
+                                  );
+                              })}
                     </div>
                 </div>
                 <div className="w-full flex flex-col md:flex-row justify-between border-black border-b">
