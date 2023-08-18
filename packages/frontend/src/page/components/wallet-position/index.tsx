@@ -215,22 +215,24 @@ export const WalletPosition = ({
                         >
                             {t("position.rewards.remaining.label")}
                         </Typography>
-                        {loading ||
-                        !kpiTokenCollateralBalances ||
-                        loadingKPITokenCollateralBalances
-                            ? new Array(collaterals?.length || 1)
-                                  .fill(null)
-                                  .map((_, index) => (
-                                      <TokenAmount key={index} loading />
-                                  ))
-                            : kpiTokenCollateralBalances.map((reward) => {
-                                  return (
-                                      <TokenAmount
-                                          key={reward.currency.address}
-                                          amount={reward}
-                                      />
-                                  );
-                              })}
+                        <div className="flex flex-col gap-2">
+                            {loading ||
+                            !kpiTokenCollateralBalances ||
+                            loadingKPITokenCollateralBalances
+                                ? new Array(collaterals?.length || 1)
+                                      .fill(null)
+                                      .map((_, index) => (
+                                          <TokenAmount key={index} loading />
+                                      ))
+                                : kpiTokenCollateralBalances.map((reward) => {
+                                      return (
+                                          <TokenAmount
+                                              key={reward.currency.address}
+                                              amount={reward}
+                                          />
+                                      );
+                                  })}
+                        </div>
                     </div>
                 </div>
                 <div className="w-full flex flex-col md:flex-row justify-between border-black border-b">
