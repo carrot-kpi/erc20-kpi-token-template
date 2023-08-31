@@ -77,6 +77,7 @@ export interface OutcomeData {
 
 export interface OutcomeConfigurationState {
     automaticallyFilled?: boolean;
+    binaryTogglable: boolean;
     binary: boolean;
     lowerBound: NumberFormatValue;
     higherBound: NumberFormatValue;
