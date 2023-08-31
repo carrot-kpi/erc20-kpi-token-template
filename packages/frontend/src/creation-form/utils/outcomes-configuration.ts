@@ -30,7 +30,7 @@ export const outcomeConfigurationFromOracleData = (
         // defillama oracle template
         case 2: {
             return {
-                automaticallyFilled: true,
+                automaticallyFilled: false,
                 binaryTogglable: false,
                 binary: false,
                 lowerBound: {
