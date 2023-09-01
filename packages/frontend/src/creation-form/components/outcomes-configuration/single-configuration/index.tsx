@@ -67,14 +67,12 @@ export const SingleConfiguration = ({
                     </Typography>
                 </div>
             )}
-            <div className="flex justify-between items-center">
-                <Typography>{t("label.binary")}</Typography>
-                <Switch
-                    checked={binary}
-                    onChange={handleBinaryChange}
-                    disabled={!binaryTogglable}
-                />
-            </div>
+            {binaryTogglable && (
+                <div className="flex justify-between items-center">
+                    <Typography>{t("label.binary")}</Typography>
+                    <Switch checked={binary} onChange={handleBinaryChange} />
+                </div>
+            )}
             <div className={boundsWrapperStyles({ binary })}>
                 <NumberInput
                     label={t("label.lower.bound")}
