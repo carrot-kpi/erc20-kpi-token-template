@@ -16,6 +16,7 @@ export interface SingleConfigurationProps {
     t: NamespacedTranslateFunction;
     templateId: number;
     automaticallyFilled?: boolean;
+    binaryTogglable?: boolean;
     binary?: boolean;
     onBinaryChange?: (id: number, value: boolean) => void;
     lowerBound?: NumberFormatValue;
@@ -28,6 +29,7 @@ export const SingleConfiguration = ({
     t,
     templateId,
     automaticallyFilled,
+    binaryTogglable,
     binary,
     onBinaryChange,
     lowerBound,
@@ -65,10 +67,12 @@ export const SingleConfiguration = ({
                     </Typography>
                 </div>
             )}
-            <div className="flex justify-between items-center">
-                <Typography>{t("label.binary")}</Typography>
-                <Switch checked={binary} onChange={handleBinaryChange} />
-            </div>
+            {binaryTogglable && (
+                <div className="flex justify-between items-center">
+                    <Typography>{t("label.binary")}</Typography>
+                    <Switch checked={binary} onChange={handleBinaryChange} />
+                </div>
+            )}
             <div className={boundsWrapperStyles({ binary })}>
                 <NumberInput
                     label={t("label.lower.bound")}

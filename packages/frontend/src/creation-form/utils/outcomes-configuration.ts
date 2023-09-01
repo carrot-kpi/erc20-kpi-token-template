@@ -14,6 +14,7 @@ export const outcomeConfigurationFromOracleData = (
             return usedRealityTemplate === 0
                 ? {
                       automaticallyFilled: true,
+                      binaryTogglable: true,
                       binary: true,
                       lowerBound: {
                           value: "0",
@@ -25,6 +26,13 @@ export const outcomeConfigurationFromOracleData = (
                       },
                   }
                 : DEFAULT_OUTCOME_CONFIGURATION;
+        }
+        // defillama oracle template
+        case 2: {
+            return {
+                ...DEFAULT_OUTCOME_CONFIGURATION,
+                binaryTogglable: false,
+            };
         }
         default: {
             return DEFAULT_OUTCOME_CONFIGURATION;

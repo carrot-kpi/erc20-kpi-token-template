@@ -24,6 +24,7 @@ export const DEFAULT_NUMBER_FORMAT_VALUE = {
 
 export const DEFAULT_OUTCOME_CONFIGURATION: OutcomeConfigurationState = {
     automaticallyFilled: false,
+    binaryTogglable: true,
     binary: false,
     lowerBound: {
         value: "",

@@ -129,6 +129,7 @@ export const OutcomesConfiguration = ({
                     automaticallyFilled={
                         state[templates[0].id]?.automaticallyFilled
                     }
+                    binaryTogglable={state[templates[0].id]?.binaryTogglable}
                     binary={state[templates[0].id]?.binary}
                     onBinaryChange={handleBinaryChange}
                     lowerBound={state[templates[0].id]?.lowerBound}
