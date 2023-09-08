@@ -316,7 +316,7 @@ export const Component = ({
                     <StepCard
                         title={t("card.oracle.configuration.title")}
                         step={enableOraclePickStep ? 4 : 3}
-                        className={{ root: "relative pb-10" }}
+                        className={{ root: "relative pb-10", content: "px-0" }}
                         messages={{ step: t("step") }}
                     >
                         {!connectedAddress ? (
@@ -338,7 +338,10 @@ export const Component = ({
                     <StepCard
                         title={t("card.outcome.configuration.title")}
                         step={enableOraclePickStep ? 5 : 4}
-                        className={{ root: "relative pb-10" }}
+                        className={{
+                            root: "relative pb-10",
+                            content: "px-0",
+                        }}
                         messages={{ step: t("step") }}
                     >
                         <OutcomesConfiguration
