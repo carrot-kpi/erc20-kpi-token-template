@@ -110,8 +110,8 @@ export const OutcomesConfiguration = ({
     }, [state, onNext]);
 
     return (
-        <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3 p-4">
                 <Typography variant="sm">
                     {t("card.outcome.configuration.description.1")}
                 </Typography>

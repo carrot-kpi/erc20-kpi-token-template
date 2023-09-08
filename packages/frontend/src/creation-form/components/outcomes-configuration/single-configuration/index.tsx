@@ -1,16 +1,19 @@
 import type { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import { NumberInput, Switch, Typography } from "@carrot-kpi/ui";
+import { NumberInput, Switch, Typography, WarningBox } from "@carrot-kpi/ui";
 import { cva } from "class-variance-authority";
 import { useCallback } from "react";
 import type { NumberFormatValue } from "../../../types";
 
-const boundsWrapperStyles = cva(["flex gap-4 opacity-100 transition-opacity"], {
-    variants: {
-        binary: {
-            true: ["opacity-20", "pointer-events-none", "cursor-no-drop"],
+const boundsWrapperStyles = cva(
+    ["flex", "flex-col", "gap-4", "opacity-100", "transition-opacity", "p-4"],
+    {
+        variants: {
+            binary: {
+                true: ["opacity-20", "pointer-events-none", "cursor-no-drop"],
+            },
         },
     },
-});
+);
 
 export interface SingleConfigurationProps {
     t: NamespacedTranslateFunction;
@@ -61,43 +64,56 @@ export const SingleConfiguration = ({
     return (
         <div className="flex flex-col gap-4">
             {automaticallyFilled && (
-                <div className="rounded-xl flex p-4 border border-orange bg-orange bg-opacity-20">
-                    <Typography className={{ root: "text-orange" }}>
-                        {t("warning.autofilled")}
-                    </Typography>
-                </div>
+                <WarningBox
+                    icon
+                    messages={{ title: t("warning.autofilled.title") }}
+                    className={{ root: "border-x-0" }}
+                >
+                    <Typography>{t("warning.autofilled")}</Typography>
+                </WarningBox>
             )}
             {binaryTogglable && (
-                <div className="flex justify-between items-center">
-                    <Typography>{t("label.binary")}</Typography>
-                    <Switch checked={binary} onChange={handleBinaryChange} />
-                </div>
+                <>
+                    <div className="flex justify-between items-center p-4">
+                        <Typography>{t("label.binary")}</Typography>
+                        <Switch
+                            checked={binary}
+                            onChange={handleBinaryChange}
+                        />
+                    </div>
+                    <div className="px-4">
+                        <div className="h-[1px] bg-black dark:bg-white" />
+                    </div>
+                </>
             )}
             <div className={boundsWrapperStyles({ binary })}>
-                <NumberInput
-                    label={t("label.lower.bound")}
-                    placeholder={"1,000,000"}
-                    allowNegative={false}
-                    onValueChange={handleLowerBoundChange}
-                    value={lowerBound?.formattedValue}
-                    className={{
-                        root: "w-full",
-                        input: "w-full",
-                        inputWrapper: "w-full",
-                    }}
-                />
-                <NumberInput
-                    label={t("label.higher.bound")}
-                    allowNegative={false}
-                    placeholder={"1,000,000"}
-                    onValueChange={handleHigherBoundChange}
-                    value={higherBound?.formattedValue}
-                    className={{
-                        root: "w-full",
-                        input: "w-full",
-                        inputWrapper: "w-full",
-                    }}
-                />
+                <Typography>{t("label.numeric")}</Typography>
+                <div className="flex gap-4">
+                    <NumberInput
+                        label={t("label.lower.bound")}
+                        placeholder={"1,000,000"}
+                        allowNegative={false}
+                        onValueChange={handleLowerBoundChange}
+                        value={lowerBound?.formattedValue}
+                        className={{
+                            root: "w-full",
+                            input: "w-full",
+                            inputWrapper: "w-full",
+                        }}
+                    />
+                    <NumberInput
+                        label={t("label.higher.bound")}
+                        allowNegative={false}
+                        placeholder={"1,000,000"}
+                        onValueChange={handleHigherBoundChange}
+                        value={higherBound?.formattedValue}
+                        className={{
+                            root: "w-full",
+                            input: "w-full",
+                            inputWrapper: "w-full",
+                        }}
+                    />
+                </div>
             </div>
         </div>
     );

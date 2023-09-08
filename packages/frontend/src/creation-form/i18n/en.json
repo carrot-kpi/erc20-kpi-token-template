@@ -70,9 +70,10 @@
     "label.collateral.approve": "Approve {{symbol}} ({{currentIndex}}/{{totalAmount}})",
     "label.create": "Create",
     "info.approve": "Approve spending your collateral in order to deploy your Carrot campaign.",
-    "label.lower.bound": "Lower bound",
-    "label.higher.bound": "Higher bound",
+    "label.lower.bound": "Higher than",
+    "label.higher.bound": "Lower than",
     "label.binary": "Binary",
+    "label.numeric": "Numeric",
     "oracles.picker.label": "Select your oracle template",
     "oracles.picker.template.title": "Title",
     "oracles.picker.template.version": "Version",
@@ -89,5 +90,6 @@
     "add": "Add",
     "success.text": "Your Carrot Campaign has successfully been created!",
     "success.button.label": "Go to campaign",
-    "warning.autofilled": "This outcome configuration has been automatically determined based on its respective oracle configuration. Please manually double check for any discrepancies, it's important."
+    "warning.autofilled": "This outcome configuration has been automatically determined based on its respective oracle configuration. Please manually double check for any discrepancies, it's important.",
+    "warning.autofilled.title": "Important"
 }
