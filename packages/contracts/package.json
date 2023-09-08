@@ -15,9 +15,9 @@
         "coverage": "forge coverage"
     },
     "devDependencies": {
-        "prettier": "^3.0.1",
+        "prettier": "^3.0.3",
         "prettier-plugin-solidity": "^1.0.0-beta.19",
         "solhint-plugin-prettier": "^0.0.5",
-        "viem": "^1.6.0"
+        "viem": "^1.10.8"
     }
 }

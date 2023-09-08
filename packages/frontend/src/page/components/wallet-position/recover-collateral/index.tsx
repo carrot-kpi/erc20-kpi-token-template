@@ -129,6 +129,7 @@ export const RecoverCollateral = ({
                         label={t("collaterals.label")}
                         placeholder={t("collaterals.recover.label")}
                         options={collateralOptions}
+                        messages={{ noResults: "" }}
                         onChange={setCollateralToRecover}
                         value={collateralToRecover}
                         renderOption={(value) => (
