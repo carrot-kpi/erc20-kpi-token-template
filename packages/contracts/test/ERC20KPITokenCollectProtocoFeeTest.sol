@@ -22,16 +22,8 @@ contract ERC20KPITokenCollectProtocoFeeTest is BaseTestSetup {
         collaterals[0] = Collateral({token: address(firstErc20), amount: 10 ether, minimumPayout: 1 ether});
 
         OracleData[] memory oracleData = new OracleData[](2);
-        oracleData[0] =
-            OracleData({templateId: 1, lowerBound: 0, higherBound: 1, weight: 1, value: 0, data: abi.encode("1")});
-        oracleData[1] = OracleData({
-            templateId: 1,
-            lowerBound: 5 ether,
-            higherBound: 10 ether,
-            weight: 3,
-            value: 0,
-            data: abi.encode("2")
-        });
+        oracleData[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
+        oracleData[1] = OracleData({templateId: 1, weight: 3, value: 0, data: abi.encode("2")});
         address oraclesManager = address(2);
         vm.mockCall(
             oraclesManager, abi.encodeWithSignature("instantiate(address,uint256,bytes)"), abi.encode(address(2))
@@ -66,16 +58,8 @@ contract ERC20KPITokenCollectProtocoFeeTest is BaseTestSetup {
         collaterals[0] = Collateral({token: address(firstErc20), amount: 10 ether, minimumPayout: 9.9999999999 ether});
 
         OracleData[] memory oracleData = new OracleData[](2);
-        oracleData[0] =
-            OracleData({templateId: 1, lowerBound: 0, higherBound: 1, weight: 1, value: 0, data: abi.encode("1")});
-        oracleData[1] = OracleData({
-            templateId: 1,
-            lowerBound: 5 ether,
-            higherBound: 10 ether,
-            weight: 3,
-            value: 0,
-            data: abi.encode("2")
-        });
+        oracleData[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
+        oracleData[1] = OracleData({templateId: 1, weight: 3, value: 0, data: abi.encode("2")});
         address oraclesManager = address(2);
         vm.mockCall(
             oraclesManager, abi.encodeWithSignature("instantiate(address,uint256,bytes)"), abi.encode(address(2))
@@ -129,16 +113,8 @@ contract ERC20KPITokenCollectProtocoFeeTest is BaseTestSetup {
         collaterals[1] = Collateral({token: address(secondErc20), amount: 3 ether, minimumPayout: 2 ether});
 
         OracleData[] memory oracleData = new OracleData[](2);
-        oracleData[0] =
-            OracleData({templateId: 1, lowerBound: 0, higherBound: 1, weight: 1, value: 0, data: abi.encode("1")});
-        oracleData[1] = OracleData({
-            templateId: 1,
-            lowerBound: 5 ether,
-            higherBound: 10 ether,
-            weight: 3,
-            value: 0,
-            data: abi.encode("2")
-        });
+        oracleData[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
+        oracleData[1] = OracleData({templateId: 1, weight: 3, value: 0, data: abi.encode("2")});
         address oraclesManager = address(2);
         vm.mockCall(
             oraclesManager, abi.encodeWithSignature("instantiate(address,uint256,bytes)"), abi.encode(address(2))

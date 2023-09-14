@@ -37,10 +37,8 @@ contract ERC20KPITokenBaseFinalizeTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("1")});
-        _oracleDatas[1] =
-            OracleData({templateId: 1, lowerBound: 20, higherBound: 21, weight: 1, value: 0, data: abi.encode("2")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
+        _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 2);
@@ -59,7 +57,7 @@ contract ERC20KPITokenBaseFinalizeTest is BaseTestSetup {
         );
 
         vm.prank(kpiTokenInstance.oracles()[0]);
-        kpiTokenInstance.finalize(5);
+        kpiTokenInstance.finalize(0);
 
         assertTrue(kpiTokenInstance.finalized());
         assertEq(firstErc20.balanceOf(address(this)), 0);
