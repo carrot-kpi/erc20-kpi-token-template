@@ -5,8 +5,6 @@ import {IKPIToken} from "carrot/interfaces/kpi-tokens/IKPIToken.sol";
 
 struct OracleData {
     uint256 templateId;
-    uint256 lowerBound;
-    uint256 higherBound;
     uint256 weight;
     uint256 value;
     bytes data;
@@ -27,17 +25,11 @@ struct CollateralWithoutToken {
 
 struct FinalizableOracle {
     address addrezz;
-    uint256 lowerBound;
-    uint256 higherBound;
-    uint256 finalResult;
     uint256 weight;
     bool finalized;
 }
 
 struct FinalizableOracleWithoutAddress {
-    uint256 lowerBound;
-    uint256 higherBound;
-    uint256 finalResult;
     uint256 weight;
     bool finalized;
 }
