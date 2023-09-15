@@ -37,6 +37,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
 
     uint256 internal constant INVALID_ANSWER = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
     uint256 internal constant MULTIPLIER = 64;
+    uint256 internal constant UNIT = 1_000_000;
 
     bool internal allOrNone;
     uint16 internal toBeFinalized;
@@ -272,26 +273,20 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
         }
         if (msg.value < _totalValue) revert NotEnoughValue();
 
+        uint256 _totalWeigth = 0;
         for (uint16 _i = 0; _i < _oracleDatas.length; _i++) {
             OracleData memory _oracleData = _oracleDatas[_i];
-            if (_oracleData.higherBound <= _oracleData.lowerBound) {
-                revert InvalidOracleBounds();
-            }
             if (_oracleData.weight == 0) revert InvalidOracleWeights();
-            totalWeight += _oracleData.weight;
+            _totalWeigth += _oracleData.weight;
             address _instance = IOraclesManager1(_oraclesManager).instantiate{value: _oracleData.value}(
                 _creator, _oracleData.templateId, _oracleData.data
             );
-            finalizableOracleByAddress[_instance] = FinalizableOracleWithoutAddress({
-                lowerBound: _oracleData.lowerBound,
-                higherBound: _oracleData.higherBound,
-                finalResult: 0,
-                weight: _oracleData.weight,
-                finalized: false
-            });
+            finalizableOracleByAddress[_instance] =
+                FinalizableOracleWithoutAddress({weight: _oracleData.weight, finalized: false});
             finalizableOracleAddressByIndex[_i] = _instance;
         }
 
+        totalWeight = _totalWeigth;
         toBeFinalized = uint16(_oracleDatas.length);
         allOrNone = _allOrNone;
     }
@@ -302,7 +297,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     /// @return The `FinalizableOracle` associated with the given address.
     function finalizableOracle(address _address) internal view returns (FinalizableOracleWithoutAddress storage) {
         FinalizableOracleWithoutAddress storage _finalizableOracle = finalizableOracleByAddress[_address];
-        if (_finalizableOracle.higherBound == 0 || _finalizableOracle.finalized) {
+        if (_finalizableOracle.weight == 0 || _finalizableOracle.finalized) {
             revert Forbidden();
         }
         return _finalizableOracle;
@@ -323,32 +318,33 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     /// @dev Used by oracles linked to the KPI token to communicate their finalization.
     ///
     /// This function is exclusively callable by oracles linked with the KPI token in
-    /// order to report the final outcome for an unlocking condition once everything
-    /// has played out "in the real world".
-    /// Based on the reported results and the KPI token's configuration, collateral is
+    /// order to report the final outcome (in goal completion percentage in parts per
+    /// million) for an unlocking condition once everything has played out "in the real
+    /// world".
+    /// Based on the reported percentage and the KPI token's configuration, collateral is
     /// either reserved to be redeemed by KPI token holders when full finalization is
     /// reached (i.e. when all the oracles have reported their final result), or sent
     /// back to the KPI token owner (for example when KPIs have not been
     /// met, minus any present minimum payout). The possible scenarios are the following:
     ///
-    /// If a result is either invalid or below the lower bound set for the KPI:
+    /// If a goal percentage is either invalid or 0:
     /// - If an "all or none" approach has been chosen at the KPI token initialization
     /// time, all the collateral is sent back to the KPI token owner and the KPI token
     /// expires worthless on the spot.
     /// - If no "all or none" condition has been set, the KPI contracts calculates how
-    /// much of the collaterals the specific condition "governed" (through the weighting
+    /// much of the collaterals the specific oracle "governed" (through the weighting
     /// mechanism), subtracts any minimum payout for these and sends back the right amount
     /// of collateral to the KPI token owner.
     ///
-    /// If a result is in the specified range (and NOT above the higher bound) set for
+    /// If a result is in a 0-100% exclusive range (and NOT above the higher bound) set for
     /// the KPI, the same calculations happen and some of the collateral gets sent back
     /// to the KPI token owner depending on how far we were from reaching the full KPI
     /// progress.
     ///
-    /// If a result is at or above the higher bound set for the KPI token, pretty much
-    /// nothing happens to the collateral, which is fully assigned to the KPI token holders
-    /// and which will become redeemable once the finalization process has ended for all
-    /// the oracles assigned to the KPI token.
+    /// If a percentage is at or above 100% completion, pretty much nothing happens to the
+    /// collateral, which is fully assigned to the KPI token holders and which will become
+    /// redeemable once the finalization process has ended for all the oracles assigned to
+    /// the KPI token.
     ///
     /// Once all the oracles associated with the KPI token have reported their end result and
     /// finalize, the remaining collateral, if any, becomes redeemable by KPI token holders.
@@ -361,7 +357,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
             return;
         }
 
-        if (_result <= _oracle.lowerBound || _result == INVALID_ANSWER) {
+        if (_result == 0 || _result == INVALID_ANSWER) {
             bool _allOrNone = allOrNone;
             handleLowOrInvalidResult(_oracle, _allOrNone);
             if (_allOrNone) {
@@ -433,21 +429,12 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     function handleIntermediateOrOverHigherBoundResult(FinalizableOracleWithoutAddress storage _oracle, uint256 _result)
         internal
     {
-        uint256 _oracleFullRange;
-        uint256 _finalOracleProgress;
-        unchecked {
-            _oracleFullRange = _oracle.higherBound - _oracle.lowerBound;
-            _finalOracleProgress = _result >= _oracle.higherBound ? _oracleFullRange : _result - _oracle.lowerBound;
-        }
-        _oracle.finalResult = _result;
-        if (_finalOracleProgress < _oracleFullRange) {
-            for (uint8 _i = 0; _i < collateralsAmount; _i++) {
+        if (_result < UNIT) {
+            for (uint256 _i = 0; _i < collateralsAmount; _i++) {
                 CollateralWithoutToken storage _collateral = collateral[collateralAddressByIndex[_i]];
-                uint256 _numerator = (
-                    (_collateral.amount - _collateral.minimumPayout) * _oracle.weight
-                        * (_oracleFullRange - _finalOracleProgress)
-                ) << MULTIPLIER;
-                uint256 _denominator = _oracleFullRange * totalWeight;
+                uint256 _numerator =
+                    ((_collateral.amount - _collateral.minimumPayout) * _oracle.weight * (UNIT - _result)) << MULTIPLIER;
+                uint256 _denominator = UNIT * totalWeight;
                 uint256 _reimbursement = (_numerator / _denominator) >> MULTIPLIER;
                 unchecked {
                     _collateral.amount -= _reimbursement;
@@ -621,9 +608,6 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
             FinalizableOracleWithoutAddress memory _finalizableOracle = finalizableOracleByAddress[_addrezz];
             _finalizableOracles[_i] = FinalizableOracle({
                 addrezz: _addrezz,
-                lowerBound: _finalizableOracle.lowerBound,
-                higherBound: _finalizableOracle.higherBound,
-                finalResult: _finalizableOracle.finalResult,
                 weight: _finalizableOracle.weight,
                 finalized: _finalizableOracle.finalized
             });

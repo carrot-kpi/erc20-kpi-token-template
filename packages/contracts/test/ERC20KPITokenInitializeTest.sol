@@ -366,8 +366,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
         );
 
         OracleData[] memory oracleData = new OracleData[](1);
-        oracleData[0] =
-            OracleData({templateId: 1, lowerBound: 0, higherBound: 1, weight: 1, value: 0, data: abi.encode("")});
+        oracleData[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
 
         kpiTokenInstance.initialize(
             InitializeKPITokenParams({
@@ -409,8 +408,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -432,14 +430,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] = OracleData({
-            templateId: 1,
-            lowerBound: 10,
-            higherBound: 11,
-            weight: 1,
-            value: 10 ether,
-            data: abi.encode("")
-        });
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 10 ether, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);

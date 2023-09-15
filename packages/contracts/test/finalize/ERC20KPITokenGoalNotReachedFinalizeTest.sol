@@ -8,15 +8,14 @@ import {IERC20KPIToken, OracleData, Collateral, FinalizableOracle} from "../../s
 /// @title ERC20 KPI token finalize test
 /// @dev Tests finalization in ERC20 KPI token.
 /// @author Federico Luzzi - <federico.luzzi@protonmail.com>
-contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
-    function testBelowLowerBoundAndRelationshipSingleOracleZeroMinimumPayout() external {
+contract ERC20KPITokenGoalNotReachedFinalizeTest is BaseTestSetup {
+    function testNotReachedAndRelationshipSingleOracleZeroMinimumPayout() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 2);
@@ -36,7 +35,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(5);
+        kpiTokenInstance.finalize(0);
 
         (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -53,14 +52,13 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
         assertEq(firstErc20.balanceOf(address(this)), 0);
     }
 
-    function testBelowLowerBoundAndRelationshipSingleOracleNonZeroMinimumPayout() external {
+    function testNotReachedAndRelationshipSingleOracleNonZeroMinimumPayout() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 1});
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 2);
@@ -80,7 +78,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(5);
+        kpiTokenInstance.finalize(0);
 
         (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -97,14 +95,13 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
         assertEq(firstErc20.balanceOf(address(this)), 0);
     }
 
-    function testBelowLowerBoundOrRelationshipSingleOracleZeroMinimumPayout() external {
+    function testNotReachedOrRelationshipSingleOracleZeroMinimumPayout() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
         firstErc20.mint(address(this), 2);
@@ -124,7 +121,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(5);
+        kpiTokenInstance.finalize(0);
 
         (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -141,14 +138,13 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
         assertEq(firstErc20.balanceOf(address(this)), 0);
     }
 
-    function testBelowLowerBoundOrRelationshipSingleOracleNonZeroMinimumPayout() external {
+    function testNotReachedOrRelationshipSingleOracleNonZeroMinimumPayout() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 1});
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
         firstErc20.mint(address(this), 2);
@@ -168,7 +164,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(5);
+        kpiTokenInstance.finalize(0);
 
         (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -185,16 +181,14 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
         assertEq(firstErc20.balanceOf(address(this)), 0);
     }
 
-    function testBelowLowerBoundAndRelationshipMultipleOraclesZeroMinimumPayout() external {
+    function testNotReachedAndRelationshipMultipleOraclesZeroMinimumPayout() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("1")});
-        _oracleDatas[1] =
-            OracleData({templateId: 1, lowerBound: 20, higherBound: 26, weight: 1, value: 0, data: abi.encode("2")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
+        _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 2);
@@ -214,7 +208,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(5);
+        kpiTokenInstance.finalize(0);
 
         (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -232,16 +226,14 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
         assertEq(firstErc20.balanceOf(address(this)), 0);
     }
 
-    function testBelowLowerBoundAndRelationshipMultipleOraclesBothOraclesFinalization() external {
+    function testNotReachedAndRelationshipMultipleOraclesBothOraclesFinalization() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("1")});
-        _oracleDatas[1] =
-            OracleData({templateId: 1, lowerBound: 20, higherBound: 26, weight: 1, value: 0, data: abi.encode("2")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
+        _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 2);
@@ -256,7 +248,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(5);
+        kpiTokenInstance.finalize(0);
 
         (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -275,7 +267,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
 
         // second oracle finalization
         vm.prank(kpiTokenInstance.oracles()[1]);
-        kpiTokenInstance.finalize(5);
+        kpiTokenInstance.finalize(0);
 
         (onChainCollaterals, onChainFinalizableOracles,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -293,16 +285,14 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
         assertEq(firstErc20.balanceOf(address(this)), 0);
     }
 
-    function testBelowLowerBoundAndRelationshipMultipleOraclesNonZeroMinimumPayout() external {
+    function testNotReachedAndRelationshipMultipleOraclesNonZeroMinimumPayout() external {
         Collateral[] memory _collaterals = new Collateral[](1);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 1});
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("1")});
-        _oracleDatas[1] =
-            OracleData({templateId: 1, lowerBound: 20, higherBound: 26, weight: 1, value: 0, data: abi.encode("2")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
+        _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 2);
@@ -322,7 +312,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(5);
+        kpiTokenInstance.finalize(0);
 
         (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -340,15 +330,14 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
         assertEq(firstErc20.balanceOf(address(this)), 0);
     }
 
-    function testBelowLowerBoundAndRelationshipSingleOracleZeroMinimumPayoutMultiCollateral() external {
+    function testNotReachedAndRelationshipSingleOracleZeroMinimumPayoutMultiCollateral() external {
         Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
         _collaterals[1] = Collateral({token: address(secondErc20), amount: 4, minimumPayout: 0});
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 2);
@@ -370,7 +359,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(5);
+        kpiTokenInstance.finalize(0);
 
         (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -391,15 +380,14 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(this)), 0);
     }
 
-    function testBelowLowerBoundAndRelationshipSingleOracleNonZeroMinimumPayoutMultiCollateral() external {
+    function testNotReachedAndRelationshipSingleOracleNonZeroMinimumPayoutMultiCollateral() external {
         Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 1});
         _collaterals[1] = Collateral({token: address(secondErc20), amount: 7 ether, minimumPayout: 6 ether});
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 2);
@@ -421,7 +409,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(5);
+        kpiTokenInstance.finalize(0);
 
         (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -442,15 +430,14 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(this)), 0);
     }
 
-    function testBelowLowerBoundOrRelationshipSingleOracleZeroMinimumPayoutMultiCollateral() external {
+    function testNotReachedOrRelationshipSingleOracleZeroMinimumPayoutMultiCollateral() external {
         Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
         _collaterals[1] = Collateral({token: address(secondErc20), amount: 1 ether, minimumPayout: 0});
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
         firstErc20.mint(address(this), 2);
@@ -472,7 +459,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(5);
+        kpiTokenInstance.finalize(0);
 
         (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -493,15 +480,14 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(this)), 0);
     }
 
-    function testBelowLowerBoundOrRelationshipSingleOracleNonZeroMinimumPayoutMultiCollateral() external {
+    function testNotReachedOrRelationshipSingleOracleNonZeroMinimumPayoutMultiCollateral() external {
         Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 1});
         _collaterals[1] = Collateral({token: address(secondErc20), amount: 3.5 ether, minimumPayout: 1.2 ether});
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
         firstErc20.mint(address(this), 2);
@@ -523,7 +509,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(5);
+        kpiTokenInstance.finalize(0);
 
         (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -544,17 +530,15 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(this)), 0);
     }
 
-    function testBelowLowerBoundAndRelationshipMultipleOraclesZeroMinimumPayoutMultiCollateral() external {
+    function testNotReachedAndRelationshipMultipleOraclesZeroMinimumPayoutMultiCollateral() external {
         Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 0});
         _collaterals[1] = Collateral({token: address(secondErc20), amount: 23 ether, minimumPayout: 0});
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("1")});
-        _oracleDatas[1] =
-            OracleData({templateId: 1, lowerBound: 20, higherBound: 26, weight: 1, value: 0, data: abi.encode("2")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
+        _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 2);
@@ -576,7 +560,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(5);
+        kpiTokenInstance.finalize(0);
 
         (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -598,17 +582,15 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(this)), 0);
     }
 
-    function testBelowLowerBoundAndRelationshipMultipleOraclesNonZeroMinimumPayoutMultiCollateral() external {
+    function testNotReachedAndRelationshipMultipleOraclesNonZeroMinimumPayoutMultiCollateral() external {
         Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 1});
         _collaterals[1] = Collateral({token: address(secondErc20), amount: 40 ether, minimumPayout: 32.398938393 ether});
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("1")});
-        _oracleDatas[1] =
-            OracleData({templateId: 1, lowerBound: 20, higherBound: 26, weight: 1, value: 0, data: abi.encode("2")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
+        _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 2);
@@ -630,7 +612,7 @@ contract ERC20KPITokenBelowLowerBoundFinalizeTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(5);
+        kpiTokenInstance.finalize(0);
 
         (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));

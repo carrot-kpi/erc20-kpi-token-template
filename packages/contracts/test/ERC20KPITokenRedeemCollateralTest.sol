@@ -53,7 +53,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         kpiTokenInstance.redeemCollateral(address(1999292929), address(2));
     }
 
-    function testBelowLowerBoundSingleOracle() external {
+    function testGoalNotReachedSingleOracle() external {
         address holder = address(123321);
 
         Collateral[] memory _collaterals = new Collateral[](1);
@@ -61,8 +61,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -97,7 +96,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 109.67 ether);
     }
 
-    function testBelowLowerBoundMultipleOracleAndRelationship() external {
+    function testGoalNotReachedMultipleOracleAndRelationship() external {
         address holder = address(123321);
 
         Collateral[] memory _collaterals = new Collateral[](1);
@@ -105,10 +104,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("1")});
-        _oracleDatas[1] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("2")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
+        _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -162,7 +159,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         assertTrue(onChainOracles[1].finalized);
     }
 
-    function testBelowLowerBoundMultipleOracleAndRelationshipFirstSecondFinalization() external {
+    function testGoalNotReachedMultipleOracleAndRelationshipFirstSecondFinalization() external {
         address holder = address(123321);
 
         Collateral[] memory _collaterals = new Collateral[](1);
@@ -170,10 +167,8 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("1")});
-        _oracleDatas[1] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("2")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
+        _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -220,13 +215,13 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
 
         assertTrue(kpiTokenInstance.finalized());
         assertEq(onChainCollaterals.length, 1);
-        assertEq(onChainCollaterals[0].amount, 0 ether);
+        assertEq(onChainCollaterals[0].amount, 0);
         assertEq(onChainOracles.length, 2);
         assertTrue(onChainOracles[0].finalized);
         assertTrue(onChainOracles[1].finalized);
     }
 
-    function testBelowLowerBoundSingleOracleExpired() external {
+    function testGoalNotReachedSingleOracleExpired() external {
         address holder = address(123321);
 
         Collateral[] memory _collaterals = new Collateral[](1);
@@ -234,8 +229,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -263,9 +257,11 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(holder);
         vm.expectRevert(abi.encodeWithSignature("NothingToRedeem()"));
         kpiTokenInstance.redeemCollateral(address(firstErc20), holder);
+        assertEq(kpiTokenInstance.balanceOf(holder), 0);
+        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 109.67 ether);
     }
 
-    function testAtLowerBoundSingleOracle() external {
+    function testOverFullyReachedSingleOracle() external {
         address holder = address(123321);
 
         Collateral[] memory _collaterals = new Collateral[](1);
@@ -273,8 +269,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -292,92 +287,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(10);
-
-        (Collateral[] memory onChainCollaterals,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
-
-        assertEq(onChainCollaterals.length, 1);
-        assertEq(onChainCollaterals[0].amount, 0 ether);
-
-        vm.prank(holder);
-        kpiTokenInstance.registerRedemption();
-        vm.expectRevert(abi.encodeWithSignature("NothingToRedeem()"));
-        vm.prank(holder);
-        kpiTokenInstance.redeemCollateral(address(firstErc20), holder);
-        assertEq(kpiTokenInstance.balanceOf(holder), 0);
-        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 109.67 ether);
-    }
-
-    function testAtLowerBoundSingleOracleExpired() external {
-        address holder = address(123321);
-
-        Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 110 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
-
-        OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
-        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
-
-        firstErc20.mint(address(this), 110 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
-            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
-        );
-        firstErc20.approve(_predictedKpiTokenAddress, 110 ether);
-
-        uint256 _expiration = block.timestamp + 60;
-        factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
-
-        ERC20KPIToken kpiTokenInstance = ERC20KPIToken(_predictedKpiTokenAddress);
-
-        kpiTokenInstance.transfer(holder, 1 ether);
-        assertEq(kpiTokenInstance.balanceOf(holder), 1 ether);
-
-        vm.warp(_expiration);
-
-        address oracle = kpiTokenInstance.oracles()[0];
-        vm.prank(oracle);
-        kpiTokenInstance.finalize(10);
-
-        vm.prank(holder);
-        kpiTokenInstance.registerRedemption();
-        vm.prank(holder);
-        vm.expectRevert(abi.encodeWithSignature("NothingToRedeem()"));
-        kpiTokenInstance.redeemCollateral(address(firstErc20), holder);
-        assertEq(kpiTokenInstance.balanceOf(holder), 0);
-        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 109.67 ether);
-    }
-
-    function testOverHigherBoundSingleOracle() external {
-        address holder = address(123321);
-
-        Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 110 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
-
-        OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
-        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
-
-        firstErc20.mint(address(this), 110 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
-            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
-        );
-        firstErc20.approve(_predictedKpiTokenAddress, 110 ether);
-
-        factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
-
-        ERC20KPIToken kpiTokenInstance = ERC20KPIToken(_predictedKpiTokenAddress);
-
-        kpiTokenInstance.transfer(holder, 1 ether);
-        assertEq(kpiTokenInstance.balanceOf(holder), 1 ether);
-
-        address oracle = kpiTokenInstance.oracles()[0];
-        vm.prank(oracle);
-        kpiTokenInstance.finalize(12);
+        kpiTokenInstance.finalize(1_000_001);
 
         (Collateral[] memory onChainCollaterals,,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -394,7 +304,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 108.5733 ether);
     }
 
-    function testOverHigherBoundSingleOracleDifferentReceiver() external {
+    function testOverFullyReachedSingleOracleDifferentReceiver() external {
         address holder = address(123321);
 
         Collateral[] memory _collaterals = new Collateral[](1);
@@ -402,8 +312,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -421,7 +330,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(12);
+        kpiTokenInstance.finalize(1_000_010);
 
         (Collateral[] memory onChainCollaterals,,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -439,7 +348,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 108.5733 ether);
     }
 
-    function testOverHigherBoundSingleOracleDoubleRedemption() external {
+    function testOverFullyReachedSingleOracleDoubleRedemption() external {
         address holder = address(123321);
 
         Collateral[] memory _collaterals = new Collateral[](1);
@@ -447,8 +356,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -466,7 +374,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(12);
+        kpiTokenInstance.finalize(1_000_040);
 
         (Collateral[] memory onChainCollaterals,,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -485,7 +393,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         kpiTokenInstance.redeemCollateral(address(firstErc20), holder);
     }
 
-    function testOverHigherBoundSingleOracleIncrementalRedemption() external {
+    function testOverFullyReachedSingleOracleIncrementalRedemption() external {
         address holder = address(123321);
 
         Collateral[] memory _collaterals = new Collateral[](1);
@@ -493,8 +401,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -512,7 +419,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(12);
+        kpiTokenInstance.finalize(1_000_001);
 
         (Collateral[] memory onChainCollaterals,,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -543,7 +450,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         kpiTokenInstance.redeemCollateral(address(firstErc20), holder);
     }
 
-    function testOverHigherBoundSingleOracleMultiCollateral() external {
+    function testOverFullyReachedSingleOracleMultiCollateral() external {
         address holder = address(123321);
 
         Collateral[] memory _collaterals = new Collateral[](2);
@@ -552,8 +459,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -573,7 +479,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(12);
+        kpiTokenInstance.finalize(1_000_001);
 
         (Collateral[] memory onChainCollaterals,,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -595,7 +501,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(kpiTokenInstance)), 98.703 ether);
     }
 
-    function testOverHigherBoundSingleOracleExpired() external {
+    function testOverFullyReachedSingleOracleExpired() external {
         address holder = address(123321);
 
         Collateral[] memory _collaterals = new Collateral[](1);
@@ -603,8 +509,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -625,7 +530,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(12);
+        kpiTokenInstance.finalize(1_000_001);
 
         (Collateral[] memory onChainCollaterals,,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -649,8 +554,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 13, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 22 ether);
@@ -669,13 +573,13 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(11);
+        kpiTokenInstance.finalize(333_333);
 
         (Collateral[] memory onChainCollaterals,,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
-        assertEq(onChainCollaterals[0].amount, 7.311333333333333334 ether);
+        assertEq(onChainCollaterals[0].amount, 7.311326022 ether);
         assertEq(firstErc20.balanceOf(address(this)), 0);
 
         assertEq(firstErc20.balanceOf(holder), 0 ether);
@@ -688,10 +592,10 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
-        assertEq(onChainCollaterals[0].amount, 7.238220000000000001 ether);
+        assertEq(onChainCollaterals[0].amount, 7.23821276178 ether);
 
         assertEq(kpiTokenInstance.balanceOf(holder), 0);
-        assertEq(firstErc20.balanceOf(holder), 0.073113333333333333 ether);
+        assertEq(firstErc20.balanceOf(holder), 0.07311326022 ether);
     }
 
     function testIntermediateSingleOracleDoubleRedemption() external {
@@ -702,8 +606,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 13, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 22 ether);
@@ -722,13 +625,13 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(11);
+        kpiTokenInstance.finalize(333_333);
 
         (Collateral[] memory onChainCollaterals,,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
-        assertEq(onChainCollaterals[0].amount, 7.311333333333333334 ether);
+        assertEq(onChainCollaterals[0].amount, 7.311326022 ether);
         assertEq(firstErc20.balanceOf(address(this)), 0);
 
         assertEq(firstErc20.balanceOf(holder), 0 ether);
@@ -748,8 +651,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 13, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 22 ether);
@@ -771,7 +673,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(11);
+        kpiTokenInstance.finalize(333_333);
 
         assertEq(firstErc20.balanceOf(holder), 0 ether);
         vm.prank(holder);
@@ -782,7 +684,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 21.924 ether);
     }
 
-    function testBelowLowerBoundSingleOracleMultipleParticipants() external {
+    function testGoalNotReachedSingleOracleMultipleParticipants() external {
         address holder1 = address(123321);
         address holder2 = address(19929999);
 
@@ -791,8 +693,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -838,107 +739,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         assertEq(firstErc20.balanceOf(holder2), 0 ether);
     }
 
-    function testBelowLowerBoundSingleOracleMultipleParticipantsExpired() external {
-        address holder1 = address(123321);
-        address holder2 = address(19929999);
-
-        Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 110 ether, minimumPayout: 9 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
-
-        OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
-        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
-
-        firstErc20.mint(address(this), 110 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
-            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
-        );
-        firstErc20.approve(_predictedKpiTokenAddress, 110 ether);
-
-        uint256 _expiration = block.timestamp + 60;
-        factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
-
-        ERC20KPIToken kpiTokenInstance = ERC20KPIToken(_predictedKpiTokenAddress);
-
-        kpiTokenInstance.transfer(holder1, 1 ether);
-        kpiTokenInstance.transfer(holder2, 10 ether);
-        assertEq(kpiTokenInstance.balanceOf(holder1), 1 ether);
-        assertEq(kpiTokenInstance.balanceOf(holder2), 10 ether);
-        assertEq(kpiTokenInstance.balanceOf(address(this)), 89 ether);
-
-        vm.warp(_expiration);
-
-        address oracle = kpiTokenInstance.oracles()[0];
-        vm.prank(oracle);
-        kpiTokenInstance.finalize(0);
-
-        vm.prank(holder1);
-        kpiTokenInstance.registerRedemption();
-        vm.prank(holder1);
-        kpiTokenInstance.redeemCollateral(address(firstErc20), holder1);
-        assertEq(firstErc20.balanceOf(holder1), 0.09 ether);
-        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 109.58 ether);
-    }
-
-    function testAtLowerBoundSingleOracleMultipleParticipants() external {
-        address holder1 = address(123321);
-        address holder2 = address(19929999);
-
-        Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 110 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
-
-        OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
-        bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
-
-        firstErc20.mint(address(this), 110 ether);
-        address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
-            address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
-        );
-        firstErc20.approve(_predictedKpiTokenAddress, 110 ether);
-
-        factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
-
-        ERC20KPIToken kpiTokenInstance = ERC20KPIToken(_predictedKpiTokenAddress);
-
-        kpiTokenInstance.transfer(holder1, 1 ether);
-        kpiTokenInstance.transfer(holder2, 10 ether);
-        assertEq(kpiTokenInstance.balanceOf(holder1), 1 ether);
-        assertEq(kpiTokenInstance.balanceOf(holder2), 10 ether);
-        assertEq(kpiTokenInstance.balanceOf(address(this)), 89 ether);
-
-        address oracle = kpiTokenInstance.oracles()[0];
-        vm.prank(oracle);
-        kpiTokenInstance.finalize(10);
-
-        (Collateral[] memory onChainCollaterals,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
-
-        assertEq(onChainCollaterals.length, 1);
-        assertEq(onChainCollaterals[0].amount, 0 ether);
-
-        vm.prank(holder1);
-        kpiTokenInstance.registerRedemption();
-        vm.prank(holder1);
-        vm.expectRevert(abi.encodeWithSignature("NothingToRedeem()"));
-        kpiTokenInstance.redeemCollateral(address(firstErc20), holder1);
-        assertEq(kpiTokenInstance.balanceOf(holder1), 0);
-        assertEq(firstErc20.balanceOf(holder1), 0 ether);
-
-        vm.prank(holder2);
-        kpiTokenInstance.registerRedemption();
-        vm.prank(holder2);
-        vm.expectRevert(abi.encodeWithSignature("NothingToRedeem()"));
-        kpiTokenInstance.redeemCollateral(address(firstErc20), holder2);
-        assertEq(kpiTokenInstance.balanceOf(holder2), 0);
-        assertEq(firstErc20.balanceOf(holder2), 0 ether);
-    }
-
-    function testAtLowerBoundSingleOracleMultipleParticipantsExpired() external {
+    function testGoalNotReachedSingleOracleMultipleParticipantsExpired() external {
         address holder1 = address(123321);
         address holder2 = address(19929999);
 
@@ -947,8 +748,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -972,7 +772,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(10);
+        kpiTokenInstance.finalize(0);
 
         vm.prank(holder1);
         kpiTokenInstance.registerRedemption();
@@ -989,7 +789,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 108.57 ether);
     }
 
-    function testOverHigherBoundSingleOracleMultipleParticipants() external {
+    function testOverFullyReachedSingleOracleMultipleParticipants() external {
         address holder1 = address(123321);
         address holder2 = address(19929999);
 
@@ -998,8 +798,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -1020,7 +819,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(100);
+        kpiTokenInstance.finalize(1_000_001);
 
         (Collateral[] memory onChainCollaterals,,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -1045,7 +844,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         assertEq(firstErc20.balanceOf(holder2), 10.967 ether);
     }
 
-    function testOverHigherBoundSingleOracleMultipleParticipantsDoubleRedemption() external {
+    function testOverFullyReachedSingleOracleMultipleParticipantsDoubleRedemption() external {
         address holder1 = address(123321);
         address holder2 = address(19929999);
 
@@ -1054,8 +853,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -1076,7 +874,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(100);
+        kpiTokenInstance.finalize(1_000_001);
 
         (Collateral[] memory onChainCollaterals,,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
@@ -1105,7 +903,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         kpiTokenInstance.redeemCollateral(address(firstErc20), holder2);
     }
 
-    function testOverHigherBoundSingleOracleMultipleParticipantsExpired() external {
+    function testOverFullyReachedSingleOracleMultipleParticipantsExpired() external {
         address holder1 = address(123321);
         address holder2 = address(19929999);
 
@@ -1114,8 +912,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 11, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -1164,8 +961,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 13, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -1186,13 +982,13 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(11);
+        kpiTokenInstance.finalize(333_333);
 
         (Collateral[] memory onChainCollaterals,,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
-        assertEq(onChainCollaterals[0].amount, 36.556666666666666667 ether);
+        assertEq(onChainCollaterals[0].amount, 36.55663011 ether);
         assertEq(firstErc20.balanceOf(address(this)), 0);
 
         vm.prank(holder1);
@@ -1201,7 +997,11 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         kpiTokenInstance.redeemCollateral(address(firstErc20), holder1);
         assertEq(kpiTokenInstance.balanceOf(holder1), 0);
         assertEq(kpiTokenInstance.totalSupply(), 99 ether);
-        assertEq(firstErc20.balanceOf(holder1), 0.365566666666666666 ether);
+        assertEq(firstErc20.balanceOf(holder1), 0.3655663011 ether);
+
+        (Collateral[] memory onChainCollateralsAfterFirstRedemption,,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
+        assertEq(onChainCollateralsAfterFirstRedemption[0].amount, 36.1910638089 ether);
 
         vm.prank(holder2);
         kpiTokenInstance.registerRedemption();
@@ -1209,7 +1009,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         kpiTokenInstance.redeemCollateral(address(firstErc20), holder2);
         assertEq(kpiTokenInstance.balanceOf(holder2), 0);
         assertEq(kpiTokenInstance.totalSupply(), 89 ether);
-        assertEq(firstErc20.balanceOf(holder2), 3.655666666666666666 ether);
+        assertEq(firstErc20.balanceOf(holder2), 3.655663011 ether);
     }
 
     function testIntermediateSingleOracleMultipleParticipantsDoubleRedemption() external {
@@ -1221,8 +1021,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 13, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -1243,13 +1042,13 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(11);
+        kpiTokenInstance.finalize(333_333);
 
         (Collateral[] memory onChainCollaterals,,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
-        assertEq(onChainCollaterals[0].amount, 36.556666666666666667 ether);
+        assertEq(onChainCollaterals[0].amount, 36.55663011 ether);
         assertEq(firstErc20.balanceOf(address(this)), 0);
 
         vm.prank(holder1);
@@ -1258,7 +1057,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         kpiTokenInstance.redeemCollateral(address(firstErc20), holder1);
         assertEq(kpiTokenInstance.balanceOf(holder1), 0);
         assertEq(kpiTokenInstance.totalSupply(), 99 ether);
-        assertEq(firstErc20.balanceOf(holder1), 0.365566666666666666 ether);
+        assertEq(firstErc20.balanceOf(holder1), 0.3655663011 ether);
         vm.expectRevert(abi.encodeWithSignature("Forbidden()"));
         kpiTokenInstance.redeemCollateral(address(firstErc20), holder1);
 
@@ -1268,7 +1067,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         kpiTokenInstance.redeemCollateral(address(firstErc20), holder2);
         assertEq(kpiTokenInstance.balanceOf(holder2), 0);
         assertEq(kpiTokenInstance.totalSupply(), 89 ether);
-        assertEq(firstErc20.balanceOf(holder2), 3.655666666666666666 ether);
+        assertEq(firstErc20.balanceOf(holder2), 3.655663011 ether);
         vm.expectRevert(abi.encodeWithSignature("Forbidden()"));
         kpiTokenInstance.redeemCollateral(address(firstErc20), holder2);
     }
@@ -1282,8 +1081,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 13, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -1307,7 +1105,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(11);
+        kpiTokenInstance.finalize(333_333);
 
         vm.prank(holder1);
         kpiTokenInstance.registerRedemption();
@@ -1333,8 +1131,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 13, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -1355,20 +1152,20 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(11);
+        kpiTokenInstance.finalize(333_333);
 
         (Collateral[] memory onChainCollaterals,,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
-        assertEq(onChainCollaterals[0].amount, 36.556666666666666667 ether);
+        assertEq(onChainCollaterals[0].amount, 36.55663011 ether);
         assertEq(firstErc20.balanceOf(address(this)), 0 ether);
 
         vm.prank(holder1);
         kpiTokenInstance.redeem(abi.encode(holder1));
         assertEq(kpiTokenInstance.balanceOf(holder1), 0);
         assertEq(kpiTokenInstance.totalSupply(), 99 ether);
-        assertEq(firstErc20.balanceOf(holder1), 0.365566666666666666 ether);
+        assertEq(firstErc20.balanceOf(holder1), 0.3655663011 ether);
 
         vm.prank(holder2);
         kpiTokenInstance.registerRedemption();
@@ -1376,18 +1173,18 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         kpiTokenInstance.redeemCollateral(address(firstErc20), holder2);
         assertEq(kpiTokenInstance.balanceOf(holder2), 0);
         assertEq(kpiTokenInstance.totalSupply(), 89 ether);
-        assertEq(firstErc20.balanceOf(holder2), 3.655666666666666666 ether);
+        assertEq(firstErc20.balanceOf(holder2), 3.655663011 ether);
 
         kpiTokenInstance.registerRedemption();
         kpiTokenInstance.redeemCollateral(address(firstErc20), address(this));
         assertEq(kpiTokenInstance.balanceOf(address(this)), 0);
         assertEq(kpiTokenInstance.totalSupply(), 0 ether);
-        assertEq(firstErc20.balanceOf(address(this)), 32.535433333333333333 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 32.5354007979 ether);
 
-        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 73.113333333333333335 ether);
+        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 73.11336989 ether);
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
-        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 2);
-        assertEq(firstErc20.balanceOf(address(this)), 105.648766666666666666 ether);
+        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 0);
+        assertEq(firstErc20.balanceOf(address(this)), 105.6487706879 ether);
     }
 
     function testIntermediateSingleOracleMultipleParticipantsMixedApproachDoubleRedemption() external {
@@ -1399,8 +1196,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 13, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -1421,20 +1217,20 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(11);
+        kpiTokenInstance.finalize(333_333);
 
         (Collateral[] memory onChainCollaterals,,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 1);
-        assertEq(onChainCollaterals[0].amount, 36.556666666666666667 ether);
+        assertEq(onChainCollaterals[0].amount, 36.55663011 ether);
         assertEq(firstErc20.balanceOf(address(this)), 0 ether);
 
         vm.prank(holder1);
         kpiTokenInstance.redeem(abi.encode(holder1));
         assertEq(kpiTokenInstance.balanceOf(holder1), 0);
         assertEq(kpiTokenInstance.totalSupply(), 99 ether);
-        assertEq(firstErc20.balanceOf(holder1), 0.365566666666666666 ether);
+        assertEq(firstErc20.balanceOf(holder1), 0.3655663011 ether);
 
         vm.prank(holder2);
         kpiTokenInstance.registerRedemption();
@@ -1442,20 +1238,20 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         kpiTokenInstance.redeemCollateral(address(firstErc20), holder2);
         assertEq(kpiTokenInstance.balanceOf(holder2), 0);
         assertEq(kpiTokenInstance.totalSupply(), 89 ether);
-        assertEq(firstErc20.balanceOf(holder2), 3.655666666666666666 ether);
+        assertEq(firstErc20.balanceOf(holder2), 3.655663011 ether);
 
         kpiTokenInstance.registerRedemption();
         kpiTokenInstance.redeemCollateral(address(firstErc20), address(this));
         assertEq(kpiTokenInstance.balanceOf(address(this)), 0);
         assertEq(kpiTokenInstance.totalSupply(), 0 ether);
-        assertEq(firstErc20.balanceOf(address(this)), 32.535433333333333333 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 32.5354007979 ether);
         vm.expectRevert(abi.encodeWithSignature("NothingToRedeem()"));
         kpiTokenInstance.redeemCollateral(address(firstErc20), address(this));
 
-        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 73.113333333333333335 ether);
+        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 73.11336989 ether);
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
-        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 2);
-        assertEq(firstErc20.balanceOf(address(this)), 105.648766666666666666 ether);
+        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 0);
+        assertEq(firstErc20.balanceOf(address(this)), 105.6487706879 ether);
     }
 
     function testIntermediateSingleOracleMultipleParticipantsMixedApproachExpired() external {
@@ -1467,8 +1263,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 13, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -1517,8 +1312,7 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
-        _oracleDatas[0] =
-            OracleData({templateId: 1, lowerBound: 10, higherBound: 13, weight: 1, value: 0, data: abi.encode("")});
+        _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 110 ether);
@@ -1538,12 +1332,13 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(11);
+        kpiTokenInstance.finalize(333_333);
 
         vm.prank(holder1);
         kpiTokenInstance.redeem(abi.encode(holder1));
-        assertEq(firstErc20.balanceOf(holder1), 0.365566666666666666 ether);
-        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 109.304433333333333334 ether);
+
+        assertEq(firstErc20.balanceOf(holder1), 0.3655663011 ether);
+        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 109.3044336989 ether);
 
         kpiTokenInstance.transfer(holder1, 10 ether);
         assertEq(kpiTokenInstance.balanceOf(holder1), 10 ether);
@@ -1552,12 +1347,12 @@ contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
         vm.prank(holder1);
         kpiTokenInstance.registerRedemption();
 
-        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 109.304433333333333334 ether);
+        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 109.3044336989 ether);
 
         vm.prank(holder1);
         kpiTokenInstance.redeemCollateral(address(firstErc20), holder1);
 
-        assertEq(firstErc20.balanceOf(holder1), 4.021233333333333332 ether);
-        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 105.648766666666666668 ether);
+        assertEq(firstErc20.balanceOf(holder1), 4.0212293121 ether);
+        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 105.6487706879 ether);
     }
 }
