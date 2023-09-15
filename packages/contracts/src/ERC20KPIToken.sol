@@ -16,8 +16,6 @@ import {
 } from "./interfaces/IERC20KPIToken.sol";
 import {TokenAmount, InitializeKPITokenParams} from "carrot/commons/Types.sol";
 
-// TODO: update natspec doc
-
 /// SPDX-License-Identifier: GPL-3.0-or-later
 /// @title ERC20 KPI token template implementation
 /// @dev A KPI token template implementation. The template produces ERC20 tokens
@@ -320,32 +318,33 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     /// @dev Used by oracles linked to the KPI token to communicate their finalization.
     ///
     /// This function is exclusively callable by oracles linked with the KPI token in
-    /// order to report the final outcome for an unlocking condition once everything
-    /// has played out "in the real world".
-    /// Based on the reported results and the KPI token's configuration, collateral is
+    /// order to report the final outcome (in goal completion percentage in parts per
+    /// million) for an unlocking condition once everything has played out "in the real
+    /// world".
+    /// Based on the reported percentage and the KPI token's configuration, collateral is
     /// either reserved to be redeemed by KPI token holders when full finalization is
     /// reached (i.e. when all the oracles have reported their final result), or sent
     /// back to the KPI token owner (for example when KPIs have not been
     /// met, minus any present minimum payout). The possible scenarios are the following:
     ///
-    /// If a result is either invalid or below the lower bound set for the KPI:
+    /// If a goal percentage is either invalid or 0:
     /// - If an "all or none" approach has been chosen at the KPI token initialization
     /// time, all the collateral is sent back to the KPI token owner and the KPI token
     /// expires worthless on the spot.
     /// - If no "all or none" condition has been set, the KPI contracts calculates how
-    /// much of the collaterals the specific condition "governed" (through the weighting
+    /// much of the collaterals the specific oracle "governed" (through the weighting
     /// mechanism), subtracts any minimum payout for these and sends back the right amount
     /// of collateral to the KPI token owner.
     ///
-    /// If a result is in the specified range (and NOT above the higher bound) set for
+    /// If a result is in a 0-100% exclusive range (and NOT above the higher bound) set for
     /// the KPI, the same calculations happen and some of the collateral gets sent back
     /// to the KPI token owner depending on how far we were from reaching the full KPI
     /// progress.
     ///
-    /// If a result is at or above the higher bound set for the KPI token, pretty much
-    /// nothing happens to the collateral, which is fully assigned to the KPI token holders
-    /// and which will become redeemable once the finalization process has ended for all
-    /// the oracles assigned to the KPI token.
+    /// If a percentage is at or above 100% completion, pretty much nothing happens to the
+    /// collateral, which is fully assigned to the KPI token holders and which will become
+    /// redeemable once the finalization process has ended for all the oracles assigned to
+    /// the KPI token.
     ///
     /// Once all the oracles associated with the KPI token have reported their end result and
     /// finalize, the remaining collateral, if any, becomes redeemable by KPI token holders.
