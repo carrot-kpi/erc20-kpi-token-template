@@ -16,6 +16,8 @@ import {
 } from "./interfaces/IERC20KPIToken.sol";
 import {TokenAmount, InitializeKPITokenParams} from "carrot/commons/Types.sol";
 
+// TODO: update natspec doc
+
 /// SPDX-License-Identifier: GPL-3.0-or-later
 /// @title ERC20 KPI token template implementation
 /// @dev A KPI token template implementation. The template produces ERC20 tokens
@@ -37,6 +39,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
 
     uint256 internal constant INVALID_ANSWER = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
     uint256 internal constant MULTIPLIER = 64;
+    uint256 internal constant UNIT = 1_000_000;
 
     bool internal allOrNone;
     uint16 internal toBeFinalized;
@@ -272,26 +275,20 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
         }
         if (msg.value < _totalValue) revert NotEnoughValue();
 
+        uint256 _totalWeigth = 0;
         for (uint16 _i = 0; _i < _oracleDatas.length; _i++) {
             OracleData memory _oracleData = _oracleDatas[_i];
-            if (_oracleData.higherBound <= _oracleData.lowerBound) {
-                revert InvalidOracleBounds();
-            }
             if (_oracleData.weight == 0) revert InvalidOracleWeights();
-            totalWeight += _oracleData.weight;
+            _totalWeigth += _oracleData.weight;
             address _instance = IOraclesManager1(_oraclesManager).instantiate{value: _oracleData.value}(
                 _creator, _oracleData.templateId, _oracleData.data
             );
-            finalizableOracleByAddress[_instance] = FinalizableOracleWithoutAddress({
-                lowerBound: _oracleData.lowerBound,
-                higherBound: _oracleData.higherBound,
-                finalResult: 0,
-                weight: _oracleData.weight,
-                finalized: false
-            });
+            finalizableOracleByAddress[_instance] =
+                FinalizableOracleWithoutAddress({weight: _oracleData.weight, finalized: false});
             finalizableOracleAddressByIndex[_i] = _instance;
         }
 
+        totalWeight = _totalWeigth;
         toBeFinalized = uint16(_oracleDatas.length);
         allOrNone = _allOrNone;
     }
@@ -302,7 +299,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     /// @return The `FinalizableOracle` associated with the given address.
     function finalizableOracle(address _address) internal view returns (FinalizableOracleWithoutAddress storage) {
         FinalizableOracleWithoutAddress storage _finalizableOracle = finalizableOracleByAddress[_address];
-        if (_finalizableOracle.higherBound == 0 || _finalizableOracle.finalized) {
+        if (_finalizableOracle.weight == 0 || _finalizableOracle.finalized) {
             revert Forbidden();
         }
         return _finalizableOracle;
@@ -361,7 +358,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
             return;
         }
 
-        if (_result <= _oracle.lowerBound || _result == INVALID_ANSWER) {
+        if (_result == 0 || _result == INVALID_ANSWER) {
             bool _allOrNone = allOrNone;
             handleLowOrInvalidResult(_oracle, _allOrNone);
             if (_allOrNone) {
@@ -433,21 +430,12 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     function handleIntermediateOrOverHigherBoundResult(FinalizableOracleWithoutAddress storage _oracle, uint256 _result)
         internal
     {
-        uint256 _oracleFullRange;
-        uint256 _finalOracleProgress;
-        unchecked {
-            _oracleFullRange = _oracle.higherBound - _oracle.lowerBound;
-            _finalOracleProgress = _result >= _oracle.higherBound ? _oracleFullRange : _result - _oracle.lowerBound;
-        }
-        _oracle.finalResult = _result;
-        if (_finalOracleProgress < _oracleFullRange) {
-            for (uint8 _i = 0; _i < collateralsAmount; _i++) {
+        if (_result < UNIT) {
+            for (uint256 _i = 0; _i < collateralsAmount; _i++) {
                 CollateralWithoutToken storage _collateral = collateral[collateralAddressByIndex[_i]];
-                uint256 _numerator = (
-                    (_collateral.amount - _collateral.minimumPayout) * _oracle.weight
-                        * (_oracleFullRange - _finalOracleProgress)
-                ) << MULTIPLIER;
-                uint256 _denominator = _oracleFullRange * totalWeight;
+                uint256 _numerator =
+                    ((_collateral.amount - _collateral.minimumPayout) * _oracle.weight * (UNIT - _result)) << MULTIPLIER;
+                uint256 _denominator = UNIT * totalWeight;
                 uint256 _reimbursement = (_numerator / _denominator) >> MULTIPLIER;
                 unchecked {
                     _collateral.amount -= _reimbursement;
@@ -621,9 +609,6 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
             FinalizableOracleWithoutAddress memory _finalizableOracle = finalizableOracleByAddress[_addrezz];
             _finalizableOracles[_i] = FinalizableOracle({
                 addrezz: _addrezz,
-                lowerBound: _finalizableOracle.lowerBound,
-                higherBound: _finalizableOracle.higherBound,
-                finalResult: _finalizableOracle.finalResult,
                 weight: _finalizableOracle.weight,
                 finalized: _finalizableOracle.finalized
             });

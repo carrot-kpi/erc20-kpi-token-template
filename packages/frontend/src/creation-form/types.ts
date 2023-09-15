@@ -70,23 +70,6 @@ export type OraclesConfigurationStepState = {
     [id: number]: OracleConfigurationState;
 };
 
-export interface OutcomeData {
-    lowerBound: bigint;
-    higherBound: bigint;
-}
-
-export interface OutcomeConfigurationState {
-    automaticallyFilled?: boolean;
-    binaryTogglable: boolean;
-    binary: boolean;
-    lowerBound: NumberFormatValue;
-    higherBound: NumberFormatValue;
-}
-
-export type OutcomesConfigurationStepState = {
-    [templateId: number]: OutcomeConfigurationState;
-};
-
 export interface OptionForCollateral extends SelectOption<Address> {
     amount: Amount<Token>;
 }

@@ -17,12 +17,7 @@ import {
     usePrepareContractWrite,
     usePublicClient,
 } from "wagmi";
-import type {
-    CollateralData,
-    OracleData,
-    OutcomeData,
-    TokenData,
-} from "../../types";
+import type { CollateralData, OracleData, TokenData } from "../../types";
 import { Button, Typography } from "@carrot-kpi/ui";
 import {
     type KPITokenCreationFormProps,
@@ -64,7 +59,6 @@ interface DeployProps {
     tokenData: TokenData;
     collateralsData: CollateralData[];
     oracleTemplatesData: Template[];
-    outcomesData: OutcomeData[];
     oraclesData: Required<OracleData>[];
     onNext: (address: string) => void;
     onCreate: KPITokenCreationFormProps["onCreate"];
@@ -79,7 +73,6 @@ export const Deploy = ({
     tokenData,
     collateralsData,
     oracleTemplatesData,
-    outcomesData,
     oraclesData,
     onNext,
     onCreate,
@@ -108,11 +101,7 @@ export const Deploy = ({
     const { encodedOraclesData, encodedKPITokenData, totalValueRequired } =
         useMemo(() => {
             const { data: encodedOraclesData, totalValueRequired } =
-                encodeOraclesData(
-                    oracleTemplatesData,
-                    outcomesData,
-                    oraclesData,
-                );
+                encodeOraclesData(oracleTemplatesData, oraclesData);
             return {
                 encodedOraclesData,
                 encodedKPITokenData: encodeKPITokenData(
@@ -127,7 +116,6 @@ export const Deploy = ({
             collateralsData,
             oracleTemplatesData,
             oraclesData,
-            outcomesData,
             tokenData.name,
             tokenData.supply,
             tokenData.symbol,

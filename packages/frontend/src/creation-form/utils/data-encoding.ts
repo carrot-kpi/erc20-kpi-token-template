@@ -1,5 +1,5 @@
 import { Template } from "@carrot-kpi/sdk";
-import type { CollateralData, OracleData, OutcomeData } from "../types";
+import type { CollateralData, OracleData } from "../types";
 import { encodeAbiParameters, type Hex } from "viem";
 
 export const encodeKPITokenData = (
@@ -40,18 +40,14 @@ export const encodeKPITokenData = (
 
 export const encodeOraclesData = (
     templatesData: Template[],
-    outcomesData: OutcomeData[],
     oraclesData: Required<OracleData>[],
 ): { data: Hex; totalValueRequired: bigint } => {
     let totalValueRequired = 0n;
     const oracleParams = templatesData.map(({ id: templateId }, index) => {
-        const { lowerBound, higherBound } = outcomesData[index];
         const { initializationBundle } = oraclesData[index];
         totalValueRequired += initializationBundle.value;
         return {
             templateId: BigInt(templateId),
-            lowerBound,
-            higherBound,
             // TODO: dynamic weight
             weight: 1n,
             value: initializationBundle.value,
@@ -65,8 +61,6 @@ export const encodeOraclesData = (
                     type: "tuple[]",
                     components: [
                         { type: "uint256", name: "templateId" },
-                        { type: "uint256", name: "lowerBound" },
-                        { type: "uint256", name: "higherBound" },
                         { type: "uint256", name: "weight" },
                         { type: "uint256", name: "value" },
                         { type: "bytes", name: "data" },

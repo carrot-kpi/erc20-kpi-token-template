@@ -1,5 +1,3 @@
-import type { OutcomeConfigurationState } from "../types";
-
 export const NO_SPECIAL_CHARACTERS_REGEX =
     /^[A-Z0-9@~`!@#$%^&*()_=+\\';:"\/?>.<,-\s]*$/i;
 
@@ -20,18 +18,4 @@ export const MAX_KPI_TOKEN_TAGS_COUNT = 10;
 export const DEFAULT_NUMBER_FORMAT_VALUE = {
     value: "",
     formattedValue: "",
-};
-
-export const DEFAULT_OUTCOME_CONFIGURATION: OutcomeConfigurationState = {
-    automaticallyFilled: false,
-    binaryTogglable: true,
-    binary: false,
-    lowerBound: {
-        value: "",
-        formattedValue: "",
-    },
-    higherBound: {
-        value: "",
-        formattedValue: "",
-    },
 };
