@@ -267,7 +267,7 @@ export const Component = ({
                     {!!specificationData && !!tokenData && (
                         <StepCard
                             title={t("card.deploy.title")}
-                            step={enableOraclePickStep ? 6 : 5}
+                            step={enableOraclePickStep ? 5 : 4}
                             className={{ root: "relative" }}
                             messages={{ step: t("step") }}
                         >
@@ -292,7 +292,7 @@ export const Component = ({
                     )}
                     <StepCard
                         title={t("card.success.title")}
-                        step={enableOraclePickStep ? 7 : 6}
+                        step={enableOraclePickStep ? 6 : 5}
                         messages={{ step: t("step") }}
                     >
                         <Success
