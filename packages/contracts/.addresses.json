@@ -1,11 +1,5 @@
 {
-    "100": {
-        "template": "0x4A52A969fe182c3a122c616b104C04743090A7c5"
-    },
-    "11155111": {
-        "template": "0xcf80a9b38Ccf0D185286e96dBaF7a590218be698"
-    },
-    "534351": {
-        "template": "0xBbB06b25484AB9E23FEe8Ee321Af8e253ea7A76a"
-    }
+    "100": "0x6df6c9115ae5211FB1433cab1744C7cAe711cE92",
+    "11155111": "0xB7B626f643AeDCCD39112A30E4A95c16bA3d05C7",
+    "534351": ""
 }
