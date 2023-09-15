@@ -45,7 +45,7 @@ interface OraclesConfigurationProps {
     specificationData?: SpecificationData | null;
     state: OraclesConfigurationStepState;
     onStateChange: Dispatch<SetStateAction<OraclesConfigurationStepState>>;
-    onNext: (oraclesData: OracleData[]) => void;
+    onNext: (oraclesData: Required<OracleData>[]) => void;
     navigate: KPITokenCreationFormProps["navigate"];
     onTx: KPITokenCreationFormProps["onTx"];
 }
@@ -109,7 +109,7 @@ export const OraclesConfiguration = ({
                     Object.values(state).map(async (item) => {
                         const initializationBundle =
                             await item.initializationBundleGetter();
-                        const oracleData: OracleData = {
+                        const oracleData: Required<OracleData> = {
                             state: item.state,
                             initializationBundle,
                         };

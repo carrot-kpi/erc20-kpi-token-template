@@ -15,8 +15,6 @@ import type {
     GenericDataStepState,
     OracleData,
     OraclesConfigurationStepState,
-    OutcomeData,
-    OutcomesConfigurationStepState,
     SpecificationData,
     TokenData as TokenDataType,
 } from "./types";
@@ -24,11 +22,9 @@ import { useAccount } from "wagmi";
 import { GenericData } from "./components/generic-data";
 import { Collaterals } from "./components/collaterals";
 import { OraclesConfiguration } from "./components/oracles-configuration";
-import { OutcomesConfiguration } from "./components/outcomes-configuration";
-import { Deploy, assertRequiredOraclesData } from "./components/deploy";
+import { Deploy } from "./components/deploy";
 import { Success } from "./components/success";
 import { ConnectWallet } from "./components/connect-wallet";
-import { outcomeConfigurationFromOracleData } from "./utils/outcomes-configuration";
 
 // TODO: when we have more than one oracle template, implement state
 // and state change features for the oracle picker state too
@@ -50,7 +46,6 @@ export const Component = ({
               t("card.collateral.title"),
               t("card.oracle.pick.title"),
               t("card.oracle.configuration.title"),
-              t("card.outcome.configuration.title"),
               t("card.deploy.title"),
               t("card.success.title"),
           ]
@@ -58,7 +53,6 @@ export const Component = ({
               t("card.general.title"),
               t("card.collateral.title"),
               t("card.oracle.configuration.title"),
-              t("card.outcome.configuration.title"),
               t("card.deploy.title"),
               t("card.success.title"),
           ];
@@ -87,14 +81,7 @@ export const Component = ({
 
     const [oraclesConfigurationStepState, setOraclesConfigurationStepState] =
         useState<OraclesConfigurationStepState>({});
-    const [partialOraclesData, setPartialOraclesData] = useState<OracleData[]>(
-        [],
-    );
     const [oraclesData, setOraclesData] = useState<Required<OracleData>[]>([]);
-
-    const [outcomesConfigurationStepState, setOutcomesConfigurationStepState] =
-        useState<OutcomesConfigurationStepState>({});
-    const [outcomesData, setOutcomesData] = useState<OutcomeData[]>([]);
 
     const [createdKPITokenAddress, setCreatedKPITokenAddress] = useState("");
 
@@ -108,7 +95,6 @@ export const Component = ({
         setTokenData(null);
         setOracleTemplatesData([]);
         setOraclesData([]);
-        setOutcomesData([]);
         setCreatedKPITokenAddress("");
     }, [connectedAddress]);
 
@@ -116,31 +102,6 @@ export const Component = ({
         if (oracleTemplates.length === 1 && oracleTemplatesData.length === 0)
             setOracleTemplatesData([oracleTemplates[0]]);
     }, [oracleTemplates, oracleTemplatesData.length]);
-
-    // when oracles have been configured, we TRY to configure outcomes
-    // automatically based on the specific picked oracle templates.
-    // if we can't do that, we just fallback to a default value and the
-    // user has to specify the configuration himself
-    useEffect(() => {
-        const outcomesConfigurationStepState = Object.entries(
-            oraclesConfigurationStepState,
-        ).reduce(
-            (
-                accumulator: OutcomesConfigurationStepState,
-                [templateId, data],
-            ) => {
-                const parsedTemplateID = parseInt(templateId);
-                if (isNaN(parsedTemplateID))
-                    // this should never happen, it's here just for extra safety
-                    return accumulator;
-                accumulator[parsedTemplateID] =
-                    outcomeConfigurationFromOracleData(parsedTemplateID, data);
-                return accumulator;
-            },
-            {},
-        );
-        setOutcomesConfigurationStepState(outcomesConfigurationStepState);
-    }, [oraclesConfigurationStepState]);
 
     const handleStepClick = useCallback((clickedStep: number) => {
         setStep(clickedStep);
@@ -178,45 +139,13 @@ export const Component = ({
     }, []);
 
     const handleOraclesConfigurationNext = useCallback(
-        (oracleData: OracleData[]) => {
-            setPartialOraclesData(oracleData);
+        (oracleData: Required<OracleData>[]) => {
+            setOraclesData(oracleData);
             const nextStep = enableOraclePickStep ? 4 : 3;
             setStep(nextStep);
             setMostUpdatedStep(nextStep);
         },
         [enableOraclePickStep],
-    );
-
-    const handleOutcomesConfigurationNext = useCallback(
-        (outcomesData: OutcomeData[]) => {
-            setOutcomesData(outcomesData);
-            if (
-                !specificationData ||
-                !specificationCID ||
-                !tokenData ||
-                !connectedAddress
-            )
-                return;
-            try {
-                assertRequiredOraclesData(partialOraclesData);
-            } catch (error) {
-                console.warn("not all required oracles data is present");
-                return;
-            }
-            setOraclesData(partialOraclesData);
-
-            const nextStep = enableOraclePickStep ? 5 : 4;
-            setStep(nextStep);
-            setMostUpdatedStep(nextStep);
-        },
-        [
-            connectedAddress,
-            enableOraclePickStep,
-            partialOraclesData,
-            specificationCID,
-            specificationData,
-            tokenData,
-        ],
     );
 
     const handleDeployNext = useCallback(
@@ -335,23 +264,6 @@ export const Component = ({
                             />
                         )}
                     </StepCard>
-                    <StepCard
-                        title={t("card.outcome.configuration.title")}
-                        step={enableOraclePickStep ? 5 : 4}
-                        className={{
-                            root: "relative pb-10",
-                            content: "px-0",
-                        }}
-                        messages={{ step: t("step") }}
-                    >
-                        <OutcomesConfiguration
-                            t={t}
-                            state={outcomesConfigurationStepState}
-                            onStateChange={setOutcomesConfigurationStepState}
-                            templates={oracleTemplatesData}
-                            onNext={handleOutcomesConfigurationNext}
-                        />
-                    </StepCard>
                     {!!specificationData && !!tokenData && (
                         <StepCard
                             title={t("card.deploy.title")}
@@ -370,7 +282,6 @@ export const Component = ({
                                     tokenData={tokenData}
                                     collateralsData={collateralsData}
                                     oracleTemplatesData={oracleTemplatesData}
-                                    outcomesData={outcomesData}
                                     oraclesData={oraclesData}
                                     onNext={handleDeployNext}
                                     onCreate={onCreate}
