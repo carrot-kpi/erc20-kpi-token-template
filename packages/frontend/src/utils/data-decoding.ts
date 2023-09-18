@@ -32,8 +32,6 @@ export const decodeKPITokenData = async (
                     name: "finalizableOracles",
                     components: [
                         { type: "address", name: "addrezz" },
-                        { type: "uint256", name: "lowerBound" },
-                        { type: "uint256", name: "higherBound" },
                         { type: "uint256", name: "finalResult" },
                         { type: "uint256", name: "weight" },
                         { type: "bool", name: "finalized" },
@@ -51,8 +49,6 @@ export const decodeKPITokenData = async (
             }[],
             readonly {
                 addrezz: Address;
-                lowerBound: bigint;
-                higherBound: bigint;
                 finalResult: bigint;
                 weight: bigint;
                 finalized: boolean;

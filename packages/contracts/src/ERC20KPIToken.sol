@@ -282,7 +282,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
                 _creator, _oracleData.templateId, _oracleData.data
             );
             finalizableOracleByAddress[_instance] =
-                FinalizableOracleWithoutAddress({weight: _oracleData.weight, finalized: false});
+                FinalizableOracleWithoutAddress({weight: _oracleData.weight, finalResult: 0, finalized: false});
             finalizableOracleAddressByIndex[_i] = _instance;
         }
 
@@ -371,6 +371,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
             handleIntermediateOrOverHigherBoundResult(_oracle, _result);
         }
 
+        _oracle.finalResult = _result;
         _oracle.finalized = true;
         unchecked {
             --toBeFinalized;
@@ -609,6 +610,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
             _finalizableOracles[_i] = FinalizableOracle({
                 addrezz: _addrezz,
                 weight: _finalizableOracle.weight,
+                finalResult: _finalizableOracle.finalResult,
                 finalized: _finalizableOracle.finalized
             });
         }

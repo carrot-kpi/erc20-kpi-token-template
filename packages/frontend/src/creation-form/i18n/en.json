@@ -66,8 +66,6 @@
     "label.collateral.approve": "Approve {{symbol}} ({{currentIndex}}/{{totalAmount}})",
     "label.create": "Create",
     "info.approve": "Approve spending your collateral in order to deploy your Carrot campaign.",
-    "label.lower.bound": "Higher than",
-    "label.higher.bound": "Lower than",
     "label.binary": "Binary",
     "label.numeric": "Numeric",
     "oracles.picker.label": "Select your oracle template",

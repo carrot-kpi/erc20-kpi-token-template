@@ -64,12 +64,7 @@ export const getRedeemableRewards = (
     );
     const remainingCollateralsAfterResolutions = [...collaterals];
     for (const oracle of oracles) {
-        const oracleFullRange = oracle.higherBound - oracle.lowerBound;
-        const finalOracleProgress =
-            oracle.finalResult >= oracle.higherBound
-                ? oracleFullRange
-                : oracle.finalResult - oracle.lowerBound;
-        if (finalOracleProgress < oracleFullRange) {
+        if (oracle.finalResult < 1_000_000) {
             for (
                 let i = 0;
                 i < remainingCollateralsAfterResolutions.length;
@@ -79,9 +74,9 @@ export const getRedeemableRewards = (
                 const numerator =
                     (collateral.amount.raw - collateral.minimumPayout.raw) *
                     oracle.weight *
-                    (oracleFullRange - finalOracleProgress) *
+                    (1_000_000n - oracle.finalResult) *
                     MULTIPLIER;
-                const denominator = oracleFullRange * totalWeight;
+                const denominator = 1_000_000n * totalWeight;
                 const reimboursement = numerator / denominator / MULTIPLIER;
                 remainingCollateralsAfterResolutions[i] = {
                     amount: new Amount(

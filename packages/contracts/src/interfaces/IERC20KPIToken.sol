@@ -26,11 +26,13 @@ struct CollateralWithoutToken {
 struct FinalizableOracle {
     address addrezz;
     uint256 weight;
+    uint256 finalResult;
     bool finalized;
 }
 
 struct FinalizableOracleWithoutAddress {
     uint256 weight;
+    uint256 finalResult;
     bool finalized;
 }
 
