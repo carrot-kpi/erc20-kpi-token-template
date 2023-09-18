@@ -34,7 +34,7 @@ export const OracleCreationForm = ({
     data,
     template,
 }: OracleCreationFormProps) => {
-    const { resolvedTemplate } = useResolvedTemplate(template);
+    const { resolvedTemplate } = useResolvedTemplate({ template });
 
     return (
         <OracleCreationFormWrapper
