@@ -42,7 +42,7 @@ export const OraclesAccordion = ({
     templates,
 }: OraclesAccordionProps) => {
     const { loading: resolvingTemplates, resolvedTemplates } =
-        useResolvedTemplates(templates);
+        useResolvedTemplates({ templates });
 
     return resolvingTemplates || !resolvedTemplates ? (
         <div className="w-full flex justify-center">

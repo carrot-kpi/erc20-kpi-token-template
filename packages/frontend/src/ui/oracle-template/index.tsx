@@ -17,7 +17,7 @@ export const OracleTemplate = ({
     template,
 }: OracleTemplateProps): ReactElement => {
     const { loading: resolvingTemplate, resolvedTemplate } =
-        useResolvedTemplate(template);
+        useResolvedTemplate({ template });
 
     return (
         <div className="relative p-1">
