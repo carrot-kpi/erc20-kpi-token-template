@@ -1079,10 +1079,10 @@
     bufferutil "4.0.5"
     utf-8-validate "5.0.7"
 
-"@carrot-kpi/host-frontend@^0.22.0":
-  version "0.22.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/host-frontend/-/host-frontend-0.22.0.tgz#88a47362fdb3f3b2f865917130be076c68083320"
-  integrity sha512-H5QwAMn4Wb29HAKGfe0rQTuzfou7l5x7QsOK7elXIIO4NoaoC9SYHYNn6X2VpgMvy/VY4tDYinaPYOWBEYpPMw==
+"@carrot-kpi/host-frontend@^0.23.1":
+  version "0.23.1"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/host-frontend/-/host-frontend-0.23.1.tgz#5e03d197e3f2607734dc442401d1f3f891ff42af"
+  integrity sha512-pt3HFK/jBJ+0slGsslAUMLa2HlKiq7koAofuvkHQ/qNpxdXFuEX3ZZVP8no1t9Vwmos0zX0IisE9wtnhMqUy1Q==
   dependencies:
     "@carrot-kpi/react" "*"
     "@carrot-kpi/sdk" "*"
@@ -1112,10 +1112,10 @@
     react-use "^17.4.0"
     viem "^1.10.4"
 
-"@carrot-kpi/react@^0.61.0":
-  version "0.61.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.61.0.tgz#3554dc56f3b94628cea992678ec94b4911ae447d"
-  integrity sha512-Hy2p5Jbto732UfdPZk4cOXIXkTmDT3OAUWCQkDst2gubfEJNQFYYgFhuw9NH3/1+0iWm+CO4cOkyNUdtl2Uejw==
+"@carrot-kpi/react@^0.62.1":
+  version "0.62.1"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.62.1.tgz#883cdc1ddf99cf05fbf23c099910443f370a3e65"
+  integrity sha512-ivTxI7BtxN3gMr3slj70gujg/+M4ia7pkvTbcNNjd8/OR+H2SeIyWWBHciUyDb9KlSsiLdwy4k0ZsoGsiuNz3g==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@tanstack/query-sync-storage-persister" "^4.33.0"
@@ -1135,20 +1135,20 @@
     multiformats "^9.9.0"
     viem "^1.10.4"
 
-"@carrot-kpi/sdk@^1.39.0":
-  version "1.39.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.39.0.tgz#698315849424873259291b25d767570a5a79fdd6"
-  integrity sha512-sIBZCnyPnzWgF95twH/GhtyugLA5CM94JNXxzVj1GiaFymFcbyoTEiSJwltQ+uALGFWZas+YtU5ugJhk9muUng==
+"@carrot-kpi/sdk@^1.40.1":
+  version "1.40.1"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.40.1.tgz#3346bc046565be4f88bb61314ac26f3af0ef6927"
+  integrity sha512-h/JEcbUbmSbJg59KE24ZjAnLEEK+ye58VwxPjHg5+5qxrihk+OEX3V5Z5416mP3KYNP6sUoi6p5bPMZ2e8BwBg==
   dependencies:
     "@carrot-kpi/contracts" "^0.3.1"
     decimal.js-light "^2.5.1"
     multiformats "^9.9.0"
     viem "^1.10.4"
 
-"@carrot-kpi/shared-state@^0.11.0":
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/shared-state/-/shared-state-0.11.0.tgz#fa58a8e6df1af8638a7e807e91dbd397d50e7a9b"
-  integrity sha512-7xklkU5p43kBai3JyT0aqEtYioDNiLncKpIuhumfUwHxam98anwE6sR/n9yoQ3Cb6H3R85Wwq7EW/F3bpckV8Q==
+"@carrot-kpi/shared-state@^0.12.0":
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/shared-state/-/shared-state-0.12.0.tgz#6343350a8c7322c0df113147c89936d9af357a3e"
+  integrity sha512-BkKkbiJJgCLKnM0ZqqeSbMODp/64Lp6go5nlV7aRvR8Y+pr3csUcOtqni/Vb+8ud024dhC5dtLPUUCEgL8Vplg==
   dependencies:
     "@reduxjs/toolkit" "^1.9.5"
     lodash.debounce "^4.0.8"
@@ -1184,10 +1184,10 @@
     tailwind-merge "^1.14.0"
     viem "^1.10.4"
 
-"@carrot-kpi/ui@^0.61.0":
-  version "0.61.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.61.0.tgz#537fc127584a2ec72c810e9908c2bee6d1ee21fd"
-  integrity sha512-3c2ohZq0pUvL93WxISPBA25cRT90glNSioP4fGT7dds7yCNyIKm/aunhVaURfqGsKdXsAWUanIZWUfNkrXzL6w==
+"@carrot-kpi/ui@^0.62.1":
+  version "0.62.1"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.62.1.tgz#95c87cf08da76f550a0875305b7cecb1637f4713"
+  integrity sha512-LpV00ajUNMIxPotkN5oXz+OW+ogYLphr+9eEohW4bGKyx6kict+A6q25v2YjmqLukrhOq8w+3tGls45g3sZemA==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@popperjs/core" "^2.11.8"
