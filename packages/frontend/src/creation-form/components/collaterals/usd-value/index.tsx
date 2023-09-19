@@ -9,7 +9,7 @@ interface USDValueProps {
 }
 
 export const USDValue = ({ tokenAddress, rawTokenAmount }: USDValueProps) => {
-    const { loading, price } = useERC20TokenPrice(tokenAddress);
+    const { loading, price } = useERC20TokenPrice({ tokenAddress });
 
     if (loading) return <Skeleton variant="sm" width="60px" />;
 

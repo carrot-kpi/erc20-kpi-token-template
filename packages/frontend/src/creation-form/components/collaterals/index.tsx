@@ -71,7 +71,9 @@ export const Collaterals = ({
 }: CollateralProps): ReactElement => {
     const { address } = useAccount();
     const { chain } = useNetwork();
-    const { lists: tokenLists, loading } = useTokenLists(TOKEN_LIST_URLS);
+    const { lists: tokenLists, loading } = useTokenLists({
+        urls: TOKEN_LIST_URLS,
+    });
 
     const [selectedTokenList, setSelectedTokenList] = useState<
         TokenListWithBalance | undefined
