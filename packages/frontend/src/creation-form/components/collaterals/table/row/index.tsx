@@ -45,9 +45,9 @@ export const CollateralRow = ({
     }, []);
 
     const token = amount.currency;
-    const formattedAmount = formatCurrencyAmount(amount, false);
-    const formattedAmountAfterFees = formatCurrencyAmount(
-        new Amount(
+    const formattedAmount = formatCurrencyAmount({ amount, withSymbol: false });
+    const formattedAmountAfterFees = formatCurrencyAmount({
+        amount: new Amount(
             amount.currency,
             parseUnits(
                 amount
@@ -56,8 +56,8 @@ export const CollateralRow = ({
                 amount.currency.decimals,
             ),
         ),
-        false,
-    );
+        withSymbol: false,
+    });
 
     return (
         <div
@@ -123,7 +123,10 @@ export const CollateralRow = ({
                 </Typography>
             </div>
             <Typography className={{ root: "text-right" }}>
-                {formatCurrencyAmount(minimumPayout, false)}
+                {formatCurrencyAmount({
+                    amount: minimumPayout,
+                    withSymbol: false,
+                })}
             </Typography>
         </div>
     );

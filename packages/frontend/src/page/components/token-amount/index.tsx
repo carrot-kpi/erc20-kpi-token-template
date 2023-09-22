@@ -31,7 +31,7 @@ export const TokenAmount = ({
                         size="sm"
                     />
                     <Typography truncate>
-                        {formatCurrencyAmount(amount, withSymbol)}
+                        {formatCurrencyAmount({ amount, withSymbol })}
                     </Typography>
                 </>
             )}

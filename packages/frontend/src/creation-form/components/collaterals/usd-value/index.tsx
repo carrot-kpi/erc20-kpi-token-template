@@ -21,7 +21,11 @@ export const USDValue = ({ tokenAddress, rawTokenAmount }: USDValueProps) => {
 
     return (
         <Typography variant="sm">
-            ${formatDecimals((price * parsedAmount).toString())}
+            $
+            {formatDecimals({
+                number: (price * parsedAmount).toString(),
+                decimalsAmount: 2,
+            })}
         </Typography>
     );
 };
