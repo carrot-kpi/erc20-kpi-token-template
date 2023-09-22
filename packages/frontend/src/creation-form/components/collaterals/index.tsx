@@ -266,8 +266,8 @@ export const Collaterals = ({
         const parsedRawAmount = parseFloat(state.pickerAmount.formattedValue);
         if (isNaN(parsedRawAmount)) return;
         setProtocolFeeAmount(
-            formatCurrencyAmount(
-                new Amount(
+            formatCurrencyAmount({
+                amount: new Amount(
                     state.pickerToken as unknown as Token,
                     parseUnits(
                         ((parsedRawAmount * PROTOCOL_FEE_BPS) / 10_000).toFixed(
@@ -276,7 +276,7 @@ export const Collaterals = ({
                         state.pickerToken.decimals,
                     ),
                 ),
-            ),
+            }),
         );
     }, [state.pickerToken, state.pickerAmount]);
 

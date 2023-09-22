@@ -1135,10 +1135,10 @@
     multiformats "^9.9.0"
     viem "^1.10.4"
 
-"@carrot-kpi/sdk@^1.40.1":
-  version "1.40.1"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.40.1.tgz#3346bc046565be4f88bb61314ac26f3af0ef6927"
-  integrity sha512-h/JEcbUbmSbJg59KE24ZjAnLEEK+ye58VwxPjHg5+5qxrihk+OEX3V5Z5416mP3KYNP6sUoi6p5bPMZ2e8BwBg==
+"@carrot-kpi/sdk@^1.41.1":
+  version "1.41.1"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.41.1.tgz#e4ac343053ab4c9564221d9c145b72595b106eb6"
+  integrity sha512-N0mVTh7WsOWA8kzY+QKBp0gLVYQ8+igXT79feWrtaoFn2qaqJCpk7lAvH529/OlhJyUTiskH6HAbq4PB4vSvRw==
   dependencies:
     "@carrot-kpi/contracts" "^0.3.1"
     decimal.js-light "^2.5.1"
@@ -1184,10 +1184,10 @@
     tailwind-merge "^1.14.0"
     viem "^1.10.4"
 
-"@carrot-kpi/ui@^0.62.1":
-  version "0.62.1"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.62.1.tgz#95c87cf08da76f550a0875305b7cecb1637f4713"
-  integrity sha512-LpV00ajUNMIxPotkN5oXz+OW+ogYLphr+9eEohW4bGKyx6kict+A6q25v2YjmqLukrhOq8w+3tGls45g3sZemA==
+"@carrot-kpi/ui@^0.62.2":
+  version "0.62.2"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.62.2.tgz#899e095c091cb4950e1196ecde5df8452747f1bd"
+  integrity sha512-nNB/kGxcmfd2k1TDdIodLtSOaM/zAGMFV7Bi+wRGkP39mAZgwBBlZJjvrbz+n1VK+ubNv20bvX88w7L9mRN3mQ==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@popperjs/core" "^2.11.8"
@@ -4535,14 +4535,14 @@ atomic-sleep@^1.0.0:
   resolved "https://registry.yarnpkg.com/atomic-sleep/-/atomic-sleep-1.0.0.tgz#eb85b77a601fc932cfe432c5acd364a9e2c9075b"
   integrity sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==
 
-autoprefixer@^10.4.15:
-  version "10.4.15"
-  resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-10.4.15.tgz#a1230f4aeb3636b89120b34a1f513e2f6834d530"
-  integrity sha512-KCuPB8ZCIqFdA4HwKXsvz7j6gvSDNhDP7WnUjBleRkKjPdvCmHFuQ77ocavI8FT6NdvlBnE2UFr2H4Mycn8Vew==
+autoprefixer@^10.4.16:
+  version "10.4.16"
+  resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-10.4.16.tgz#fad1411024d8670880bdece3970aa72e3572feb8"
+  integrity sha512-7vd3UC6xKp0HLfua5IjZlcXvGAGy7cBAXTg2lyQ/8WpNhd6SiZ8Be+xm3FyBSYJx5GKcpRCzBh7RH4/0dnY+uQ==
   dependencies:
     browserslist "^4.21.10"
-    caniuse-lite "^1.0.30001520"
-    fraction.js "^4.2.0"
+    caniuse-lite "^1.0.30001538"
+    fraction.js "^4.3.6"
     normalize-range "^0.1.2"
     picocolors "^1.0.0"
     postcss-value-parser "^4.2.0"
@@ -4951,15 +4951,20 @@ caniuse-api@^3.0.0:
     lodash.memoize "^4.1.2"
     lodash.uniq "^4.5.0"
 
-caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001517, caniuse-lite@^1.0.30001520:
+caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001517:
   version "1.0.30001535"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001535.tgz#908a5b7ef11172f51f0b88f3d850aef1c6a3cf7b"
   integrity sha512-48jLyUkiWFfhm/afF7cQPqPjaUmSraEhK4j+FCTJpgnGGEZHqyLe3hmWH7lIooZdSzXL0ReMvHz0vKDoTBsrwg==
 
-carrot-scripts@^0.22.13:
-  version "0.22.13"
-  resolved "https://registry.yarnpkg.com/carrot-scripts/-/carrot-scripts-0.22.13.tgz#634d9a6ca1108d912eac0304ae64bc5a3c0d2649"
-  integrity sha512-sDKfw84Yq0aQRaw9i/7u0Ef5BCTcURSWcsiQEiTASxzgUVnH6VLhE7uT4g3+yeDsbLiExo5GpY+EgQTWg3eG8w==
+caniuse-lite@^1.0.30001538:
+  version "1.0.30001538"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001538.tgz#9dbc6b9af1ff06b5eb12350c2012b3af56744f3f"
+  integrity sha512-HWJnhnID+0YMtGlzcp3T9drmBJUVDchPJ08tpUGFLs9CYlwWPH2uLgpHn8fND5pCgXVtnGS3H4QR9XLMHVNkHw==
+
+carrot-scripts@^0.22.14:
+  version "0.22.14"
+  resolved "https://registry.yarnpkg.com/carrot-scripts/-/carrot-scripts-0.22.14.tgz#fabf7c810bff42b612e7bbd07273fc0324539e49"
+  integrity sha512-UgTH87+k/NuZrMArOkAooG3XfOnowvkVcI2LvxKrOJw3cytDQQyDmkotA7zQEwxIdYiDPjYyUkcx3FKiovNiTg==
   dependencies:
     "@carrot-kpi/ganache" "^0.2.0"
     "@carrot-kpi/sdk" "^1.34.0"
@@ -6835,7 +6840,7 @@ forwarded@0.2.0:
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.2.0.tgz#2269936428aad4c15c7ebe9779a84bf0b2a81811"
   integrity sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==
 
-fraction.js@^4.2.0:
+fraction.js@^4.3.6:
   version "4.3.6"
   resolved "https://registry.yarnpkg.com/fraction.js/-/fraction.js-4.3.6.tgz#e9e3acec6c9a28cf7bc36cbe35eea4ceb2c5c92d"
   integrity sha512-n2aZ9tNfYDwaHhvFTkhFErqOMIb8uyzSQ+vGJBjZyanAKZVbGUQ1sngfk9FdkBw7G26O7AgNjLcecLffD1c7eg==

@@ -83,7 +83,10 @@ export const WalletActions = ({
             setText(
                 kpiTokenBalance && kpiTokenBalance.gt(0)
                     ? t("position.status.expired.withBalance", {
-                          amount: formatCurrencyAmount(kpiTokenBalance, false),
+                          amount: formatCurrencyAmount({
+                              amount: kpiTokenBalance,
+                              withSymbol: false,
+                          }),
                           symbol: kpiTokenBalance.currency.symbol,
                       })
                     : t("position.status.expired.noBalance"),
@@ -96,10 +99,10 @@ export const WalletActions = ({
                             t(
                                 "position.status.finalized.withBalance.burnable",
                                 {
-                                    amount: formatCurrencyAmount(
-                                        kpiTokenBalance,
-                                        false,
-                                    ),
+                                    amount: formatCurrencyAmount({
+                                        amount: kpiTokenBalance,
+                                        withSymbol: false,
+                                    }),
                                     symbol: kpiTokenBalance.currency.symbol,
                                 },
                             ),
@@ -109,10 +112,10 @@ export const WalletActions = ({
                             t(
                                 "position.status.finalized.withBalance.redeemable",
                                 {
-                                    amount: formatCurrencyAmount(
-                                        kpiTokenBalance,
-                                        false,
-                                    ),
+                                    amount: formatCurrencyAmount({
+                                        amount: kpiTokenBalance,
+                                        withSymbol: false,
+                                    }),
                                     symbol: kpiTokenBalance.currency.symbol,
                                 },
                             ),
