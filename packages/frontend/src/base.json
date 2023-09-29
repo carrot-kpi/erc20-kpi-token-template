@@ -3,5 +3,5 @@
     "description": "An official Carrot v1 template to support ERC20 KPI Token creation. Supports multiple ERC20 collaterals (up to 5), multiple conditions (up to 5), condition weighting and all-or-none or standard campaign style. If you want to distribute ERC20 KPI token after creating your campaign, this is the right template for you.",
     "tags": ["erc20", "multi-condition", "multi-collateral", "weights"],
     "repository": "https://github.com/carrot-kpi/erc20-kpi-token-template",
-    "stagingURL": "https://erc20-kpi-token-template.staging.carrot-kpi.dev"
+    "stagingURL": "https://erc20-kpi-token-template.staging.carrot.community"
 }
