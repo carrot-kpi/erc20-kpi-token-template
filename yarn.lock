@@ -4961,10 +4961,10 @@ caniuse-lite@^1.0.30001538:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001538.tgz#9dbc6b9af1ff06b5eb12350c2012b3af56744f3f"
   integrity sha512-HWJnhnID+0YMtGlzcp3T9drmBJUVDchPJ08tpUGFLs9CYlwWPH2uLgpHn8fND5pCgXVtnGS3H4QR9XLMHVNkHw==
 
-carrot-scripts@^0.22.14:
-  version "0.22.14"
-  resolved "https://registry.yarnpkg.com/carrot-scripts/-/carrot-scripts-0.22.14.tgz#fabf7c810bff42b612e7bbd07273fc0324539e49"
-  integrity sha512-UgTH87+k/NuZrMArOkAooG3XfOnowvkVcI2LvxKrOJw3cytDQQyDmkotA7zQEwxIdYiDPjYyUkcx3FKiovNiTg==
+carrot-scripts@^0.22.15:
+  version "0.22.15"
+  resolved "https://registry.yarnpkg.com/carrot-scripts/-/carrot-scripts-0.22.15.tgz#7c57bfc1a75bed9752185df9a052a1fd8a08380f"
+  integrity sha512-vLnFllHiNZx6sbDsLtULQW19mlw58p6Uwj41xAOwUP5TZLCy0uFT0p0JhEdBQrGSDu6H3TOkgM5GDZVVxK/o3Q==
   dependencies:
     "@carrot-kpi/ganache" "^0.2.0"
     "@carrot-kpi/sdk" "^1.34.0"
