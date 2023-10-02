@@ -173,12 +173,7 @@ export const WalletActions = ({
                 <Button
                     size="small"
                     loading={loading}
-                    disabled={
-                        !redeemableRewards ||
-                        redeemableRewards.length === 0 ||
-                        redeemableRewards.every((reward) => reward.isZero()) ||
-                        !writeAsync
-                    }
+                    disabled={!writeAsync}
                     onClick={handleClick}
                 >
                     {redeemable && t("redeem")}
