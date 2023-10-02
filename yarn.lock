@@ -1079,10 +1079,10 @@
     bufferutil "4.0.5"
     utf-8-validate "5.0.7"
 
-"@carrot-kpi/host-frontend@^0.23.1":
-  version "0.23.1"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/host-frontend/-/host-frontend-0.23.1.tgz#5e03d197e3f2607734dc442401d1f3f891ff42af"
-  integrity sha512-pt3HFK/jBJ+0slGsslAUMLa2HlKiq7koAofuvkHQ/qNpxdXFuEX3ZZVP8no1t9Vwmos0zX0IisE9wtnhMqUy1Q==
+"@carrot-kpi/host-frontend@^0.24.0":
+  version "0.24.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/host-frontend/-/host-frontend-0.24.0.tgz#34ee85b22a79eb81c32374890f7ea9f59c151835"
+  integrity sha512-LQhPpxM/GRNrviV5w35oOTqDmXvLWPWHICEEpHUatGyyEwpOUiwUCLBRjExzqAbD+VCYMNb+8ovRxfwDby4Lxw==
   dependencies:
     "@carrot-kpi/react" "*"
     "@carrot-kpi/sdk" "*"
@@ -1112,10 +1112,10 @@
     react-use "^17.4.0"
     viem "^1.10.4"
 
-"@carrot-kpi/react@^0.62.1":
-  version "0.62.1"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.62.1.tgz#883cdc1ddf99cf05fbf23c099910443f370a3e65"
-  integrity sha512-ivTxI7BtxN3gMr3slj70gujg/+M4ia7pkvTbcNNjd8/OR+H2SeIyWWBHciUyDb9KlSsiLdwy4k0ZsoGsiuNz3g==
+"@carrot-kpi/react@^0.63.0":
+  version "0.63.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.63.0.tgz#fe597952bbb75e672e3dbafa3933432ae08a0916"
+  integrity sha512-K47Xm8xGRbkRPVEKFclZipCEd+mfw7w9erMfDv6TuPNfALdAmI2YKj9tXETCq+9Q8Y+PKGRRE5vULd3I85M4zg==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@tanstack/query-sync-storage-persister" "^4.33.0"
@@ -1135,20 +1135,20 @@
     multiformats "^9.9.0"
     viem "^1.10.4"
 
-"@carrot-kpi/sdk@^1.41.1":
-  version "1.41.1"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.41.1.tgz#e4ac343053ab4c9564221d9c145b72595b106eb6"
-  integrity sha512-N0mVTh7WsOWA8kzY+QKBp0gLVYQ8+igXT79feWrtaoFn2qaqJCpk7lAvH529/OlhJyUTiskH6HAbq4PB4vSvRw==
+"@carrot-kpi/sdk@^1.42.0":
+  version "1.42.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.42.0.tgz#6559d1a5b7fe830a351847895ae61eb4ec50034e"
+  integrity sha512-vJnxrU+6MzywSgK5IUKwrp3giAid0HxcO/HD2hbTFCiI8867fuBuFGCQ6emMq4W8ixEZGuPobrr9aHm81OGMvA==
   dependencies:
     "@carrot-kpi/contracts" "^0.3.1"
     decimal.js-light "^2.5.1"
     multiformats "^9.9.0"
     viem "^1.10.4"
 
-"@carrot-kpi/shared-state@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/shared-state/-/shared-state-0.12.0.tgz#6343350a8c7322c0df113147c89936d9af357a3e"
-  integrity sha512-BkKkbiJJgCLKnM0ZqqeSbMODp/64Lp6go5nlV7aRvR8Y+pr3csUcOtqni/Vb+8ud024dhC5dtLPUUCEgL8Vplg==
+"@carrot-kpi/shared-state@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/shared-state/-/shared-state-0.13.0.tgz#ab9738f26edfea97a0be3d986ae4bd3672831aea"
+  integrity sha512-vNq4TRMCleTzbLPcsrgsUbj81lljy9wfQS7lJXjuxhpo0PeSk2yRGdnZ9Dzc07B9fJ7D7sutZJonvlUfHwrsUA==
   dependencies:
     "@reduxjs/toolkit" "^1.9.5"
     lodash.debounce "^4.0.8"
@@ -1184,10 +1184,10 @@
     tailwind-merge "^1.14.0"
     viem "^1.10.4"
 
-"@carrot-kpi/ui@^0.62.2":
-  version "0.62.2"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.62.2.tgz#899e095c091cb4950e1196ecde5df8452747f1bd"
-  integrity sha512-nNB/kGxcmfd2k1TDdIodLtSOaM/zAGMFV7Bi+wRGkP39mAZgwBBlZJjvrbz+n1VK+ubNv20bvX88w7L9mRN3mQ==
+"@carrot-kpi/ui@^0.63.0":
+  version "0.63.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.63.0.tgz#9a3628bcdccd8c8afaceab625cc7cf8ac0f8f7ce"
+  integrity sha512-Yk1hWxJxyonXsdIpak7+Bxe3yFuG200fakwDmOeWkNweKC89HWYXskDpd3jmvnGjBWs2ZAz1tt2WGQ2iPxpuaQ==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@popperjs/core" "^2.11.8"
@@ -10131,10 +10131,10 @@ postcss@^8.3.11, postcss@^8.4.21, postcss@^8.4.23:
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
 
-postcss@^8.4.30:
-  version "8.4.30"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.30.tgz#0e0648d551a606ef2192a26da4cabafcc09c1aa7"
-  integrity sha512-7ZEao1g4kd68l97aWG/etQKPKq07us0ieSZ2TnFDk11i0ZfDW2AwKHYU8qv4MZKqN2fdBfg+7q0ES06UA73C1g==
+postcss@^8.4.31:
+  version "8.4.31"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.31.tgz#92b451050a9f914da6755af352bdc0192508656d"
+  integrity sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==
   dependencies:
     nanoid "^3.3.6"
     picocolors "^1.0.0"
