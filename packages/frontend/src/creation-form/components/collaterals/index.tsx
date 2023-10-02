@@ -13,6 +13,8 @@ import {
 import {
     type NamespacedTranslateFunction,
     useTokenLists,
+    useDevMode,
+    useStagingMode,
 } from "@carrot-kpi/react";
 import {
     type ReactElement,
@@ -30,8 +32,10 @@ import {
 import {
     Amount,
     ERC20_ABI,
+    Service,
     Token,
     formatCurrencyAmount,
+    getServiceURL,
 } from "@carrot-kpi/sdk";
 import {
     type Address,
@@ -43,7 +47,7 @@ import {
 import {
     DEFAULT_NUMBER_FORMAT_VALUE,
     PROTOCOL_FEE_BPS,
-    TOKEN_LIST_URLS,
+    COINGECKO_LIST_URL,
 } from "../../constants";
 import { ReactComponent as ArrowDown } from "../../../assets/arrow-down.svg";
 import { CollateralsTable } from "./table";
@@ -71,8 +75,19 @@ export const Collaterals = ({
 }: CollateralProps): ReactElement => {
     const { address } = useAccount();
     const { chain } = useNetwork();
+    const devMode = useDevMode();
+    const stagingMode = useStagingMode();
+    const tokenListUrls = useMemo(() => {
+        return [
+            COINGECKO_LIST_URL,
+            `${getServiceURL(
+                Service.STATIC_CDN,
+                !devMode && !stagingMode,
+            )}/token-list.json`,
+        ];
+    }, [devMode, stagingMode]);
     const { lists: tokenLists, loading } = useTokenLists({
-        urls: TOKEN_LIST_URLS,
+        urls: tokenListUrls,
     });
 
     const [selectedTokenList, setSelectedTokenList] = useState<
