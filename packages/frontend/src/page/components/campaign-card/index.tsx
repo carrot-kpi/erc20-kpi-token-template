@@ -1,5 +1,5 @@
 import type { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import { ResolvedKPIToken } from "@carrot-kpi/sdk";
+import { ResolvedKPIToken, formatDecimals } from "@carrot-kpi/sdk";
 import {
     Card,
     CardContent,
@@ -150,8 +150,9 @@ export const CampaignCard = ({
                             <Skeleton />
                         ) : (
                             <Typography uppercase truncate>
-                                {/* FIXME: reintroduce commify to make number easier to read */}
-                                {formatUnits(initialSupply, 18)}
+                                {formatDecimals({
+                                    number: formatUnits(initialSupply, 18),
+                                })}
                             </Typography>
                         )}
                     </div>
@@ -168,8 +169,9 @@ export const CampaignCard = ({
                             <Skeleton width="60px" />
                         ) : (
                             <Typography uppercase truncate>
-                                {/* FIXME: reintroduce commify to make number easier to read */}
-                                {formatUnits(erc20Supply, 18)}
+                                {formatDecimals({
+                                    number: formatUnits(erc20Supply, 18),
+                                })}
                             </Typography>
                         )}
                     </div>

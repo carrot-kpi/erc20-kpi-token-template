@@ -218,7 +218,8 @@ export const WalletPosition = ({
                         <div className="flex flex-col gap-2">
                             {loading ||
                             !kpiTokenCollateralBalances ||
-                            loadingKPITokenCollateralBalances
+                            loadingKPITokenCollateralBalances ||
+                            kpiTokenCollateralBalances.length === 0
                                 ? new Array(collaterals?.length || 1)
                                       .fill(null)
                                       .map((_, index) => (
