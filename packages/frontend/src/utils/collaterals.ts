@@ -7,9 +7,6 @@ export const getGuaranteedRewards = (
     kpiTokenInitialSupply: Amount<Token>,
     collaterals: CollateralData[],
 ) => {
-    console.log("getGuaranteedRewards", {
-        kpiTokenInitialSupply: kpiTokenInitialSupply.raw,
-    });
     return collaterals.map(
         (collateral) =>
             new Amount(
@@ -25,9 +22,6 @@ export const getMaximumRewards = (
     kpiTokenInitialSupply: Amount<Token>,
     collaterals: CollateralData[],
 ) => {
-    console.log("getMaximumRewards", {
-        kpiTokenInitialSupply: kpiTokenInitialSupply.raw,
-    });
     return collaterals.map(
         (collateral) =>
             new Amount(
@@ -53,9 +47,6 @@ export const getRedeemableRewards = (
         );
 
     if (expired) {
-        console.log("getRedeemableRewards (expired)", {
-            kpiTokenInitialSupply: kpiTokenInitialSupply.raw,
-        });
         return collaterals.map((collateral) => {
             return new Amount(
                 collateral.minimumPayout.currency,
@@ -71,10 +62,6 @@ export const getRedeemableRewards = (
         (accumulator: bigint, oracle) => accumulator + oracle.weight,
         0n,
     );
-    console.log("getRedeemableRewards totalWeight", {
-        totalWeight,
-        oracles,
-    });
     const remainingCollateralsAfterResolutions = [...collaterals];
     for (const oracle of oracles) {
         if (oracle.finalResult < 1_000_000) {
@@ -90,9 +77,6 @@ export const getRedeemableRewards = (
                     (1_000_000n - oracle.finalResult) *
                     MULTIPLIER;
                 const denominator = 1_000_000n * totalWeight;
-                console.log("getRedeemableRewards denominator", {
-                    denominator,
-                });
                 const reimboursement = numerator / denominator / MULTIPLIER;
                 remainingCollateralsAfterResolutions[i] = {
                     amount: new Amount(
