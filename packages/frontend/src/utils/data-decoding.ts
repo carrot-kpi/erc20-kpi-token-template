@@ -32,8 +32,8 @@ export const decodeKPITokenData = async (
                     name: "finalizableOracles",
                     components: [
                         { type: "address", name: "addrezz" },
-                        { type: "uint256", name: "finalResult" },
                         { type: "uint256", name: "weight" },
+                        { type: "uint256", name: "finalResult" },
                         { type: "bool", name: "finalized" },
                     ],
                 },
