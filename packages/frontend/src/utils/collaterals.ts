@@ -73,6 +73,7 @@ export const getRedeemableRewards = (
     );
     console.log("getRedeemableRewards totalWeight", {
         totalWeight,
+        oracles,
     });
     const remainingCollateralsAfterResolutions = [...collaterals];
     for (const oracle of oracles) {
