@@ -90,7 +90,13 @@ export const WalletPosition = ({
     >(null);
 
     useEffect(() => {
-        if (!rawKpiTokenBalance || !initialSupply || !oracles) return;
+        if (
+            !rawKpiTokenBalance ||
+            !initialSupply ||
+            !oracles ||
+            oracles.length === 0
+        )
+            return;
         const balance = new Amount(
             initialSupply.currency,
             rawKpiTokenBalance.value,
