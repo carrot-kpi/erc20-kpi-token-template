@@ -32,7 +32,7 @@ createRoot(document.getElementById("root")!).render(
                 }),
             }),
         ]}
-        getAdditionalConnectors={() => [
+        getConnectors={() => [
             new CarrotConnector({
                 chains: supportedChains,
                 options: {
