@@ -353,6 +353,7 @@ export const GenericData = ({
                     value={state.erc20Supply?.formattedValue}
                     error={!!erc20SupplyErrorText}
                     errorText={erc20SupplyErrorText}
+                    isAllowed={({ value }) => !value.includes(".")}
                     className={{
                         root: "w-full",
                         input: "w-full",
