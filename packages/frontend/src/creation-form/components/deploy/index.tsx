@@ -18,7 +18,7 @@ import {
     usePublicClient,
 } from "wagmi";
 import type { CollateralData, OracleData, TokenData } from "../../types";
-import { Button, Typography } from "@carrot-kpi/ui";
+import { Button, ErrorText, Typography } from "@carrot-kpi/ui";
 import {
     type KPITokenCreationFormProps,
     type NamespacedTranslateFunction,
@@ -42,9 +42,6 @@ import { ApproveCollateralsButton } from "../approve-collaterals-button";
 import { unixTimestamp } from "../../../utils/dates";
 import { getKPITokenAddressFromReceipt } from "../../../utils/logs";
 import { zeroAddress } from "viem";
-
-// TODO: add error section to display any errors that happen when creating
-// (deploying) the KPI token
 
 type Assert = (data: OracleData[]) => asserts data is Required<OracleData>[];
 export const assertRequiredOraclesData: Assert = (data) => {
@@ -158,6 +155,8 @@ export const Deploy = ({
         config,
         isLoading: loadingTxConfig,
         isFetching: fetchingTxConfig,
+        error,
+        isError,
     } = usePrepareContractWrite({
         chainId: chain?.id,
         address: factoryAddress,
@@ -279,7 +278,7 @@ export const Deploy = ({
                     onTx={onTx}
                 />
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-3 items-start">
                 <Button
                     size="small"
                     onClick={handleCreate}
@@ -288,6 +287,13 @@ export const Deploy = ({
                 >
                     {t("label.create")}
                 </Button>
+                {isError && !!error && (
+                    <ErrorText>
+                        {/* FIXME: error type returned by wagmi is not complete */}
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                        {(error as any).shortMessage}
+                    </ErrorText>
+                )}
             </div>
         </div>
     );
