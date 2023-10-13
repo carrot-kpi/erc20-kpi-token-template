@@ -160,7 +160,7 @@ export const Component = ({
 
     if (loading) {
         return (
-            <div className="bg-green py-10 text-black flex justify-center">
+            <div className="py-10 text-black flex justify-center">
                 <Loader />
             </div>
         );
