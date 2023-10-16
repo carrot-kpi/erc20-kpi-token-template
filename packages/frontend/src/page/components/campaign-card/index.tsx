@@ -45,7 +45,9 @@ export const CampaignCard = ({
     });
 
     return (
-        <Card className={{ root: "w-full max-w-7xl dark:border-gray-400" }}>
+        <Card
+            className={{ root: "w-full max-w-screen-2xl dark:border-gray-400" }}
+        >
             <CardContent>
                 <div className="flex flex-col gap-1 border-b border-black w-full py-3 px-4">
                     <Typography uppercase variant="xs">
