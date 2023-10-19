@@ -1,8 +1,7 @@
-pragma solidity 0.8.19;
+pragma solidity 0.8.21;
 
 import {BaseTestSetup} from "tests/commons/BaseTestSetup.sol";
 import {ERC20KPIToken} from "../src/ERC20KPIToken.sol";
-import {IOraclesManager1} from "carrot/interfaces/oracles-managers/IOraclesManager1.sol";
 import {Clones} from "oz/proxy/Clones.sol";
 import {IERC20KPIToken, OracleData, Collateral, FinalizableOracle} from "../src/interfaces/IERC20KPIToken.sol";
 import {TokenAmount} from "carrot/commons/Types.sol";
@@ -10,7 +9,7 @@ import {TokenAmount} from "carrot/commons/Types.sol";
 /// SPDX-License-Identifier: GPL-3.0-or-later
 /// @title ERC20 KPI token get oracles test enumerate test
 /// @dev Tests oracles query in ERC20 KPI token.
-/// @author Federico Luzzi - <federico.luzzi@protonmail.com>
+/// @author Federico Luzzi - <federico.luzzi@carrot-labs.xyz>
 contract ERC20KPITokenGetOraclesTest is BaseTestSetup {
     function testNotInitialized() external {
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(Clones.clone(address(erc20KpiTokenTemplate)));

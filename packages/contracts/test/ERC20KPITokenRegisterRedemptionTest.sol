@@ -1,4 +1,4 @@
-pragma solidity 0.8.19;
+pragma solidity 0.8.21;
 
 import {BaseTestSetup} from "tests/commons/BaseTestSetup.sol";
 import {IERC20KPIToken, OracleData, Collateral, FinalizableOracle} from "../src/interfaces/IERC20KPIToken.sol";
@@ -6,7 +6,7 @@ import {IERC20KPIToken, OracleData, Collateral, FinalizableOracle} from "../src/
 /// SPDX-License-Identifier: GPL-3.0-or-later
 /// @title ERC20 KPI token register redemption test
 /// @dev Tests ERC20 KPI token redemption registration.
-/// @author Federico Luzzi - <federico.luzzi@protonmail.com>
+/// @author Federico Luzzi - <federico.luzzi@carrot-labs.xyz>
 contract ERC20KPITokenRegisterRedemptionTest is BaseTestSetup {
     function testNotFinalized() external {
         IERC20KPIToken _kpiToken = createKpiToken("a");

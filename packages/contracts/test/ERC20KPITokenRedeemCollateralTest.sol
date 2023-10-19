@@ -1,4 +1,4 @@
-pragma solidity 0.8.19;
+pragma solidity 0.8.21;
 
 import {BaseTestSetup} from "tests/commons/BaseTestSetup.sol";
 import {ERC20KPIToken} from "../src/ERC20KPIToken.sol";
@@ -9,7 +9,7 @@ import {console2} from "forge-std/console2.sol";
 /// SPDX-License-Identifier: GPL-3.0-or-later
 /// @title ERC20 KPI token redeem test
 /// @dev Tests redemption in ERC20 KPI token.
-/// @author Federico Luzzi - <federico.luzzi@protonmail.com>
+/// @author Federico Luzzi - <federico.luzzi@carrot-labs.xyz>
 contract ERC20KPITokenRedeemCollateralTest is BaseTestSetup {
     function testZeroAddressToken() external {
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(Clones.clone(address(erc20KpiTokenTemplate)));
