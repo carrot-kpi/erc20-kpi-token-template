@@ -4922,6 +4922,21 @@ carrot-scripts@^0.22.15:
     tsconfig "*"
     viem "^1.9.2"
 
+carrot-scripts@^0.22.16:
+  version "0.22.16"
+  resolved "https://registry.yarnpkg.com/carrot-scripts/-/carrot-scripts-0.22.16.tgz#cb4306f7080db5831876c8ebfda7a6cf8b0018cf"
+  integrity sha512-IyhL50QcTWITaNMdk30wx2odnrBd7C7M3VCpjlje/TWMeqeWxmQMXXezfz+gkRV6oODqfxZmCpV+bpGXc8x1+Q==
+  dependencies:
+    "@carrot-kpi/ganache" "^0.2.0"
+    "@carrot-kpi/sdk" "^1.43.1"
+    chalk "^5.3.0"
+    ethers "5"
+    execa "^8.0.1"
+    ipfs-http-client "^60.0.1"
+    ora "^7.0.1"
+    tsconfig "*"
+    viem "^1.16.6"
+
 case-anything@^2.1.13:
   version "2.1.13"
   resolved "https://registry.yarnpkg.com/case-anything/-/case-anything-2.1.13.tgz#0cdc16278cb29a7fcdeb072400da3f342ba329e9"
@@ -10475,10 +10490,10 @@ react-fast-compare@^3.0.1:
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-3.2.2.tgz#929a97a532304ce9fee4bcae44234f1ce2c21d49"
   integrity sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==
 
-react-i18next@^13.3.0:
-  version "13.3.0"
-  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-13.3.0.tgz#8e39c0101f654db7eb971f159bb55067a78925c3"
-  integrity sha512-FlR9xjYHSPIJfQspEmkN0yOlxgRyNuiJKJ8gCaZH08UJ7SZHG+VrptEPcpEMEchjNoCOZdKcvJ3PnmHEZhkeXg==
+react-i18next@^13.3.1:
+  version "13.3.1"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-13.3.1.tgz#9b072bf4dd4cafb028e92315a8a1415f8034bdca"
+  integrity sha512-JAtYREK879JXaN9GdzfBI4yJeo/XyLeXWUsRABvYXiFUakhZJ40l+kaTo+i+A/3cKIED41kS/HAbZ5BzFtq/Og==
   dependencies:
     "@babel/runtime" "^7.22.5"
     html-parse-stringify "^3.0.1"
