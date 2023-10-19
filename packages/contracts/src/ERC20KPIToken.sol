@@ -92,6 +92,10 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     event RegisterRedemption(address indexed account, uint256 burned);
     event RedeemCollateral(address indexed account, address indexed receiver, address token, uint256 amount);
 
+    constructor() {
+        _disableInitializers();
+    }
+
     /// @dev Initializes the template through the passed in data. This function is
     /// generally invoked by the KPI tokens manager, in turn invoked by the factory,
     /// in turn invoked by a KPI token creator.
