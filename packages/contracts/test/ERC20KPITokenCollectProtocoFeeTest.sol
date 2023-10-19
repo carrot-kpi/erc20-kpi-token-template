@@ -1,16 +1,15 @@
-pragma solidity 0.8.19;
+pragma solidity 0.8.21;
 
 import {InitializeKPITokenParams} from "carrot/commons/Types.sol";
 import {BaseTestSetup} from "tests/commons/BaseTestSetup.sol";
 import {ERC20KPIToken} from "../src/ERC20KPIToken.sol";
-import {IOraclesManager1} from "carrot/interfaces/oracles-managers/IOraclesManager1.sol";
 import {Clones} from "oz/proxy/Clones.sol";
 import {IERC20KPIToken, OracleData, Collateral, FinalizableOracle} from "../src/interfaces/IERC20KPIToken.sol";
 
 /// SPDX-License-Identifier: GPL-3.0-or-later
 /// @title ERC20 KPI token collect protocol fee test
 /// @dev Tests ERC20 KPI token protocol fee collection.
-/// @author Federico Luzzi - <federico.luzzi@protonmail.com>
+/// @author Federico Luzzi - <federico.luzzi@carrot-labs.xyz>
 contract ERC20KPITokenCollectProtocoFeeTest is BaseTestSetup {
     function initializeKpiToken() internal returns (address, ERC20KPIToken) {
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(Clones.clone(address(erc20KpiTokenTemplate)));

@@ -1,10 +1,10 @@
-pragma solidity 0.8.19;
+pragma solidity 0.8.21;
 
-import {IERC20Upgradeable, ERC20Upgradeable} from "oz-upgradeable/token/ERC20/ERC20Upgradeable.sol";
-import {SafeERC20Upgradeable} from "oz-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
-import {ReentrancyGuardUpgradeable} from "oz-upgradeable/security/ReentrancyGuardUpgradeable.sol";
-import {IOraclesManager1} from "carrot/interfaces/oracles-managers/IOraclesManager1.sol";
-import {IKPITokensManager1} from "carrot/interfaces/kpi-tokens-managers/IKPITokensManager1.sol";
+import {ERC20Upgradeable} from "oz-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import {IERC20} from "oz/token/ERC20/IERC20.sol";
+import {SafeERC20} from "oz/token/ERC20/utils/SafeERC20.sol";
+import {ReentrancyGuardUpgradeable} from "oz-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+import {IOraclesManager} from "carrot/interfaces/IOraclesManager.sol";
 import {Template, IBaseTemplatesManager} from "carrot/interfaces/IBaseTemplatesManager.sol";
 import {
     IERC20KPIToken,
@@ -31,9 +31,9 @@ import {TokenAmount, InitializeKPITokenParams} from "carrot/commons/Types.sol";
 /// regardless of the fact that goals are reached or not), weighted conditions and
 /// multiple detached resolution or all-in-one reaching of goals (explained more in
 /// detail later).
-/// @author Federico Luzzi - <federico.luzzi@protonmail.com>
+/// @author Federico Luzzi - <federico.luzzi@carrot-labs.xyz>
 contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgradeable {
-    using SafeERC20Upgradeable for IERC20Upgradeable;
+    using SafeERC20 for IERC20;
 
     uint256 internal constant INVALID_ANSWER = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
     uint256 internal constant MULTIPLIER = 64;
@@ -86,10 +86,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     error NothingToRecover();
     error NotEnoughValue();
 
-    event Initialize();
     event CollectProtocolFee(address indexed token, uint256 amount, address indexed receiver);
-    event OwnershipTransferred(address indexed oldOwner, address indexed newOwner);
-    event Finalize(address indexed oracle, uint256 result);
     event RecoverERC20(address indexed token, uint256 amount, address indexed receiver);
     event Redeem(address indexed account, uint256 burned);
     event RegisterRedemption(address indexed account, uint256 burned);
@@ -150,9 +147,17 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
             abi.decode(_params.kpiTokenData, (Collateral[], string, string, uint256));
 
         collectCollateralsAndFees(_params.creator, _collaterals, _params.feeReceiver);
-        initializeOracles(_params.creator, _params.oraclesManager, _params.oraclesData);
+        address[] memory _oracles = initializeOracles(_params.creator, _params.oraclesManager, _params.oraclesData);
 
-        emit Initialize();
+        emit Initialize(
+            _params.creator,
+            block.timestamp,
+            _params.kpiTokenTemplateId,
+            _params.kpiTokenTemplateVersion,
+            _params.description,
+            _params.expiration,
+            _oracles
+        );
     }
 
     /// @dev Utility function used to perform checks and partially initialize the state
@@ -241,9 +246,9 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
             collateral[_collateral.token].minimumPayout = _collateral.minimumPayout;
             collateral[_collateral.token].postFinalizationAmount = 0;
             collateralAddressByIndex[_i] = _collateral.token;
-            IERC20Upgradeable(_collateral.token).safeTransferFrom(_creator, address(this), _collateralAmountBeforeFee);
+            IERC20(_collateral.token).safeTransferFrom(_creator, address(this), _collateralAmountBeforeFee);
             if (_fee > 0) {
-                IERC20Upgradeable(_collateral.token).safeTransfer(_feeReceiver, _fee);
+                IERC20(_collateral.token).safeTransfer(_feeReceiver, _fee);
                 emit CollectProtocolFee(_collateral.token, _fee, _feeReceiver);
             }
         }
@@ -260,6 +265,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     function initializeOracles(address _creator, address _oraclesManager, bytes memory _data)
         internal
         onlyInitializing
+        returns (address[] memory)
     {
         (OracleData[] memory _oracleDatas, bool _allOrNone) = abi.decode(_data, (OracleData[], bool));
 
@@ -274,13 +280,15 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
         if (msg.value < _totalValue) revert NotEnoughValue();
 
         uint256 _totalWeigth = 0;
+        address[] memory _oracles = new address[](_oracleDatas.length);
         for (uint16 _i = 0; _i < _oracleDatas.length; _i++) {
             OracleData memory _oracleData = _oracleDatas[_i];
             if (_oracleData.weight == 0) revert InvalidOracleWeights();
             _totalWeigth += _oracleData.weight;
-            address _instance = IOraclesManager1(_oraclesManager).instantiate{value: _oracleData.value}(
+            address _instance = IOraclesManager(_oraclesManager).instantiate{value: _oracleData.value}(
                 _creator, _oracleData.templateId, _oracleData.data
             );
+            _oracles[_i] = _instance;
             finalizableOracleByAddress[_instance] =
                 FinalizableOracleWithoutAddress({weight: _oracleData.weight, finalResult: 0, finalized: false});
             finalizableOracleAddressByIndex[_i] = _instance;
@@ -289,6 +297,8 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
         totalWeight = _totalWeigth;
         toBeFinalized = uint16(_oracleDatas.length);
         allOrNone = _allOrNone;
+
+        return _oracles;
     }
 
     /// @dev Returns a storage pointer to the `FinalizableOracle` struct
@@ -353,7 +363,6 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
         FinalizableOracleWithoutAddress storage _oracle = finalizableOracle(msg.sender);
         if (_isFinalized() || _isExpired()) {
             _oracle.finalized = true;
-            emit Finalize(msg.sender, _result);
             return;
         }
 
@@ -364,7 +373,6 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
                 toBeFinalized = 0;
                 _oracle.finalized = true;
                 registerPostFinalizationCollateralAmounts();
-                emit Finalize(msg.sender, _result);
                 return;
             }
         } else {
@@ -377,9 +385,10 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
             --toBeFinalized;
         }
 
-        if (_isFinalized()) registerPostFinalizationCollateralAmounts();
-
-        emit Finalize(msg.sender, _result);
+        if (_isFinalized()) {
+            registerPostFinalizationCollateralAmounts();
+            emit Finalize();
+        }
     }
 
     /// @dev Handles collateral state changes in case an oracle reported a low or invalid
@@ -473,7 +482,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
         bool _expired = _isExpired();
         CollateralWithoutToken storage _collateral = collateral[_token];
         if (_collateral.amount > 0) {
-            uint256 _balance = IERC20Upgradeable(_token).balanceOf(address(this));
+            uint256 _balance = IERC20(_token).balanceOf(address(this));
             uint256 _unneededBalance = _balance;
             if (_expired) {
                 _collateral.amount = _collateral.minimumPayout;
@@ -482,13 +491,13 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
                 _unneededBalance -= _collateral.amount;
             }
             if (_unneededBalance == 0) revert NothingToRecover();
-            IERC20Upgradeable(_token).safeTransfer(_receiver, _unneededBalance);
+            IERC20(_token).safeTransfer(_receiver, _unneededBalance);
             emit RecoverERC20(_token, _unneededBalance, _receiver);
             return;
         }
-        uint256 _reimbursement = IERC20Upgradeable(_token).balanceOf(address(this));
+        uint256 _reimbursement = IERC20(_token).balanceOf(address(this));
         if (_reimbursement == 0) revert NothingToRecover();
-        IERC20Upgradeable(_token).safeTransfer(_receiver, _reimbursement);
+        IERC20(_token).safeTransfer(_receiver, _reimbursement);
         emit RecoverERC20(_token, _reimbursement, _receiver);
     }
 
@@ -518,7 +527,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
                 ) / _initialSupply;
                 _collateral.amount -= _redeemableAmount;
             }
-            IERC20Upgradeable(_collateralAddress).safeTransfer(_receiver, _redeemableAmount);
+            IERC20(_collateralAddress).safeTransfer(_receiver, _redeemableAmount);
         }
         emit Redeem(msg.sender, _kpiTokenBalance);
     }
@@ -558,7 +567,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
         }
         if (_redeemableAmount == 0) revert Forbidden();
         _collateral.redeemedBy[msg.sender] += _redeemableAmount;
-        IERC20Upgradeable(_token).safeTransfer(_receiver, _redeemableAmount);
+        IERC20(_token).safeTransfer(_receiver, _redeemableAmount);
         emit RedeemCollateral(msg.sender, _receiver, _token, _redeemableAmount);
     }
 
