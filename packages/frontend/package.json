@@ -67,7 +67,7 @@
         "@types/sanitize-html": "^2.9.3",
         "autoprefixer": "^10.4.16",
         "buffer": "^6.0.3",
-        "carrot-scripts": "^0.22.16",
+        "carrot-scripts": "^0.22.17",
         "class-variance-authority": "^0.7.0",
         "css-loader": "^6.8.1",
         "cssnano": "^6.0.1",

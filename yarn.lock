@@ -1110,7 +1110,7 @@
     react-use "^17.4.0"
     viem "^1.15.3"
 
-"@carrot-kpi/sdk@*", "@carrot-kpi/sdk@^1.34.0", "@carrot-kpi/sdk@^1.43.1":
+"@carrot-kpi/sdk@*", "@carrot-kpi/sdk@^1.43.1":
   version "1.43.1"
   resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.43.1.tgz#c5266c039202b37b91febc7603906d26e4dbae39"
   integrity sha512-g0Z867RRXOkTGm9pwMXR6iI2r11SArwc55KoJxsuoglEsizKuTWiotZZUWM3uQE7Uyycc41rcvuBuXSDJhl+gQ==
@@ -4907,25 +4907,10 @@ caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001538, caniuse-lite@^1.0.30001541:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001551.tgz#1f2cfa8820bd97c971a57349d7fd8f6e08664a3e"
   integrity sha512-vtBAez47BoGMMzlbYhfXrMV1kvRF2WP/lqiMuDu1Sb4EE4LKEgjopFDSRtZfdVnslNRpOqV/woE+Xgrwj6VQlg==
 
-carrot-scripts@^0.22.15:
-  version "0.22.15"
-  resolved "https://registry.yarnpkg.com/carrot-scripts/-/carrot-scripts-0.22.15.tgz#7c57bfc1a75bed9752185df9a052a1fd8a08380f"
-  integrity sha512-vLnFllHiNZx6sbDsLtULQW19mlw58p6Uwj41xAOwUP5TZLCy0uFT0p0JhEdBQrGSDu6H3TOkgM5GDZVVxK/o3Q==
-  dependencies:
-    "@carrot-kpi/ganache" "^0.2.0"
-    "@carrot-kpi/sdk" "^1.34.0"
-    chalk "^5.3.0"
-    ethers "5"
-    execa "^8.0.1"
-    ipfs-http-client "^60.0.1"
-    ora "^7.0.1"
-    tsconfig "*"
-    viem "^1.9.2"
-
-carrot-scripts@^0.22.16:
-  version "0.22.16"
-  resolved "https://registry.yarnpkg.com/carrot-scripts/-/carrot-scripts-0.22.16.tgz#cb4306f7080db5831876c8ebfda7a6cf8b0018cf"
-  integrity sha512-IyhL50QcTWITaNMdk30wx2odnrBd7C7M3VCpjlje/TWMeqeWxmQMXXezfz+gkRV6oODqfxZmCpV+bpGXc8x1+Q==
+carrot-scripts@^0.22.17:
+  version "0.22.17"
+  resolved "https://registry.yarnpkg.com/carrot-scripts/-/carrot-scripts-0.22.17.tgz#8632ab19473f8f40c535570a911cb2b344dbefec"
+  integrity sha512-drP6mThL2LaYQdWkEfy4yhiIIiTBOMiE9wZqGRpbheLxYzXmIo+4JZCdsU2jiKeWriJCkEu44TvqvAwChBamtg==
   dependencies:
     "@carrot-kpi/ganache" "^0.2.0"
     "@carrot-kpi/sdk" "^1.43.1"
@@ -12361,7 +12346,7 @@ vary@~1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-viem@^1.0.0, viem@^1.15.3, viem@^1.16.6, viem@^1.9.2:
+viem@^1.0.0, viem@^1.15.3, viem@^1.16.6:
   version "1.16.6"
   resolved "https://registry.yarnpkg.com/viem/-/viem-1.16.6.tgz#78118c9269506a59e2bc4deab13f1646e113d3fc"
   integrity sha512-jcWcFQ+xzIfDwexwPJRvCuCRJKEkK9iHTStG7mpU5MmuSBpACs4nATBDyXNFtUiyYTFzLlVEwWkt68K0nCSImg==
