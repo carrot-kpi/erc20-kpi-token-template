@@ -1,7 +1,120 @@
 export default [
     {
+        inputs: [
+            {
+                internalType: "address",
+                name: "target",
+                type: "address",
+            },
+        ],
+        name: "AddressEmptyCode",
+        type: "error",
+    },
+    {
+        inputs: [
+            {
+                internalType: "address",
+                name: "account",
+                type: "address",
+            },
+        ],
+        name: "AddressInsufficientBalance",
+        type: "error",
+    },
+    {
         inputs: [],
         name: "DuplicatedCollateral",
+        type: "error",
+    },
+    {
+        inputs: [
+            {
+                internalType: "address",
+                name: "spender",
+                type: "address",
+            },
+            {
+                internalType: "uint256",
+                name: "allowance",
+                type: "uint256",
+            },
+            {
+                internalType: "uint256",
+                name: "needed",
+                type: "uint256",
+            },
+        ],
+        name: "ERC20InsufficientAllowance",
+        type: "error",
+    },
+    {
+        inputs: [
+            {
+                internalType: "address",
+                name: "sender",
+                type: "address",
+            },
+            {
+                internalType: "uint256",
+                name: "balance",
+                type: "uint256",
+            },
+            {
+                internalType: "uint256",
+                name: "needed",
+                type: "uint256",
+            },
+        ],
+        name: "ERC20InsufficientBalance",
+        type: "error",
+    },
+    {
+        inputs: [
+            {
+                internalType: "address",
+                name: "approver",
+                type: "address",
+            },
+        ],
+        name: "ERC20InvalidApprover",
+        type: "error",
+    },
+    {
+        inputs: [
+            {
+                internalType: "address",
+                name: "receiver",
+                type: "address",
+            },
+        ],
+        name: "ERC20InvalidReceiver",
+        type: "error",
+    },
+    {
+        inputs: [
+            {
+                internalType: "address",
+                name: "sender",
+                type: "address",
+            },
+        ],
+        name: "ERC20InvalidSender",
+        type: "error",
+    },
+    {
+        inputs: [
+            {
+                internalType: "address",
+                name: "spender",
+                type: "address",
+            },
+        ],
+        name: "ERC20InvalidSpender",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "FailedInnerCall",
         type: "error",
     },
     {
@@ -32,6 +145,11 @@ export default [
     {
         inputs: [],
         name: "InvalidFeeReceiver",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "InvalidInitialization",
         type: "error",
     },
     {
@@ -101,12 +219,33 @@ export default [
     },
     {
         inputs: [],
+        name: "NotInitializing",
+        type: "error",
+    },
+    {
+        inputs: [],
         name: "NothingToRecover",
         type: "error",
     },
     {
         inputs: [],
         name: "NothingToRedeem",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "ReentrancyGuardReentrantCall",
+        type: "error",
+    },
+    {
+        inputs: [
+            {
+                internalType: "address",
+                name: "token",
+                type: "address",
+            },
+        ],
+        name: "SafeERC20FailedOperation",
         type: "error",
     },
     {
@@ -186,26 +325,56 @@ export default [
     },
     {
         anonymous: false,
-        inputs: [
-            {
-                indexed: true,
-                internalType: "address",
-                name: "oracle",
-                type: "address",
-            },
-            {
-                indexed: false,
-                internalType: "uint256",
-                name: "result",
-                type: "uint256",
-            },
-        ],
+        inputs: [],
         name: "Finalize",
         type: "event",
     },
     {
         anonymous: false,
-        inputs: [],
+        inputs: [
+            {
+                indexed: true,
+                internalType: "address",
+                name: "creator",
+                type: "address",
+            },
+            {
+                indexed: false,
+                internalType: "uint256",
+                name: "creationTimestamp",
+                type: "uint256",
+            },
+            {
+                indexed: true,
+                internalType: "uint256",
+                name: "templateId",
+                type: "uint256",
+            },
+            {
+                indexed: true,
+                internalType: "uint128",
+                name: "templateVersion",
+                type: "uint128",
+            },
+            {
+                indexed: false,
+                internalType: "string",
+                name: "description",
+                type: "string",
+            },
+            {
+                indexed: false,
+                internalType: "uint256",
+                name: "expiration",
+                type: "uint256",
+            },
+            {
+                indexed: false,
+                internalType: "address[]",
+                name: "oracles",
+                type: "address[]",
+            },
+        ],
         name: "Initialize",
         type: "event",
     },
@@ -214,9 +383,9 @@ export default [
         inputs: [
             {
                 indexed: false,
-                internalType: "uint8",
+                internalType: "uint64",
                 name: "version",
-                type: "uint8",
+                type: "uint64",
             },
         ],
         name: "Initialized",
@@ -228,7 +397,7 @@ export default [
             {
                 indexed: true,
                 internalType: "address",
-                name: "oldOwner",
+                name: "previousOwner",
                 type: "address",
             },
             {
@@ -393,7 +562,7 @@ export default [
             },
             {
                 internalType: "uint256",
-                name: "amount",
+                name: "value",
                 type: "uint256",
             },
         ],
@@ -467,30 +636,6 @@ export default [
         type: "function",
     },
     {
-        inputs: [
-            {
-                internalType: "address",
-                name: "spender",
-                type: "address",
-            },
-            {
-                internalType: "uint256",
-                name: "subtractedValue",
-                type: "uint256",
-            },
-        ],
-        name: "decreaseAllowance",
-        outputs: [
-            {
-                internalType: "bool",
-                name: "",
-                type: "bool",
-            },
-        ],
-        stateMutability: "nonpayable",
-        type: "function",
-    },
-    {
         inputs: [],
         name: "description",
         outputs: [
@@ -540,30 +685,6 @@ export default [
             },
         ],
         stateMutability: "view",
-        type: "function",
-    },
-    {
-        inputs: [
-            {
-                internalType: "address",
-                name: "spender",
-                type: "address",
-            },
-            {
-                internalType: "uint256",
-                name: "addedValue",
-                type: "uint256",
-            },
-        ],
-        name: "increaseAllowance",
-        outputs: [
-            {
-                internalType: "bool",
-                name: "",
-                type: "bool",
-            },
-        ],
-        stateMutability: "nonpayable",
         type: "function",
     },
     {
@@ -796,7 +917,7 @@ export default [
             },
             {
                 internalType: "uint256",
-                name: "amount",
+                name: "value",
                 type: "uint256",
             },
         ],
@@ -825,7 +946,7 @@ export default [
             },
             {
                 internalType: "uint256",
-                name: "amount",
+                name: "value",
                 type: "uint256",
             },
         ],
