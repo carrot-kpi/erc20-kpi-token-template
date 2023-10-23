@@ -89,7 +89,7 @@ export const Component = ({
 
     if (!kpiToken) {
         return (
-            <div className="bg-orange py-10 text-black flex justify-center">
+            <div className="h-screen py-20 bg-orange text-black flex justify-center">
                 <Loader />
             </div>
         );
