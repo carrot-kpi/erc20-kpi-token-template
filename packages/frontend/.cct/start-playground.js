@@ -107,6 +107,9 @@ export const startPlayground = async (
                 CCT_TEMPLATE_URL: JSON.stringify(
                     `http://localhost:${templatePort}`,
                 ),
+                STAGING_MODE: JSON.stringify(
+                    process.env.STAGING_MODE === "true",
+                ),
             }),
             new webpack.container.ModuleFederationPlugin({
                 name: "host",
