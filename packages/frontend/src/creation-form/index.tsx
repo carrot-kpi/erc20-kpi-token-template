@@ -99,6 +99,12 @@ export const Component = ({
     }, [connectedAddress]);
 
     useEffect(() => {
+        const bodyElement = window.document.getElementById("__app_body");
+        if (!bodyElement) return;
+        bodyElement.scrollIntoView();
+    }, [step]);
+
+    useEffect(() => {
         if (oracleTemplates.length === 1 && oracleTemplatesData.length === 0)
             setOracleTemplatesData([oracleTemplates[0]]);
     }, [oracleTemplates, oracleTemplatesData.length]);
