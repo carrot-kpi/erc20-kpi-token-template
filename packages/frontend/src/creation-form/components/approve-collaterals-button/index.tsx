@@ -125,6 +125,7 @@ export const ApproveCollateralsButton = ({
 
     return (
         <Button
+            size="small"
             onClick={handleClick}
             disabled={!approvingCollateral || !approveAsync}
             loading={approving}

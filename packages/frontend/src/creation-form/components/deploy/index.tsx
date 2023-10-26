@@ -18,7 +18,7 @@ import {
     usePublicClient,
 } from "wagmi";
 import type { CollateralData, OracleData, TokenData } from "../../types";
-import { Button, ErrorText, Typography } from "@carrot-kpi/ui";
+import { Button, ErrorText } from "@carrot-kpi/ui";
 import {
     type KPITokenCreationFormProps,
     type NamespacedTranslateFunction,
@@ -33,7 +33,6 @@ import {
     Template,
 } from "@carrot-kpi/sdk";
 import { CollateralsTable } from "../collaterals/table";
-import { ReactComponent as Info } from "../../../assets/info.svg";
 import {
     encodeKPITokenData,
     encodeOraclesData,
@@ -261,31 +260,25 @@ export const Deploy = ({
                     collaterals={collateralsData}
                     noEdit
                 />
-                <div className="w-full rounded-xxl flex items-center gap-4 border border-gray-600 p-3">
-                    <Info className="w-6 h-6 text-gray-600" />
-                    <Typography
-                        variant="sm"
-                        className={{ root: "flex-1 text-gray-600" }}
-                    >
-                        {t("info.approve")}
-                    </Typography>
+                <div className="h-px w-full bg-black" />
+                <div className="flex justify-center">
+                    <ApproveCollateralsButton
+                        t={t}
+                        toApprove={toApprove}
+                        spender={predictedKPITokenAddress as Address}
+                        onApproved={handleApproved}
+                        onTx={onTx}
+                    />
                 </div>
-                <ApproveCollateralsButton
-                    t={t}
-                    toApprove={toApprove}
-                    spender={predictedKPITokenAddress as Address}
-                    onApproved={handleApproved}
-                    onTx={onTx}
-                />
             </div>
-            <div className="flex justify-between gap-3 items-start">
+            <div className="flex flex-col gap-3 items-center">
                 <Button
                     size="small"
                     onClick={handleCreate}
                     disabled={!writeAsync}
                     loading={loading || loadingTxConfig || fetchingTxConfig}
                 >
-                    {t("label.create")}
+                    {t("label.deploy")}
                 </Button>
                 {isError && !!error && (
                     <ErrorText>
