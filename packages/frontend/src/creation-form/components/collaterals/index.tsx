@@ -207,7 +207,7 @@ export const Collaterals = ({
         // executed in dev mode in the context of another template
         // being tested. In short, the following branch should NEVER
         // be present in a prod bundle
-        if (__DEV__) {
+        if (__PLAYGROUND__) {
             defaultSelectedList.tokens.push({
                 chainId: CCT_CHAIN_ID,
                 address: CCT_ERC20_1_ADDRESS,

@@ -38,9 +38,14 @@ const main = async () => {
                     "creationForm",
                     {},
                     outDir,
-                    prodMode,
+                    prodMode ? "prod" : "dev",
                 ),
-                getTemplateComponentWebpackConfig("page", {}, outDir, prodMode),
+                getTemplateComponentWebpackConfig(
+                    "page",
+                    {},
+                    outDir,
+                    prodMode ? "prod" : "dev",
+                ),
             ],
             (error, stats) => {
                 if (error) {

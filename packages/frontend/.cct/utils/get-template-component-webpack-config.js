@@ -15,15 +15,22 @@ hash.update(Date.now().toString());
 
 const UNIQUE_ID = `carrot-template-${hash.digest("hex").slice(0, 32)}`;
 
+const TYPES = ["page", "creationForm"];
+const MODES = ["prod", "dev", "playground"];
+
 export const getTemplateComponentWebpackConfig = (
     type,
     globals,
     outDir,
-    prodMode,
+    mode,
 ) => {
-    if (type !== "page" && type !== "creationForm")
-        throw new Error("type must either be creationForm or page");
+    if (!TYPES.includes(type))
+        throw new Error("invalid type, must be on of:", TYPES.join(", "));
 
+    if (!MODES.includes(mode))
+        throw new Error("invalid mode, must be one of:", MODES.join(", "));
+
+    const prodMode = mode === "prod";
     return {
         mode: !!prodMode ? "production" : "development",
         target: "browserslist",
@@ -111,7 +118,7 @@ export const getTemplateComponentWebpackConfig = (
             new webpack.DefinePlugin({
                 ...globals,
                 __ROOT_ID__: JSON.stringify(UNIQUE_ID),
-                __DEV__: JSON.stringify(!!!prodMode),
+                __PLAYGROUND__: JSON.stringify(mode === "playground"),
             }),
             new MiniCssExtractPlugin(),
             new webpack.container.ModuleFederationPlugin({
