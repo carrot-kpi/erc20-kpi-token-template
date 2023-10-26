@@ -37,7 +37,7 @@ export const getTemplateComponentWebpackConfig = (
         entry: join(__dirname, "../../src"),
         output: {
             publicPath: "auto",
-            clean: true,
+            clean: false,
             ...(!!outDir ? { path: outDir } : {}),
             uniqueName: UNIQUE_ID,
         },
