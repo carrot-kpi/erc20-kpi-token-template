@@ -14,6 +14,7 @@ import { parseUnits } from "viem";
 type CollateralRowProps = CollateralData & {
     t: NamespacedTranslateFunction;
     index: number;
+    noFees?: boolean;
     noEdit?: boolean;
     onRemove?: (index: number) => void;
 };
@@ -21,6 +22,7 @@ type CollateralRowProps = CollateralData & {
 export const CollateralRow = ({
     t,
     index,
+    noFees,
     noEdit,
     onRemove,
     amount,
@@ -85,41 +87,43 @@ export const CollateralRow = ({
                 />
                 <Typography>{token.symbol}</Typography>
             </div>
-            <Popover
-                anchor={anchorRef.current}
-                open={feeSplitPopoverOpen}
-                className={{ root: "p-3 flex flex-col gap-2" }}
-            >
-                <div className="flex gap-3 justify-between">
-                    <Typography variant="sm">
-                        {t("label.collateral.picker.fee")}
-                    </Typography>
-                    <Typography variant="sm">
-                        {PROTOCOL_FEE_BPS / 100}%
-                    </Typography>
-                </div>
-                <div className="w-full h-[1px] bg-black dark:bg-white" />
-                <div className="flex gap-3 justify-between">
-                    <Typography variant="sm">
-                        {t("label.collateral.table.amount")}
-                    </Typography>
-                    <Typography variant="sm">{formattedAmount}</Typography>
-                </div>
-                <div className="flex gap-3 justify-between">
-                    <Typography variant="sm">
-                        {t("label.collateral.table.amount.after.fees")}
-                    </Typography>
-                    <Typography variant="sm">
-                        {formattedAmountAfterFees}
-                    </Typography>
-                </div>
-            </Popover>
+            {!noFees && (
+                <Popover
+                    anchor={anchorRef.current}
+                    open={feeSplitPopoverOpen}
+                    className={{ root: "p-3 flex flex-col gap-2" }}
+                >
+                    <div className="flex gap-3 justify-between">
+                        <Typography variant="sm">
+                            {t("label.collateral.picker.fee")}
+                        </Typography>
+                        <Typography variant="sm">
+                            {PROTOCOL_FEE_BPS / 100}%
+                        </Typography>
+                    </div>
+                    <div className="w-full h-[1px] bg-black dark:bg-white" />
+                    <div className="flex gap-3 justify-between">
+                        <Typography variant="sm">
+                            {t("label.collateral.table.amount")}
+                        </Typography>
+                        <Typography variant="sm">{formattedAmount}</Typography>
+                    </div>
+                    <div className="flex gap-3 justify-between">
+                        <Typography variant="sm">
+                            {t("label.collateral.table.amount.after.fees")}
+                        </Typography>
+                        <Typography variant="sm">
+                            {formattedAmountAfterFees}
+                        </Typography>
+                    </div>
+                </Popover>
+            )}
             <div
                 onMouseEnter={handleFeeSplitPopoverOpen}
                 onMouseLeave={handleFeeSplitPopoverClose}
             >
                 <Typography ref={anchorRef} className={{ root: "text-center" }}>
-                    {formattedAmountAfterFees}
+                    {noFees ? formattedAmount : formattedAmountAfterFees}
                 </Typography>
             </div>
             <Typography className={{ root: "text-right" }}>

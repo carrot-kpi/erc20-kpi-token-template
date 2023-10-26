@@ -18,7 +18,7 @@ import {
     usePublicClient,
 } from "wagmi";
 import type { CollateralData, OracleData, TokenData } from "../../types";
-import { Button, ErrorText } from "@carrot-kpi/ui";
+import { Button, ErrorText, Typography } from "@carrot-kpi/ui";
 import {
     type KPITokenCreationFormProps,
     type NamespacedTranslateFunction,
@@ -41,6 +41,7 @@ import { ApproveCollateralsButton } from "../approve-collaterals-button";
 import { unixTimestamp } from "../../../utils/dates";
 import { getKPITokenAddressFromReceipt } from "../../../utils/logs";
 import { zeroAddress } from "viem";
+import { PROTOCOL_FEE_BPS } from "../../constants";
 
 type Assert = (data: OracleData[]) => asserts data is Required<OracleData>[];
 export const assertRequiredOraclesData: Assert = (data) => {
@@ -260,6 +261,13 @@ export const Deploy = ({
                     collaterals={collateralsData}
                     noEdit
                 />
+                <div className="h-px w-full bg-black" />
+                <div className="flex items-center justify-between">
+                    <Typography>{t("label.collateral.picker.fee")}</Typography>
+                    <Typography className={{ root: "text-right" }}>
+                        {PROTOCOL_FEE_BPS / 100}%
+                    </Typography>
+                </div>
                 <div className="h-px w-full bg-black" />
                 <div className="flex justify-center">
                     <ApproveCollateralsButton

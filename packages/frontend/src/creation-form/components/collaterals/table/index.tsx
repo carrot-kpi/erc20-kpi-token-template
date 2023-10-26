@@ -25,12 +25,14 @@ interface CollateralsTableProps {
     t: NamespacedTranslateFunction;
     onRemove?: (index: number) => void;
     collaterals: CollateralData[];
+    noFees?: boolean;
     noEdit?: boolean;
     noBorder?: boolean;
 }
 
 export const CollateralsTable = ({
     t,
+    noFees,
     noEdit,
     noBorder = false,
     onRemove,
@@ -73,6 +75,7 @@ export const CollateralsTable = ({
                         return (
                             <CollateralRow
                                 t={t}
+                                noFees={noFees}
                                 noEdit={noEdit}
                                 key={collateral.amount.currency.address}
                                 index={index}

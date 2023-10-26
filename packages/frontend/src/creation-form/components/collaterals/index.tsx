@@ -29,14 +29,7 @@ import {
     type NumberFormatValue,
     TokenWithLogoURI,
 } from "../../types";
-import {
-    Amount,
-    ERC20_ABI,
-    Service,
-    Token,
-    formatCurrencyAmount,
-    getServiceURL,
-} from "@carrot-kpi/sdk";
+import { Amount, ERC20_ABI, Service, getServiceURL } from "@carrot-kpi/sdk";
 import {
     type Address,
     useAccount,
@@ -103,7 +96,6 @@ export const Collaterals = ({
         useState("");
     const [minimumPayoutErrorMessage, setMinimumPayoutErrorMessage] =
         useState("");
-    const [protocolFeeAmount, setProtocolFeeAmount] = useState("");
 
     // fetch picked erc20 token balance
     const { data, isLoading } = useBalance({
@@ -270,30 +262,6 @@ export const Collaterals = ({
         state.pickerMinimumPayout,
         state.pickerToken,
     ]);
-
-    useEffect(() => {
-        if (
-            !state.pickerToken ||
-            !state.pickerAmount ||
-            !state.pickerAmount.value
-        )
-            return;
-        const parsedRawAmount = parseFloat(state.pickerAmount.formattedValue);
-        if (isNaN(parsedRawAmount)) return;
-        setProtocolFeeAmount(
-            formatCurrencyAmount({
-                amount: new Amount(
-                    state.pickerToken as unknown as Token,
-                    parseUnits(
-                        ((parsedRawAmount * PROTOCOL_FEE_BPS) / 10_000).toFixed(
-                            state.pickerToken.decimals,
-                        ) as `${number}`,
-                        state.pickerToken.decimals,
-                    ),
-                ),
-            }),
-        );
-    }, [state.pickerToken, state.pickerAmount]);
 
     const handleOpenERC20TokenPicker = useCallback((): void => {
         setTokenPickerOpen(true);
@@ -613,22 +581,6 @@ export const Collaterals = ({
                                         />
                                     </div>
                                 </div>
-
-                                <div className="h-px w-full bg-black" />
-
-                                <div className="flex items-center justify-between">
-                                    <Typography>
-                                        {t("label.collateral.picker.fee")}
-                                    </Typography>
-                                    <Typography
-                                        className={{ root: "text-right" }}
-                                    >
-                                        {PROTOCOL_FEE_BPS / 100}%{" "}
-                                        {protocolFeeAmount &&
-                                            state.pickerToken &&
-                                            `(${protocolFeeAmount})`}
-                                    </Typography>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -661,6 +613,7 @@ export const Collaterals = ({
                 </div>
                 <CollateralsTable
                     t={t}
+                    noFees
                     collaterals={state.collaterals}
                     onRemove={handleRemoveCollateral}
                 />
