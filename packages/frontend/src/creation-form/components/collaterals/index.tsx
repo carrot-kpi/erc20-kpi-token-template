@@ -280,7 +280,10 @@ export const Collaterals = ({
                 ...state,
                 pickerToken: newSelectedToken,
                 pickerAmount: DEFAULT_NUMBER_FORMAT_VALUE,
-                pickerMinimumPayout: DEFAULT_NUMBER_FORMAT_VALUE,
+                pickerMinimumPayout: {
+                    formattedValue: "0",
+                    value: "0",
+                },
             });
             setCollateralAmountErrorMessage("");
             setMinimumPayoutErrorMessage("");
