@@ -471,7 +471,7 @@ export const Collaterals = ({
                                 <div className="flex justify-between items-center">
                                     <div
                                         onClick={handleOpenERC20TokenPicker}
-                                        className="cursor-pointer"
+                                        className="cursor-pointer w-3/4"
                                     >
                                         <TextInput
                                             label=""

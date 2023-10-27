@@ -34,9 +34,9 @@
     "redeem": "Redeem",
     "burn": "Burn",
     "recover": "Recover",
-    "collaterals.label": "Collaterals",
-    "collaterals.recover": "As the owner of the KPI token, you have the ability to recover any surplus ERC20 collaterals that are no longer required.",
-    "collaterals.recover.label": "Pick a collateral",
+    "collaterals.label": "Rewards",
+    "collaterals.recover": "As the owner of the KPI token, you have the ability to recover any surplus ERC20 rewards that are no longer required.",
+    "collaterals.recover.label": "Pick a reward",
     "error.initializing.oraclePage.title": "Something went wrong",
     "error.initializing.oraclePage.description": "Error while bootstrapping the Reality oracle page, please try again later."
 }
