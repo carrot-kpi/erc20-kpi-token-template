@@ -7,7 +7,7 @@ import type {
 
 interface SuccessProps {
     t: NamespacedTranslateFunction;
-    navigate: KPITokenCreationFormProps["navigate"];
+    navigate: KPITokenCreationFormProps<object>["navigate"];
     kpiTokenAddress: string;
 }
 

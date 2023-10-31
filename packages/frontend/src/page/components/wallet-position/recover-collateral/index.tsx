@@ -9,10 +9,7 @@ import {
     type Token,
 } from "@carrot-kpi/sdk";
 import { Button, Select, Typography, type SelectOption } from "@carrot-kpi/ui";
-import type {
-    CollateralData,
-    OptionForCollateral,
-} from "../../../../creation-form/types";
+import type { CollateralData } from "../../../types";
 import ERC20_KPI_TOKEN_ABI from "../../../../abis/erc20-kpi-token";
 import { type Address, zeroAddress, formatUnits } from "viem";
 import {
@@ -24,8 +21,12 @@ import {
 } from "wagmi";
 import { useCallback, useMemo, useState } from "react";
 import { getRecoverableRewards } from "../../../../utils/collaterals";
-import { unixTimestamp } from "../../../../utils/dates";
+import { dateToUnixTimestamp } from "../../../../utils/dates";
 import { TokenAmount } from "../../token-amount";
+
+interface RewardOption extends SelectOption<Address> {
+    amount: Amount<Token>;
+}
 
 interface RecoverCollateralProps {
     t: NamespacedTranslateFunction;
@@ -65,7 +66,7 @@ export const RecoverCollateral = ({
     });
     const { writeAsync: recoverAsync } = useContractWrite(recoverConfig);
 
-    const collateralOptions: OptionForCollateral[] = useMemo(() => {
+    const collateralOptions: RewardOption[] = useMemo(() => {
         if (!collaterals || !kpiTokenCollateralBalances) return [];
         return getRecoverableRewards(
             collaterals,
@@ -106,7 +107,7 @@ export const RecoverCollateral = ({
                     blockNumber: Number(receipt.blockNumber),
                     status: receipt.status === "success" ? 1 : 0,
                 },
-                timestamp: unixTimestamp(new Date()),
+                timestamp: dateToUnixTimestamp(new Date()),
             });
             setCollateralToRecover(null);
         } catch (error) {
@@ -134,7 +135,7 @@ export const RecoverCollateral = ({
                         value={collateralToRecover}
                         renderOption={(value) => (
                             <TokenAmount
-                                amount={(value as OptionForCollateral).amount}
+                                amount={(value as RewardOption).amount}
                             />
                         )}
                     />

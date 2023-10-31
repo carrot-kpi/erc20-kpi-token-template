@@ -1,44 +1,52 @@
 import { ErrorFeedback, Loader } from "@carrot-kpi/ui";
 import { Template } from "@carrot-kpi/sdk";
-import { OracleCreationFormWrapper } from "../oracle-creation-form-wrapper";
 import {
     type NamespacedTranslateFunction,
     type OracleCreationFormProps as ReactOracleCreationFormProps,
     type OracleInitializationBundleGetter,
     useResolvedTemplate,
+    OracleCreationForm,
 } from "@carrot-kpi/react";
-import type { OraclesConfigurationStepState } from "../../../types";
+import { useCallback } from "react";
 
-interface OracleCreationFormProps {
-    t: NamespacedTranslateFunction;
-    i18n: ReactOracleCreationFormProps<unknown>["i18n"];
-    navigate: ReactOracleCreationFormProps<unknown>["navigate"];
-    onTx: ReactOracleCreationFormProps<unknown>["onTx"];
-    kpiToken: ReactOracleCreationFormProps<unknown>["kpiToken"];
+interface SingleOracleCreationFormProps
+    extends Omit<
+        ReactOracleCreationFormProps<object>,
+        "template" | "onChange" | "error" | "fallback"
+    > {
     onChange: (
         templateId: number,
-        state: Partial<unknown>,
+        state: object,
         initializationBundleGetter?: OracleInitializationBundleGetter,
     ) => void;
     template: Template;
-    data: OraclesConfigurationStepState;
+    state: object;
+    index: number;
+    t: NamespacedTranslateFunction;
 }
 
-export const OracleCreationForm = ({
-    t,
-    i18n,
-    navigate,
-    onTx,
-    kpiToken,
+export const SingleOracleCreationForm = ({
     onChange,
-    data,
     template,
-}: OracleCreationFormProps) => {
+    state,
+    t,
+    index,
+    ...rest
+}: SingleOracleCreationFormProps) => {
     const { resolvedTemplate } = useResolvedTemplate({ template });
 
+    const handleChange = useCallback(
+        (
+            state: object,
+            initializationBundleGetter?: OracleInitializationBundleGetter,
+        ) => {
+            onChange(index, state, initializationBundleGetter);
+        },
+        [onChange, index],
+    );
+
     return (
-        <OracleCreationFormWrapper
-            i18n={i18n}
+        <OracleCreationForm
             fallback={
                 <div className="w-full flex justify-center">
                     <Loader />
@@ -57,13 +65,9 @@ export const OracleCreationForm = ({
                 </div>
             }
             template={resolvedTemplate || undefined}
-            state={
-                resolvedTemplate ? data[resolvedTemplate.id]?.state || {} : {}
-            }
-            kpiToken={kpiToken}
-            onChange={onChange}
-            navigate={navigate}
-            onTx={onTx}
+            state={state}
+            onChange={handleChange}
+            {...rest}
         />
     );
 };

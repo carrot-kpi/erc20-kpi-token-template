@@ -1,76 +1,66 @@
 import {
     type ReactElement,
     useCallback,
-    useEffect,
-    useLayoutEffect,
     useMemo,
     useState,
+    useEffect,
 } from "react";
 import {
     type Address,
-    erc20ABI,
     useAccount,
     useNetwork,
     useContractRead,
-    useContractReads,
     useContractWrite,
     usePrepareContractWrite,
     usePublicClient,
 } from "wagmi";
-import type { CollateralData, OracleData, TokenData } from "../../types";
+import type {
+    OracleWithInitializationBundle,
+    OracleWithInitializationBundleGetter,
+    State,
+} from "../../types";
 import { Button, ErrorText, Typography } from "@carrot-kpi/ui";
 import {
     type KPITokenCreationFormProps,
     type NamespacedTranslateFunction,
     TxType,
     useDevMode,
+    useDecentralizedStorageUploader,
 } from "@carrot-kpi/react";
 import {
     CHAIN_ADDRESSES,
     ChainId,
     FACTORY_ABI,
     KPI_TOKENS_MANAGER_ABI,
-    Template,
+    ResolvedTemplate,
+    type KPITokenSpecification,
 } from "@carrot-kpi/sdk";
-import { CollateralsTable } from "../collaterals/table";
 import { ReactComponent as Info } from "../../../assets/info.svg";
 import {
     encodeKPITokenData,
-    encodeOraclesData,
+    encodeOracleInitializationData,
 } from "../../utils/data-encoding";
-import { ApproveCollateralsButton } from "../approve-collaterals-button";
-import { unixTimestamp } from "../../../utils/dates";
 import { getKPITokenAddressFromReceipt } from "../../../utils/logs";
-import { zeroAddress } from "viem";
-
-type Assert = (data: OracleData[]) => asserts data is Required<OracleData>[];
-export const assertRequiredOraclesData: Assert = (data) => {
-    for (const item of data) if (!item.initializationBundle) throw new Error();
-};
+import { zeroAddress, type Hex } from "viem";
+import { dateToUnixTimestamp } from "../../../utils/dates";
+import { RewardsTable } from "../collaterals/table";
+import { ApproveRewards } from "../approve-rewards";
 
 interface DeployProps {
     t: NamespacedTranslateFunction;
-    templateId: number;
-    specificationCID: string;
-    expiration: Date;
-    tokenData: TokenData;
-    collateralsData: CollateralData[];
-    oracleTemplatesData: Template[];
-    oraclesData: Required<OracleData>[];
-    onNext: (address: string) => void;
-    onCreate: KPITokenCreationFormProps["onCreate"];
-    onTx: KPITokenCreationFormProps["onTx"];
+    template: ResolvedTemplate;
+    oraclesWithInitializationBundleGetter: OracleWithInitializationBundleGetter[];
+    state: State;
+    onNext: (createdKPITokenAddress: Address) => void;
+    onCreate: KPITokenCreationFormProps<State>["onCreate"];
+    onTx: KPITokenCreationFormProps<State>["onTx"];
 }
 
 export const Deploy = ({
     t,
-    templateId,
-    specificationCID,
-    expiration,
-    tokenData,
-    collateralsData,
-    oracleTemplatesData,
-    oraclesData,
+    template,
+    oraclesWithInitializationBundleGetter,
+    state,
     onNext,
     onCreate,
     onTx,
@@ -79,6 +69,14 @@ export const Deploy = ({
     const { chain } = useNetwork();
     const publicClient = usePublicClient();
     const devMode = useDevMode();
+    const uploadToDecentralizedStorage = useDecentralizedStorageUploader();
+
+    const [specificationCid, setSpecificationCid] = useState("");
+    const [kpiTokenInitializationData, setKPITokenInitializationData] =
+        useState<Hex>("0x");
+    const [oraclesInitializationData, setOraclesInitializationData] =
+        useState<Hex>("0x");
+    const [totalValue, setTotalValue] = useState(0n);
 
     const { factoryAddress, kpiTokensManagerAddress } = useMemo(() => {
         if (!chain)
@@ -95,59 +93,146 @@ export const Deploy = ({
             : { factoryAddress: undefined, kpiTokensManagerAddress: undefined };
     }, [chain]);
 
-    const { encodedOraclesData, encodedKPITokenData, totalValueRequired } =
-        useMemo(() => {
-            const { data: encodedOraclesData, totalValueRequired } =
-                encodeOraclesData(oracleTemplatesData, oraclesData);
-            return {
-                encodedOraclesData,
-                encodedKPITokenData: encodeKPITokenData(
-                    collateralsData,
-                    tokenData.name,
-                    tokenData.symbol,
-                    tokenData.supply,
-                ),
-                totalValueRequired,
-            };
-        }, [
-            collateralsData,
-            oracleTemplatesData,
-            oraclesData,
-            tokenData.name,
-            tokenData.supply,
-            tokenData.symbol,
-        ]);
+    // set kpi token and oracle initialization data
+    useEffect(() => {
+        let cancelled = false;
+        const getData = async () => {
+            if (
+                !state.oracles ||
+                state.oracles.length === 0 ||
+                !state.rewards ||
+                state.rewards.length === 0 ||
+                !state.tokenName ||
+                !state.tokenSymbol ||
+                !state.tokenSupply
+            ) {
+                if (!cancelled) {
+                    setKPITokenInitializationData("0x");
+                    setOraclesInitializationData("0x");
+                    setTotalValue(0n);
+                }
+                return;
+            }
+
+            if (!cancelled) setLoading(true);
+            try {
+                const oraclesWithInitializationBundle: OracleWithInitializationBundle[] =
+                    [];
+                for (const oracle of oraclesWithInitializationBundleGetter) {
+                    const initializationBundle =
+                        await oracle.getInitializationBundle();
+
+                    if (!initializationBundle) {
+                        console.warn(
+                            "no initialization bundle for oracle with template id",
+                            oracle.templateId,
+                        );
+                        if (!cancelled) {
+                            setKPITokenInitializationData("0x");
+                            setOraclesInitializationData("0x");
+                            setTotalValue(0n);
+                        }
+                        return;
+                    }
+
+                    oraclesWithInitializationBundle.push({
+                        ...oracle,
+                        initializationBundle,
+                    });
+                }
+
+                const { data: oraclesInitializationData, totalValueRequired } =
+                    encodeOracleInitializationData(
+                        oraclesWithInitializationBundle,
+                    );
+                const kpiTokenInitializationData = encodeKPITokenData(
+                    state.rewards,
+                    state.tokenName,
+                    state.tokenSymbol,
+                    BigInt(state.tokenSupply),
+                );
+
+                if (!cancelled) {
+                    setKPITokenInitializationData(kpiTokenInitializationData);
+                    setOraclesInitializationData(oraclesInitializationData);
+                    setTotalValue(totalValueRequired);
+                }
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        };
+        getData();
+        return () => {
+            cancelled = true;
+        };
+    }, [
+        oraclesWithInitializationBundleGetter,
+        state.oracles,
+        state.rewards,
+        state.tokenName,
+        state.tokenSupply,
+        state.tokenSymbol,
+    ]);
+
+    // upload specification to decentralized storage and get back the cid,
+    // but only after having set the kpi token and oracles initializiation data
+    useEffect(() => {
+        let cancelled = false;
+        const uploadAndGetSpecificationCid = async () => {
+            if (!state.title || !state.description || !state.tags) {
+                if (!cancelled) setSpecificationCid("");
+                return;
+            }
+
+            if (!cancelled) setLoading(true);
+            try {
+                const specification: KPITokenSpecification = {
+                    title: state.title,
+                    description: state.description,
+                    tags: state.tags,
+                };
+                const uploadedSpecificationCid =
+                    await uploadToDecentralizedStorage(
+                        JSON.stringify(specification),
+                    );
+                if (!cancelled) setSpecificationCid(uploadedSpecificationCid);
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        };
+        uploadAndGetSpecificationCid();
+        return () => {
+            cancelled = true;
+        };
+    }, [
+        state.description,
+        state.tags,
+        state.title,
+        uploadToDecentralizedStorage,
+    ]);
 
     const { data: predictedKPITokenAddress } = useContractRead({
         address: kpiTokensManagerAddress,
         abi: KPI_TOKENS_MANAGER_ABI,
         functionName: "predictInstanceAddress",
-        args: address && [
-            address,
-            BigInt(templateId),
-            specificationCID,
-            BigInt(unixTimestamp(expiration)),
-            encodedKPITokenData,
-            encodedOraclesData,
-        ],
-        enabled: !!address,
-    });
-    const { data: allowances } = useContractReads({
-        contracts:
-            address &&
-            predictedKPITokenAddress &&
-            collateralsData.map((collateralData) => {
-                return {
-                    address: collateralData.amount.currency.address,
-                    abi: erc20ABI,
-                    functionName: "allowance",
-                    args: [address, predictedKPITokenAddress],
-                };
-            }),
-        enabled: !!address && !!predictedKPITokenAddress,
+        args:
+            address && state.expiration
+                ? [
+                      address,
+                      BigInt(template.id),
+                      specificationCid,
+                      BigInt(state.expiration),
+                      kpiTokenInitializationData,
+                      oraclesInitializationData,
+                  ]
+                : undefined,
+        enabled:
+            !!address &&
+            !!specificationCid &&
+            kpiTokenInitializationData !== "0x" &&
+            oraclesInitializationData !== "0x",
     });
 
-    const [toApprove, setToApprove] = useState<CollateralData[]>([]);
     const [approved, setApproved] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -162,42 +247,28 @@ export const Deploy = ({
         address: factoryAddress,
         abi: FACTORY_ABI,
         functionName: "createToken",
-        args: [
-            BigInt(templateId),
-            specificationCID,
-            BigInt(unixTimestamp(expiration)),
-            encodedKPITokenData,
-            encodedOraclesData,
-        ],
-        enabled: !!chain?.id && approved,
-        value: totalValueRequired,
+        args: state.expiration
+            ? [
+                  BigInt(template.id),
+                  specificationCid,
+                  BigInt(state.expiration),
+                  kpiTokenInitializationData,
+                  oraclesInitializationData,
+              ]
+            : undefined,
+        enabled:
+            !!chain?.id &&
+            factoryAddress &&
+            approved &&
+            !!state.expiration &&
+            kpiTokenInitializationData !== "0x" &&
+            oraclesInitializationData !== "0x",
+        value: totalValue,
     });
     const { writeAsync } = useContractWrite(config);
 
-    useLayoutEffect(() => {
-        if (!allowances || allowances.length !== collateralsData.length) return;
-        const newToApprove = [];
-        for (let i = 0; i < collateralsData.length; i++) {
-            const collateralData = collateralsData[i];
-            if (
-                allowances[i]?.result === null ||
-                allowances[i]?.result === undefined
-            )
-                return;
-            if ((allowances[i].result as bigint) >= collateralData.amount.raw)
-                continue;
-            newToApprove.push(collateralData);
-        }
-        setToApprove(newToApprove);
-    }, [allowances, collateralsData]);
-
-    useEffect(() => {
-        if (!allowances || allowances.length !== collateralsData.length) return;
-        setApproved(toApprove.length === 0);
-    }, [allowances, collateralsData.length, toApprove.length]);
-
-    const handleApproved = useCallback(() => {
-        setToApprove([]);
+    const handleApprove = useCallback(() => {
+        setApproved(true);
     }, []);
 
     const handleCreate = useCallback(() => {
@@ -240,7 +311,7 @@ export const Deploy = ({
                         blockNumber: Number(receipt.blockNumber),
                         status: receipt.status === "success" ? 1 : 0,
                     },
-                    timestamp: unixTimestamp(new Date()),
+                    timestamp: dateToUnixTimestamp(new Date()),
                 });
                 onNext(createdKPITokenAddress);
             } catch (error) {
@@ -255,12 +326,7 @@ export const Deploy = ({
     return (
         <div className="flex flex-col gap-6">
             <div className="rounded-xxl w-full flex flex-col gap-6 border border-black p-4">
-                <CollateralsTable
-                    noBorder
-                    t={t}
-                    collaterals={collateralsData}
-                    noEdit
-                />
+                <RewardsTable noBorder t={t} rewards={state.rewards} noEdit />
                 <div className="w-full rounded-xxl flex items-center gap-4 border border-gray-600 p-3">
                     <Info className="w-6 h-6 text-gray-600" />
                     <Typography
@@ -270,11 +336,12 @@ export const Deploy = ({
                         {t("info.approve")}
                     </Typography>
                 </div>
-                <ApproveCollateralsButton
+                <ApproveRewards
                     t={t}
-                    toApprove={toApprove}
+                    rewards={state.rewards}
+                    owner={address}
                     spender={predictedKPITokenAddress as Address}
-                    onApproved={handleApproved}
+                    onApprove={handleApprove}
                     onTx={onTx}
                 />
             </div>

@@ -9,7 +9,7 @@ import {
     Typography,
 } from "@carrot-kpi/ui";
 import type { ReactElement } from "react";
-import type { CollateralData } from "../../../creation-form/types";
+import type { CollateralData } from "../../types";
 import { shortenAddress } from "../../../utils/address";
 import { CollateralRow } from "../collateral-row";
 import { TimeLeft } from "./time-left";

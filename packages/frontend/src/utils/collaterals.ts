@@ -1,5 +1,5 @@
 import { Amount, Token } from "@carrot-kpi/sdk";
-import type { CollateralData } from "../creation-form/types";
+import type { CollateralData } from "../page/types";
 import type { FinalizableOracle } from "../page/types";
 
 export const getGuaranteedRewards = (

@@ -10,7 +10,7 @@ module.exports = {
     theme: {
         extend: {
             gridTemplateColumns: {
-                collaterals: "1.8fr 1fr 1fr",
+                rewards: "1.8fr 1fr 1fr",
             },
         },
     },

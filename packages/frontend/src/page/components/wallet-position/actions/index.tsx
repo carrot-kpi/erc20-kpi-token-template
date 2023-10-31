@@ -20,7 +20,7 @@ import {
     usePublicClient,
     useNetwork,
 } from "wagmi";
-import { unixTimestamp } from "../../../../utils/dates";
+import { dateToUnixTimestamp } from "../../../../utils/dates";
 import { encodeAbiParameters, zeroAddress } from "viem";
 
 interface WalletActionsProps {
@@ -157,7 +157,7 @@ export const WalletActions = ({
                     blockNumber: Number(receipt.blockNumber),
                     status: receipt.status === "success" ? 1 : 0,
                 },
-                timestamp: unixTimestamp(new Date()),
+                timestamp: dateToUnixTimestamp(new Date()),
             });
         } catch (error) {
             console.error(`could not perform action`, error);

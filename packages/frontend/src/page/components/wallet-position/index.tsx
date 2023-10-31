@@ -19,7 +19,7 @@ import {
     useNetwork,
 } from "wagmi";
 import { mainnet } from "wagmi/chains";
-import type { CollateralData } from "../../../creation-form/types";
+import type { CollateralData } from "../../types";
 import {
     getGuaranteedRewards,
     getMaximumRewards,

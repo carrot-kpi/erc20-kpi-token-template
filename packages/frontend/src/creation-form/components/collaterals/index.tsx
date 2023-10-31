@@ -1,496 +1,241 @@
 import {
     Button,
-    ERC20TokenPicker,
     NumberInput,
     TextInput,
     Typography,
-    type TokenInfoWithBalance,
-    type TokenListWithBalance,
     NextStepButton,
     Skeleton,
     ErrorText,
+    type TokenInfoWithBalance,
+    type NumberFormatValues,
 } from "@carrot-kpi/ui";
-import {
-    type NamespacedTranslateFunction,
-    useTokenLists,
-    useDevMode,
-    useStagingMode,
-} from "@carrot-kpi/react";
-import {
-    type ReactElement,
-    useCallback,
-    useEffect,
-    useMemo,
-    useState,
-} from "react";
-import {
-    type CollateralData,
-    type CollateralsStepState,
-    type NumberFormatValue,
-    TokenWithLogoURI,
-} from "../../types";
-import {
-    Amount,
-    ERC20_ABI,
-    Service,
-    Token,
-    formatCurrencyAmount,
-    getServiceURL,
-} from "@carrot-kpi/sdk";
-import {
-    type Address,
-    useAccount,
-    useBalance,
-    useContractReads,
-    useNetwork,
-} from "wagmi";
-import {
-    DEFAULT_NUMBER_FORMAT_VALUE,
-    PROTOCOL_FEE_BPS,
-    COINGECKO_LIST_URL,
-} from "../../constants";
+import { type NamespacedTranslateFunction } from "@carrot-kpi/react";
+import { type ReactElement, useCallback, useEffect, useState } from "react";
+import { type State } from "../../types";
+import { Amount, formatCurrencyAmount } from "@carrot-kpi/sdk";
+import { type Address, useAccount, useBalance, useChainId } from "wagmi";
+import { PROTOCOL_FEE_BPS } from "../../constants";
 import { ReactComponent as ArrowDown } from "../../../assets/arrow-down.svg";
-import { CollateralsTable } from "./table";
 import { USDValue } from "./usd-value";
-import { useImportableToken } from "./hooks/useImportableToken";
-import {
-    cacheTokenInfoWithBalance,
-    cachedTokenInfoWithBalanceInChain,
-    tokenInfoWithBalanceEquals,
-} from "../../utils/cache";
 import { formatUnits, parseUnits } from "viem";
+import { RewardTokenPicker } from "./picker";
+import { RewardsTable } from "./table";
 
-interface CollateralProps {
+interface RewardsProps {
     t: NamespacedTranslateFunction;
-    state: CollateralsStepState;
-    onStateChange: (state: CollateralsStepState) => void;
-    onNext: (collaterals: CollateralData[]) => void;
+    state: State;
+    onStateChange: (state: State) => void;
+    onNext: () => void;
 }
 
-export const Collaterals = ({
+export const Rewards = ({
     t,
     state,
     onStateChange,
     onNext,
-}: CollateralProps): ReactElement => {
+}: RewardsProps): ReactElement => {
     const { address } = useAccount();
-    const { chain } = useNetwork();
-    const devMode = useDevMode();
-    const stagingMode = useStagingMode();
-    const tokenListUrls = useMemo(() => {
-        return [
-            COINGECKO_LIST_URL,
-            `${getServiceURL(
-                Service.STATIC_CDN,
-                !devMode && !stagingMode,
-            )}/token-list.json`,
-        ];
-    }, [devMode, stagingMode]);
-    const { lists: tokenLists, loading } = useTokenLists({
-        urls: tokenListUrls,
-    });
+    const chainId = useChainId();
 
-    const [selectedTokenList, setSelectedTokenList] = useState<
-        TokenListWithBalance | undefined
-    >();
     const [disabled, setDisabled] = useState(true);
 
-    // picker state
-    const [tokenPickerOpen, setTokenPickerOpen] = useState(false);
+    const [rewardToken, setRewardToken] = useState<TokenInfoWithBalance | null>(
+        null,
+    );
+    const [rewardAmount, setRewardAmount] = useState<bigint | null>(null);
+    const [rewardMinimumPayout, setRewardMinimumPayout] = useState<
+        bigint | null
+    >(null);
+
+    const [rewardTokenPickerOpen, setRewardTokenPickerOpen] = useState(false);
     const [addDisabled, setAddDisabled] = useState(true);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [collateralAmountErrorMessage, setCollateralAmountErrorMessage] =
-        useState("");
+    const [amountErrorMessage, setAmountErrorMessage] = useState("");
     const [minimumPayoutErrorMessage, setMinimumPayoutErrorMessage] =
         useState("");
     const [protocolFeeAmount, setProtocolFeeAmount] = useState("");
 
     // fetch picked erc20 token balance
-    const { data, isLoading } = useBalance({
-        address: !!state.pickerToken ? address : undefined,
-        token: !!state.pickerToken
-            ? (state.pickerToken.address as Address)
-            : undefined,
-    });
+    const { data: rewardTokenBalance, isLoading: loadingRewardTokenBalance } =
+        useBalance({
+            address: !!rewardToken ? address : undefined,
+            token: !!rewardToken ? (rewardToken.address as Address) : undefined,
+        });
 
-    const { importableToken, loadingBalance: loadingImportableTokenBalance } =
-        useImportableToken(searchQuery, true, address);
+    useEffect(() => {
+        setDisabled(state.rewards?.length === 0);
+    }, [state.rewards]);
 
-    const selectedTokenListTokensInChain = useMemo(() => {
-        if (!selectedTokenList || !chain) return [];
-        return selectedTokenList.tokens.filter(
-            (token) => token.chainId === chain.id,
-        );
-    }, [chain, selectedTokenList]);
-
-    const {
-        data: rawBalances,
-        isLoading: loadingBalances,
-        isFetching: fetchingBalances,
-    } = useContractReads({
-        contracts:
-            address &&
-            selectedTokenListTokensInChain.map((token) => {
-                return {
-                    abi: ERC20_ABI,
-                    address: token.address as Address,
-                    functionName: "balanceOf",
-                    args: [address],
-                };
-            }),
-        allowFailure: true,
-        enabled: !!(
-            chain?.id &&
-            selectedTokenListTokensInChain.length > 0 &&
-            address
-        ),
-    });
-
-    const selectedTokenListWithBalances = useMemo(() => {
-        if (importableToken) {
-            return {
-                ...selectedTokenList,
-                tokens: [importableToken],
-            } as TokenListWithBalance;
+    useEffect(() => {
+        if (!rewardToken || !rewardAmount || rewardMinimumPayout === null) {
+            setAddDisabled(true);
+            return;
         }
-        if (!selectedTokenList) return;
-        if (
-            !rawBalances ||
-            rawBalances.length !== selectedTokenListTokensInChain.length
-        )
-            return selectedTokenList;
-        const tokensInChainWithBalance = selectedTokenListTokensInChain.reduce(
-            (accumulator: Record<string, TokenInfoWithBalance>, token, i) => {
-                const rawBalance = rawBalances[i];
-                accumulator[`${token.address.toLowerCase()}-${token.chainId}`] =
-                    rawBalance.status !== "failure"
-                        ? {
-                              ...token,
-                              balance: rawBalance.result as bigint,
-                          }
-                        : token;
-                return accumulator;
-            },
-            {},
-        );
-
-        return {
-            ...selectedTokenList,
-            tokens: [
-                ...selectedTokenList.tokens.map((token) => {
-                    const tokenInChainWithBalance =
-                        tokensInChainWithBalance[
-                            `${token.address.toLowerCase()}-${token.chainId}`
-                        ];
-                    return tokenInChainWithBalance || token;
-                }),
-                ...cachedTokenInfoWithBalanceInChain(chain),
-            ],
-        };
-    }, [
-        chain,
-        importableToken,
-        rawBalances,
-        selectedTokenList,
-        selectedTokenListTokensInChain,
-    ]);
-
-    useEffect(() => {
-        setDisabled(state.collaterals.length === 0);
-    }, [state.collaterals]);
-
-    useEffect(() => {
-        if (!!selectedTokenList || tokenLists.length === 0) return;
-        const defaultSelectedList = tokenLists[0];
-        // it's right that we don't use `devMode` here, we don't want
-        // to include undefined globals when this snippet of code is
-        // executed in dev mode in the context of another template
-        // being tested. In short, the following branch should NEVER
-        // be present in a prod bundle
-        if (__PLAYGROUND__) {
-            defaultSelectedList.tokens.push({
-                chainId: CCT_CHAIN_ID,
-                address: CCT_ERC20_1_ADDRESS,
-                name: "Collateral test token 1",
-                decimals: 18,
-                symbol: "TST1",
-            });
-            defaultSelectedList.tokens.push({
-                chainId: CCT_CHAIN_ID,
-                address: CCT_ERC20_2_ADDRESS,
-                name: "Collateral test token 2",
-                decimals: 18,
-                symbol: "TST2",
-            });
+        // check if the user has enough balance of the picked token
+        if (rewardTokenBalance && rewardTokenBalance.value < rewardAmount) {
+            setAddDisabled(true);
+            return;
         }
-        setSelectedTokenList(defaultSelectedList as TokenListWithBalance);
-    }, [selectedTokenList, tokenLists]);
-
-    useEffect(() => {
+        const amountMinusFees =
+            rewardAmount - (rewardAmount * PROTOCOL_FEE_BPS) / 10_000n;
         if (
-            !state.pickerToken ||
-            !state.pickerAmount ||
-            !state.pickerAmount.value ||
-            !state.pickerMinimumPayout ||
-            !state.pickerMinimumPayout.value
+            !amountMinusFees ||
+            (rewardMinimumPayout !== null &&
+                rewardMinimumPayout >= amountMinusFees)
         ) {
             setAddDisabled(true);
             return;
         }
-        const parsedAmount = parseFloat(state.pickerAmount.value);
-        if (data) {
-            // check if the user has enough balance of the picked token
-            const bnPickerAmount = parseUnits(
-                state.pickerAmount.value as `${number}`,
-                state.pickerToken.decimals,
-            );
-            if (data.value < bnPickerAmount) {
-                setAddDisabled(true);
-                return;
-            }
-        }
-        const amountMinusFees =
-            parsedAmount - (parsedAmount * PROTOCOL_FEE_BPS) / 10_000;
-        const parsedMinimumAmount = parseFloat(state.pickerMinimumPayout.value);
-        if (amountMinusFees === 0 || parsedMinimumAmount >= amountMinusFees) {
-            setAddDisabled(true);
-            return;
-        }
         setAddDisabled(
-            !!state.collaterals.find(
-                (collateral) =>
-                    collateral.amount.currency.address.toLowerCase() ===
-                    state.pickerToken?.address.toLowerCase(),
-            ),
+            !!state.rewards &&
+                !!state.rewards.find(
+                    (reward) =>
+                        reward.address.toLowerCase() ===
+                        rewardToken.address.toLowerCase(),
+                ),
         );
     }, [
-        data,
-        state.collaterals,
-        state.pickerAmount,
-        state.pickerMinimumPayout,
-        state.pickerToken,
+        rewardAmount,
+        rewardMinimumPayout,
+        rewardToken,
+        rewardTokenBalance,
+        state.rewards,
     ]);
 
     useEffect(() => {
-        if (
-            !state.pickerToken ||
-            !state.pickerAmount ||
-            !state.pickerAmount.value
-        )
-            return;
-        const parsedRawAmount = parseFloat(state.pickerAmount.formattedValue);
-        if (isNaN(parsedRawAmount)) return;
+        if (!rewardToken || !rewardAmount) return;
         setProtocolFeeAmount(
             formatCurrencyAmount({
                 amount: new Amount(
-                    state.pickerToken as unknown as Token,
-                    parseUnits(
-                        ((parsedRawAmount * PROTOCOL_FEE_BPS) / 10_000).toFixed(
-                            state.pickerToken.decimals,
-                        ) as `${number}`,
-                        state.pickerToken.decimals,
-                    ),
+                    rewardToken,
+                    (rewardAmount * PROTOCOL_FEE_BPS) / 10_000n,
                 ),
             }),
         );
-    }, [state.pickerToken, state.pickerAmount]);
+    }, [rewardAmount, rewardToken]);
 
-    const handleOpenERC20TokenPicker = useCallback((): void => {
-        setTokenPickerOpen(true);
+    const handleOpenRewardTokenPicker = useCallback((): void => {
+        setRewardTokenPickerOpen(true);
     }, []);
 
-    const handleERC20TokenPickerDismiss = useCallback((): void => {
-        setTokenPickerOpen(false);
+    const handleRewardTokenPickerDismiss = useCallback((): void => {
+        setRewardTokenPickerOpen(false);
     }, []);
 
-    const handleSelectedTokenChange = useCallback(
-        (newSelectedToken: TokenInfoWithBalance): void => {
-            if (tokenInfoWithBalanceEquals(importableToken, newSelectedToken)) {
-                cacheTokenInfoWithBalance(newSelectedToken);
-            }
-            onStateChange({
-                ...state,
-                pickerToken: newSelectedToken,
-                pickerAmount: DEFAULT_NUMBER_FORMAT_VALUE,
-                pickerMinimumPayout: DEFAULT_NUMBER_FORMAT_VALUE,
-            });
-            setCollateralAmountErrorMessage("");
-            setMinimumPayoutErrorMessage("");
-        },
-        [onStateChange, importableToken, state],
-    );
-
-    const handlePickerRawAmountChange = useCallback(
-        (newPickerRawAmount: NumberFormatValue): void => {
-            let errorMessage = "";
-
-            if (!data) return;
-            if (
-                !newPickerRawAmount ||
-                !newPickerRawAmount.value ||
-                parseFloat(newPickerRawAmount.value) === 0
-            )
-                errorMessage = t("error.collaterals.empty");
-            else if (
-                data.value <
-                parseUnits(
-                    newPickerRawAmount.value as `${number}`,
-                    data.decimals,
-                )
-            )
-                errorMessage = t("error.collaterals.insufficient");
-
-            if (
-                !!minimumPayoutErrorMessage &&
-                !!state.pickerMinimumPayout &&
-                parseFloat(newPickerRawAmount.value) >
-                    parseFloat(state.pickerMinimumPayout.value)
-            )
-                setMinimumPayoutErrorMessage("");
-            else if (
-                !minimumPayoutErrorMessage &&
-                !!state.pickerMinimumPayout &&
-                parseFloat(newPickerRawAmount.value) <
-                    parseFloat(state.pickerMinimumPayout.value)
-            )
-                setMinimumPayoutErrorMessage(
-                    t("error.collaterals.minimumPayoutTooHigh"),
-                );
-
-            setCollateralAmountErrorMessage(errorMessage);
-            onStateChange({
-                ...state,
-                pickerAmount: newPickerRawAmount,
-            });
-        },
-        [onStateChange, state, minimumPayoutErrorMessage, data, t],
-    );
-
-    const handlePickerRawMinimumAmountChange = useCallback(
-        (newPickerRawMinimumPayout: NumberFormatValue): void => {
-            let errorMessage = "";
-
-            if (!state.pickerAmount) return;
-
-            const parsedAmount = parseFloat(state.pickerAmount.value);
-            const amountMinusFees =
-                parsedAmount - (parsedAmount * PROTOCOL_FEE_BPS) / 10_000;
-            const parsedMinimumAmount = parseFloat(
-                newPickerRawMinimumPayout.value,
+    const handleRewardAmountChange = useCallback(
+        (rawNewAmount: NumberFormatValues): void => {
+            if (!rewardToken || !rewardTokenBalance) return;
+            const newAmount = parseUnits(
+                rawNewAmount.value,
+                rewardToken.decimals,
             );
 
-            if (!newPickerRawMinimumPayout || !newPickerRawMinimumPayout.value)
-                errorMessage = t("error.collaterals.minimumPayoutEmpty");
-            else if (
-                amountMinusFees === 0 ||
-                parsedMinimumAmount >= amountMinusFees
-            )
-                errorMessage = t("error.collaterals.minimumPayoutTooHigh");
+            let errorMessage = "";
+            if (!newAmount) errorMessage = t("error.collaterals.empty");
+            else if (rewardTokenBalance.value < newAmount)
+                errorMessage = t("error.collaterals.insufficient");
+            setAmountErrorMessage(errorMessage);
 
-            setMinimumPayoutErrorMessage(errorMessage);
-            onStateChange({
-                ...state,
-                pickerMinimumPayout: newPickerRawMinimumPayout,
-            });
+            if (rewardMinimumPayout !== null && rewardMinimumPayout > 0) {
+                setMinimumPayoutErrorMessage(
+                    newAmount > rewardMinimumPayout
+                        ? ""
+                        : "error.collaterals.minimumPayoutTooHigh",
+                );
+            }
+
+            setRewardAmount(newAmount);
         },
-        [onStateChange, state, t],
+        [rewardMinimumPayout, rewardToken, rewardTokenBalance, t],
+    );
+
+    const handleRewardMinimumPayoutChange = useCallback(
+        (rawNewMinimumPayout: NumberFormatValues): void => {
+            if (!rewardToken || !rewardAmount) return;
+
+            const newMinimumPayout = parseUnits(
+                rawNewMinimumPayout.value,
+                rewardToken.decimals,
+            );
+            const amountMinusFees =
+                rewardAmount - (rewardAmount * PROTOCOL_FEE_BPS) / 10_000n;
+
+            let errorMessage = "";
+            if (newMinimumPayout === null)
+                errorMessage = t("error.collaterals.minimumPayoutEmpty");
+            else if (!amountMinusFees || newMinimumPayout >= amountMinusFees)
+                errorMessage = t("error.collaterals.minimumPayoutTooHigh");
+            setMinimumPayoutErrorMessage(errorMessage);
+
+            setRewardMinimumPayout(newMinimumPayout);
+        },
+        [rewardAmount, rewardToken, t],
     );
 
     const handleCollateralAdd = useCallback((): void => {
         if (
-            !chain ||
-            !state.pickerToken ||
-            !state.pickerAmount ||
-            !state.pickerMinimumPayout
+            !chainId ||
+            !rewardToken ||
+            !rewardAmount ||
+            rewardMinimumPayout === null
         )
             return;
-        const token = new TokenWithLogoURI(
-            chain.id,
-            state.pickerToken.address as Address,
-            state.pickerToken.decimals,
-            state.pickerToken.symbol,
-            state.pickerToken.name,
-            state.pickerToken.logoURI,
-        );
         onStateChange({
             ...state,
-            collaterals: [
-                ...state.collaterals,
+            rewards: [
+                ...(state.rewards || []),
                 {
-                    amount: new Amount(
-                        token,
-                        parseUnits(
-                            state.pickerAmount.value as `${number}`,
-                            token.decimals,
-                        ),
-                    ),
-                    minimumPayout: new Amount(
-                        token,
-                        parseUnits(
-                            state.pickerMinimumPayout.value as `${number}`,
-                            token.decimals,
-                        ),
-                    ),
+                    chainId,
+                    address: rewardToken.address as Address,
+                    decimals: rewardToken.decimals,
+                    symbol: rewardToken.symbol,
+                    name: rewardToken.name,
+                    logoURI: rewardToken.logoURI,
+                    amount: rewardAmount.toString(),
+                    minimumPayout: rewardMinimumPayout.toString(),
                 },
             ],
-            pickerToken: undefined,
-            pickerAmount: DEFAULT_NUMBER_FORMAT_VALUE,
-            pickerMinimumPayout: DEFAULT_NUMBER_FORMAT_VALUE,
         });
-    }, [chain, onStateChange, state]);
+    }, [
+        chainId,
+        onStateChange,
+        rewardAmount,
+        rewardMinimumPayout,
+        rewardToken,
+        state,
+    ]);
 
-    const handleNext = useCallback((): void => {
-        onNext(state.collaterals);
-    }, [state.collaterals, onNext]);
-
-    const handleRemoveCollateral = useCallback(
+    const handleRemoveReward = useCallback(
         (index: number) => {
+            if (!state.rewards) return;
             onStateChange({
                 ...state,
-                collaterals: state.collaterals.filter((_, i) => i !== index),
+                rewards: state.rewards.filter((_, i) => i !== index),
             });
         },
         [onStateChange, state],
     );
 
     const handleMaxClick = useCallback(() => {
-        if (!data || !state.pickerToken) return;
-        handlePickerRawAmountChange({
-            formattedValue: data.formatted,
-            value: formatUnits(data.value, state.pickerToken.decimals),
+        if (!rewardTokenBalance || !rewardToken) return;
+        const stringValue = formatUnits(
+            rewardTokenBalance.value,
+            rewardToken.decimals,
+        );
+        handleRewardAmountChange({
+            floatValue: parseFloat(stringValue),
+            formattedValue: rewardTokenBalance.formatted,
+            value: stringValue,
         });
-    }, [data, handlePickerRawAmountChange, state]);
+    }, [rewardTokenBalance, rewardToken, handleRewardAmountChange]);
 
     return (
         <>
-            <ERC20TokenPicker
-                open={tokenPickerOpen}
-                onDismiss={handleERC20TokenPickerDismiss}
-                selectedToken={state.pickerToken}
-                onSearchQueryChange={setSearchQuery}
-                onSelectedTokenChange={handleSelectedTokenChange}
-                lists={tokenLists as TokenListWithBalance[]}
-                loading={
-                    loading ||
-                    loadingBalances ||
-                    fetchingBalances ||
-                    loadingImportableTokenBalance
-                }
-                selectedList={selectedTokenListWithBalances}
-                onSelectedListChange={setSelectedTokenList}
-                chainId={chain?.id}
-                messages={{
-                    search: {
-                        title: t("erc20.picker.search.title"),
-                        inputPlaceholder: t("erc20.picker.search.placeholder"),
-                        noTokens: t("erc20.picker.search.no.token"),
-                        manageLists: t("erc20.picker.search.manage.lists"),
-                    },
-                    manageLists: {
-                        title: t("erc20.picker.manage.lists.title"),
-                        noLists: t("erc20.picker.manage.lists.no.lists"),
-                    },
-                }}
+            <RewardTokenPicker
+                t={t}
+                open={rewardTokenPickerOpen}
+                onDismiss={handleRewardTokenPickerDismiss}
+                token={rewardToken}
+                onChange={setRewardToken}
             />
             <div className="flex flex-col gap-6">
                 <div className="flex flex-col gap-3">
@@ -499,7 +244,7 @@ export const Collaterals = ({
                             <div className="flex flex-col gap-2">
                                 <div className="flex justify-between items-center">
                                     <div
-                                        onClick={handleOpenERC20TokenPicker}
+                                        onClick={handleOpenRewardTokenPicker}
                                         className="cursor-pointer"
                                     >
                                         <TextInput
@@ -512,9 +257,7 @@ export const Collaterals = ({
                                                 input: "w-full cursor-pointer",
                                             }}
                                             readOnly
-                                            value={
-                                                state.pickerToken?.symbol || ""
-                                            }
+                                            value={rewardToken?.symbol || ""}
                                         />
                                     </div>
                                     <NumberInput
@@ -525,13 +268,16 @@ export const Collaterals = ({
                                         }}
                                         variant="xl"
                                         allowNegative={false}
-                                        disabled={!!!state.pickerToken}
+                                        disabled={!!!rewardToken}
                                         value={
-                                            state.pickerAmount?.formattedValue
+                                            rewardToken && rewardAmount !== null
+                                                ? formatUnits(
+                                                      rewardAmount,
+                                                      rewardToken.decimals,
+                                                  )
+                                                : null
                                         }
-                                        onValueChange={
-                                            handlePickerRawAmountChange
-                                        }
+                                        onValueChange={handleRewardAmountChange}
                                     />
                                 </div>
                                 <div className="flex justify-between items-center">
@@ -539,12 +285,14 @@ export const Collaterals = ({
                                         <Typography variant="sm">
                                             {t("label.collateral.balance")}:{" "}
                                         </Typography>
-                                        {isLoading ? (
+                                        {loadingRewardTokenBalance ? (
                                             <Skeleton variant="sm" />
-                                        ) : !!data ? (
+                                        ) : !!rewardTokenBalance ? (
                                             <>
                                                 <Typography variant="sm">
-                                                    {data.formatted}
+                                                    {
+                                                        rewardTokenBalance.formatted
+                                                    }
                                                 </Typography>
                                                 <Typography
                                                     variant="sm"
@@ -567,10 +315,8 @@ export const Collaterals = ({
                                     </div>
                                     <div className="flex justify-end h-5">
                                         <USDValue
-                                            tokenAddress={
-                                                state.pickerToken?.address
-                                            }
-                                            rawTokenAmount={state.pickerAmount}
+                                            token={rewardToken}
+                                            amount={rewardAmount}
                                         />
                                     </div>
                                 </div>
@@ -591,25 +337,26 @@ export const Collaterals = ({
                                                 input: "border-none text-right w-full p-0",
                                             }}
                                             variant="xl"
-                                            disabled={!!!state.pickerToken}
+                                            disabled={!!!rewardToken}
                                             allowNegative={false}
                                             value={
-                                                state.pickerMinimumPayout
-                                                    ?.formattedValue
+                                                rewardToken &&
+                                                rewardMinimumPayout !== null
+                                                    ? formatUnits(
+                                                          rewardMinimumPayout,
+                                                          rewardToken.decimals,
+                                                      )
+                                                    : null
                                             }
                                             onValueChange={
-                                                handlePickerRawMinimumAmountChange
+                                                handleRewardMinimumPayoutChange
                                             }
                                         />
                                     </div>
                                     <div className="flex justify-end h-5">
                                         <USDValue
-                                            tokenAddress={
-                                                state.pickerToken?.address
-                                            }
-                                            rawTokenAmount={
-                                                state.pickerMinimumPayout
-                                            }
+                                            token={rewardToken}
+                                            amount={rewardMinimumPayout}
                                         />
                                     </div>
                                 </div>
@@ -623,9 +370,9 @@ export const Collaterals = ({
                                     <Typography
                                         className={{ root: "text-right" }}
                                     >
-                                        {PROTOCOL_FEE_BPS / 100}%{" "}
+                                        {Number(PROTOCOL_FEE_BPS) / 100}%{" "}
                                         {protocolFeeAmount &&
-                                            state.pickerToken &&
+                                            rewardToken &&
                                             `(${protocolFeeAmount})`}
                                     </Typography>
                                 </div>
@@ -642,13 +389,11 @@ export const Collaterals = ({
                         >
                             {t("label.collateral.picker.apply")}
                         </Button>
-                        {(!!collateralAmountErrorMessage ||
+                        {(!!amountErrorMessage ||
                             !!minimumPayoutErrorMessage) && (
                             <div className="flex flex-col">
-                                {collateralAmountErrorMessage && (
-                                    <ErrorText>
-                                        {collateralAmountErrorMessage}
-                                    </ErrorText>
+                                {amountErrorMessage && (
+                                    <ErrorText>{amountErrorMessage}</ErrorText>
                                 )}
                                 {minimumPayoutErrorMessage && (
                                     <ErrorText>
@@ -659,13 +404,13 @@ export const Collaterals = ({
                         )}
                     </div>
                 </div>
-                <CollateralsTable
+                <RewardsTable
                     t={t}
-                    collaterals={state.collaterals}
-                    onRemove={handleRemoveCollateral}
+                    rewards={state.rewards}
+                    onRemove={handleRemoveReward}
                 />
             </div>
-            <NextStepButton onClick={handleNext} disabled={disabled}>
+            <NextStepButton onClick={onNext} disabled={disabled}>
                 {t("next")}
             </NextStepButton>
         </>

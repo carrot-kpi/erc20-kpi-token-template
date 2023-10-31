@@ -5,7 +5,7 @@ import { Amount, Token } from "@carrot-kpi/sdk";
 import { Button, ErrorFeedback, Typography } from "@carrot-kpi/ui";
 import { type ReactElement, useEffect, useState } from "react";
 import { OraclePage, type KPITokenRemotePageProps } from "@carrot-kpi/react";
-import type { CollateralData } from "../creation-form/types";
+import type { CollateralData } from "./types";
 import {
     type Address,
     useNetwork,

@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { Typography, Popover } from "@carrot-kpi/ui";
-import type { CollateralData } from "../../../creation-form/types";
+import type { CollateralData } from "../../types";
 import { TokenAmount } from "../token-amount";
 
 interface CollateralRowProps {

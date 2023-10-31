@@ -1,42 +1,65 @@
 import type { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Template } from "@carrot-kpi/sdk";
 import { Typography, NextStepButton, Checkbox } from "@carrot-kpi/ui";
-import { type ReactElement, useCallback, useEffect, useState } from "react";
+import {
+    type ReactElement,
+    useCallback,
+    useEffect,
+    useState,
+    type ChangeEvent,
+} from "react";
 import { Loader } from "../../../ui/loader";
 import { OracleTemplate } from "../../../ui/oracle-template";
-
-type TemplatesMap = { [id: number]: Template };
+import type { State } from "../../types";
 
 interface OraclesPickerProps {
-    t: NamespacedTranslateFunction;
     loading?: boolean;
+    t: NamespacedTranslateFunction;
     templates: Template[];
-    oracleTemplatesData: Template[];
-    onNext: (oracleTemplates: Template[]) => void;
+    state: State;
+    onStateChange: (state: State) => void;
+    onNext: () => void;
 }
 
 export const OraclesPicker = ({
     t,
     loading,
     templates,
-    oracleTemplatesData,
+    state,
+    onStateChange,
     onNext,
 }: OraclesPickerProps): ReactElement => {
-    const [pickedTemplates, setPickedTemplates] = useState(
-        oracleTemplatesData.reduce((accumulator: TemplatesMap, template) => {
-            accumulator[template.id] = template;
-            return accumulator;
-        }, {}),
-    );
     const [disabled, setDisabled] = useState(true);
 
     useEffect(() => {
-        setDisabled(Object.keys(pickedTemplates).length === 0);
-    }, [pickedTemplates]);
+        setDisabled(!state.oracles || state.oracles.length === 0);
+    }, [state.oracles]);
+
+    const getChangeHandler =
+        (templateId: number) => (event: ChangeEvent<HTMLInputElement>) => {
+            if (event.target.checked) {
+                onStateChange({
+                    ...state,
+                    oracles: [
+                        ...(state.oracles || []),
+                        { templateId, state: {} },
+                    ],
+                });
+            } else {
+                onStateChange({
+                    ...state,
+                    oracles: [
+                        ...(state.oracles || []).filter(
+                            (oracle) => oracle.templateId !== templateId,
+                        ),
+                    ],
+                });
+            }
+        };
 
     const handleNext = useCallback(() => {
-        onNext(Object.values(pickedTemplates));
-    }, [onNext, pickedTemplates]);
+        onNext();
+    }, [onNext]);
 
     return (
         <div className="flex flex-col gap-6">
@@ -51,7 +74,12 @@ export const OraclesPicker = ({
                     </Typography>
                     <div className="flex gap-7 overflow-x-auto">
                         {templates.map((template) => {
-                            const checked = !!pickedTemplates[template.id];
+                            const checked =
+                                state.oracles &&
+                                !!state.oracles.find(
+                                    (oracle) =>
+                                        oracle.templateId === template.id,
+                                );
                             return (
                                 <div
                                     key={template.id}
@@ -64,32 +92,16 @@ export const OraclesPicker = ({
                                     />
                                     <Checkbox
                                         checked={checked}
-                                        onChange={() => {
-                                            // TODO: support multiple choices when it will be a thing
-                                            if (checked) {
-                                                // const newPickedTemplates = {
-                                                //     ...pickedTemplates,
-                                                // };
-                                                // delete newPickedTemplates[
-                                                //     template.id
-                                                // ];
-                                                setPickedTemplates({});
-                                            } else {
-                                                setPickedTemplates({
-                                                    [template.id]: template,
-                                                });
-                                            }
-                                        }}
+                                        onChange={getChangeHandler(template.id)}
                                     />
                                 </div>
                             );
                         })}
                     </div>
-                    {/* TODO: make this a thing when multiple oracles will be properly supported */}
-                    {/* <Typography weight="medium">
+                    <Typography weight="medium">
                         {t("oracles.picker.selected")}{" "}
-                        {Object.keys(pickedTemplates).length}
-                    </Typography> */}
+                        {Object.keys(state.oracles || []).length}
+                    </Typography>
                 </>
             )}
             <NextStepButton onClick={handleNext} disabled={disabled}>
