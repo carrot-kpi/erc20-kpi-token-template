@@ -48,6 +48,7 @@ export const ApproveRewards = ({
                         args: [connectedAddress, spender],
                     };
                 }),
+            enabled: !!connectedAddress && !!rewards,
         },
     );
 
