@@ -112,13 +112,15 @@ export const ApproveRewards = ({
     );
 
     return loadingAllowances || !currentlyApprovingReward ? (
-        <Button loading />
+        <Button loading>Loading</Button>
     ) : allApproved ? (
         <Button disabled>{t("label.rewards.approve.done")}</Button>
     ) : (
         <ApproveReward
             t={t}
             reward={currentlyApprovingReward}
+            index={currentIndex + 1}
+            totalAmount={rewards?.length || 0}
             spender={spender}
             onApprove={handleApprove}
         />

@@ -15,6 +15,8 @@ import type { Reward } from "../types";
 interface ApproveRewardProps {
     t: NamespacedTranslateFunction;
     reward: Reward;
+    index: number;
+    totalAmount: number;
     spender: Address;
     onApprove: (receipt: TransactionReceipt) => void;
 }
@@ -22,19 +24,23 @@ interface ApproveRewardProps {
 export const ApproveReward = ({
     t,
     reward,
+    index,
+    totalAmount,
     spender,
     onApprove,
 }: ApproveRewardProps): ReactElement => {
     const publicClient = usePublicClient();
     const chainId = useChainId();
 
-    const { config } = usePrepareContractWrite({
-        chainId,
-        address: reward.address,
-        abi: erc20ABI,
-        functionName: "approve",
-        args: [spender, BigInt(reward.amount)],
-    });
+    const { config, isLoading: loadingApproveConfig } = usePrepareContractWrite(
+        {
+            chainId,
+            address: reward.address,
+            abi: erc20ABI,
+            functionName: "approve",
+            args: [spender, BigInt(reward.amount)],
+        },
+    );
     const { writeAsync: approveAsync, isLoading: approving } =
         useContractWrite(config);
 
@@ -58,11 +64,19 @@ export const ApproveReward = ({
         <Button
             onClick={handleClick}
             disabled={!approveAsync}
-            loading={approving}
+            loading={loadingApproveConfig || approving}
         >
             {approving
-                ? t("label.rewards.approving", { symbol: reward.symbol })
-                : t("label.rewards.approve", { symbol: reward.symbol })}
+                ? t("label.rewards.approving", {
+                      symbol: reward.symbol,
+                      currentIndex: index,
+                      totalAmount,
+                  })
+                : t("label.rewards.approve", {
+                      symbol: reward.symbol,
+                      currentIndex: index,
+                      totalAmount,
+                  })}
         </Button>
     );
 };
