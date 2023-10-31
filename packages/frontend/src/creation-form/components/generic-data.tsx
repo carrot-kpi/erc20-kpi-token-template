@@ -96,6 +96,15 @@ export const GenericData = ({
         );
     }, [state]);
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setMinimumDate(new Date());
+        }, 1_000);
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
+
     const handleTitleChange = useCallback(
         (value: string): void => {
             setTitleErrorText(
