@@ -113,7 +113,7 @@ export const ApproveRewards = ({
     return loadingAllowances || !currentlyApprovingReward ? (
         <Button loading />
     ) : allApproved ? (
-        <Button disabled>{t("label.collateral.approve.done")}</Button>
+        <Button disabled>{t("label.rewards.approve.done")}</Button>
     ) : (
         <ApproveReward
             t={t}

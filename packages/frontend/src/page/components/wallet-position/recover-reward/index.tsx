@@ -9,7 +9,7 @@ import {
     type Token,
 } from "@carrot-kpi/sdk";
 import { Button, Select, Typography, type SelectOption } from "@carrot-kpi/ui";
-import type { CollateralData } from "../../../types";
+import type { RewardData } from "../../../types";
 import ERC20_KPI_TOKEN_ABI from "../../../../abis/erc20-kpi-token";
 import { type Address, zeroAddress, formatUnits } from "viem";
 import {
@@ -20,7 +20,7 @@ import {
     usePublicClient,
 } from "wagmi";
 import { useCallback, useMemo, useState } from "react";
-import { getRecoverableRewards } from "../../../../utils/collaterals";
+import { getRecoverableRewards } from "../../../../utils/rewards";
 import { dateToUnixTimestamp } from "../../../../utils/dates";
 import { TokenAmount } from "../../token-amount";
 
@@ -28,29 +28,29 @@ interface RewardOption extends SelectOption<Address> {
     amount: Amount<Token>;
 }
 
-interface RecoverCollateralProps {
+interface RecoverRewardProps {
     t: NamespacedTranslateFunction;
     onTx: KPITokenPageProps["onTx"];
     kpiToken: ResolvedKPIToken;
-    collaterals?: CollateralData[];
+    rewards?: RewardData[];
     kpiTokenBalance?: Amount<Token> | null;
-    kpiTokenCollateralBalances?: Amount<Token>[];
+    kpiTokenRewardBalances?: Amount<Token>[];
     redeemableRewards?: Amount<Token>[] | null;
 }
 
-export const RecoverCollateral = ({
+export const RecoverReward = ({
     t,
     onTx,
     kpiToken,
-    collaterals,
-    kpiTokenCollateralBalances,
-}: RecoverCollateralProps) => {
+    rewards,
+    kpiTokenRewardBalances,
+}: RecoverRewardProps) => {
     const { address } = useAccount();
     const { chain } = useNetwork();
     const publicClient = usePublicClient();
 
     const [loadingRecover, setLoadingRecover] = useState(false);
-    const [collateralToRecover, setCollateralToRecover] =
+    const [rewardToRecover, setRewardToRecover] =
         useState<SelectOption<Address> | null>(null);
 
     const { config: recoverConfig } = usePrepareContractWrite({
@@ -59,30 +59,28 @@ export const RecoverCollateral = ({
         abi: ERC20_KPI_TOKEN_ABI,
         functionName: "recoverERC20",
         args:
-            !!address && !!collateralToRecover
-                ? [collateralToRecover.value, address]
+            !!address && !!rewardToRecover
+                ? [rewardToRecover.value, address]
                 : undefined,
-        enabled: !!chain?.id && !!address && !!collateralToRecover,
+        enabled: !!chain?.id && !!address && !!rewardToRecover,
     });
     const { writeAsync: recoverAsync } = useContractWrite(recoverConfig);
 
-    const collateralOptions: RewardOption[] = useMemo(() => {
-        if (!collaterals || !kpiTokenCollateralBalances) return [];
+    const rewardOptions: RewardOption[] = useMemo(() => {
+        if (!rewards || !kpiTokenRewardBalances) return [];
         return getRecoverableRewards(
-            collaterals,
-            kpiTokenCollateralBalances,
+            rewards,
+            kpiTokenRewardBalances,
             kpiToken.expired,
-        ).map((collateral) => ({
-            label: `${formatUnits(collateral.raw, 18)} ${
-                collateral.currency.symbol
-            }`,
-            amount: collateral,
-            value: collateral.currency.address,
+        ).map((reward) => ({
+            label: `${formatUnits(reward.raw, 18)} ${reward.currency.symbol}`,
+            amount: reward,
+            value: reward.currency.address,
         }));
-    }, [collaterals, kpiTokenCollateralBalances, kpiToken.expired]);
+    }, [rewards, kpiTokenRewardBalances, kpiToken.expired]);
 
-    const handleCollateralRecoverClick = useCallback(async () => {
-        if (!recoverAsync || !address || !collateralToRecover) return;
+    const handleRewardRecoverClick = useCallback(async () => {
+        if (!recoverAsync || !address || !rewardToRecover) return;
         setLoadingRecover(true);
         try {
             const tx = await recoverAsync();
@@ -95,7 +93,7 @@ export const RecoverCollateral = ({
                 hash: tx.hash,
                 payload: {
                     receiver: address,
-                    token: collateralToRecover?.value,
+                    token: rewardToRecover?.value,
                 },
                 receipt: {
                     from: receipt.from,
@@ -109,30 +107,27 @@ export const RecoverCollateral = ({
                 },
                 timestamp: dateToUnixTimestamp(new Date()),
             });
-            setCollateralToRecover(null);
+            setRewardToRecover(null);
         } catch (error) {
-            console.error(
-                `could not recover collateral ${collateralToRecover}`,
-                error,
-            );
+            console.error(`could not recover reward ${rewardToRecover}`, error);
         } finally {
             setLoadingRecover(false);
         }
-    }, [address, collateralToRecover, onTx, publicClient, recoverAsync]);
+    }, [address, rewardToRecover, onTx, publicClient, recoverAsync]);
 
     return (
         (kpiToken.expired || kpiToken.finalized) &&
-        collateralOptions.length > 0 && (
+        rewardOptions.length > 0 && (
             <div className="flex flex-col gap-4 p-6 border-black dark:border-white border-t">
-                <Typography>{t("collaterals.recover")}</Typography>
+                <Typography>{t("rewards.recover")}</Typography>
                 <div className="flex flex-col gap-4">
                     <Select
-                        label={t("collaterals.label")}
-                        placeholder={t("collaterals.recover.label")}
-                        options={collateralOptions}
+                        label={t("rewards.label")}
+                        placeholder={t("rewards.recover.label")}
+                        options={rewardOptions}
                         messages={{ noResults: "" }}
-                        onChange={setCollateralToRecover}
-                        value={collateralToRecover}
+                        onChange={setRewardToRecover}
+                        value={rewardToRecover}
                         renderOption={(value) => (
                             <TokenAmount
                                 amount={(value as RewardOption).amount}
@@ -143,7 +138,7 @@ export const RecoverCollateral = ({
                         size="small"
                         loading={loadingRecover}
                         disabled={!recoverAsync}
-                        onClick={handleCollateralRecoverClick}
+                        onClick={handleRewardRecoverClick}
                     >
                         {t("recover")}
                     </Button>

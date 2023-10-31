@@ -61,8 +61,8 @@ export const ApproveReward = ({
             loading={approving}
         >
             {approving
-                ? t("label.collateral.approving", { symbol: reward.symbol })
-                : t("label.collateral.approve", { symbol: reward.symbol })}
+                ? t("label.rewards.approving", { symbol: reward.symbol })
+                : t("label.rewards.approve", { symbol: reward.symbol })}
         </Button>
     );
 };

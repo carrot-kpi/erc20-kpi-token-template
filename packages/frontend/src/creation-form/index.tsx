@@ -9,7 +9,7 @@ import {
 import { type ReactElement, useCallback, useEffect, useState } from "react";
 import type { OracleWithInitializationBundleGetter, State } from "./types";
 import { useAccount, type Address } from "wagmi";
-import { Rewards } from "./components/collaterals";
+import { Rewards } from "./components/rewards";
 import { OraclesConfiguration } from "./components/oracles-configuration";
 import { Deploy } from "./components/deploy";
 import { Success } from "./components/success";
@@ -35,7 +35,7 @@ export const Component = ({
     const stepTitles = enableOraclePickStep
         ? [
               t("card.general.title"),
-              t("card.collateral.title"),
+              t("card.rewards.title"),
               t("card.oracle.pick.title"),
               t("card.oracle.configuration.title"),
               t("card.deploy.title"),
@@ -43,7 +43,7 @@ export const Component = ({
           ]
         : [
               t("card.general.title"),
-              t("card.collateral.title"),
+              t("card.rewards.title"),
               t("card.oracle.configuration.title"),
               t("card.deploy.title"),
               t("card.success.title"),
@@ -179,7 +179,7 @@ export const Component = ({
                         )}
                     </StepCard>
                     <StepCard
-                        title={t("card.collateral.title")}
+                        title={t("card.rewards.title")}
                         step={2}
                         className={{ root: "relative pb-10" }}
                         messages={{ step: t("step") }}

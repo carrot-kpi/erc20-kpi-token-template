@@ -40,21 +40,21 @@ export const RewardsTable = ({
         <div className="flex flex-col gap-2">
             <div className="grid grid-cols-rewards">
                 <Typography weight="medium" variant="sm">
-                    {t("label.collateral.table.collateral")}
+                    {t("label.rewards.table.reward")}
                 </Typography>
                 <Typography
                     weight="medium"
                     className={{ root: "text-center" }}
                     variant="sm"
                 >
-                    {t("label.collateral.table.amount")}
+                    {t("label.rewards.table.amount")}
                 </Typography>
                 <Typography
                     weight="medium"
                     className={{ root: "text-right" }}
                     variant="sm"
                 >
-                    {t("label.collateral.table.minimum.payout")}
+                    {t("label.rewards.table.minimum.payout")}
                 </Typography>
             </div>
             <div className={containerStyles({ noBorder })}>
@@ -66,7 +66,7 @@ export const RewardsTable = ({
                         }}
                         weight="medium"
                     >
-                        {t("label.collateral.table.empty")}
+                        {t("label.rewards.table.empty")}
                     </Typography>
                 ) : (
                     rewards.map((reward, index) => {

@@ -130,16 +130,16 @@ export const Rewards = ({
             );
 
             let errorMessage = "";
-            if (!newAmount) errorMessage = t("error.collaterals.empty");
+            if (!newAmount) errorMessage = t("error.rewards.empty");
             else if (rewardTokenBalance.value < newAmount)
-                errorMessage = t("error.collaterals.insufficient");
+                errorMessage = t("error.rewards.insufficient");
             setAmountErrorMessage(errorMessage);
 
             if (rewardMinimumPayout !== null && rewardMinimumPayout > 0) {
                 setMinimumPayoutErrorMessage(
                     newAmount > rewardMinimumPayout
                         ? ""
-                        : "error.collaterals.minimumPayoutTooHigh",
+                        : "error.rewards.minimumPayoutTooHigh",
                 );
             }
 
@@ -161,9 +161,9 @@ export const Rewards = ({
 
             let errorMessage = "";
             if (newMinimumPayout === null)
-                errorMessage = t("error.collaterals.minimumPayoutEmpty");
+                errorMessage = t("error.rewards.minimumPayoutEmpty");
             else if (!amountMinusFees || newMinimumPayout >= amountMinusFees)
-                errorMessage = t("error.collaterals.minimumPayoutTooHigh");
+                errorMessage = t("error.rewards.minimumPayoutTooHigh");
             setMinimumPayoutErrorMessage(errorMessage);
 
             setRewardMinimumPayout(newMinimumPayout);
@@ -171,7 +171,7 @@ export const Rewards = ({
         [rewardAmount, rewardToken, t],
     );
 
-    const handleCollateralAdd = useCallback((): void => {
+    const handleRewardAdd = useCallback((): void => {
         if (
             !chainId ||
             !rewardToken ||
@@ -251,7 +251,7 @@ export const Rewards = ({
                                             label=""
                                             autoComplete="off"
                                             placeholder={t(
-                                                "label.collateral.picker.token.pick",
+                                                "label.rewards.picker.token.pick",
                                             )}
                                             className={{
                                                 input: "w-full cursor-pointer",
@@ -283,7 +283,7 @@ export const Rewards = ({
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-2">
                                         <Typography variant="sm">
-                                            {t("label.collateral.balance")}:{" "}
+                                            {t("label.rewards.balance")}:{" "}
                                         </Typography>
                                         {loadingRewardTokenBalance ? (
                                             <Skeleton variant="sm" />
@@ -303,7 +303,7 @@ export const Rewards = ({
                                                     onClick={handleMaxClick}
                                                 >
                                                     {t(
-                                                        "label.collateral.picker.balance.max",
+                                                        "label.rewards.picker.balance.max",
                                                     )}
                                                 </Typography>
                                             </>
@@ -327,7 +327,7 @@ export const Rewards = ({
                                     <div className="flex items-center justify-between">
                                         <Typography>
                                             {t(
-                                                "label.collateral.picker.minimum.payout",
+                                                "label.rewards.picker.minimum.payout",
                                             )}
                                         </Typography>
                                         <NumberInput
@@ -365,7 +365,7 @@ export const Rewards = ({
 
                                 <div className="flex items-center justify-between">
                                     <Typography>
-                                        {t("label.collateral.picker.fee")}
+                                        {t("label.rewards.picker.fee")}
                                     </Typography>
                                     <Typography
                                         className={{ root: "text-right" }}
@@ -383,11 +383,11 @@ export const Rewards = ({
                         <Button
                             size="small"
                             icon={ArrowDown}
-                            onClick={handleCollateralAdd}
+                            onClick={handleRewardAdd}
                             disabled={addDisabled}
                             className={{ root: "w-full md:w-fit" }}
                         >
-                            {t("label.collateral.picker.apply")}
+                            {t("label.rewards.picker.apply")}
                         </Button>
                         {(!!amountErrorMessage ||
                             !!minimumPayoutErrorMessage) && (

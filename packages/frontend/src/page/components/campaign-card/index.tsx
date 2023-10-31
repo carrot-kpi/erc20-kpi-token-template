@@ -9,9 +9,9 @@ import {
     Typography,
 } from "@carrot-kpi/ui";
 import type { ReactElement } from "react";
-import type { CollateralData } from "../../types";
+import type { RewardData } from "../../types";
 import { shortenAddress } from "../../../utils/address";
-import { CollateralRow } from "../collateral-row";
+import { RewardsRow } from "../rewards-row";
 import { TimeLeft } from "./time-left";
 import { type Address, useEnsName } from "wagmi";
 import { mainnet } from "wagmi/chains";
@@ -21,7 +21,7 @@ interface CampaignCardProps {
     t: NamespacedTranslateFunction;
     loading?: boolean;
     kpiToken: ResolvedKPIToken;
-    collaterals?: CollateralData[] | null;
+    rewards?: RewardData[] | null;
     allOrNone?: boolean | null;
     initialSupply?: bigint | null;
     erc20Name?: string | null;
@@ -33,7 +33,7 @@ export const CampaignCard = ({
     t,
     loading,
     kpiToken,
-    collaterals,
+    rewards,
     initialSupply,
     erc20Name,
     erc20Symbol,
@@ -81,17 +81,14 @@ export const CampaignCard = ({
                             {t("overview.rewards.label")}
                         </Typography>
                         <div className="flex flex-col gap-2">
-                            {loading || !collaterals ? (
-                                <CollateralRow loading />
+                            {loading || !rewards ? (
+                                <RewardsRow loading />
                             ) : (
-                                collaterals.map((collateral) => {
+                                rewards.map((reward) => {
                                     return (
-                                        <CollateralRow
-                                            key={
-                                                collateral.amount.currency
-                                                    .address
-                                            }
-                                            collateral={collateral}
+                                        <RewardsRow
+                                            key={reward.amount.currency.address}
+                                            reward={reward}
                                         />
                                     );
                                 })
@@ -106,17 +103,14 @@ export const CampaignCard = ({
                             {t("overview.minimumPayout.label")}
                         </Typography>
                         <div className="flex flex-col gap-2">
-                            {loading || !collaterals ? (
-                                <CollateralRow loading />
+                            {loading || !rewards ? (
+                                <RewardsRow loading />
                             ) : (
-                                collaterals.map((collateral) => {
+                                rewards.map((reward) => {
                                     return (
-                                        <CollateralRow
-                                            key={
-                                                collateral.amount.currency
-                                                    .address
-                                            }
-                                            collateral={collateral}
+                                        <RewardsRow
+                                            key={reward.amount.currency.address}
+                                            reward={reward}
                                             minimumPayout
                                         />
                                     );

@@ -1,7 +1,6 @@
 import type {
     OracleInitializationBundle,
     OracleInitializationBundleGetter,
-    SerializableObject,
 } from "@carrot-kpi/react";
 import type { ResolvedTemplate, Template } from "@carrot-kpi/sdk";
 import { type Address } from "viem";

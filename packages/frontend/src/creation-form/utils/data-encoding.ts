@@ -16,7 +16,7 @@ export const encodeKPITokenData = (
                     { type: "uint256", name: "amount" },
                     { type: "uint256", name: "minimumPayout" },
                 ],
-                name: "collaterals",
+                name: "rewards",
             },
             { type: "string", name: "erc20Name" },
             { type: "string", name: "erc20Symbol" },

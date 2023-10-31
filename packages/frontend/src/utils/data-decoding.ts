@@ -1,11 +1,11 @@
 import { Amount, Fetcher } from "@carrot-kpi/sdk";
 import { type PublicClient } from "wagmi";
-import type { CollateralData } from "../page/types";
+import type { RewardData } from "../page/types";
 import { type Hex, decodeAbiParameters, type Address } from "viem";
 import type { FinalizableOracle } from "../page/types";
 
 interface DecodedData {
-    collaterals: CollateralData[];
+    rewards: RewardData[];
     finalizableOracles: FinalizableOracle[];
     allOrNone: boolean;
     initialSupply: bigint;
@@ -15,12 +15,12 @@ export const decodeKPITokenData = async (
     publicClient: PublicClient,
     data: Hex,
 ): Promise<DecodedData | null> => {
-    const [rawCollaterals, finalizableOracles, allOrNone, initialSupply] =
+    const [rawRewards, finalizableOracles, allOrNone, initialSupply] =
         decodeAbiParameters(
             [
                 {
                     type: "tuple[]",
-                    name: "collaterals",
+                    name: "rewards",
                     components: [
                         { type: "address", name: "token" },
                         { type: "uint256", name: "amount" },
@@ -59,22 +59,22 @@ export const decodeKPITokenData = async (
 
     const erc20Tokens = await Fetcher.fetchERC20Tokens({
         publicClient,
-        addresses: rawCollaterals.map((collateral) => collateral.token),
+        addresses: rawRewards.map((reward) => reward.token),
     });
 
-    const collaterals = rawCollaterals.map((rawCollateral) => {
-        const token = erc20Tokens[rawCollateral.token];
+    const rewards = rawRewards.map((rawReward) => {
+        const token = erc20Tokens[rawReward.token];
         if (!token) return null;
         return {
-            amount: new Amount(token, rawCollateral.amount),
-            minimumPayout: new Amount(token, rawCollateral.minimumPayout),
+            amount: new Amount(token, rawReward.amount),
+            minimumPayout: new Amount(token, rawReward.minimumPayout),
         };
     });
 
-    return collaterals.some((collateral) => !collateral)
+    return rewards.some((reward) => !reward)
         ? null
         : {
-              collaterals: collaterals.slice() as CollateralData[],
+              rewards: rewards.slice() as RewardData[],
               allOrNone,
               finalizableOracles: finalizableOracles as FinalizableOracle[],
               initialSupply,

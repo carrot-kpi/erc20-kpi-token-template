@@ -1,17 +1,17 @@
 import { Amount, Token } from "@carrot-kpi/sdk";
-import type { CollateralData } from "../page/types";
+import type { RewardData } from "../page/types";
 import type { FinalizableOracle } from "../page/types";
 
 export const getGuaranteedRewards = (
     kpiTokenBalance: Amount<Token>,
     kpiTokenInitialSupply: Amount<Token>,
-    collaterals: CollateralData[],
+    rewards: RewardData[],
 ) => {
-    return collaterals.map(
-        (collateral) =>
+    return rewards.map(
+        (reward) =>
             new Amount(
-                collateral.minimumPayout.currency,
-                (collateral.minimumPayout.raw * kpiTokenBalance.raw) /
+                reward.minimumPayout.currency,
+                (reward.minimumPayout.raw * kpiTokenBalance.raw) /
                     kpiTokenInitialSupply.raw,
             ),
     );
@@ -20,13 +20,13 @@ export const getGuaranteedRewards = (
 export const getMaximumRewards = (
     kpiTokenBalance: Amount<Token>,
     kpiTokenInitialSupply: Amount<Token>,
-    collaterals: CollateralData[],
+    rewards: RewardData[],
 ) => {
-    return collaterals.map(
-        (collateral) =>
+    return rewards.map(
+        (reward) =>
             new Amount(
-                collateral.amount.currency,
-                (collateral.amount.raw * kpiTokenBalance.raw) /
+                reward.amount.currency,
+                (reward.amount.raw * kpiTokenBalance.raw) /
                     kpiTokenInitialSupply.raw,
             ),
     );
@@ -38,77 +38,71 @@ export const getRedeemableRewards = (
     oracles: FinalizableOracle[],
     kpiTokenBalance: Amount<Token>,
     kpiTokenInitialSupply: Amount<Token>,
-    collaterals: CollateralData[],
+    rewards: RewardData[],
     expired: boolean,
 ): Amount<Token>[] => {
     if (kpiTokenBalance.isZero() || oracles.some((oracle) => !oracle.finalized))
-        return collaterals.map(
-            (collateral) => new Amount(collateral.amount.currency, 0n),
-        );
+        return rewards.map((reward) => new Amount(reward.amount.currency, 0n));
 
     if (expired) {
-        return collaterals.map((collateral) => {
+        return rewards.map((reward) => {
             return new Amount(
-                collateral.minimumPayout.currency,
-                (collateral.minimumPayout.raw * kpiTokenBalance.raw) /
+                reward.minimumPayout.currency,
+                (reward.minimumPayout.raw * kpiTokenBalance.raw) /
                     kpiTokenInitialSupply.raw,
             );
         });
     }
 
-    // replicating the on-chain logic, calculate the remaining collaterals
+    // replicating the on-chain logic, calculate the remaining rewards
     // after all the oracles have settled
     const totalWeight = oracles.reduce(
         (accumulator: bigint, oracle) => accumulator + oracle.weight,
         0n,
     );
-    const remainingCollateralsAfterResolutions = [...collaterals];
+    const remainingRewardsAfterResolutions = [...rewards];
     for (const oracle of oracles) {
         if (oracle.finalResult < 1_000_000) {
-            for (
-                let i = 0;
-                i < remainingCollateralsAfterResolutions.length;
-                i++
-            ) {
-                const collateral = remainingCollateralsAfterResolutions[i];
+            for (let i = 0; i < remainingRewardsAfterResolutions.length; i++) {
+                const reward = remainingRewardsAfterResolutions[i];
                 const numerator =
-                    (collateral.amount.raw - collateral.minimumPayout.raw) *
+                    (reward.amount.raw - reward.minimumPayout.raw) *
                     oracle.weight *
                     (1_000_000n - oracle.finalResult) *
                     MULTIPLIER;
                 const denominator = 1_000_000n * totalWeight;
                 const reimboursement = numerator / denominator / MULTIPLIER;
-                remainingCollateralsAfterResolutions[i] = {
+                remainingRewardsAfterResolutions[i] = {
                     amount: new Amount(
-                        collateral.amount.currency,
-                        collateral.amount.raw - reimboursement,
+                        reward.amount.currency,
+                        reward.amount.raw - reimboursement,
                     ),
-                    minimumPayout: collateral.minimumPayout,
+                    minimumPayout: reward.minimumPayout,
                 };
             }
         }
     }
 
-    // based on the remaining collateral, the initial supply, and the user's
+    // based on the remaining reward, the initial supply, and the user's
     // holdings, calculate the redeemable rewards
-    return remainingCollateralsAfterResolutions.map((collateral) => {
+    return remainingRewardsAfterResolutions.map((reward) => {
         return new Amount(
-            collateral.amount.currency,
-            (collateral.amount.raw * kpiTokenBalance.raw) /
+            reward.amount.currency,
+            (reward.amount.raw * kpiTokenBalance.raw) /
                 kpiTokenInitialSupply.raw,
         );
     });
 };
 
 export const getRecoverableRewards = (
-    collaterals: CollateralData[],
-    kpiTokenCollateralBalances: Amount<Token>[],
+    rewards: RewardData[],
+    kpiTokenRewardBalances: Amount<Token>[],
     expired: boolean,
 ): Amount<Token>[] => {
-    return kpiTokenCollateralBalances
+    return kpiTokenRewardBalances
         .map((balance) => {
-            const neededAmount = collaterals.find(
-                (collateral) => collateral.amount.currency === balance.currency,
+            const neededAmount = rewards.find(
+                (reward) => reward.amount.currency === balance.currency,
             );
             if (!neededAmount) return new Amount(balance.currency, 0n);
 

@@ -24,7 +24,7 @@ export class TokenWithLogoURI extends Token {
     }
 }
 
-export interface CollateralData {
+export interface RewardData {
     amount: Amount<TokenWithLogoURI>;
     minimumPayout: Amount<TokenWithLogoURI>;
 }

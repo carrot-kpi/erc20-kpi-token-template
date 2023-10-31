@@ -43,7 +43,7 @@ import {
 import { getKPITokenAddressFromReceipt } from "../../../utils/logs";
 import { zeroAddress, type Hex } from "viem";
 import { dateToUnixTimestamp } from "../../../utils/dates";
-import { RewardsTable } from "../collaterals/table";
+import { RewardsTable } from "../rewards/table";
 import { ApproveRewards } from "../approve-rewards";
 
 interface DeployProps {

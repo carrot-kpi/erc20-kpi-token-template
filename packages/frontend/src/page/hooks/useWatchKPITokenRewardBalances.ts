@@ -2,47 +2,47 @@ import { Amount, Token } from "@carrot-kpi/sdk";
 import { useEffect, useState } from "react";
 import { erc20ABI, useContractReads } from "wagmi";
 import type { Address } from "viem";
-import type { CollateralData } from "../types";
+import type { RewardData } from "../types";
 
-export const useWatchKPITokenCollateralBalances = (
+export const useWatchKPITokenRewardBalances = (
     kpiTokenAddress?: Address,
-    collaterals?: CollateralData[],
+    rewards?: RewardData[],
 ) => {
     const [balances, setBalances] = useState<Amount<Token>[]>([]);
 
     const { data: rawBalances, isLoading: loading } = useContractReads({
         contracts:
             kpiTokenAddress &&
-            collaterals &&
-            collaterals.map((collateral) => {
+            rewards &&
+            rewards.map((reward) => {
                 return {
-                    address: collateral.amount.currency.address,
+                    address: reward.amount.currency.address,
                     abi: erc20ABI,
                     functionName: "balanceOf",
                     args: [kpiTokenAddress],
                 };
             }),
         watch: true,
-        enabled: !!(collaterals && kpiTokenAddress),
+        enabled: !!(rewards && kpiTokenAddress),
     });
 
     useEffect(() => {
         if (
-            !collaterals ||
+            !rewards ||
             loading ||
             !rawBalances ||
-            rawBalances.length !== collaterals?.length
+            rawBalances.length !== rewards?.length
         )
             return;
         setBalances(
-            collaterals.map((collateral, i) => {
+            rewards.map((reward, i) => {
                 return new Amount(
-                    collateral.amount.currency,
+                    reward.amount.currency,
                     rawBalances[i].result as bigint,
                 );
             }),
         );
-    }, [collaterals, loading, rawBalances]);
+    }, [rewards, loading, rawBalances]);
 
     return { loading, balances };
 };

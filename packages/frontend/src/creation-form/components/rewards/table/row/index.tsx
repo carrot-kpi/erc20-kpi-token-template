@@ -10,7 +10,7 @@ import {
 import { PROTOCOL_FEE_BPS } from "../../../../constants";
 import { Amount, Token, formatCurrencyAmount } from "@carrot-kpi/sdk";
 
-type CollateralRowProps = Reward & {
+type RewardsRowProps = Reward & {
     t: NamespacedTranslateFunction;
     index: number;
     noEdit?: boolean;
@@ -30,7 +30,7 @@ export const RewardRow = ({
     logoURI,
     amount,
     minimumPayout,
-}: CollateralRowProps) => {
+}: RewardsRowProps) => {
     const anchorRef = useRef<HTMLDivElement>(null);
     const ipfsGatewayURL = useIPFSGatewayURL();
 
@@ -91,7 +91,7 @@ export const RewardRow = ({
             >
                 <div className="flex gap-3 justify-between">
                     <Typography variant="sm">
-                        {t("label.collateral.picker.fee")}
+                        {t("label.rewards.picker.fee")}
                     </Typography>
                     <Typography variant="sm">
                         {Number(PROTOCOL_FEE_BPS) / 100}%
@@ -100,13 +100,13 @@ export const RewardRow = ({
                 <div className="w-full h-[1px] bg-black dark:bg-white" />
                 <div className="flex gap-3 justify-between">
                     <Typography variant="sm">
-                        {t("label.collateral.table.amount")}
+                        {t("label.rewards.table.amount")}
                     </Typography>
                     <Typography variant="sm">{formattedAmount}</Typography>
                 </div>
                 <div className="flex gap-3 justify-between">
                     <Typography variant="sm">
-                        {t("label.collateral.table.amount.after.fees")}
+                        {t("label.rewards.table.amount.after.fees")}
                     </Typography>
                     <Typography variant="sm">
                         {formattedAmountAfterFees}
