@@ -9,8 +9,8 @@ import {
     type Token,
 } from "@carrot-kpi/sdk";
 import { Button, Select, Typography, type SelectOption } from "@carrot-kpi/ui";
-import type { RewardData } from "../../../types";
-import ERC20_KPI_TOKEN_ABI from "../../../../abis/erc20-kpi-token";
+import type { RewardData } from "../../types";
+import ERC20_KPI_TOKEN_ABI from "../../../abis/erc20-kpi-token";
 import { type Address, zeroAddress, formatUnits } from "viem";
 import {
     usePrepareContractWrite,
@@ -20,9 +20,9 @@ import {
     usePublicClient,
 } from "wagmi";
 import { useCallback, useMemo, useState } from "react";
-import { getRecoverableRewards } from "../../../../utils/rewards";
-import { dateToUnixTimestamp } from "../../../../utils/dates";
-import { TokenAmount } from "../../token-amount";
+import { getRecoverableRewards } from "../../../utils/rewards";
+import { dateToUnixTimestamp } from "../../../utils/dates";
+import { TokenAmount } from "../token-amount";
 
 interface RewardOption extends SelectOption<Address> {
     amount: Amount<Token>;

@@ -5,7 +5,7 @@ import {
     useState,
     useMemo,
 } from "react";
-import type { State } from "../../types";
+import type { State } from "../types";
 import { type NamespacedTranslateFunction } from "@carrot-kpi/react";
 import {
     MarkdownInput,
@@ -20,8 +20,8 @@ import {
     unixTimestampToDate,
     dateToUnixTimestamp,
     isUnixTimestampInThePast,
-} from "../../../utils/dates";
-import { NoSpecialCharactersTextInput } from "../no-special-characters-text-input";
+} from "../../utils/dates";
+import { NoSpecialCharactersTextInput } from "./no-special-characters-text-input";
 import {
     MAX_KPI_TOKEN_DESCRIPTION_CHARS,
     MAX_KPI_TOKEN_NAME_CHARS,
@@ -29,7 +29,7 @@ import {
     MAX_KPI_TOKEN_TAGS_COUNT,
     MAX_KPI_TOKEN_TAG_CHARS,
     MAX_KPI_TOKEN_TITLE_CHARS,
-} from "../../constants";
+} from "../constants";
 import { formatUnits, parseUnits } from "viem";
 
 interface GenericDataProps {

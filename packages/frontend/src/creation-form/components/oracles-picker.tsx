@@ -8,9 +8,9 @@ import {
     useState,
     type ChangeEvent,
 } from "react";
-import { Loader } from "../../../ui/loader";
-import { OracleTemplate } from "../../../ui/oracle-template";
-import type { State } from "../../types";
+import { Loader } from "../../ui/loader";
+import { OracleTemplate } from "../../ui/oracle-template";
+import type { State } from "../types";
 
 interface OraclesPickerProps {
     loading?: boolean;

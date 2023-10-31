@@ -1,6 +1,6 @@
 import type { ReactElement } from "react";
 import type { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import { ReactComponent as WalletDisconnected } from "../../../assets/wallet-disconnected.svg";
+import { ReactComponent as WalletDisconnected } from "../../assets/wallet-disconnected.svg";
 import { Typography } from "@carrot-kpi/ui";
 
 interface GenericDataProps {

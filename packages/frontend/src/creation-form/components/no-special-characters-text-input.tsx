@@ -1,6 +1,6 @@
 import { TextInput, type TextInputProps } from "@carrot-kpi/ui";
 import { type ChangeEvent, type FocusEvent, useCallback } from "react";
-import { NO_SPECIAL_CHARACTERS_REGEX } from "../../constants";
+import { NO_SPECIAL_CHARACTERS_REGEX } from "../constants";
 
 interface NoSpecialCharactersTextInputProps
     extends Omit<TextInputProps, "onChange"> {

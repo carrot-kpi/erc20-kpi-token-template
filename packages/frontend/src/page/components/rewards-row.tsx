@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { Typography, Popover } from "@carrot-kpi/ui";
-import type { RewardData } from "../../types";
-import { TokenAmount } from "../token-amount";
+import type { RewardData } from "../types";
+import { TokenAmount } from "./token-amount";
 
 interface RewardsRowProps {
     loading?: boolean;

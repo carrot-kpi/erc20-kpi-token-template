@@ -20,7 +20,7 @@ import {
     usePublicClient,
     useNetwork,
 } from "wagmi";
-import { dateToUnixTimestamp } from "../../../../utils/dates";
+import { dateToUnixTimestamp } from "../../../utils/dates";
 import { encodeAbiParameters, zeroAddress } from "viem";
 
 interface WalletActionsProps {

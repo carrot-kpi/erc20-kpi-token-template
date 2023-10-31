@@ -7,7 +7,7 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { COINGECKO_LIST_URL } from "../../constants";
 import { ERC20_ABI, Service, getServiceURL } from "@carrot-kpi/sdk";
-import { useImportableToken } from "./hooks/useImportableToken";
+import { useImportableToken } from "../../hooks/useImportableToken";
 import {
     ERC20TokenPicker,
     type TokenInfoWithBalance,

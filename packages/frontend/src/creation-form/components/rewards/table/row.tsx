@@ -1,13 +1,13 @@
 import { useCallback, useRef, useState } from "react";
-import type { Reward } from "../../../../types";
-import { ReactComponent as X } from "../../../../../assets/x.svg";
+import type { Reward } from "../../../types";
+import { ReactComponent as X } from "../../../../assets/x.svg";
 import { Popover, RemoteLogo, Typography } from "@carrot-kpi/ui";
-import { getDefaultERC20TokenLogoURL } from "../../../../../utils/erc20";
+import { getDefaultERC20TokenLogoURL } from "../../../../utils/erc20";
 import {
     type NamespacedTranslateFunction,
     useIPFSGatewayURL,
 } from "@carrot-kpi/react";
-import { PROTOCOL_FEE_BPS } from "../../../../constants";
+import { PROTOCOL_FEE_BPS } from "../../../constants";
 import { Amount, Token, formatCurrencyAmount } from "@carrot-kpi/sdk";
 
 type RewardsRowProps = Reward & {

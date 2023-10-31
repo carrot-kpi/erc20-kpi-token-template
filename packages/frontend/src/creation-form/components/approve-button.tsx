@@ -10,7 +10,7 @@ import {
     useChainId,
 } from "wagmi";
 import { type TransactionReceipt } from "viem";
-import type { Reward } from "../../types";
+import type { Reward } from "../types";
 
 interface ApproveRewardProps {
     t: NamespacedTranslateFunction;

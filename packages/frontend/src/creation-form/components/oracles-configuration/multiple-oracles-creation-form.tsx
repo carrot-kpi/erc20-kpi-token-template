@@ -6,9 +6,9 @@ import {
     type OracleRemoteCreationFormProps,
 } from "@carrot-kpi/react";
 import { useCallback, useMemo } from "react";
-import type { Oracle, State } from "../../../types";
-import { SingleOracleCreationForm } from "../single-oracle-creation-form";
-import { OraclesAccordion } from "../oracles-accordion";
+import type { Oracle, State } from "../../types";
+import { SingleOracleCreationForm } from "./single-oracle-creation-form";
+import { OraclesAccordion } from "./oracles-accordion";
 
 interface MultipleOraclesCreationFormProps
     extends Omit<

@@ -18,7 +18,7 @@ import type {
     OracleWithInitializationBundle,
     OracleWithInitializationBundleGetter,
     State,
-} from "../../types";
+} from "../types";
 import { Button, ErrorText, Typography } from "@carrot-kpi/ui";
 import {
     type KPITokenCreationFormProps,
@@ -35,16 +35,16 @@ import {
     ResolvedTemplate,
     type KPITokenSpecification,
 } from "@carrot-kpi/sdk";
-import { ReactComponent as Info } from "../../../assets/info.svg";
+import { ReactComponent as Info } from "../../assets/info.svg";
 import {
     encodeKPITokenData,
     encodeOracleInitializationData,
-} from "../../utils/data-encoding";
-import { getKPITokenAddressFromReceipt } from "../../../utils/logs";
+} from "../utils/data-encoding";
+import { getKPITokenAddressFromReceipt } from "../../utils/logs";
 import { zeroAddress, type Hex } from "viem";
-import { dateToUnixTimestamp } from "../../../utils/dates";
-import { RewardsTable } from "../rewards/table";
-import { ApproveRewards } from "../approve-rewards";
+import { dateToUnixTimestamp } from "../../utils/dates";
+import { RewardsTable } from "./rewards/table";
+import { ApproveRewards } from "./approve-rewards";
 
 interface DeployProps {
     t: NamespacedTranslateFunction;
