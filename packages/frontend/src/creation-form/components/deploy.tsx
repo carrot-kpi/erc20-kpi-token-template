@@ -176,6 +176,7 @@ export const Deploy = ({
     // upload specification to decentralized storage and get back the cid,
     // but only after having set the kpi token and oracles initializiation data
     useEffect(() => {
+        if (specificationCid) return;
         let cancelled = false;
         const uploadAndGetSpecificationCid = async () => {
             if (!state.title || !state.description || !state.tags) {
@@ -204,6 +205,7 @@ export const Deploy = ({
             cancelled = true;
         };
     }, [
+        specificationCid,
         state.description,
         state.tags,
         state.title,
