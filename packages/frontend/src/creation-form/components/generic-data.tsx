@@ -1,14 +1,12 @@
-import { type ReactElement, useCallback, useEffect, useState } from "react";
-import type {
-    GenericDataStepState,
-    NumberFormatValue,
-    SpecificationData,
-    TokenData,
-} from "../../types";
 import {
-    type NamespacedTranslateFunction,
-    useDecentralizedStorageUploader,
-} from "@carrot-kpi/react";
+    type ReactElement,
+    useCallback,
+    useEffect,
+    useState,
+    useMemo,
+} from "react";
+import type { State } from "../types";
+import { type NamespacedTranslateFunction } from "@carrot-kpi/react";
 import {
     MarkdownInput,
     NumberInput,
@@ -16,33 +14,32 @@ import {
     NextStepButton,
     DateTimeInput,
     Typography,
+    type NumberFormatValues,
 } from "@carrot-kpi/ui";
-import { isInThePast } from "../../../utils/dates";
-import { NoSpecialCharactersTextInput } from "../no-special-characters-text-input";
+import {
+    unixTimestampToDate,
+    dateToUnixTimestamp,
+    isUnixTimestampInThePast,
+} from "../../utils/dates";
+import { NoSpecialCharactersTextInput } from "./no-special-characters-text-input";
 import {
     MAX_KPI_TOKEN_DESCRIPTION_CHARS,
-    MAX_KPI_TOKEN_ERC20_NAME_CHARS,
-    MAX_KPI_TOKEN_ERC20_SYMBOL_CHARS,
+    MAX_KPI_TOKEN_NAME_CHARS,
+    MAX_KPI_TOKEN_SYMBOL_CHARS,
     MAX_KPI_TOKEN_TAGS_COUNT,
     MAX_KPI_TOKEN_TAG_CHARS,
     MAX_KPI_TOKEN_TITLE_CHARS,
-} from "../../constants";
-import {
-    isGenericDataStepStateInvalid,
-    stripHtml,
-} from "../../utils/validation";
-import { parseUnits } from "viem";
+} from "../constants";
+import { formatUnits, parseUnits } from "viem";
 
 interface GenericDataProps {
     t: NamespacedTranslateFunction;
-    state: GenericDataStepState;
-    onStateChange: (state: GenericDataStepState) => void;
-    onNext: (
-        partialSpecificationData: SpecificationData,
-        specificationCID: string,
-        partialTokenData: TokenData,
-    ) => void;
+    state: State;
+    onStateChange: (state: State) => void;
+    onNext: () => void;
 }
+
+const stripHtml = (value: string) => value.replace(/(<([^>]+)>)/gi, "");
 
 export const GenericData = ({
     t,
@@ -50,18 +47,19 @@ export const GenericData = ({
     onStateChange,
     onNext,
 }: GenericDataProps): ReactElement => {
-    const uploadToDecentralizedStorage = useDecentralizedStorageUploader();
-
     const [titleErrorText, setTitleErrorText] = useState("");
     const [descriptionErrorText, setDescriptionErrorText] = useState("");
     const [tagsErrorText, setTagsErrorText] = useState("");
     const [expirationErrorText, setExpirationErrorText] = useState("");
-    const [erc20NameErrorText, setERC20NameErrorText] = useState("");
-    const [erc20SymbolErrorText, setERC20SymbolErrorText] = useState("");
-    const [erc20SupplyErrorText, setERC20SupplyErrorText] = useState("");
+    const [tokenNameErrorText, setTokenNameErrorText] = useState("");
+    const [tokenSymbolErrorText, setTokenSymbolErrorText] = useState("");
+    const [tokenSupplyErrorText, setTokenSupplyErrorText] = useState("");
     const [disabled, setDisabled] = useState(true);
     const [minimumDate, setMinimumDate] = useState(new Date());
-    const [loading, setLoading] = useState(false);
+
+    const memoizedStateDate = useMemo(() => {
+        return state.expiration ? unixTimestampToDate(state.expiration) : null;
+    }, [state.expiration]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -73,8 +71,39 @@ export const GenericData = ({
     }, []);
 
     useEffect(() => {
-        setDisabled(isGenericDataStepStateInvalid(state));
+        setDisabled(
+            !state.title ||
+                !state.description ||
+                !state.tokenName ||
+                !state.tokenSymbol ||
+                !state.title.trim() ||
+                state.title.trim().length > MAX_KPI_TOKEN_TITLE_CHARS ||
+                !stripHtml(state.description).trim() ||
+                stripHtml(state.description).trim().length >
+                    MAX_KPI_TOKEN_DESCRIPTION_CHARS ||
+                !state.tags ||
+                state.tags.length === 0 ||
+                state.tags.length > MAX_KPI_TOKEN_TAGS_COUNT ||
+                !state.expiration ||
+                isUnixTimestampInThePast(state.expiration) ||
+                !state.tokenName.trim() ||
+                state.tokenName.trim().length > MAX_KPI_TOKEN_NAME_CHARS ||
+                !state.tokenSymbol.trim() ||
+                state.tokenSymbol.trim().length > MAX_KPI_TOKEN_SYMBOL_CHARS ||
+                !state.tokenSupply ||
+                !state.tokenSupply ||
+                parseFloat(state.tokenSupply) === 0,
+        );
     }, [state]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setMinimumDate(new Date());
+        }, 1_000);
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
 
     const handleTitleChange = useCallback(
         (value: string): void => {
@@ -139,114 +168,72 @@ export const GenericData = ({
 
     const handleExpirationChange = useCallback(
         (value: Date) => {
+            const converted = dateToUnixTimestamp(value);
             setExpirationErrorText(
-                isInThePast(value) ? t("error.expiration.past") : "",
-            );
-            onStateChange({ ...state, expiration: value });
-        },
-        [onStateChange, state, t],
-    );
-
-    const handleERC20NameChange = useCallback(
-        (value: string) => {
-            setERC20NameErrorText(
-                !value
-                    ? t("error.erc20.name.empty")
-                    : value.trim().length > MAX_KPI_TOKEN_ERC20_NAME_CHARS
-                    ? t("error.erc20.name.tooLong", {
-                          chars: MAX_KPI_TOKEN_ERC20_NAME_CHARS,
-                      })
+                isUnixTimestampInThePast(converted)
+                    ? t("error.expiration.past")
                     : "",
             );
             onStateChange({
                 ...state,
-                erc20Name: value,
+                expiration: converted,
             });
         },
         [onStateChange, state, t],
     );
 
-    const handleERC20SymbolChange = useCallback(
+    const handleTokenNameChange = useCallback(
         (value: string) => {
-            setERC20SymbolErrorText(
+            setTokenNameErrorText(
                 !value
-                    ? t("error.erc20.symbol.empty")
-                    : value.trim().length > MAX_KPI_TOKEN_ERC20_SYMBOL_CHARS
-                    ? t("error.erc20.symbol.tooLong", {
-                          chars: MAX_KPI_TOKEN_ERC20_SYMBOL_CHARS,
+                    ? t("error.token.name.empty")
+                    : value.trim().length > MAX_KPI_TOKEN_NAME_CHARS
+                    ? t("error.token.name.tooLong", {
+                          chars: MAX_KPI_TOKEN_NAME_CHARS,
                       })
                     : "",
             );
             onStateChange({
                 ...state,
-                erc20Symbol: value,
+                tokenName: value,
             });
         },
         [onStateChange, state, t],
     );
 
-    const handleERC20SupplyChange = useCallback(
-        (value: NumberFormatValue) => {
-            setERC20SupplyErrorText(
+    const handleTokenSymbolChange = useCallback(
+        (value: string) => {
+            setTokenSymbolErrorText(
+                !value
+                    ? t("error.token.symbol.empty")
+                    : value.trim().length > MAX_KPI_TOKEN_SYMBOL_CHARS
+                    ? t("error.token.symbol.tooLong", {
+                          chars: MAX_KPI_TOKEN_SYMBOL_CHARS,
+                      })
+                    : "",
+            );
+            onStateChange({
+                ...state,
+                tokenSymbol: value,
+            });
+        },
+        [onStateChange, state, t],
+    );
+
+    const handleTokenSupplyChange = useCallback(
+        (value: NumberFormatValues) => {
+            setTokenSupplyErrorText(
                 !value || !value.value || parseUnits(value.value, 18) === 0n
-                    ? t("error.erc20.supply.zero")
+                    ? t("error.token.supply.zero")
                     : "",
             );
             onStateChange({
                 ...state,
-                erc20Supply: value,
+                tokenSupply: parseUnits(value.value, 18).toString(),
             });
         },
         [onStateChange, state, t],
     );
-
-    const handleNext = useCallback(async () => {
-        if (
-            !state.title ||
-            !state.description ||
-            !state.tags ||
-            state.tags.length === 0 ||
-            !state.expiration ||
-            !state.erc20Name ||
-            !state.erc20Supply ||
-            !state.erc20Supply.value ||
-            !state.erc20Symbol
-        )
-            return;
-        const specificationData: SpecificationData = {
-            title: state.title,
-            description: state.description,
-            tags: state.tags,
-            expiration: state.expiration,
-        };
-        let specificationCID;
-        try {
-            setLoading(true);
-            specificationCID = await uploadToDecentralizedStorage(
-                JSON.stringify(specificationData),
-            );
-        } catch (error) {
-            console.warn("error while uploading specification to ipfs", error);
-            return;
-        } finally {
-            setLoading(false);
-        }
-        onNext(specificationData, specificationCID, {
-            name: state.erc20Name,
-            supply: parseUnits(state.erc20Supply.value as `${number}`, 18),
-            symbol: state.erc20Symbol,
-        });
-    }, [
-        onNext,
-        state.description,
-        state.erc20Name,
-        state.erc20Supply,
-        state.erc20Symbol,
-        state.expiration,
-        state.tags,
-        state.title,
-        uploadToDecentralizedStorage,
-    ]);
 
     return (
         <div className="flex flex-col gap-6">
@@ -292,7 +279,7 @@ export const GenericData = ({
                 label={t("general.label.expiration")}
                 placeholder={t("general.placeholder.expiration")}
                 onChange={handleExpirationChange}
-                value={state.expiration}
+                value={memoizedStateDate}
                 error={!!expirationErrorText}
                 errorText={expirationErrorText}
                 info={
@@ -316,10 +303,10 @@ export const GenericData = ({
                 <NoSpecialCharactersTextInput
                     label={t("general.label.token.name")}
                     placeholder={"Example"}
-                    onChange={handleERC20NameChange}
-                    value={state.erc20Name}
-                    error={!!erc20NameErrorText}
-                    errorText={erc20NameErrorText}
+                    onChange={handleTokenNameChange}
+                    value={state.tokenName}
+                    error={!!tokenNameErrorText}
+                    errorText={tokenNameErrorText}
                     className={{
                         root: "w-full",
                         input: "w-full",
@@ -329,10 +316,10 @@ export const GenericData = ({
                 <NoSpecialCharactersTextInput
                     label={t("general.label.token.symbol")}
                     placeholder={"XMPL"}
-                    onChange={handleERC20SymbolChange}
-                    value={state.erc20Symbol}
-                    error={!!erc20SymbolErrorText}
-                    errorText={erc20SymbolErrorText}
+                    onChange={handleTokenSymbolChange}
+                    value={state.tokenSymbol}
+                    error={!!tokenSymbolErrorText}
+                    errorText={tokenSymbolErrorText}
                     className={{
                         root: "w-full",
                         input: "w-full",
@@ -343,10 +330,14 @@ export const GenericData = ({
                     allowNegative={false}
                     label={t("general.label.token.supply")}
                     placeholder={"1,000,000"}
-                    onValueChange={handleERC20SupplyChange}
-                    value={state.erc20Supply?.formattedValue}
-                    error={!!erc20SupplyErrorText}
-                    errorText={erc20SupplyErrorText}
+                    onValueChange={handleTokenSupplyChange}
+                    value={
+                        state.tokenSupply
+                            ? formatUnits(BigInt(state.tokenSupply), 18)
+                            : null
+                    }
+                    error={!!tokenSupplyErrorText}
+                    errorText={tokenSupplyErrorText}
                     className={{
                         root: "w-full",
                         input: "w-full",
@@ -354,11 +345,7 @@ export const GenericData = ({
                     }}
                 />
             </div>
-            <NextStepButton
-                onClick={handleNext}
-                disabled={disabled}
-                loading={loading}
-            >
+            <NextStepButton onClick={onNext} disabled={disabled}>
                 {t("next")}
             </NextStepButton>
         </div>

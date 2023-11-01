@@ -1,19 +1,19 @@
 import { useCallback, useState } from "react";
 import { Typography, Popover } from "@carrot-kpi/ui";
-import type { CollateralData } from "../../../creation-form/types";
-import { TokenAmount } from "../token-amount";
+import type { RewardData } from "../types";
+import { TokenAmount } from "./token-amount";
 
-interface CollateralRowProps {
+interface RewardsRowProps {
     loading?: boolean;
-    collateral?: CollateralData;
+    reward?: RewardData;
     minimumPayout?: boolean;
 }
 
-export const CollateralRow = ({
+export const RewardsRow = ({
     loading,
-    collateral,
+    reward,
     minimumPayout,
-}: CollateralRowProps) => {
+}: RewardsRowProps) => {
     const [open, setOpen] = useState(false);
     const [anchor, setAnchor] = useState<HTMLDivElement | null>(null);
 
@@ -30,23 +30,21 @@ export const CollateralRow = ({
             <div
                 className="flex cursor-pointer gap-2"
                 ref={setAnchor}
-                onMouseEnter={collateral && handleMouseEnter}
-                onMouseLeave={collateral && handleMouseLeave}
+                onMouseEnter={reward && handleMouseEnter}
+                onMouseLeave={reward && handleMouseLeave}
             >
                 <TokenAmount
-                    loading={loading || !collateral}
+                    loading={loading || !reward}
                     amount={
-                        minimumPayout
-                            ? collateral?.minimumPayout
-                            : collateral?.amount
+                        minimumPayout ? reward?.minimumPayout : reward?.amount
                     }
                 />
             </div>
-            {collateral && (
+            {reward && (
                 <Popover anchor={anchor} open={open} placement="bottom">
                     <Typography className={{ root: "p-3" }}>
-                        {collateral.amount.currency.name} (
-                        {collateral.amount.currency.symbol})
+                        {reward.amount.currency.name} (
+                        {reward.amount.currency.symbol})
                     </Typography>
                 </Popover>
             )}

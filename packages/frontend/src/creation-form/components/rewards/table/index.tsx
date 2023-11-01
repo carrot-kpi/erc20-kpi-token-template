@@ -1,8 +1,8 @@
 import type { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Typography } from "@carrot-kpi/ui";
 import { cva } from "class-variance-authority";
-import type { CollateralData } from "../../../types";
-import { CollateralRow } from "./row";
+import type { Reward } from "../../../types";
+import { RewardRow } from "./row";
 
 const containerStyles = cva(
     ["flex", "max-h-48", "flex-col", "gap-1", "overflow-y-auto"],
@@ -21,44 +21,44 @@ const containerStyles = cva(
     },
 );
 
-interface CollateralsTableProps {
+interface RewardsTableProps {
     t: NamespacedTranslateFunction;
     onRemove?: (index: number) => void;
-    collaterals: CollateralData[];
+    rewards?: Reward[];
     noEdit?: boolean;
     noBorder?: boolean;
 }
 
-export const CollateralsTable = ({
+export const RewardsTable = ({
     t,
     noEdit,
     noBorder = false,
     onRemove,
-    collaterals,
-}: CollateralsTableProps) => {
+    rewards,
+}: RewardsTableProps) => {
     return (
         <div className="flex flex-col gap-2">
-            <div className="grid grid-cols-collaterals">
+            <div className="grid grid-cols-rewards">
                 <Typography weight="medium" variant="sm">
-                    {t("label.collateral.table.collateral")}
+                    {t("label.rewards.table.reward")}
                 </Typography>
                 <Typography
                     weight="medium"
                     className={{ root: "text-center" }}
                     variant="sm"
                 >
-                    {t("label.collateral.table.amount")}
+                    {t("label.rewards.table.amount")}
                 </Typography>
                 <Typography
                     weight="medium"
                     className={{ root: "text-right" }}
                     variant="sm"
                 >
-                    {t("label.collateral.table.minimum.payout")}
+                    {t("label.rewards.table.minimum.payout")}
                 </Typography>
             </div>
             <div className={containerStyles({ noBorder })}>
-                {collaterals.length === 0 ? (
+                {!rewards || rewards.length === 0 ? (
                     <Typography
                         variant="sm"
                         className={{
@@ -66,18 +66,18 @@ export const CollateralsTable = ({
                         }}
                         weight="medium"
                     >
-                        {t("label.collateral.table.empty")}
+                        {t("label.rewards.table.empty")}
                     </Typography>
                 ) : (
-                    collaterals.map((collateral, index) => {
+                    rewards.map((reward, index) => {
                         return (
-                            <CollateralRow
+                            <RewardRow
                                 t={t}
                                 noEdit={noEdit}
-                                key={collateral.amount.currency.address}
+                                key={reward.address}
                                 index={index}
                                 onRemove={onRemove}
-                                {...collateral}
+                                {...reward}
                             />
                         );
                     })

@@ -19,24 +19,24 @@ import {
     useNetwork,
 } from "wagmi";
 import { mainnet } from "wagmi/chains";
-import type { CollateralData } from "../../../creation-form/types";
+import type { RewardData } from "../../types";
 import {
     getGuaranteedRewards,
     getMaximumRewards,
     getRedeemableRewards,
-} from "../../../utils/collaterals";
-import { useWatchKPITokenCollateralBalances } from "../../hooks/useWatchKPITokenCollateralBalances";
+} from "../../../utils/rewards";
+import { useWatchKPITokenRewardBalances } from "../../hooks/useWatchKPITokenRewardBalances";
 import type { FinalizableOracle } from "../../types";
 import { TokenAmount } from "../token-amount";
 import { WalletActions } from "./actions";
-import { RecoverCollateral } from "./recover-collateral";
+import { RecoverReward } from "./recover-reward";
 
 interface WalletPositionProps {
     t: NamespacedTranslateFunction;
     onTx: KPITokenPageProps["onTx"];
     loading?: boolean;
     kpiToken: ResolvedKPIToken;
-    collaterals?: CollateralData[];
+    rewards?: RewardData[];
     oracles?: FinalizableOracle[];
     initialSupply?: Amount<Token> | null;
     erc20Symbol?: string;
@@ -48,7 +48,7 @@ export const WalletPosition = ({
     onTx,
     loading,
     kpiToken,
-    collaterals,
+    rewards,
     oracles,
     initialSupply,
     erc20Symbol,
@@ -66,9 +66,9 @@ export const WalletPosition = ({
         watch: true,
     });
     const {
-        balances: kpiTokenCollateralBalances,
-        loading: loadingKPITokenCollateralBalances,
-    } = useWatchKPITokenCollateralBalances(kpiToken.address, collaterals);
+        balances: kpiTokenRewardBalances,
+        loading: loadingKPITokenRewardBalances,
+    } = useWatchKPITokenRewardBalances(kpiToken.address, rewards);
 
     const { data: kpiTokenOwner } = useContractRead({
         chainId: chain?.id,
@@ -102,29 +102,27 @@ export const WalletPosition = ({
             rawKpiTokenBalance.value,
         );
         setBalance(balance);
-        if (!collaterals || !initialSupply) return;
-        if (collaterals.length === 0) {
+        if (!rewards || !initialSupply) return;
+        if (rewards.length === 0) {
             setGuaranteedRewards(null);
             setMaximumRewards(null);
             return;
         }
-        setMaximumRewards(
-            getMaximumRewards(balance, initialSupply, collaterals),
-        );
+        setMaximumRewards(getMaximumRewards(balance, initialSupply, rewards));
         setGuaranteedRewards(
-            getGuaranteedRewards(balance, initialSupply, collaterals),
+            getGuaranteedRewards(balance, initialSupply, rewards),
         );
         setRedeemableRewards(
             getRedeemableRewards(
                 oracles,
                 balance,
                 initialSupply,
-                collaterals,
+                rewards,
                 kpiToken.expired,
             ),
         );
     }, [
-        collaterals,
+        rewards,
         erc20Name,
         erc20Symbol,
         initialSupply,
@@ -173,7 +171,7 @@ export const WalletPosition = ({
                         </Typography>
                         <div className="flex flex-col gap-2">
                             {loading || !guaranteedRewards
-                                ? new Array(collaterals?.length || 1)
+                                ? new Array(rewards?.length || 1)
                                       .fill(null)
                                       .map((_, index) => (
                                           <TokenAmount key={index} loading />
@@ -198,7 +196,7 @@ export const WalletPosition = ({
                         </Typography>
                         <div className="flex flex-col gap-2">
                             {loading || !maximumRewards
-                                ? new Array(collaterals?.length || 1)
+                                ? new Array(rewards?.length || 1)
                                       .fill(null)
                                       .map((_, index) => (
                                           <TokenAmount key={index} loading />
@@ -223,15 +221,15 @@ export const WalletPosition = ({
                         </Typography>
                         <div className="flex flex-col gap-2">
                             {loading ||
-                            !kpiTokenCollateralBalances ||
-                            loadingKPITokenCollateralBalances ||
-                            kpiTokenCollateralBalances.length === 0
-                                ? new Array(collaterals?.length || 1)
+                            !kpiTokenRewardBalances ||
+                            loadingKPITokenRewardBalances ||
+                            kpiTokenRewardBalances.length === 0
+                                ? new Array(rewards?.length || 1)
                                       .fill(null)
                                       .map((_, index) => (
                                           <TokenAmount key={index} loading />
                                       ))
-                                : kpiTokenCollateralBalances.map((reward) => {
+                                : kpiTokenRewardBalances.map((reward) => {
                                       return (
                                           <TokenAmount
                                               key={reward.currency.address}
@@ -262,7 +260,7 @@ export const WalletPosition = ({
                             {t("position.rewards.claimable.label")}
                         </Typography>
                         {loading || !redeemableRewards ? (
-                            new Array(collaterals?.length || 1)
+                            new Array(rewards?.length || 1)
                                 .fill(null)
                                 .map((_, index) => (
                                     <TokenAmount key={index} loading />
@@ -291,12 +289,12 @@ export const WalletPosition = ({
                     />
                 </div>
                 {owner && (
-                    <RecoverCollateral
+                    <RecoverReward
                         t={t}
                         onTx={onTx}
                         kpiToken={kpiToken}
-                        collaterals={collaterals}
-                        kpiTokenCollateralBalances={kpiTokenCollateralBalances}
+                        rewards={rewards}
+                        kpiTokenRewardBalances={kpiTokenRewardBalances}
                     />
                 )}
             </div>

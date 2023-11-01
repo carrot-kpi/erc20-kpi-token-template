@@ -1,12 +1,11 @@
-import { Template } from "@carrot-kpi/sdk";
-import type { CollateralData, OracleData } from "../types";
+import type { OracleWithInitializationBundle, Reward } from "../types";
 import { encodeAbiParameters, type Hex } from "viem";
 
 export const encodeKPITokenData = (
-    collateralsData: CollateralData[],
-    erc20Name: string,
-    erc20Symbol: string,
-    supply: bigint,
+    rewards: Reward[],
+    tokenName: string,
+    tokenSymbol: string,
+    tokenSupply: bigint,
 ) => {
     return encodeAbiParameters(
         [
@@ -17,41 +16,39 @@ export const encodeKPITokenData = (
                     { type: "uint256", name: "amount" },
                     { type: "uint256", name: "minimumPayout" },
                 ],
-                name: "collaterals",
+                name: "rewards",
             },
             { type: "string", name: "erc20Name" },
             { type: "string", name: "erc20Symbol" },
             { type: "uint256", name: "supply" },
         ],
         [
-            collateralsData.map((collateralData) => {
+            rewards.map((reward) => {
                 return {
-                    token: collateralData.amount.currency.address,
-                    amount: collateralData.amount.raw,
-                    minimumPayout: collateralData.minimumPayout.raw,
+                    token: reward.address,
+                    amount: BigInt(reward.amount),
+                    minimumPayout: BigInt(reward.minimumPayout),
                 };
             }),
-            erc20Name,
-            erc20Symbol,
-            supply,
+            tokenName,
+            tokenSymbol,
+            tokenSupply,
         ],
     );
 };
 
-export const encodeOraclesData = (
-    templatesData: Template[],
-    oraclesData: Required<OracleData>[],
+export const encodeOracleInitializationData = (
+    oracles: OracleWithInitializationBundle[],
 ): { data: Hex; totalValueRequired: bigint } => {
     let totalValueRequired = 0n;
-    const oracleParams = templatesData.map(({ id: templateId }, index) => {
-        const { initializationBundle } = oraclesData[index];
-        totalValueRequired += initializationBundle.value;
+    const params = oracles.map((oracle) => {
+        totalValueRequired += oracle.initializationBundle.value;
         return {
-            templateId: BigInt(templateId),
+            templateId: BigInt(oracle.templateId),
             // TODO: dynamic weight
             weight: 1n,
-            value: initializationBundle.value,
-            data: initializationBundle.data,
+            value: oracle.initializationBundle.value,
+            data: oracle.initializationBundle.data,
         };
     });
     return {
@@ -69,7 +66,7 @@ export const encodeOraclesData = (
                 },
                 { type: "bool", name: "allOrNone" },
             ],
-            [oracleParams, false],
+            [params, false],
         ),
         totalValueRequired,
     };

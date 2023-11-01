@@ -1,31 +1,36 @@
 import { useCallback, useRef, useState } from "react";
-import type { CollateralData } from "../../../../types";
-import { ReactComponent as X } from "../../../../../assets/x.svg";
+import type { Reward } from "../../../types";
+import { ReactComponent as X } from "../../../../assets/x.svg";
 import { Popover, RemoteLogo, Typography } from "@carrot-kpi/ui";
-import { getDefaultERC20TokenLogoURL } from "../../../../../utils/erc20";
+import { getDefaultERC20TokenLogoURL } from "../../../../utils/erc20";
 import {
     type NamespacedTranslateFunction,
     useIPFSGatewayURL,
 } from "@carrot-kpi/react";
-import { PROTOCOL_FEE_BPS } from "../../../../constants";
-import { Amount, formatCurrencyAmount } from "@carrot-kpi/sdk";
-import { parseUnits } from "viem";
+import { PROTOCOL_FEE_BPS } from "../../../constants";
+import { Amount, Token, formatCurrencyAmount } from "@carrot-kpi/sdk";
 
-type CollateralRowProps = CollateralData & {
+type RewardsRowProps = Reward & {
     t: NamespacedTranslateFunction;
     index: number;
     noEdit?: boolean;
     onRemove?: (index: number) => void;
 };
 
-export const CollateralRow = ({
+export const RewardRow = ({
     t,
     index,
     noEdit,
     onRemove,
+    chainId,
+    address,
+    decimals,
+    symbol,
+    name,
+    logoURI,
     amount,
     minimumPayout,
-}: CollateralRowProps) => {
+}: RewardsRowProps) => {
     const anchorRef = useRef<HTMLDivElement>(null);
     const ipfsGatewayURL = useIPFSGatewayURL();
 
@@ -44,26 +49,23 @@ export const CollateralRow = ({
         setFeeSplitPopoverOpen(false);
     }, []);
 
-    const token = amount.currency;
-    const formattedAmount = formatCurrencyAmount({ amount, withSymbol: false });
+    const rewardToken = new Token(chainId, address, decimals, symbol, name);
+    const bigIntAmount = BigInt(amount);
+    const parsedAmount = new Amount(rewardToken, bigIntAmount);
+    const formattedAmount = formatCurrencyAmount({
+        amount: parsedAmount,
+        withSymbol: false,
+    });
     const formattedAmountAfterFees = formatCurrencyAmount({
         amount: new Amount(
-            amount.currency,
-            parseUnits(
-                amount
-                    .sub(amount.mul(PROTOCOL_FEE_BPS).div(10_000))
-                    .toFixed(amount.currency.decimals) as `${number}`,
-                amount.currency.decimals,
-            ),
+            rewardToken,
+            bigIntAmount - (bigIntAmount * PROTOCOL_FEE_BPS) / 10_000n,
         ),
         withSymbol: false,
     });
 
     return (
-        <div
-            key={token.address}
-            className="h-10 grid grid-cols-collaterals items-center"
-        >
+        <div className="h-10 grid grid-cols-rewards items-center">
             <div className="flex gap-2 items-center">
                 {!noEdit && (
                     <div
@@ -75,15 +77,12 @@ export const CollateralRow = ({
                     </div>
                 )}
                 <RemoteLogo
-                    src={token.logoURI}
-                    defaultSrc={getDefaultERC20TokenLogoURL(
-                        token.chainId,
-                        token.address,
-                    )}
-                    defaultText={token.symbol}
+                    src={logoURI}
+                    defaultSrc={getDefaultERC20TokenLogoURL(chainId, address)}
+                    defaultText={symbol}
                     ipfsGatewayURL={ipfsGatewayURL}
                 />
-                <Typography>{token.symbol}</Typography>
+                <Typography>{symbol}</Typography>
             </div>
             <Popover
                 anchor={anchorRef.current}
@@ -92,22 +91,22 @@ export const CollateralRow = ({
             >
                 <div className="flex gap-3 justify-between">
                     <Typography variant="sm">
-                        {t("label.collateral.picker.fee")}
+                        {t("label.rewards.picker.fee")}
                     </Typography>
                     <Typography variant="sm">
-                        {PROTOCOL_FEE_BPS / 100}%
+                        {Number(PROTOCOL_FEE_BPS) / 100}%
                     </Typography>
                 </div>
                 <div className="w-full h-[1px] bg-black dark:bg-white" />
                 <div className="flex gap-3 justify-between">
                     <Typography variant="sm">
-                        {t("label.collateral.table.amount")}
+                        {t("label.rewards.table.amount")}
                     </Typography>
                     <Typography variant="sm">{formattedAmount}</Typography>
                 </div>
                 <div className="flex gap-3 justify-between">
                     <Typography variant="sm">
-                        {t("label.collateral.table.amount.after.fees")}
+                        {t("label.rewards.table.amount.after.fees")}
                     </Typography>
                     <Typography variant="sm">
                         {formattedAmountAfterFees}
@@ -124,7 +123,7 @@ export const CollateralRow = ({
             </div>
             <Typography className={{ root: "text-right" }}>
                 {formatCurrencyAmount({
-                    amount: minimumPayout,
+                    amount: new Amount(rewardToken, BigInt(minimumPayout)),
                     withSymbol: false,
                 })}
             </Typography>

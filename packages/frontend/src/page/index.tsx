@@ -5,7 +5,7 @@ import { Amount, Token } from "@carrot-kpi/sdk";
 import { Button, ErrorFeedback, Typography } from "@carrot-kpi/ui";
 import { type ReactElement, useEffect, useState } from "react";
 import { OraclePage, type KPITokenRemotePageProps } from "@carrot-kpi/react";
-import type { CollateralData } from "../creation-form/types";
+import type { RewardData } from "./types";
 import {
     type Address,
     useNetwork,
@@ -37,7 +37,7 @@ export const Component = ({
     });
 
     const [decodingKPITokenData, setDecodingKPITokenData] = useState(false);
-    const [collaterals, setCollaterals] = useState<CollateralData[]>([]);
+    const [rewards, setRewards] = useState<RewardData[]>([]);
     const [oracles, setOracles] = useState<FinalizableOracle[]>([]);
     const [allOrNone, setAllOrNone] = useState(false);
     const [initialSupply, setInitialSupply] = useState<Amount<Token> | null>(
@@ -60,7 +60,7 @@ export const Component = ({
             }
             if (!decoded) return;
             if (!cancelled) {
-                setCollaterals(decoded.collaterals);
+                setRewards(decoded.rewards);
                 setOracles(decoded.finalizableOracles);
                 setAllOrNone(decoded.allOrNone);
             }
@@ -147,7 +147,7 @@ export const Component = ({
                     t={t}
                     loading={decodingKPITokenData}
                     kpiToken={kpiToken}
-                    collaterals={collaterals}
+                    rewards={rewards}
                     allOrNone={allOrNone}
                     initialSupply={initialSupply?.raw}
                     erc20Name={tokenData?.name}
@@ -166,7 +166,7 @@ export const Component = ({
                             onTx={onTx}
                             loading={decodingKPITokenData}
                             kpiToken={kpiToken}
-                            collaterals={collaterals}
+                            rewards={rewards}
                             oracles={oracles}
                             erc20Symbol={tokenData?.symbol}
                             erc20Name={tokenData?.name}
