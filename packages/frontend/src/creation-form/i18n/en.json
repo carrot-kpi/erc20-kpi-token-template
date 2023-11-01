@@ -65,7 +65,6 @@
     "label.rewards.approving": "Approving {{symbol}} ({{currentIndex}}/{{totalAmount}})",
     "label.rewards.approve": "Approve {{symbol}} ({{currentIndex}}/{{totalAmount}})",
     "label.create": "Create",
-    "info.approve": "Approve spending your reward in order to deploy your Carrot campaign.",
     "label.binary": "Binary",
     "label.numeric": "Numeric",
     "oracles.picker.label": "Select your oracle template",

@@ -327,15 +327,6 @@ export const Deploy = ({
         <div className="flex flex-col gap-6">
             <div className="rounded-xxl w-full flex flex-col gap-6 border border-black p-4">
                 <RewardsTable noBorder t={t} rewards={state.rewards} noEdit />
-                <div className="w-full rounded-xxl flex items-center gap-4 border border-gray-600 p-3">
-                    <Info className="w-6 h-6 text-gray-600" />
-                    <Typography
-                        variant="sm"
-                        className={{ root: "flex-1 text-gray-600" }}
-                    >
-                        {t("info.approve")}
-                    </Typography>
-                </div>
                 <ApproveRewards
                     t={t}
                     rewards={state.rewards}
