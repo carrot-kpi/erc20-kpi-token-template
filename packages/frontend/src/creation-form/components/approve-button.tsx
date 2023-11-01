@@ -39,6 +39,7 @@ export const ApproveReward = ({
             abi: erc20ABI,
             functionName: "approve",
             args: [spender, BigInt(reward.amount)],
+            enabled: !!spender && !!reward.address,
         },
     );
     const { writeAsync: approveAsync, isLoading: approving } =

@@ -19,7 +19,7 @@ import type {
     OracleWithInitializationBundleGetter,
     State,
 } from "../types";
-import { Button, ErrorText, Typography } from "@carrot-kpi/ui";
+import { Button, ErrorText } from "@carrot-kpi/ui";
 import {
     type KPITokenCreationFormProps,
     type NamespacedTranslateFunction,
@@ -35,7 +35,6 @@ import {
     ResolvedTemplate,
     type KPITokenSpecification,
 } from "@carrot-kpi/sdk";
-import { ReactComponent as Info } from "../../assets/info.svg";
 import {
     encodeKPITokenData,
     encodeOracleInitializationData,
@@ -211,7 +210,10 @@ export const Deploy = ({
         uploadToDecentralizedStorage,
     ]);
 
-    const { data: predictedKPITokenAddress } = useContractRead({
+    const {
+        data: predictedKPITokenAddress,
+        isLoading: loadingPredictedKPITokenAddress,
+    } = useContractRead({
         address: kpiTokensManagerAddress,
         abi: KPI_TOKENS_MANAGER_ABI,
         functionName: "predictInstanceAddress",
@@ -329,9 +331,9 @@ export const Deploy = ({
                 <RewardsTable noBorder t={t} rewards={state.rewards} noEdit />
                 <ApproveRewards
                     t={t}
+                    loading={loadingPredictedKPITokenAddress}
                     rewards={state.rewards}
-                    owner={address}
-                    spender={predictedKPITokenAddress as Address}
+                    spender={predictedKPITokenAddress}
                     onApprove={handleApprove}
                     onTx={onTx}
                 />

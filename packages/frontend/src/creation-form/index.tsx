@@ -8,7 +8,7 @@ import {
 } from "@carrot-kpi/react";
 import { type ReactElement, useCallback, useEffect, useState } from "react";
 import type { OracleWithInitializationBundleGetter, State } from "./types";
-import { useAccount, type Address } from "wagmi";
+import { useAccount } from "wagmi";
 import { Rewards } from "./components/rewards";
 import { OraclesConfiguration } from "./components/oracles-configuration";
 import { Deploy } from "./components/deploy";
@@ -39,14 +39,12 @@ export const Component = ({
               t("card.oracle.pick.title"),
               t("card.oracle.configuration.title"),
               t("card.deploy.title"),
-              t("card.success.title"),
           ]
         : [
               t("card.general.title"),
               t("card.rewards.title"),
               t("card.oracle.configuration.title"),
               t("card.deploy.title"),
-              t("card.success.title"),
           ];
 
     const [step, setStep] = useState(0);
@@ -113,16 +111,6 @@ export const Component = ({
         [enableOraclePickStep],
     );
 
-    const handleDeploy = useCallback(
-        (createdKPITokenAddress: Address) => {
-            setCreatedKPITokenAddress(createdKPITokenAddress);
-            const nextStep = enableOraclePickStep ? 5 : 4;
-            setStep(nextStep);
-            setMostUpdatedStep(nextStep);
-        },
-        [enableOraclePickStep],
-    );
-
     if (loading) {
         return (
             <div className="h-screen py-20 text-black flex justify-center">
@@ -130,6 +118,17 @@ export const Component = ({
             </div>
         );
     }
+
+    if (createdKPITokenAddress) {
+        return (
+            <Success
+                t={t}
+                navigate={navigate}
+                kpiTokenAddress={createdKPITokenAddress}
+            />
+        );
+    }
+
     return (
         <div className="relative h-full w-full bg-green scrollbar overflow-y-auto px-4 pt-10">
             <div className="absolute bg-grid-light top-0 left-0 w-full h-full" />
@@ -237,20 +236,9 @@ export const Component = ({
                                 oraclesWithInitializationBundleGetter
                             }
                             state={state}
-                            onNext={handleDeploy}
+                            onNext={setCreatedKPITokenAddress}
                             onCreate={onCreate}
                             onTx={onTx}
-                        />
-                    </StepCard>
-                    <StepCard
-                        title={t("card.success.title")}
-                        step={enableOraclePickStep ? 6 : 5}
-                        messages={{ step: t("step") }}
-                    >
-                        <Success
-                            t={t}
-                            navigate={navigate}
-                            kpiTokenAddress={createdKPITokenAddress}
                         />
                     </StepCard>
                 </MultiStepCards>

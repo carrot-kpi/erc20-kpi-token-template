@@ -14,15 +14,16 @@ import { dateToUnixTimestamp } from "../../utils/dates";
 
 interface ApproveRewardsProps {
     t: NamespacedTranslateFunction;
+    loading?: boolean;
     rewards?: Reward[];
-    owner?: Address;
-    spender: Address;
+    spender?: Address;
     onApprove: () => void;
     onTx: KPITokenCreationFormProps<object>["onTx"];
 }
 
 export const ApproveRewards = ({
     t,
+    loading,
     rewards,
     spender,
     onApprove,
@@ -40,6 +41,7 @@ export const ApproveRewards = ({
         {
             contracts:
                 connectedAddress &&
+                spender &&
                 rewards?.map((reward) => {
                     return {
                         address: reward.address,
@@ -48,7 +50,7 @@ export const ApproveRewards = ({
                         args: [connectedAddress, spender],
                     };
                 }),
-            enabled: !!connectedAddress && !!rewards,
+            enabled: !!connectedAddress && !!rewards && !!spender,
         },
     );
 
@@ -72,6 +74,12 @@ export const ApproveRewards = ({
 
     const handleApprove = useCallback(
         (receipt: TransactionReceipt) => {
+            if (!spender) {
+                console.warn(
+                    "spender is undefined while handling approval: inconsistent state",
+                );
+                return;
+            }
             onTx({
                 type: TxType.ERC20_APPROVAL,
                 from: receipt.from,
@@ -111,7 +119,10 @@ export const ApproveRewards = ({
         ],
     );
 
-    return loadingAllowances || !currentlyApprovingReward ? (
+    return loadingAllowances ||
+        !currentlyApprovingReward ||
+        loading ||
+        !spender ? (
         <Button loading>Loading</Button>
     ) : allApproved ? (
         <Button disabled>{t("label.rewards.approve.done")}</Button>
