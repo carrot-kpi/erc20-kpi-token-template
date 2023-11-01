@@ -1079,10 +1079,10 @@
     bufferutil "4.0.5"
     utf-8-validate "5.0.7"
 
-"@carrot-kpi/host-frontend@^0.32.0":
-  version "0.32.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/host-frontend/-/host-frontend-0.32.0.tgz#9b6b3a0ac516873dd9f74260c2ecf44e01048f8b"
-  integrity sha512-cRxEEegDPzhiWq1eLG6R05Yu0eQdlYs9WkqnxUUM4p+l2aDV0Hhsu3ZFy5y58PJj5x046BahLECD32s4XVYH6Q==
+"@carrot-kpi/host-frontend@^0.32.1":
+  version "0.32.1"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/host-frontend/-/host-frontend-0.32.1.tgz#ab6bc9cd528242768faf19e60ed32a98d5906016"
+  integrity sha512-9KGHIeJx6CnTpile5i2Sc4EfEagBg2IkmjSzKCmEueJejH6ZwVd4R0ZJGKocQeAbLAgXgYS5RmBp5fmGJfkhNw==
   dependencies:
     "@carrot-kpi/react" "*"
     "@carrot-kpi/sdk" "*"
@@ -1099,10 +1099,21 @@
     use-fathom-client "^1.3.2"
     viem "^1.15.3"
 
-"@carrot-kpi/react@*", "@carrot-kpi/react@^0.67.0":
+"@carrot-kpi/react@*":
   version "0.67.0"
   resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.67.0.tgz#5e101a0eb00e30fe816ed28da3c4a2506c88ede8"
   integrity sha512-ADBIO93J/75JE0U2eZU7sF0LqT9txEUbECQT6AOIir/4pu1UJJGMQJYDPUUuDmxLNMppoz6dJKpq6S6GUvocHQ==
+  dependencies:
+    "@carrot-kpi/sdk" "*"
+    "@uniswap/token-lists" "1.0.0-beta.33"
+    class-variance-authority "^0.7.0"
+    react-use "^17.4.0"
+    viem "^1.15.3"
+
+"@carrot-kpi/react@^0.68.0":
+  version "0.68.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.68.0.tgz#8810954bf25d19c6e2a341ee6cb2b8eb5f38de73"
+  integrity sha512-LB+oKm3k5PmLuBPyGa1lbHpy+UjZg+RRRtVavK0UaZgZyIA7MY7hVZh/nct2es8IbQ4jMg9zBskhFIzLZxtu1w==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@uniswap/token-lists" "1.0.0-beta.33"
@@ -2486,10 +2497,10 @@
   dependencies:
     "@sinonjs/commons" "^3.0.0"
 
-"@size-limit/file@^10.0.1":
-  version "10.0.1"
-  resolved "https://registry.yarnpkg.com/@size-limit/file/-/file-10.0.1.tgz#be434e582935416c57e75cf679da7ddb0ed68324"
-  integrity sha512-xQMh/Hy8QgyHaac+DSSKcwmcJlQglDTY67L5ouUf78SlDxiKQrr8QMiYdCj7Zl5KM+gmee/eIbl6v2qbpf/Vxw==
+"@size-limit/file@^10.0.2":
+  version "10.0.2"
+  resolved "https://registry.yarnpkg.com/@size-limit/file/-/file-10.0.2.tgz#98fa5726e45d0e22a2e29cbf2cdba9476be08ce7"
+  integrity sha512-27jzgQtER/2WP4+ciLe8aExkceSfqQFSDEbFVhXnbpFvQBqGZ7uEQG9bDX7a5VGxTdMtGwzZndMsCOlinmLzSg==
   dependencies:
     semver "7.5.4"
 
@@ -11174,10 +11185,10 @@ sisteransi@^1.0.5:
   resolved "https://registry.yarnpkg.com/sisteransi/-/sisteransi-1.0.5.tgz#134d681297756437cc05ca01370d3a7a571075ed"
   integrity sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==
 
-size-limit@^10.0.1:
-  version "10.0.1"
-  resolved "https://registry.yarnpkg.com/size-limit/-/size-limit-10.0.1.tgz#50f8208a883a961c948b8379e074aa0a00a76528"
-  integrity sha512-lANGZsG+kk5P9zv84J/ratfT6LPTbWR8IitFXNfy41OyfnxoDBHqsl5+JVcG4YSU1UYcmShbp99O/SEPlDs1ZA==
+size-limit@^10.0.2:
+  version "10.0.2"
+  resolved "https://registry.yarnpkg.com/size-limit/-/size-limit-10.0.2.tgz#81ee1aaee556b766fb3840eeb9816878ace37ea9"
+  integrity sha512-ULFHMr+OQjuyqdGSqkDGY3XfnGO0l3cIfJaNe6F6ZqO+QzWUYunZh9DYHovNctsN7R9fR9gzzzW4Ze8TiJ060g==
   dependencies:
     bytes-iec "^3.1.1"
     chokidar "^3.5.3"
@@ -12301,10 +12312,24 @@ vary@~1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-viem@^1.0.0, viem@^1.15.3, viem@^1.16.6, viem@^1.17.1:
+viem@^1.0.0, viem@^1.15.3, viem@^1.16.6:
   version "1.18.1"
   resolved "https://registry.yarnpkg.com/viem/-/viem-1.18.1.tgz#5a91170f539b896b0b4f4f1f34e06fc20256be35"
   integrity sha512-dkZG1jI8iL7G0+KZ8ZKHCXbzZxzu8Iib7OLCxkdaqdrlNrWTEMIZSp/2AHpbjpPeAg3VFD1CUayKPTJv2ZMXCg==
+  dependencies:
+    "@adraffy/ens-normalize" "1.9.4"
+    "@noble/curves" "1.2.0"
+    "@noble/hashes" "1.3.2"
+    "@scure/bip32" "1.3.2"
+    "@scure/bip39" "1.2.1"
+    abitype "0.9.8"
+    isows "1.0.3"
+    ws "8.13.0"
+
+viem@^1.18.2:
+  version "1.18.2"
+  resolved "https://registry.yarnpkg.com/viem/-/viem-1.18.2.tgz#2e9135d593e7a77b6b5a8cbd1800521ffda3b23c"
+  integrity sha512-ifobXCKwzztmjHbHowAWqTASO6tAqF6udKB9ONXkJQU1cmt830MABiMwJGtTO9Gb9ION1N+324G7nHDbpPn4wg==
   dependencies:
     "@adraffy/ens-normalize" "1.9.4"
     "@noble/curves" "1.2.0"

@@ -22,7 +22,7 @@ export const Component = ({
     i18n,
     t,
     state,
-    onChange,
+    onStateChange,
     onCreate,
     navigate,
     onTx,
@@ -62,8 +62,8 @@ export const Component = ({
         if (connectedAddress) return;
         setStep(0);
         setMostUpdatedStep(0);
-        onChange({});
-    }, [connectedAddress, onChange]);
+        onStateChange({});
+    }, [connectedAddress, onStateChange]);
 
     useEffect(() => {
         const bodyElement = window.document.getElementById("__app_body");
@@ -78,11 +78,11 @@ export const Component = ({
             oracleTemplates?.length !== 1
         )
             return;
-        onChange({
+        onStateChange({
             ...state,
             oracles: [{ templateId: oracleTemplates[0].id, state: {} }],
         });
-    }, [loading, onChange, oracleTemplates, state]);
+    }, [loading, onStateChange, oracleTemplates, state]);
 
     const handleStepClick = useCallback((clickedStep: number) => {
         setStep(clickedStep);
@@ -172,7 +172,7 @@ export const Component = ({
                             <GenericData
                                 t={t}
                                 state={state}
-                                onStateChange={onChange}
+                                onStateChange={onStateChange}
                                 onNext={getNextHandler(1)}
                             />
                         )}
@@ -186,7 +186,7 @@ export const Component = ({
                         <Rewards
                             t={t}
                             state={state}
-                            onStateChange={onChange}
+                            onStateChange={onStateChange}
                             onNext={getNextHandler(2)}
                         />
                     </StepCard>
@@ -201,7 +201,7 @@ export const Component = ({
                                 t={t}
                                 templates={oracleTemplates}
                                 state={state}
-                                onStateChange={onChange}
+                                onStateChange={onStateChange}
                                 onNext={getNextHandler(3)}
                             />
                         </StepCard>
@@ -217,7 +217,7 @@ export const Component = ({
                             i18n={i18n}
                             templates={oracleTemplates}
                             state={state}
-                            onStateChange={onChange}
+                            onStateChange={onStateChange}
                             onNext={handleOraclesConfigurationNext}
                             navigate={navigate}
                             onTx={onTx}

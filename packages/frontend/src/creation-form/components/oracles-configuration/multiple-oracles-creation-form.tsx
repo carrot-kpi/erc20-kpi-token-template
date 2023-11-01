@@ -13,12 +13,17 @@ import { OraclesAccordion } from "./oracles-accordion";
 interface MultipleOraclesCreationFormProps
     extends Omit<
         OracleRemoteCreationFormProps<object>,
-        "template" | "onChange" | "error" | "fallback" | "state"
+        | "template"
+        | "onStateChange"
+        | "onInitializationBundleGetterChange"
+        | "error"
+        | "fallback"
+        | "state"
     > {
     t: NamespacedTranslateFunction;
-    onChange: (
+    onStateChange: (index: number, state: object) => void;
+    onInitializationBundleGetterChange: (
         index: number,
-        state: object,
         initializationBundleGetter?: OracleInitializationBundleGetter,
     ) => void;
     templates: Template[];
@@ -27,7 +32,8 @@ interface MultipleOraclesCreationFormProps
 
 export const MultipleOraclesCreationForm = ({
     t,
-    onChange,
+    onStateChange,
+    onInitializationBundleGetterChange,
     templates,
     state,
     ...rest
@@ -57,15 +63,24 @@ export const MultipleOraclesCreationForm = ({
         return result;
     }, [state?.oracles, templates]);
 
-    const handleChange = useCallback(
+    const handleStateChange = useCallback(
+        (index: number, state: object) => {
+            onStateChange(index, state);
+        },
+        [onStateChange],
+    );
+
+    const handleInitializationBundleGetterChange = useCallback(
         (
             index: number,
-            state: object,
             initializationBundleGetter?: OracleInitializationBundleGetter,
         ) => {
-            onChange(index, state, initializationBundleGetter);
+            onInitializationBundleGetterChange(
+                index,
+                initializationBundleGetter,
+            );
         },
-        [onChange],
+        [onInitializationBundleGetterChange],
     );
 
     return oraclesWithTemplate.length === 0 ? (
@@ -76,8 +91,11 @@ export const MultipleOraclesCreationForm = ({
         <SingleOracleCreationForm
             index={0}
             t={t}
-            onChange={handleChange}
             state={oraclesWithTemplate[0].state}
+            onStateChange={handleStateChange}
+            onInitializationBundleGetterChange={
+                handleInitializationBundleGetterChange
+            }
             template={oraclesWithTemplate[0].template}
             {...rest}
         />
@@ -85,7 +103,10 @@ export const MultipleOraclesCreationForm = ({
         <OraclesAccordion
             t={t}
             oraclesWithTemplate={oraclesWithTemplate}
-            onChange={handleChange}
+            onStateChange={handleStateChange}
+            onInitializationBundleGetterChange={
+                handleInitializationBundleGetterChange
+            }
             {...rest}
         />
     );

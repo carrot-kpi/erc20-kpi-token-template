@@ -64,14 +64,9 @@ export const OraclesConfiguration = ({
         );
     }, [oraclesWithInitializationBundleGetter]);
 
-    const handleChange = useCallback(
-        (
-            index: number,
-            oracleState: object,
-            initializationBundleGetter?: OracleInitializationBundleGetter,
-        ) => {
-            if (!state.oracles) return;
-            if (!state.oracles[index]) {
+    const handleStateChange = useCallback(
+        (index: number, oracleState: object) => {
+            if (!state.oracles || !state.oracles[index]) {
                 console.warn(
                     `no oracle present at given index ${index}, can't update state`,
                 );
@@ -81,20 +76,39 @@ export const OraclesConfiguration = ({
             const newOracle = { ...newOracles[index], state: oracleState };
             newOracles[index] = newOracle;
             onStateChange({ ...state, oracles: newOracles });
-            if (initializationBundleGetter) {
-                setOraclesWithInitializationBundleGetter((prevState) => {
-                    const newOraclesWithInitializationBundleGetter = [
-                        ...prevState,
-                    ];
-                    newOraclesWithInitializationBundleGetter[index] = {
-                        ...newOracle,
-                        getInitializationBundle: initializationBundleGetter,
-                    };
-                    return newOraclesWithInitializationBundleGetter;
-                });
-            }
         },
         [onStateChange, state],
+    );
+
+    const handleInitializationBundleGetterChange = useCallback(
+        (
+            index: number,
+            initializationBundleGetter?: OracleInitializationBundleGetter,
+        ) => {
+            if (!state.oracles || !state.oracles[index]) {
+                console.warn(
+                    `no oracle present at given index ${index}, can't update state`,
+                );
+                return;
+            }
+
+            setOraclesWithInitializationBundleGetter((prevState) => {
+                let newState;
+                if (initializationBundleGetter) {
+                    newState = [...prevState];
+                    newState[index] = {
+                        ...state.oracles![index],
+                        getInitializationBundle: initializationBundleGetter,
+                    };
+                } else {
+                    newState = prevState.map((oracle, i) =>
+                        i === index ? null : oracle,
+                    );
+                }
+                return newState;
+            });
+        },
+        [state],
     );
 
     const handleNext = useCallback(() => {
@@ -126,7 +140,10 @@ export const OraclesConfiguration = ({
                 navigate={navigate}
                 onTx={onTx}
                 kpiToken={partialKPIToken}
-                onChange={handleChange}
+                onStateChange={handleStateChange}
+                onInitializationBundleGetterChange={
+                    handleInitializationBundleGetterChange
+                }
                 templates={templates}
                 state={state}
             />

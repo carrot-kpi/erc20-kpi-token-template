@@ -23,13 +23,18 @@ import type {
 interface OraclesAccordionProps
     extends Omit<
         ReactOracleCreationFormProps<object>,
-        "template" | "onChange" | "error" | "fallback" | "state"
+        | "template"
+        | "onStateChange"
+        | "onInitializationBundleGetterChange"
+        | "error"
+        | "fallback"
+        | "state"
     > {
     t: NamespacedTranslateFunction;
     oraclesWithTemplate: OracleWithTemplate[];
-    onChange: (
+    onStateChange: (index: number, state: object) => void;
+    onInitializationBundleGetterChange: (
         index: number,
-        state: object,
         initializationBundleGetter?: OracleInitializationBundleGetter,
     ) => void;
 }
@@ -37,7 +42,8 @@ interface OraclesAccordionProps
 export const OraclesAccordion = ({
     t,
     oraclesWithTemplate,
-    onChange,
+    onStateChange,
+    onInitializationBundleGetterChange,
     ...rest
 }: OraclesAccordionProps) => {
     const templates = useMemo(() => {
@@ -82,7 +88,10 @@ export const OraclesAccordion = ({
                         t={t}
                         template={oracle.template}
                         state={oracle.state}
-                        onChange={onChange}
+                        onStateChange={onStateChange}
+                        onInitializationBundleGetterChange={
+                            onInitializationBundleGetterChange
+                        }
                         {...rest}
                     />
                 </AccordionDetails>

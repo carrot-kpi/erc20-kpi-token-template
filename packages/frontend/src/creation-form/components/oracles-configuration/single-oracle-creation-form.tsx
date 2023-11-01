@@ -12,11 +12,15 @@ import { useCallback } from "react";
 interface SingleOracleCreationFormProps
     extends Omit<
         ReactOracleCreationFormProps<object>,
-        "template" | "onChange" | "error" | "fallback"
+        | "template"
+        | "onStateChange"
+        | "onInitializationBundleGetterChange"
+        | "error"
+        | "fallback"
     > {
-    onChange: (
+    onStateChange: (templateId: number, state: object) => void;
+    onInitializationBundleGetterChange: (
         templateId: number,
-        state: object,
         initializationBundleGetter?: OracleInitializationBundleGetter,
     ) => void;
     template: Template;
@@ -26,23 +30,31 @@ interface SingleOracleCreationFormProps
 }
 
 export const SingleOracleCreationForm = ({
-    onChange,
     template,
     state,
+    onStateChange,
+    onInitializationBundleGetterChange,
     t,
     index,
     ...rest
 }: SingleOracleCreationFormProps) => {
     const { resolvedTemplate } = useResolvedTemplate({ template });
 
-    const handleChange = useCallback(
-        (
-            state: object,
-            initializationBundleGetter?: OracleInitializationBundleGetter,
-        ) => {
-            onChange(index, state, initializationBundleGetter);
+    const handleStateChange = useCallback(
+        (state: object) => {
+            onStateChange(index, state);
         },
-        [onChange, index],
+        [onStateChange, index],
+    );
+
+    const handleInitializationBundleGetterChange = useCallback(
+        (initializationBundleGetter?: OracleInitializationBundleGetter) => {
+            onInitializationBundleGetterChange(
+                index,
+                initializationBundleGetter,
+            );
+        },
+        [onInitializationBundleGetterChange, index],
     );
 
     return (
@@ -66,7 +78,10 @@ export const SingleOracleCreationForm = ({
             }
             template={resolvedTemplate || undefined}
             state={state}
-            onChange={handleChange}
+            onStateChange={handleStateChange}
+            onInitializationBundleGetterChange={
+                handleInitializationBundleGetterChange
+            }
             {...rest}
         />
     );
