@@ -45,8 +45,8 @@ export const SingleOracleCreationForm = ({
     const { resolvedTemplate } = useResolvedTemplate({ template });
 
     const handleStateChange = useCallback(
-        (state: object) => {
-            onStateChange(index, state);
+        (stateOrUpdater: object | TemplateComponentStateUpdater<object>) => {
+            onStateChange(index, stateOrUpdater);
         },
         [onStateChange, index],
     );

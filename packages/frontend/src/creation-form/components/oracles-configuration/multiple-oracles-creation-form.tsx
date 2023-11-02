@@ -68,8 +68,11 @@ export const MultipleOraclesCreationForm = ({
     }, [state?.oracles, templates]);
 
     const handleStateChange = useCallback(
-        (index: number, state: object) => {
-            onStateChange(index, state);
+        (
+            index: number,
+            stateOrUpdater: object | TemplateComponentStateUpdater<object>,
+        ) => {
+            onStateChange(index, stateOrUpdater);
         },
         [onStateChange],
     );
