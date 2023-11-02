@@ -6,7 +6,7 @@ import {
     type OracleRemoteCreationFormProps,
     type TemplateComponentStateUpdater,
 } from "@carrot-kpi/react";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import type { Oracle, State } from "../../types";
 import { SingleOracleCreationForm } from "./single-oracle-creation-form";
 import { OraclesAccordion } from "./oracles-accordion";
@@ -17,6 +17,7 @@ interface MultipleOraclesCreationFormProps
         | "template"
         | "onStateChange"
         | "onInitializationBundleGetterChange"
+        | "onSuggestedExpirationTimestampChange"
         | "error"
         | "fallback"
         | "state"
@@ -30,6 +31,10 @@ interface MultipleOraclesCreationFormProps
         index: number,
         initializationBundleGetter?: OracleInitializationBundleGetter,
     ) => void;
+    onSuggestedExpirationTimestampChange: (
+        index: number,
+        suggestedExpirationTimestamp?: number,
+    ) => void;
     templates: Template[];
     state: State;
 }
@@ -38,6 +43,7 @@ export const MultipleOraclesCreationForm = ({
     t,
     onStateChange,
     onInitializationBundleGetterChange,
+    onSuggestedExpirationTimestampChange,
     templates,
     state,
     ...rest
@@ -67,29 +73,6 @@ export const MultipleOraclesCreationForm = ({
         return result;
     }, [state?.oracles, templates]);
 
-    const handleStateChange = useCallback(
-        (
-            index: number,
-            stateOrUpdater: object | TemplateComponentStateUpdater<object>,
-        ) => {
-            onStateChange(index, stateOrUpdater);
-        },
-        [onStateChange],
-    );
-
-    const handleInitializationBundleGetterChange = useCallback(
-        (
-            index: number,
-            initializationBundleGetter?: OracleInitializationBundleGetter,
-        ) => {
-            onInitializationBundleGetterChange(
-                index,
-                initializationBundleGetter,
-            );
-        },
-        [onInitializationBundleGetterChange],
-    );
-
     return oraclesWithTemplate.length === 0 ? (
         <div className="w-full flex justify-center">
             <Loader />
@@ -99,9 +82,12 @@ export const MultipleOraclesCreationForm = ({
             index={0}
             t={t}
             state={oraclesWithTemplate[0].state}
-            onStateChange={handleStateChange}
+            onStateChange={onStateChange}
             onInitializationBundleGetterChange={
-                handleInitializationBundleGetterChange
+                onInitializationBundleGetterChange
+            }
+            onSuggestedExpirationTimestampChange={
+                onSuggestedExpirationTimestampChange
             }
             template={oraclesWithTemplate[0].template}
             {...rest}
@@ -110,9 +96,12 @@ export const MultipleOraclesCreationForm = ({
         <OraclesAccordion
             t={t}
             oraclesWithTemplate={oraclesWithTemplate}
-            onStateChange={handleStateChange}
+            onStateChange={onStateChange}
             onInitializationBundleGetterChange={
-                handleInitializationBundleGetterChange
+                onInitializationBundleGetterChange
+            }
+            onSuggestedExpirationTimestampChange={
+                onSuggestedExpirationTimestampChange
             }
             {...rest}
         />
