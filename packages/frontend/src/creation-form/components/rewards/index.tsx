@@ -69,7 +69,7 @@ export const Rewards = ({
     }, [state.rewards]);
 
     useEffect(() => {
-        if (!rewardToken || !rewardAmount || rewardMinimumPayout === null) {
+        if (!rewardToken || !rewardAmount) {
             setAddDisabled(true);
             return;
         }
@@ -175,13 +175,7 @@ export const Rewards = ({
     );
 
     const handleRewardAdd = useCallback((): void => {
-        if (
-            !chainId ||
-            !rewardToken ||
-            !rewardAmount ||
-            rewardMinimumPayout === null
-        )
-            return;
+        if (!chainId || !rewardToken || !rewardAmount) return;
         onStateChange((state) => ({
             ...state,
             rewards: [
@@ -194,7 +188,9 @@ export const Rewards = ({
                     name: rewardToken.name,
                     logoURI: rewardToken.logoURI,
                     amount: rewardAmount.toString(),
-                    minimumPayout: rewardMinimumPayout.toString(),
+                    minimumPayout: !rewardMinimumPayout
+                        ? "0"
+                        : rewardMinimumPayout.toString(),
                 },
             ],
         }));
