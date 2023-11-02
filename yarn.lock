@@ -1099,10 +1099,21 @@
     use-fathom-client "^1.3.2"
     viem "^1.15.3"
 
-"@carrot-kpi/react@*", "@carrot-kpi/react@^0.68.0":
+"@carrot-kpi/react@*":
   version "0.68.0"
   resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.68.0.tgz#8810954bf25d19c6e2a341ee6cb2b8eb5f38de73"
   integrity sha512-LB+oKm3k5PmLuBPyGa1lbHpy+UjZg+RRRtVavK0UaZgZyIA7MY7hVZh/nct2es8IbQ4jMg9zBskhFIzLZxtu1w==
+  dependencies:
+    "@carrot-kpi/sdk" "*"
+    "@uniswap/token-lists" "1.0.0-beta.33"
+    class-variance-authority "^0.7.0"
+    react-use "^17.4.0"
+    viem "^1.15.3"
+
+"@carrot-kpi/react@^0.69.0":
+  version "0.69.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.69.0.tgz#dbf34205a4a1b54dd7f9428f1b9fad4d11df732f"
+  integrity sha512-FkGlbMVaegJRBidtSPh81jbWkVPPgOTi233i1MADTuIHsq1DyGYasi6icSk5PtbdfPnf5yek3KH9EWdKzh37zQ==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@uniswap/token-lists" "1.0.0-beta.33"

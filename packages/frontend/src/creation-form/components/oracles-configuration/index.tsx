@@ -120,7 +120,26 @@ export const OraclesConfiguration = ({
                 return newState;
             });
         },
-        [state],
+        [state.oracles],
+    );
+
+    const handleSuggestedExpirationTimestampChange = useCallback(
+        (index: number, suggestedExpirationTimestamp?: number) => {
+            if (!state.oracles || !state.oracles[index]) {
+                console.warn(
+                    `no oracle present at given index ${index}, can't update state`,
+                );
+                return;
+            }
+            const newOracles = [...state.oracles];
+            const newOracle = {
+                ...newOracles[index],
+                suggestedExpirationTimestamp,
+            };
+            newOracles[index] = newOracle;
+            onStateChange((state) => ({ ...state, oracles: newOracles }));
+        },
+        [onStateChange, state.oracles],
     );
 
     const handleNext = useCallback(() => {
@@ -155,6 +174,9 @@ export const OraclesConfiguration = ({
                 onStateChange={handleStateChange}
                 onInitializationBundleGetterChange={
                     handleInitializationBundleGetterChange
+                }
+                onSuggestedExpirationTimestampChange={
+                    handleSuggestedExpirationTimestampChange
                 }
                 templates={templates}
                 state={state}

@@ -19,6 +19,7 @@ export interface Reward {
 export type Oracle = {
     templateId: number;
     state: object;
+    suggestedExpirationTimestamp?: number;
 };
 
 export interface OracleWithTemplate extends Oracle {

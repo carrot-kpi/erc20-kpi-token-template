@@ -16,6 +16,7 @@ interface SingleOracleCreationFormProps
         | "template"
         | "onStateChange"
         | "onInitializationBundleGetterChange"
+        | "onSuggestedExpirationTimestampChange"
         | "error"
         | "fallback"
     > {
@@ -26,6 +27,10 @@ interface SingleOracleCreationFormProps
     onInitializationBundleGetterChange: (
         templateId: number,
         initializationBundleGetter?: OracleInitializationBundleGetter,
+    ) => void;
+    onSuggestedExpirationTimestampChange: (
+        templateId: number,
+        timestamp?: number,
     ) => void;
     template: Template;
     state: object;
@@ -38,6 +43,7 @@ export const SingleOracleCreationForm = ({
     state,
     onStateChange,
     onInitializationBundleGetterChange,
+    onSuggestedExpirationTimestampChange,
     t,
     index,
     ...rest
@@ -59,6 +65,13 @@ export const SingleOracleCreationForm = ({
             );
         },
         [onInitializationBundleGetterChange, index],
+    );
+
+    const handleSuggestedExpirationTimestampChange = useCallback(
+        (timestamp?: number) => {
+            onSuggestedExpirationTimestampChange(index, timestamp);
+        },
+        [onSuggestedExpirationTimestampChange, index],
     );
 
     return (
@@ -85,6 +98,9 @@ export const SingleOracleCreationForm = ({
             onStateChange={handleStateChange}
             onInitializationBundleGetterChange={
                 handleInitializationBundleGetterChange
+            }
+            onSuggestedExpirationTimestampChange={
+                handleSuggestedExpirationTimestampChange
             }
             {...rest}
         />

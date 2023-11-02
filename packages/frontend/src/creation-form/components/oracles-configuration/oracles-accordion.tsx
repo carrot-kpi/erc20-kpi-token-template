@@ -27,6 +27,7 @@ interface OraclesAccordionProps
         | "template"
         | "onStateChange"
         | "onInitializationBundleGetterChange"
+        | "onSuggestedExpirationTimestampChange"
         | "error"
         | "fallback"
         | "state"
@@ -41,6 +42,10 @@ interface OraclesAccordionProps
         index: number,
         initializationBundleGetter?: OracleInitializationBundleGetter,
     ) => void;
+    onSuggestedExpirationTimestampChange: (
+        index: number,
+        timestamp?: number,
+    ) => void;
 }
 
 export const OraclesAccordion = ({
@@ -48,6 +53,7 @@ export const OraclesAccordion = ({
     oraclesWithTemplate,
     onStateChange,
     onInitializationBundleGetterChange,
+    onSuggestedExpirationTimestampChange,
     ...rest
 }: OraclesAccordionProps) => {
     const templates = useMemo(() => {
@@ -95,6 +101,9 @@ export const OraclesAccordion = ({
                         onStateChange={onStateChange}
                         onInitializationBundleGetterChange={
                             onInitializationBundleGetterChange
+                        }
+                        onSuggestedExpirationTimestampChange={
+                            onSuggestedExpirationTimestampChange
                         }
                         {...rest}
                     />

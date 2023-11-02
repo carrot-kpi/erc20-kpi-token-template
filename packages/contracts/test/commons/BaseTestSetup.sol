@@ -17,6 +17,7 @@ import {ERC1967Proxy} from "oz/proxy/ERC1967/ERC1967Proxy.sol";
 /// @author Federico Luzzi - <federico.luzzi@carrot-labs.xyz>
 abstract contract BaseTestSetup is Test {
     string internal constant ERC20_KPI_TOKEN_SPECIFICATION = "test-specification-erc20";
+    uint256 internal constant FEE = 3_000; // .3%
 
     address internal owner;
     ERC20Mintable internal firstErc20;
@@ -36,7 +37,7 @@ abstract contract BaseTestSetup is Test {
         factory = initializeKPITokensFactory(address(1), address(1), feeReceiver);
         factory.setPermissionless(true);
 
-        erc20KpiTokenTemplate = new ERC20KPIToken();
+        erc20KpiTokenTemplate = new ERC20KPIToken(FEE);
         kpiTokensManager = initializeKPITokensManager(address(factory));
         kpiTokensManager.addTemplate(address(erc20KpiTokenTemplate), ERC20_KPI_TOKEN_SPECIFICATION);
 
