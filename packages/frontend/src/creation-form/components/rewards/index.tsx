@@ -243,7 +243,7 @@ export const Rewards = ({
                                 <div className="flex justify-between items-center">
                                     <div
                                         onClick={handleOpenRewardTokenPicker}
-                                        className="cursor-pointer"
+                                        className="cursor-pointer w-3/4"
                                     >
                                         <TextInput
                                             label=""
@@ -318,9 +318,7 @@ export const Rewards = ({
                                         />
                                     </div>
                                 </div>
-
                                 <div className="h-px w-full bg-black" />
-
                                 <div className="flex-col gap-2 pt-1.5">
                                     <div className="flex items-center justify-between">
                                         <Typography>
@@ -358,14 +356,12 @@ export const Rewards = ({
                                         />
                                     </div>
                                 </div>
-
-                                <div className="h-px w-full bg-black" />
-
                                 <div className="flex items-center justify-between">
-                                    <Typography>
+                                    <Typography variant="sm">
                                         {t("label.rewards.picker.fee")}
                                     </Typography>
                                     <Typography
+                                        variant="sm"
                                         className={{ root: "text-right" }}
                                     >
                                         {Number(PROTOCOL_FEE_BPS) / 100}%{" "}
@@ -383,7 +379,7 @@ export const Rewards = ({
                             icon={ArrowDown}
                             onClick={handleRewardAdd}
                             disabled={addDisabled}
-                            className={{ root: "w-full md:w-fit" }}
+                            className={{ root: "w-full" }}
                         >
                             {t("label.rewards.picker.apply")}
                         </Button>
