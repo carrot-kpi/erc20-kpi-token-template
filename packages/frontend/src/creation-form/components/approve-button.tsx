@@ -63,6 +63,7 @@ export const ApproveReward = ({
 
     return (
         <Button
+            size="small"
             onClick={handleClick}
             disabled={!approveAsync}
             loading={loadingApproveConfig || approving}

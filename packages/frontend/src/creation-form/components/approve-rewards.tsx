@@ -125,7 +125,9 @@ export const ApproveRewards = ({
         !spender ? (
         <Button loading>Loading</Button>
     ) : allApproved ? (
-        <Button disabled>{t("label.rewards.approve.done")}</Button>
+        <Button size="small" disabled>
+            {t("label.rewards.approve.done")}
+        </Button>
     ) : (
         <ApproveReward
             t={t}

@@ -328,8 +328,6 @@ export const Deploy = ({
         void create();
     }, [devMode, onCreate, onNext, onTx, publicClient, writeAsync]);
 
-    console.log({ error, isError });
-
     return (
         <div className="flex flex-col gap-6">
             <div className="rounded-xxl w-full flex flex-col gap-6 border border-black p-4">
