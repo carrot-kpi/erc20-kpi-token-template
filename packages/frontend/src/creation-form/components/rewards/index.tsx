@@ -113,7 +113,6 @@ export const Rewards = ({
     const handleRewardPick = useCallback(
         (reward: TokenInfoWithBalance): void => {
             setRewardToken(reward);
-            setRewardMinimumPayout(0n);
         },
         [],
     );
