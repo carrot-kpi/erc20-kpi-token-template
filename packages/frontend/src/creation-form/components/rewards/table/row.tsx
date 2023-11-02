@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from "react";
 import type { Reward } from "../../../types";
 import { ReactComponent as X } from "../../../../assets/x.svg";
 import { Popover, RemoteLogo, Typography } from "@carrot-kpi/ui";
+import { ReactComponent as Info } from "../../../../assets/info.svg";
 import { getDefaultERC20TokenLogoURL } from "../../../../utils/erc20";
 import {
     type NamespacedTranslateFunction,
@@ -89,6 +90,7 @@ export const RewardRow = ({
             <Popover
                 anchor={anchorRef.current}
                 open={feeSplitPopoverOpen}
+                placement="top"
                 className={{ root: "p-3 flex flex-col gap-2" }}
             >
                 <div className="flex gap-3 justify-between">
@@ -118,7 +120,9 @@ export const RewardRow = ({
             <div
                 onMouseEnter={!noFees ? handleFeeSplitPopoverOpen : undefined}
                 onMouseLeave={!noFees ? handleFeeSplitPopoverClose : undefined}
+                className="flex gap-2 justify-center items-center"
             >
+                {!noFees && <Info className="w-4 h-4" />}
                 <Typography ref={anchorRef} className={{ root: "text-center" }}>
                     {!noFees ? formattedAmountAfterFees : formattedAmount}
                 </Typography>
