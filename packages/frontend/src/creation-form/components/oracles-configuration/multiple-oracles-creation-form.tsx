@@ -4,6 +4,7 @@ import {
     type NamespacedTranslateFunction,
     type OracleInitializationBundleGetter,
     type OracleRemoteCreationFormProps,
+    type TemplateComponentStateUpdater,
 } from "@carrot-kpi/react";
 import { useCallback, useMemo } from "react";
 import type { Oracle, State } from "../../types";
@@ -21,7 +22,10 @@ interface MultipleOraclesCreationFormProps
         | "state"
     > {
     t: NamespacedTranslateFunction;
-    onStateChange: (index: number, state: object) => void;
+    onStateChange: (
+        index: number,
+        stateOrUpdater: object | TemplateComponentStateUpdater<object>,
+    ) => void;
     onInitializationBundleGetterChange: (
         index: number,
         initializationBundleGetter?: OracleInitializationBundleGetter,

@@ -6,6 +6,7 @@ import {
     type OracleInitializationBundleGetter,
     useResolvedTemplate,
     OracleCreationForm,
+    type TemplateComponentStateUpdater,
 } from "@carrot-kpi/react";
 import { useCallback } from "react";
 
@@ -18,7 +19,10 @@ interface SingleOracleCreationFormProps
         | "error"
         | "fallback"
     > {
-    onStateChange: (index: number, state: object) => void;
+    onStateChange: (
+        index: number,
+        stateOrUpdater: object | TemplateComponentStateUpdater<object>,
+    ) => void;
     onInitializationBundleGetterChange: (
         templateId: number,
         initializationBundleGetter?: OracleInitializationBundleGetter,

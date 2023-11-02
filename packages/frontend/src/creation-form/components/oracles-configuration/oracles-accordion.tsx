@@ -8,6 +8,7 @@ import {
 import {
     type NamespacedTranslateFunction,
     type OracleCreationFormProps as ReactOracleCreationFormProps,
+    type TemplateComponentStateUpdater,
 } from "@carrot-kpi/react";
 import { SingleOracleCreationForm } from "./single-oracle-creation-form";
 import {
@@ -32,7 +33,10 @@ interface OraclesAccordionProps
     > {
     t: NamespacedTranslateFunction;
     oraclesWithTemplate: OracleWithTemplate[];
-    onStateChange: (index: number, state: object) => void;
+    onStateChange: (
+        index: number,
+        stateOrUpdater: object | TemplateComponentStateUpdater<object>,
+    ) => void;
     onInitializationBundleGetterChange: (
         index: number,
         initializationBundleGetter?: OracleInitializationBundleGetter,
