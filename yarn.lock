@@ -1134,10 +1134,35 @@
   resolved "https://registry.yarnpkg.com/@carrot-kpi/switzer-font/-/switzer-font-0.1.0.tgz#2046a14543d382d06b88ccc36354fff3648c0563"
   integrity sha512-BMDeIYgXPTRGYc67EnUJiZqRedHUvQkSFBt7yFx0LxgdDjcW/Xb//KB+4NS0KRM1iiWTaJarfIz3wfHrTcbrGQ==
 
-"@carrot-kpi/ui@*", "@carrot-kpi/ui@^0.65.5":
+"@carrot-kpi/ui@*":
   version "0.65.5"
   resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.65.5.tgz#822eb6ee7bd339170c22c6e8ac3f0384c56d4f7d"
   integrity sha512-AwdajkgitPOmZz/L+xwYDlcV7VacZOdKQicRnhrX+ofH+Yc40OpZXdp6GaQRsHTXTTsVAgII/md6K8cx1d11XQ==
+  dependencies:
+    "@carrot-kpi/sdk" "*"
+    "@popperjs/core" "^2.11.8"
+    "@tiptap/extension-placeholder" "2.1.11"
+    "@tiptap/pm" "^2.1.11"
+    "@tiptap/react" "2.1.11"
+    "@tiptap/starter-kit" "2.1.11"
+    "@types/react-virtualized-auto-sizer" "^1.0.1"
+    "@uniswap/token-lists" "1.0.0-beta.33"
+    class-variance-authority "^0.7.0"
+    dayjs "^1.11.10"
+    decimal.js-light "^2.5.1"
+    rc-switch "^4.1.0"
+    react-number-format "^5.3.0"
+    react-popper "^2.3.0"
+    react-use "^17.4.0"
+    react-virtualized-auto-sizer "^1.0.20"
+    react-window "^1.8.9"
+    tailwind-merge "^1.14.0"
+    viem "^1.15.3"
+
+"@carrot-kpi/ui@^0.65.6":
+  version "0.65.6"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/ui/-/ui-0.65.6.tgz#f1b967e06494f445f18dfb60050c6f64b8535b8b"
+  integrity sha512-mbcBidfHcmhH99sJP2TiWioIVN16ruTkdX1cCSUxR0qfcn7MeTFMBsVgShOdJDrtlePvlFWT7rvsN5fu6iekDw==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@popperjs/core" "^2.11.8"
