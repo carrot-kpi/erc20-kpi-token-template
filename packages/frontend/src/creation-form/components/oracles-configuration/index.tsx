@@ -4,6 +4,7 @@ import {
     type NamespacedTranslateFunction,
     type OracleInitializationBundleGetter,
     type TemplateComponentStateChangeCallback,
+    type TemplateComponentStateUpdater,
 } from "@carrot-kpi/react";
 import { NextStepButton } from "@carrot-kpi/ui";
 import type { i18n } from "i18next";
@@ -66,7 +67,12 @@ export const OraclesConfiguration = ({
     }, [oraclesWithInitializationBundleGetter]);
 
     const handleStateChange = useCallback(
-        (index: number, oracleState: object) => {
+        (
+            index: number,
+            oracleStateOrUpdater:
+                | object
+                | TemplateComponentStateUpdater<object>,
+        ) => {
             if (!state.oracles || !state.oracles[index]) {
                 console.warn(
                     `no oracle present at given index ${index}, can't update state`,
@@ -74,7 +80,12 @@ export const OraclesConfiguration = ({
                 return;
             }
             const newOracles = [...state.oracles];
-            const newOracle = { ...newOracles[index], state: oracleState };
+            const oldOracle = newOracles[index];
+            const newState =
+                typeof oracleStateOrUpdater === "function"
+                    ? oracleStateOrUpdater(oldOracle.state)
+                    : oracleStateOrUpdater;
+            const newOracle = { ...oldOracle, state: newState };
             newOracles[index] = newOracle;
             onStateChange((state) => ({ ...state, oracles: newOracles }));
         },
