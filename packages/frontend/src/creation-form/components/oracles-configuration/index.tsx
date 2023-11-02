@@ -3,6 +3,7 @@ import {
     type KPITokenCreationFormProps,
     type NamespacedTranslateFunction,
     type OracleInitializationBundleGetter,
+    type TemplateComponentStateChangeCallback,
 } from "@carrot-kpi/react";
 import { NextStepButton } from "@carrot-kpi/ui";
 import type { i18n } from "i18next";
@@ -22,7 +23,7 @@ interface OraclesConfigurationProps {
     i18n: i18n;
     templates: Template[];
     state: State;
-    onStateChange: (state: State) => void;
+    onStateChange: TemplateComponentStateChangeCallback<State>;
     onNext: (
         oraclesWithInitializationBundleGetter: OracleWithInitializationBundleGetter[],
     ) => void;
@@ -75,9 +76,9 @@ export const OraclesConfiguration = ({
             const newOracles = [...state.oracles];
             const newOracle = { ...newOracles[index], state: oracleState };
             newOracles[index] = newOracle;
-            onStateChange({ ...state, oracles: newOracles });
+            onStateChange((state) => ({ ...state, oracles: newOracles }));
         },
-        [onStateChange, state],
+        [onStateChange, state.oracles],
     );
 
     const handleInitializationBundleGetterChange = useCallback(

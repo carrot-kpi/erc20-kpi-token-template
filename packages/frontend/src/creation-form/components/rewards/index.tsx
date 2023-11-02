@@ -9,7 +9,10 @@ import {
     type TokenInfoWithBalance,
     type NumberFormatValues,
 } from "@carrot-kpi/ui";
-import { type NamespacedTranslateFunction } from "@carrot-kpi/react";
+import {
+    type NamespacedTranslateFunction,
+    type TemplateComponentStateChangeCallback,
+} from "@carrot-kpi/react";
 import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { type State } from "../../types";
 import { Amount, formatCurrencyAmount } from "@carrot-kpi/sdk";
@@ -24,7 +27,7 @@ import { RewardsTable } from "./table";
 interface RewardsProps {
     t: NamespacedTranslateFunction;
     state: State;
-    onStateChange: (state: State) => void;
+    onStateChange: TemplateComponentStateChangeCallback<State>;
     onNext: () => void;
 }
 
@@ -179,7 +182,7 @@ export const Rewards = ({
             rewardMinimumPayout === null
         )
             return;
-        onStateChange({
+        onStateChange((state) => ({
             ...state,
             rewards: [
                 ...(state.rewards || []),
@@ -194,25 +197,24 @@ export const Rewards = ({
                     minimumPayout: rewardMinimumPayout.toString(),
                 },
             ],
-        });
+        }));
     }, [
         chainId,
         onStateChange,
         rewardAmount,
         rewardMinimumPayout,
         rewardToken,
-        state,
     ]);
 
     const handleRemoveReward = useCallback(
         (index: number) => {
             if (!state.rewards) return;
-            onStateChange({
+            onStateChange((state) => ({
                 ...state,
-                rewards: state.rewards.filter((_, i) => i !== index),
-            });
+                rewards: state.rewards?.filter((_, i) => i !== index),
+            }));
         },
-        [onStateChange, state],
+        [onStateChange, state.rewards],
     );
 
     const handleMaxClick = useCallback(() => {

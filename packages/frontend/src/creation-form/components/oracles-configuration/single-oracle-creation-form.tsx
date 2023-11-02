@@ -18,7 +18,7 @@ interface SingleOracleCreationFormProps
         | "error"
         | "fallback"
     > {
-    onStateChange: (templateId: number, state: object) => void;
+    onStateChange: (index: number, state: object) => void;
     onInitializationBundleGetterChange: (
         templateId: number,
         initializationBundleGetter?: OracleInitializationBundleGetter,

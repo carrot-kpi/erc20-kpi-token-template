@@ -6,7 +6,10 @@ import {
     useMemo,
 } from "react";
 import type { State } from "../types";
-import { type NamespacedTranslateFunction } from "@carrot-kpi/react";
+import {
+    type NamespacedTranslateFunction,
+    type TemplateComponentStateChangeCallback,
+} from "@carrot-kpi/react";
 import {
     MarkdownInput,
     NumberInput,
@@ -35,7 +38,7 @@ import { formatUnits, parseUnits } from "viem";
 interface GenericDataProps {
     t: NamespacedTranslateFunction;
     state: State;
-    onStateChange: (state: State) => void;
+    onStateChange: TemplateComponentStateChangeCallback<State>;
     onNext: () => void;
 }
 
@@ -116,9 +119,9 @@ export const GenericData = ({
                       })
                     : "",
             );
-            onStateChange({ ...state, title: value });
+            onStateChange((state) => ({ ...state, title: value }));
         },
-        [onStateChange, state, t],
+        [onStateChange, t],
     );
 
     const handleDescriptionChange = useCallback(
@@ -133,9 +136,9 @@ export const GenericData = ({
                       })
                     : "",
             );
-            onStateChange({ ...state, description: value });
+            onStateChange((state) => ({ ...state, description: value }));
         },
-        [onStateChange, state, t],
+        [onStateChange, t],
     );
 
     const handleTagsChange = useCallback(
@@ -161,9 +164,9 @@ export const GenericData = ({
                       })
                     : "",
             );
-            onStateChange({ ...state, tags: value });
+            onStateChange((state) => ({ ...state, tags: value }));
         },
-        [onStateChange, state, t],
+        [onStateChange, t],
     );
 
     const handleExpirationChange = useCallback(
@@ -174,12 +177,12 @@ export const GenericData = ({
                     ? t("error.expiration.past")
                     : "",
             );
-            onStateChange({
+            onStateChange((state) => ({
                 ...state,
                 expiration: converted,
-            });
+            }));
         },
-        [onStateChange, state, t],
+        [onStateChange, t],
     );
 
     const handleTokenNameChange = useCallback(
@@ -193,12 +196,12 @@ export const GenericData = ({
                       })
                     : "",
             );
-            onStateChange({
+            onStateChange((state) => ({
                 ...state,
                 tokenName: value,
-            });
+            }));
         },
-        [onStateChange, state, t],
+        [onStateChange, t],
     );
 
     const handleTokenSymbolChange = useCallback(
@@ -212,12 +215,12 @@ export const GenericData = ({
                       })
                     : "",
             );
-            onStateChange({
+            onStateChange((state) => ({
                 ...state,
                 tokenSymbol: value,
-            });
+            }));
         },
-        [onStateChange, state, t],
+        [onStateChange, t],
     );
 
     const handleTokenSupplyChange = useCallback(
@@ -227,12 +230,12 @@ export const GenericData = ({
                     ? t("error.token.supply.zero")
                     : "",
             );
-            onStateChange({
+            onStateChange((state) => ({
                 ...state,
                 tokenSupply: parseUnits(value.value, 18).toString(),
-            });
+            }));
         },
-        [onStateChange, state, t],
+        [onStateChange, t],
     );
 
     return (

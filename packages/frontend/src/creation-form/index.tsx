@@ -78,11 +78,11 @@ export const Component = ({
             oracleTemplates?.length !== 1
         )
             return;
-        onStateChange({
+        onStateChange((state) => ({
             ...state,
             oracles: [{ templateId: oracleTemplates[0].id, state: {} }],
-        });
-    }, [loading, onStateChange, oracleTemplates, state]);
+        }));
+    }, [loading, onStateChange, oracleTemplates, state.oracles]);
 
     const handleStepClick = useCallback((clickedStep: number) => {
         setStep(clickedStep);

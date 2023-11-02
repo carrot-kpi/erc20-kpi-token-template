@@ -1,4 +1,7 @@
-import type { NamespacedTranslateFunction } from "@carrot-kpi/react";
+import type {
+    NamespacedTranslateFunction,
+    TemplateComponentStateChangeCallback,
+} from "@carrot-kpi/react";
 import { Template } from "@carrot-kpi/sdk";
 import { Typography, NextStepButton, Checkbox } from "@carrot-kpi/ui";
 import {
@@ -17,7 +20,7 @@ interface OraclesPickerProps {
     t: NamespacedTranslateFunction;
     templates: Template[];
     state: State;
-    onStateChange: (state: State) => void;
+    onStateChange: TemplateComponentStateChangeCallback<State>;
     onNext: () => void;
 }
 
@@ -35,27 +38,31 @@ export const OraclesPicker = ({
         setDisabled(!state.oracles || state.oracles.length === 0);
     }, [state.oracles]);
 
-    const getChangeHandler =
+    const handleChange = useCallback(
         (templateId: number) => (event: ChangeEvent<HTMLInputElement>) => {
-            if (event.target.checked) {
-                onStateChange({
-                    ...state,
-                    oracles: [
-                        ...(state.oracles || []),
-                        { templateId, state: {} },
-                    ],
-                });
-            } else {
-                onStateChange({
-                    ...state,
-                    oracles: [
-                        ...(state.oracles || []).filter(
-                            (oracle) => oracle.templateId !== templateId,
-                        ),
-                    ],
-                });
-            }
-        };
+            onStateChange((state) => {
+                if (event.target.checked) {
+                    return {
+                        ...state,
+                        oracles: [
+                            ...(state.oracles || []),
+                            { templateId, state: {} },
+                        ],
+                    };
+                } else {
+                    return {
+                        ...state,
+                        oracles: [
+                            ...(state.oracles || []).filter(
+                                (oracle) => oracle.templateId !== templateId,
+                            ),
+                        ],
+                    };
+                }
+            });
+        },
+        [onStateChange],
+    );
 
     const handleNext = useCallback(() => {
         onNext();
@@ -92,7 +99,7 @@ export const OraclesPicker = ({
                                     />
                                     <Checkbox
                                         checked={checked}
-                                        onChange={getChangeHandler(template.id)}
+                                        onChange={handleChange(template.id)}
                                     />
                                 </div>
                             );
