@@ -332,26 +332,24 @@ export const Deploy = ({
         <div className="flex flex-col gap-6">
             <div className="rounded-xxl w-full flex flex-col gap-6 border border-black p-4">
                 <RewardsTable noBorder t={t} rewards={state.rewards} noEdit />
-                <div className="h-px w-full bg-black" />
                 <div className="flex items-center justify-between">
-                    <Typography>{t("label.rewards.picker.fee")}</Typography>
-                    <Typography className={{ root: "text-right" }}>
+                    <Typography variant="sm">
+                        {t("label.rewards.picker.fee")}
+                    </Typography>
+                    <Typography variant="sm" className={{ root: "text-right" }}>
                         {Number(PROTOCOL_FEE_BPS) / 100}%
                     </Typography>
                 </div>
-                <div className="h-px w-full bg-black" />
-                <div className="flex justify-center">
-                    <ApproveRewards
-                        t={t}
-                        loading={loadingPredictedKPITokenAddress}
-                        rewards={state.rewards}
-                        spender={predictedKPITokenAddress}
-                        onApprove={handleApprove}
-                        onTx={onTx}
-                    />
-                </div>
+                <ApproveRewards
+                    t={t}
+                    loading={loadingPredictedKPITokenAddress}
+                    rewards={state.rewards}
+                    spender={predictedKPITokenAddress}
+                    onApprove={handleApprove}
+                    onTx={onTx}
+                />
             </div>
-            <div className="flex flex-col gap-3 items-center">
+            <div className="flex flex-col gap-3">
                 <Button
                     size="small"
                     onClick={handleCreate}
