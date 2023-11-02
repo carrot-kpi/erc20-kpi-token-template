@@ -39,6 +39,8 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     uint256 internal constant MULTIPLIER = 64;
     uint256 internal constant UNIT = 1_000_000;
 
+    uint256 public immutable fee;
+
     bool internal allOrNone;
     uint16 internal toBeFinalized;
     address public owner;
@@ -58,6 +60,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     mapping(uint256 => address) internal collateralAddressByIndex;
     mapping(address => uint256) internal registeredBurn;
 
+    error InvalidFee();
     error Forbidden();
     error NotInitialized();
     error InvalidCollateral();
@@ -92,7 +95,9 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     event RegisterRedemption(address indexed account, uint256 burned);
     event RedeemCollateral(address indexed account, address indexed receiver, address token, uint256 amount);
 
-    constructor() {
+    constructor(uint256 _fee) {
+        if (_fee >= UNIT) revert InvalidFee();
+        fee = _fee;
         _disableInitializers();
     }
 
@@ -235,7 +240,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
                     revert DuplicatedCollateral();
                 }
             }
-            uint256 _fee = (_collateralAmountBeforeFee * 3_000) / 1_000_000;
+            uint256 _fee = (_collateralAmountBeforeFee * fee) / UNIT;
             uint256 _amountMinusFees;
             unchecked {
                 _amountMinusFees = _collateralAmountBeforeFee - _fee;

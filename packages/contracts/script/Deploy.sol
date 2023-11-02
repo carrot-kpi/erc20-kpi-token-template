@@ -9,9 +9,9 @@ import {ERC20KPIToken} from "../src/ERC20KPIToken.sol";
 /// @dev Deploys the template on a target network.
 /// @author Federico Luzzi - <federico.luzzi@carrot-labs.xyz>
 contract Deploy is Script {
-    function run() external {
+    function run(uint256 _fee) external {
         vm.broadcast();
-        ERC20KPIToken _kpiTokenTemplate = new ERC20KPIToken();
+        ERC20KPIToken _kpiTokenTemplate = new ERC20KPIToken(_fee);
         console2.log("Template deployed at address", address(_kpiTokenTemplate));
     }
 }
