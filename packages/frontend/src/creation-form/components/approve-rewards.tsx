@@ -125,7 +125,7 @@ export const ApproveRewards = ({
         !spender ? (
         <Button loading>Loading</Button>
     ) : allApproved ? (
-        <Button size="small" disabled>
+        <Button size="small" disabled className={{ root: "w-full" }}>
             {t("label.rewards.approve.done")}
         </Button>
     ) : (

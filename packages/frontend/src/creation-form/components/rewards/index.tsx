@@ -383,7 +383,7 @@ export const Rewards = ({
                             icon={ArrowDown}
                             onClick={handleRewardAdd}
                             disabled={addDisabled}
-                            className={{ root: "w-full md:w-fit" }}
+                            className={{ root: "w-full" }}
                         >
                             {t("label.rewards.picker.apply")}
                         </Button>

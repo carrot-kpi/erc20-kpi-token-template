@@ -355,6 +355,7 @@ export const Deploy = ({
                     onClick={handleCreate}
                     disabled={!writeAsync}
                     loading={loading || loadingTxConfig || fetchingTxConfig}
+                    className={{ root: "w-full" }}
                 >
                     {t("label.create")}
                 </Button>

@@ -67,6 +67,7 @@ export const ApproveReward = ({
             onClick={handleClick}
             disabled={!approveAsync}
             loading={loadingApproveConfig || approving}
+            className={{ root: "w-full" }}
         >
             {approving
                 ? t("label.rewards.approving", {
