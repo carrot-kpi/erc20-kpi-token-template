@@ -14,6 +14,7 @@ type RewardsRowProps = Reward & {
     t: NamespacedTranslateFunction;
     index: number;
     noEdit?: boolean;
+    noFees?: boolean;
     onRemove?: (index: number) => void;
 };
 
@@ -21,6 +22,7 @@ export const RewardRow = ({
     t,
     index,
     noEdit,
+    noFees,
     onRemove,
     chainId,
     address,
@@ -114,11 +116,11 @@ export const RewardRow = ({
                 </div>
             </Popover>
             <div
-                onMouseEnter={handleFeeSplitPopoverOpen}
-                onMouseLeave={handleFeeSplitPopoverClose}
+                onMouseEnter={!noFees ? handleFeeSplitPopoverOpen : undefined}
+                onMouseLeave={!noFees ? handleFeeSplitPopoverClose : undefined}
             >
                 <Typography ref={anchorRef} className={{ root: "text-center" }}>
-                    {formattedAmountAfterFees}
+                    {!noFees ? formattedAmountAfterFees : formattedAmount}
                 </Typography>
             </div>
             <Typography className={{ root: "text-right" }}>

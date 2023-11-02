@@ -26,12 +26,14 @@ interface RewardsTableProps {
     onRemove?: (index: number) => void;
     rewards?: Reward[];
     noEdit?: boolean;
+    noFees?: boolean;
     noBorder?: boolean;
 }
 
 export const RewardsTable = ({
     t,
     noEdit,
+    noFees,
     noBorder = false,
     onRemove,
     rewards,
@@ -74,6 +76,7 @@ export const RewardsTable = ({
                             <RewardRow
                                 t={t}
                                 noEdit={noEdit}
+                                noFees={noFees}
                                 key={reward.address}
                                 index={index}
                                 onRemove={onRemove}

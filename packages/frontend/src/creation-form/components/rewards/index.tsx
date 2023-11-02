@@ -15,7 +15,6 @@ import {
 } from "@carrot-kpi/react";
 import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { type State } from "../../types";
-import { Amount, formatCurrencyAmount } from "@carrot-kpi/sdk";
 import { type Address, useAccount, useBalance, useChainId } from "wagmi";
 import { PROTOCOL_FEE_BPS } from "../../constants";
 import { ReactComponent as ArrowDown } from "../../../assets/arrow-down.svg";
@@ -55,7 +54,6 @@ export const Rewards = ({
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
     const [minimumPayoutErrorMessage, setMinimumPayoutErrorMessage] =
         useState("");
-    const [protocolFeeAmount, setProtocolFeeAmount] = useState("");
 
     // fetch picked erc20 token balance
     const { data: rewardTokenBalance, isLoading: loadingRewardTokenBalance } =
@@ -104,18 +102,6 @@ export const Rewards = ({
         state.rewards,
     ]);
 
-    useEffect(() => {
-        if (!rewardToken || !rewardAmount) return;
-        setProtocolFeeAmount(
-            formatCurrencyAmount({
-                amount: new Amount(
-                    rewardToken,
-                    (rewardAmount * PROTOCOL_FEE_BPS) / 10_000n,
-                ),
-            }),
-        );
-    }, [rewardAmount, rewardToken]);
-
     const handleOpenRewardTokenPicker = useCallback((): void => {
         setRewardTokenPickerOpen(true);
     }, []);
@@ -123,6 +109,14 @@ export const Rewards = ({
     const handleRewardTokenPickerDismiss = useCallback((): void => {
         setRewardTokenPickerOpen(false);
     }, []);
+
+    const handleRewardPick = useCallback(
+        (reward: TokenInfoWithBalance): void => {
+            setRewardToken(reward);
+            setRewardMinimumPayout(0n);
+        },
+        [],
+    );
 
     const handleRewardAmountChange = useCallback(
         (rawNewAmount: NumberFormatValues): void => {
@@ -237,7 +231,7 @@ export const Rewards = ({
                 open={rewardTokenPickerOpen}
                 onDismiss={handleRewardTokenPickerDismiss}
                 token={rewardToken}
-                onChange={setRewardToken}
+                onChange={handleRewardPick}
             />
             <div className="flex flex-col gap-6">
                 <div className="flex flex-col gap-3">
@@ -247,7 +241,7 @@ export const Rewards = ({
                                 <div className="flex justify-between items-center">
                                     <div
                                         onClick={handleOpenRewardTokenPicker}
-                                        className="cursor-pointer"
+                                        className="cursor-pointer w-3/4"
                                     >
                                         <TextInput
                                             label=""
@@ -362,22 +356,6 @@ export const Rewards = ({
                                         />
                                     </div>
                                 </div>
-
-                                <div className="h-px w-full bg-black" />
-
-                                <div className="flex items-center justify-between">
-                                    <Typography>
-                                        {t("label.rewards.picker.fee")}
-                                    </Typography>
-                                    <Typography
-                                        className={{ root: "text-right" }}
-                                    >
-                                        {Number(PROTOCOL_FEE_BPS) / 100}%{" "}
-                                        {protocolFeeAmount &&
-                                            rewardToken &&
-                                            `(${protocolFeeAmount})`}
-                                    </Typography>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -408,6 +386,7 @@ export const Rewards = ({
                 </div>
                 <RewardsTable
                     t={t}
+                    noFees
                     rewards={state.rewards}
                     onRemove={handleRemoveReward}
                 />

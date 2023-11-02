@@ -19,7 +19,7 @@ import type {
     OracleWithInitializationBundleGetter,
     State,
 } from "../types";
-import { Button, ErrorText } from "@carrot-kpi/ui";
+import { Button, ErrorText, Typography } from "@carrot-kpi/ui";
 import {
     type KPITokenCreationFormProps,
     type NamespacedTranslateFunction,
@@ -44,6 +44,7 @@ import { zeroAddress, type Hex } from "viem";
 import { dateToUnixTimestamp } from "../../utils/dates";
 import { RewardsTable } from "./rewards/table";
 import { ApproveRewards } from "./approve-rewards";
+import { PROTOCOL_FEE_BPS } from "../constants";
 
 interface DeployProps {
     t: NamespacedTranslateFunction;
@@ -327,20 +328,32 @@ export const Deploy = ({
         void create();
     }, [devMode, onCreate, onNext, onTx, publicClient, writeAsync]);
 
+    console.log({ error, isError });
+
     return (
         <div className="flex flex-col gap-6">
             <div className="rounded-xxl w-full flex flex-col gap-6 border border-black p-4">
                 <RewardsTable noBorder t={t} rewards={state.rewards} noEdit />
-                <ApproveRewards
-                    t={t}
-                    loading={loadingPredictedKPITokenAddress}
-                    rewards={state.rewards}
-                    spender={predictedKPITokenAddress}
-                    onApprove={handleApprove}
-                    onTx={onTx}
-                />
+                <div className="h-px w-full bg-black" />
+                <div className="flex items-center justify-between">
+                    <Typography>{t("label.rewards.picker.fee")}</Typography>
+                    <Typography className={{ root: "text-right" }}>
+                        {Number(PROTOCOL_FEE_BPS) / 100}%
+                    </Typography>
+                </div>
+                <div className="h-px w-full bg-black" />
+                <div className="flex justify-center">
+                    <ApproveRewards
+                        t={t}
+                        loading={loadingPredictedKPITokenAddress}
+                        rewards={state.rewards}
+                        spender={predictedKPITokenAddress}
+                        onApprove={handleApprove}
+                        onTx={onTx}
+                    />
+                </div>
             </div>
-            <div className="flex justify-between gap-3 items-start">
+            <div className="flex flex-col gap-3 items-center">
                 <Button
                     size="small"
                     onClick={handleCreate}
@@ -351,7 +364,6 @@ export const Deploy = ({
                 </Button>
                 {isError && !!error && (
                     <ErrorText>
-                        {/* FIXME: error type returned by wagmi is not complete */}
                         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         {(error as any).shortMessage}
                     </ErrorText>
