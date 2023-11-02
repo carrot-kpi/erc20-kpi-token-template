@@ -8,12 +8,12 @@ import {
     type NamespacedTranslateFunction,
     useIPFSGatewayURL,
 } from "@carrot-kpi/react";
-import { PROTOCOL_FEE_BPS } from "../../../constants";
 import { Amount, Token, formatCurrencyAmount } from "@carrot-kpi/sdk";
 
 type RewardsRowProps = Reward & {
     t: NamespacedTranslateFunction;
     index: number;
+    protocolFeePpm: bigint;
     noEdit?: boolean;
     noFees?: boolean;
     onRemove?: (index: number) => void;
@@ -22,6 +22,7 @@ type RewardsRowProps = Reward & {
 export const RewardRow = ({
     t,
     index,
+    protocolFeePpm,
     noEdit,
     noFees,
     onRemove,
@@ -62,7 +63,7 @@ export const RewardRow = ({
     const formattedAmountAfterFees = formatCurrencyAmount({
         amount: new Amount(
             rewardToken,
-            bigIntAmount - (bigIntAmount * PROTOCOL_FEE_BPS) / 10_000n,
+            bigIntAmount - (bigIntAmount * protocolFeePpm) / 1_000_000n,
         ),
         withSymbol: false,
     });
@@ -98,7 +99,7 @@ export const RewardRow = ({
                         {t("label.rewards.picker.fee")}
                     </Typography>
                     <Typography variant="sm">
-                        {Number(PROTOCOL_FEE_BPS) / 100}%
+                        {Number(protocolFeePpm) / 10_000}%
                     </Typography>
                 </div>
                 <div className="w-full h-[1px] bg-black dark:bg-white" />

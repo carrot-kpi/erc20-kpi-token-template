@@ -61,6 +61,7 @@
     "label.rewards.table.empty": "No rewards selected yet",
     "label.rewards.balance": "Balance",
     "label.rewards.approve.done": "Approved",
+    "label.rewards.approve.loading": "Loading",
     "label.rewards.approving": "Approving {{symbol}} ({{currentIndex}}/{{totalAmount}})",
     "label.rewards.approve": "Approve {{symbol}} ({{currentIndex}}/{{totalAmount}})",
     "label.create": "Deploy your campaign",

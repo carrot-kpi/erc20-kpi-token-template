@@ -8,7 +8,7 @@ import {
 } from "@carrot-kpi/react";
 import { type ReactElement, useCallback, useEffect, useState } from "react";
 import type { OracleWithInitializationBundleGetter, State } from "./types";
-import { useAccount } from "wagmi";
+import { useAccount, useContractRead } from "wagmi";
 import { Rewards } from "./components/rewards";
 import { OraclesConfiguration } from "./components/oracles-configuration";
 import { Deploy } from "./components/deploy";
@@ -16,6 +16,7 @@ import { Success } from "./components/success";
 import { ConnectWallet } from "./components/connect-wallet";
 import { GenericData } from "./components/generic-data";
 import { OraclesPicker } from "./components/oracles-picker";
+import erc20KpiToken from "../abis/erc20-kpi-token";
 
 export const Component = ({
     template,
@@ -28,9 +29,17 @@ export const Component = ({
     onTx,
 }: KPITokenRemoteCreationFormProps<State>): ReactElement => {
     const { address: connectedAddress } = useAccount();
-    const { loading, templates: oracleTemplates } = useOracleTemplates();
+    const { loading: loadingOracleTemplates, templates: oracleTemplates } =
+        useOracleTemplates();
+    const { data: protocolFeePpm, isLoading: loadingProtocolFee } =
+        useContractRead({
+            address: template.address,
+            abi: erc20KpiToken,
+            functionName: "fee",
+        });
 
-    const enableOraclePickStep = !loading && oracleTemplates.length > 1;
+    const enableOraclePickStep =
+        !loadingOracleTemplates && oracleTemplates.length > 1;
 
     const stepTitles = enableOraclePickStep
         ? [
@@ -74,7 +83,7 @@ export const Component = ({
     useEffect(() => {
         if (
             (!!state.oracles && state.oracles.length > 0) ||
-            loading ||
+            loadingOracleTemplates ||
             oracleTemplates?.length !== 1
         )
             return;
@@ -82,7 +91,7 @@ export const Component = ({
             ...state,
             oracles: [{ templateId: oracleTemplates[0].id, state: {} }],
         }));
-    }, [loading, onStateChange, oracleTemplates, state.oracles]);
+    }, [loadingOracleTemplates, onStateChange, oracleTemplates, state.oracles]);
 
     const handleStepClick = useCallback((clickedStep: number) => {
         setStep(clickedStep);
@@ -111,7 +120,11 @@ export const Component = ({
         [enableOraclePickStep],
     );
 
-    if (loading) {
+    if (
+        loadingOracleTemplates ||
+        loadingProtocolFee ||
+        protocolFeePpm === undefined
+    ) {
         return (
             <div className="h-screen py-20 text-black flex justify-center">
                 <Loader />
@@ -186,6 +199,7 @@ export const Component = ({
                         <Rewards
                             t={t}
                             state={state}
+                            protocolFeePpm={protocolFeePpm}
                             onStateChange={onStateChange}
                             onNext={getNextHandler(2)}
                         />
@@ -236,6 +250,7 @@ export const Component = ({
                                 oraclesWithInitializationBundleGetter
                             }
                             state={state}
+                            protocolFeePpm={protocolFeePpm}
                             onNext={setCreatedKPITokenAddress}
                             onCreate={onCreate}
                             onTx={onTx}

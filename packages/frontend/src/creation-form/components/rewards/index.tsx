@@ -17,7 +17,6 @@ import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { type State } from "../../types";
 import { Amount, formatCurrencyAmount } from "@carrot-kpi/sdk";
 import { type Address, useAccount, useBalance, useChainId } from "wagmi";
-import { PROTOCOL_FEE_BPS } from "../../constants";
 import { ReactComponent as ArrowDown } from "../../../assets/arrow-down.svg";
 import { USDValue } from "./usd-value";
 import { formatUnits, parseUnits } from "viem";
@@ -27,6 +26,7 @@ import { RewardsTable } from "./table";
 interface RewardsProps {
     t: NamespacedTranslateFunction;
     state: State;
+    protocolFeePpm: bigint;
     onStateChange: TemplateComponentStateChangeCallback<State>;
     onNext: () => void;
 }
@@ -34,6 +34,7 @@ interface RewardsProps {
 export const Rewards = ({
     t,
     state,
+    protocolFeePpm,
     onStateChange,
     onNext,
 }: RewardsProps): ReactElement => {
@@ -78,8 +79,11 @@ export const Rewards = ({
             setAddDisabled(true);
             return;
         }
+
         const amountMinusFees =
-            rewardAmount - (rewardAmount * PROTOCOL_FEE_BPS) / 10_000n;
+            rewardAmount -
+            (rewardAmount * protocolFeePpm) / 1_000_000n / 10_000n;
+
         if (
             !amountMinusFees ||
             (rewardMinimumPayout !== null &&
@@ -101,6 +105,7 @@ export const Rewards = ({
         rewardMinimumPayout,
         rewardToken,
         rewardTokenBalance,
+        protocolFeePpm,
         state.rewards,
     ]);
 
@@ -110,11 +115,11 @@ export const Rewards = ({
             formatCurrencyAmount({
                 amount: new Amount(
                     rewardToken,
-                    (rewardAmount * PROTOCOL_FEE_BPS) / 10_000n,
+                    (rewardAmount * protocolFeePpm) / 1_000_000n,
                 ),
             }),
         );
-    }, [rewardAmount, rewardToken]);
+    }, [rewardAmount, rewardToken, protocolFeePpm]);
 
     const handleOpenRewardTokenPicker = useCallback((): void => {
         setRewardTokenPickerOpen(true);
@@ -160,7 +165,8 @@ export const Rewards = ({
                 rewardToken.decimals,
             );
             const amountMinusFees =
-                rewardAmount - (rewardAmount * PROTOCOL_FEE_BPS) / 10_000n;
+                rewardAmount -
+                (rewardAmount * protocolFeePpm) / 1_000_000n / 10_000n;
 
             let errorMessage = "";
             if (newMinimumPayout === null)
@@ -171,7 +177,7 @@ export const Rewards = ({
 
             setRewardMinimumPayout(newMinimumPayout);
         },
-        [rewardAmount, rewardToken, t],
+        [rewardAmount, rewardToken, protocolFeePpm, t],
     );
 
     const handleRewardAdd = useCallback((): void => {
@@ -364,7 +370,7 @@ export const Rewards = ({
                                         variant="sm"
                                         className={{ root: "text-right" }}
                                     >
-                                        {Number(PROTOCOL_FEE_BPS) / 100}%{" "}
+                                        {Number(protocolFeePpm) / 10_000}%{" "}
                                         {protocolFeeAmount &&
                                             rewardToken &&
                                             `(${protocolFeeAmount})`}
@@ -373,7 +379,7 @@ export const Rewards = ({
                             </div>
                         </div>
                     </div>
-                    <div className="flex gap-3 items-start">
+                    <div className="flex flex-col gap-3 items-start">
                         <Button
                             size="small"
                             icon={ArrowDown}
@@ -401,6 +407,7 @@ export const Rewards = ({
                 <RewardsTable
                     t={t}
                     rewards={state.rewards}
+                    protocolFeePpm={protocolFeePpm}
                     onRemove={handleRemoveReward}
                 />
             </div>
