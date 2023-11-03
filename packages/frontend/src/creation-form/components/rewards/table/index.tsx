@@ -23,6 +23,7 @@ const containerStyles = cva(
 
 interface RewardsTableProps {
     t: NamespacedTranslateFunction;
+    protocolFeePpm: bigint;
     onRemove?: (index: number) => void;
     rewards?: Reward[];
     noEdit?: boolean;
@@ -32,6 +33,7 @@ interface RewardsTableProps {
 
 export const RewardsTable = ({
     t,
+    protocolFeePpm,
     noEdit,
     noFees,
     noBorder = false,
@@ -75,6 +77,7 @@ export const RewardsTable = ({
                         return (
                             <RewardRow
                                 t={t}
+                                protocolFeePpm={protocolFeePpm}
                                 noEdit={noEdit}
                                 noFees={noFees}
                                 key={reward.address}

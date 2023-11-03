@@ -2,6 +2,17 @@ export default [
     {
         inputs: [
             {
+                internalType: "uint256",
+                name: "_fee",
+                type: "uint256",
+            },
+        ],
+        stateMutability: "nonpayable",
+        type: "constructor",
+    },
+    {
+        inputs: [
+            {
                 internalType: "address",
                 name: "target",
                 type: "address",
@@ -140,6 +151,11 @@ export default [
     {
         inputs: [],
         name: "InvalidExpiration",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "InvalidFee",
         type: "error",
     },
     {
@@ -651,6 +667,19 @@ export default [
     {
         inputs: [],
         name: "expiration",
+        outputs: [
+            {
+                internalType: "uint256",
+                name: "",
+                type: "uint256",
+            },
+        ],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [],
+        name: "fee",
         outputs: [
             {
                 internalType: "uint256",

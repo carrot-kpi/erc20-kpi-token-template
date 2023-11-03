@@ -44,13 +44,13 @@ import { zeroAddress, type Hex } from "viem";
 import { dateToUnixTimestamp } from "../../utils/dates";
 import { RewardsTable } from "./rewards/table";
 import { ApproveRewards } from "./approve-rewards";
-import { PROTOCOL_FEE_BPS } from "../constants";
 
 interface DeployProps {
     t: NamespacedTranslateFunction;
     template: ResolvedTemplate;
     oraclesWithInitializationBundleGetter: OracleWithInitializationBundleGetter[];
     state: State;
+    protocolFeePpm: bigint;
     onNext: (createdKPITokenAddress: Address) => void;
     onCreate: KPITokenCreationFormProps<State>["onCreate"];
     onTx: KPITokenCreationFormProps<State>["onTx"];
@@ -61,6 +61,7 @@ export const Deploy = ({
     template,
     oraclesWithInitializationBundleGetter,
     state,
+    protocolFeePpm,
     onNext,
     onCreate,
     onTx,
@@ -331,13 +332,19 @@ export const Deploy = ({
     return (
         <div className="flex flex-col gap-6">
             <div className="rounded-xxl w-full flex flex-col gap-6 border border-black p-4">
-                <RewardsTable noBorder t={t} rewards={state.rewards} noEdit />
+                <RewardsTable
+                    noBorder
+                    t={t}
+                    rewards={state.rewards}
+                    protocolFeePpm={protocolFeePpm}
+                    noEdit
+                />
                 <div className="flex items-center justify-between">
                     <Typography variant="sm">
                         {t("label.rewards.picker.fee")}
                     </Typography>
                     <Typography variant="sm" className={{ root: "text-right" }}>
-                        {Number(PROTOCOL_FEE_BPS) / 100}%
+                        {Number(protocolFeePpm) / 10_000}%
                     </Typography>
                 </div>
                 <ApproveRewards
