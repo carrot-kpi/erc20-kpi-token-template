@@ -81,8 +81,7 @@ export const Rewards = ({
         }
 
         const amountMinusFees =
-            rewardAmount -
-            (rewardAmount * protocolFeePpm) / 1_000_000n / 10_000n;
+            rewardAmount - (rewardAmount * protocolFeePpm) / 1_000_000n;
 
         if (
             !amountMinusFees ||
@@ -165,8 +164,7 @@ export const Rewards = ({
                 rewardToken.decimals,
             );
             const amountMinusFees =
-                rewardAmount -
-                (rewardAmount * protocolFeePpm) / 1_000_000n / 10_000n;
+                rewardAmount - (rewardAmount * protocolFeePpm) / 1_000_000n;
 
             let errorMessage = "";
             if (newMinimumPayout === null)
