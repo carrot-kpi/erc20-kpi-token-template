@@ -9,7 +9,7 @@ import {
 import { NextStepButton } from "@carrot-kpi/ui";
 import type { i18n } from "i18next";
 import type { OracleWithInitializationBundleGetter, State } from "../../types";
-import { KPIToken, Template } from "@carrot-kpi/sdk";
+import { Template } from "@carrot-kpi/sdk";
 import { MultipleOraclesCreationForm } from "./multiple-oracles-creation-form";
 
 type MaybeOracleWithInitializationBundleGetter =
@@ -42,9 +42,6 @@ export const OraclesConfiguration = ({
     navigate,
     onTx,
 }: OraclesConfigurationProps) => {
-    const [partialKPIToken, setPartialKPIToken] = useState<
-        Partial<KPIToken> | undefined
-    >();
     const [
         oraclesWithInitializationBundleGetter,
         setOraclesWithInitializationBundleGetter,
@@ -52,11 +49,6 @@ export const OraclesConfiguration = ({
         state.oracles ? state.oracles.map(() => null) : [],
     );
     const [disabled, setDisabled] = useState(true);
-
-    useEffect(() => {
-        if (!state?.expiration) return;
-        setPartialKPIToken({ expiration: state.expiration });
-    }, [state.expiration]);
 
     useEffect(() => {
         setDisabled(
@@ -170,7 +162,6 @@ export const OraclesConfiguration = ({
                 i18n={i18n}
                 navigate={navigate}
                 onTx={onTx}
-                kpiToken={partialKPIToken}
                 onStateChange={handleStateChange}
                 onInitializationBundleGetterChange={
                     handleInitializationBundleGetterChange
