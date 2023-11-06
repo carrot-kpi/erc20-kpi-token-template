@@ -31,7 +31,7 @@ export const ApproveReward = ({
 }: ApproveRewardProps): ReactElement => {
     const publicClient = usePublicClient();
     const chainId = useChainId();
-    const [loading, setLoading] = useState(false);
+    const [approving, setApproving] = useState(false);
 
     const { config, isLoading: loadingApproveConfig } = usePrepareContractWrite(
         {
@@ -43,14 +43,14 @@ export const ApproveReward = ({
             enabled: !!spender && !!reward.address,
         },
     );
-    const { writeAsync: approveAsync, isLoading: approving } =
+    const { writeAsync: approveAsync, isLoading: signingTransaction } =
         useContractWrite(config);
 
     const handleClick = useCallback(() => {
         if (!approveAsync) return;
         let cancelled = false;
         const approve = async () => {
-            setLoading(true);
+            setApproving(true);
             try {
                 const tx = await approveAsync();
                 const receipt = await publicClient.waitForTransactionReceipt({
@@ -60,7 +60,7 @@ export const ApproveReward = ({
             } catch (error) {
                 console.warn("could not approve reward", error);
             } finally {
-                setLoading(false);
+                setApproving(false);
             }
         };
         void approve();
@@ -74,10 +74,10 @@ export const ApproveReward = ({
             size="small"
             onClick={handleClick}
             disabled={!approveAsync}
-            loading={loadingApproveConfig || approving || loading}
+            loading={loadingApproveConfig || signingTransaction || approving}
             className={{ root: "w-full" }}
         >
-            {approving
+            {signingTransaction || approving
                 ? t("label.rewards.approving", {
                       symbol: reward.symbol,
                       currentIndex: index,
