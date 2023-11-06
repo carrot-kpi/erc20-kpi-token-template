@@ -4,6 +4,7 @@ import type {
     KPITokenCreationFormProps,
     NamespacedTranslateFunction,
 } from "@carrot-kpi/react";
+import { ReactComponent as CarrotFlag } from "../../assets/carrot-flag.svg";
 
 interface SuccessProps {
     t: NamespacedTranslateFunction;
@@ -23,6 +24,7 @@ export const Success = ({
     return (
         <div className="w-full h-full flex justify-center">
             <div className="h-fit flex flex-col gap-6 items-center p-8 max-w-lg rounded-xl border border-black dark:border-white bg-white dark:bg-black mx-4 my-10">
+                <CarrotFlag className="w-52 h-52" />
                 <Typography className={{ root: "text-center" }}>
                     {t("success.text")}
                 </Typography>
