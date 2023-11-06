@@ -5,11 +5,10 @@ import {
 } from "@carrot-kpi/react";
 import { Button } from "@carrot-kpi/ui";
 import { type ReactElement, useCallback, useState, useEffect } from "react";
-import { type Address, useContractReads, useAccount } from "wagmi";
+import { type Address, useContractReads, useAccount, erc20ABI } from "wagmi";
 import { zeroAddress, type TransactionReceipt } from "viem";
 import type { Reward } from "../types";
-import { ERC20_ABI } from "@carrot-kpi/sdk";
-import { ApproveReward } from "./approve-button";
+import { ApproveReward } from "./approve-reward";
 import { dateToUnixTimestamp } from "../../utils/dates";
 
 interface ApproveRewardsProps {
@@ -45,7 +44,7 @@ export const ApproveRewards = ({
                 rewards?.map((reward) => {
                     return {
                         address: reward.address,
-                        abi: ERC20_ABI,
+                        abi: erc20ABI,
                         functionName: "allowance",
                         args: [connectedAddress, spender],
                     };
@@ -68,6 +67,10 @@ export const ApproveRewards = ({
             if ((allowances[i].result as bigint) >= BigInt(reward.amount))
                 continue;
             newToApprove.push(reward);
+        }
+        if (newToApprove.length === 0) {
+            setAllApproved(true);
+            return;
         }
         setToApprove(newToApprove);
     }, [allowances, rewards]);

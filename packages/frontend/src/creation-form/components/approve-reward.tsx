@@ -1,6 +1,6 @@
 import { type NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Button } from "@carrot-kpi/ui";
-import { type ReactElement, useCallback } from "react";
+import { type ReactElement, useCallback, useState } from "react";
 import {
     usePrepareContractWrite,
     erc20ABI,
@@ -31,6 +31,7 @@ export const ApproveReward = ({
 }: ApproveRewardProps): ReactElement => {
     const publicClient = usePublicClient();
     const chainId = useChainId();
+    const [loading, setLoading] = useState(false);
 
     const { config, isLoading: loadingApproveConfig } = usePrepareContractWrite(
         {
@@ -49,11 +50,18 @@ export const ApproveReward = ({
         if (!approveAsync) return;
         let cancelled = false;
         const approve = async () => {
-            const tx = await approveAsync();
-            const receipt = await publicClient.waitForTransactionReceipt({
-                hash: tx.hash,
-            });
-            if (!cancelled) onApprove(receipt);
+            setLoading(true);
+            try {
+                const tx = await approveAsync();
+                const receipt = await publicClient.waitForTransactionReceipt({
+                    hash: tx.hash,
+                });
+                if (!cancelled) onApprove(receipt);
+            } catch (error) {
+                console.warn("could not approve reward", error);
+            } finally {
+                setLoading(false);
+            }
         };
         void approve();
         return () => {
@@ -66,7 +74,7 @@ export const ApproveReward = ({
             size="small"
             onClick={handleClick}
             disabled={!approveAsync}
-            loading={loadingApproveConfig || approving}
+            loading={loadingApproveConfig || approving || loading}
             className={{ root: "w-full" }}
         >
             {approving
