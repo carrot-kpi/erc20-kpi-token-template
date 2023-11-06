@@ -25,11 +25,11 @@ interface SingleOracleCreationFormProps
         stateOrUpdater: object | TemplateComponentStateUpdater<object>,
     ) => void;
     onInitializationBundleGetterChange: (
-        templateId: number,
+        index: number,
         initializationBundleGetter?: OracleInitializationBundleGetter,
     ) => void;
     onSuggestedExpirationTimestampChange: (
-        templateId: number,
+        index: number,
         timestamp?: number,
     ) => void;
     template: Template;
