@@ -66,7 +66,7 @@ export const Rewards = ({
         });
 
     useEffect(() => {
-        setDisabled(state.rewards?.length === 0);
+        setDisabled(state.rewards?.length === 0 || !state.rewards);
     }, [state.rewards]);
 
     useEffect(() => {
