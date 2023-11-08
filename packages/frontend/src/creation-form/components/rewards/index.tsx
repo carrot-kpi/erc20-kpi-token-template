@@ -128,6 +128,13 @@ export const Rewards = ({
         setRewardTokenPickerOpen(false);
     }, []);
 
+    const handleRewardPick = useCallback((token: TokenInfoWithBalance) => {
+        setRewardToken(null);
+        setRewardAmount(null);
+        setRewardMinimumPayout(null);
+        setRewardToken(token);
+    }, []);
+
     const handleRewardAmountChange = useCallback(
         (rawNewAmount: NumberFormatValues): void => {
             if (!rewardToken || !rewardTokenBalance) return;
@@ -198,6 +205,9 @@ export const Rewards = ({
                 },
             ],
         }));
+        setRewardAmount(null);
+        setRewardMinimumPayout(null);
+        setRewardToken(null);
     }, [
         chainId,
         onStateChange,
@@ -237,7 +247,7 @@ export const Rewards = ({
                 open={rewardTokenPickerOpen}
                 onDismiss={handleRewardTokenPickerDismiss}
                 token={rewardToken}
-                onChange={setRewardToken}
+                onChange={handleRewardPick}
             />
             <div className="flex flex-col gap-6">
                 <div className="flex flex-col gap-3">
@@ -277,7 +287,7 @@ export const Rewards = ({
                                                       rewardAmount,
                                                       rewardToken.decimals,
                                                   )
-                                                : null
+                                                : ""
                                         }
                                         onValueChange={handleRewardAmountChange}
                                     />
@@ -347,7 +357,7 @@ export const Rewards = ({
                                                           rewardMinimumPayout,
                                                           rewardToken.decimals,
                                                       )
-                                                    : null
+                                                    : ""
                                             }
                                             onValueChange={
                                                 handleRewardMinimumPayoutChange

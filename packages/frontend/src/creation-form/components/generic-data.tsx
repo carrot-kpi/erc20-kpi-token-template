@@ -189,9 +189,9 @@ export const GenericData = ({
         (value: string) => {
             setTokenNameErrorText(
                 !value
-                    ? t("error.token.name.empty")
+                    ? t("error.erc20.name.empty")
                     : value.trim().length > MAX_KPI_TOKEN_NAME_CHARS
-                    ? t("error.token.name.tooLong", {
+                    ? t("error.erc20.name.tooLong", {
                           chars: MAX_KPI_TOKEN_NAME_CHARS,
                       })
                     : "",
@@ -208,9 +208,9 @@ export const GenericData = ({
         (value: string) => {
             setTokenSymbolErrorText(
                 !value
-                    ? t("error.token.symbol.empty")
+                    ? t("error.erc20.symbol.empty")
                     : value.trim().length > MAX_KPI_TOKEN_SYMBOL_CHARS
-                    ? t("error.token.symbol.tooLong", {
+                    ? t("error.erc20.symbol.tooLong", {
                           chars: MAX_KPI_TOKEN_SYMBOL_CHARS,
                       })
                     : "",
@@ -227,7 +227,7 @@ export const GenericData = ({
         (value: NumberFormatValues) => {
             setTokenSupplyErrorText(
                 !value || !value.value || parseUnits(value.value, 18) === 0n
-                    ? t("error.token.supply.zero")
+                    ? t("error.erc20.supply.zero")
                     : "",
             );
             onStateChange((state) => ({
