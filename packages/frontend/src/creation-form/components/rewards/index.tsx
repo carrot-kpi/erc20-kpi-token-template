@@ -292,9 +292,10 @@ export const Rewards = ({
                                         ) : !!rewardTokenBalance ? (
                                             <>
                                                 <Typography variant="sm">
-                                                    {
-                                                        rewardTokenBalance.formatted
-                                                    }
+                                                    {formatUnits(
+                                                        rewardTokenBalance.value,
+                                                        rewardTokenBalance.decimals,
+                                                    )}
                                                 </Typography>
                                                 <Typography
                                                     variant="sm"
