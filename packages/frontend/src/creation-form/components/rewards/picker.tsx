@@ -156,9 +156,16 @@ export const RewardTokenPicker = ({
             defaultSelectedList.tokens.push({
                 chainId: CCT_CHAIN_ID,
                 address: CCT_ERC20_2_ADDRESS,
-                name: "reward test token 2",
-                decimals: 18,
+                name: "Reward test token 2",
+                decimals: 6,
                 symbol: "TST2",
+            });
+            defaultSelectedList.tokens.push({
+                chainId: CCT_CHAIN_ID,
+                address: CCT_ERC20_3_ADDRESS,
+                name: "Reward test token 3",
+                decimals: 0,
+                symbol: "TST3",
             });
         }
         setSelectedTokenList(defaultSelectedList as TokenListWithBalance);
