@@ -200,13 +200,9 @@ export const CampaignCard = ({
                         <Typography uppercase>
                             {t("overview.time.label")}
                         </Typography>
-                        <TimeLeft
-                            data-testid={
-                                "campaign-card-kpi-token-expiration-text"
-                            }
-                            t={t}
-                            kpiToken={kpiToken}
-                        />
+                        <div data-testid={"campaign-card-time-left"}>
+                            <TimeLeft t={t} kpiToken={kpiToken} />
+                        </div>
                     </div>
                 </div>
             </CardContent>
