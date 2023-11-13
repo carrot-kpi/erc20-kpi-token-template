@@ -169,7 +169,10 @@ export const WalletPosition = ({
                         >
                             {t("position.rewards.guaranteed.label")}
                         </Typography>
-                        <div className="flex flex-col gap-2">
+                        <div
+                            data-testid={"wallet-position-guaranteed-rewards"}
+                            className="flex flex-col gap-2"
+                        >
                             {loading || !guaranteedRewards
                                 ? new Array(rewards?.length || 1)
                                       .fill(null)
@@ -179,6 +182,7 @@ export const WalletPosition = ({
                                 : guaranteedRewards.map((reward) => {
                                       return (
                                           <TokenAmount
+                                              data-testid={`wallet-position-guaranteed-reward-${reward.currency.address}`}
                                               key={reward.currency.address}
                                               amount={reward}
                                           />
@@ -194,7 +198,10 @@ export const WalletPosition = ({
                         >
                             {t("position.rewards.maximum.label")}
                         </Typography>
-                        <div className="flex flex-col gap-2">
+                        <div
+                            data-testid={"wallet-position-maximum-rewards"}
+                            className="flex flex-col gap-2"
+                        >
                             {loading || !maximumRewards
                                 ? new Array(rewards?.length || 1)
                                       .fill(null)
@@ -204,6 +211,7 @@ export const WalletPosition = ({
                                 : maximumRewards.map((reward) => {
                                       return (
                                           <TokenAmount
+                                              data-testid={`wallet-position-maximum-rewards-${reward.currency.address}`}
                                               key={reward.currency.address}
                                               amount={reward}
                                           />
@@ -219,7 +227,10 @@ export const WalletPosition = ({
                         >
                             {t("position.rewards.remaining.label")}
                         </Typography>
-                        <div className="flex flex-col gap-2">
+                        <div
+                            data-testid={"wallet-position-remaining-rewards"}
+                            className="flex flex-col gap-2"
+                        >
                             {loading ||
                             !kpiTokenRewardBalances ||
                             loadingKPITokenRewardBalances ||
@@ -232,6 +243,7 @@ export const WalletPosition = ({
                                 : kpiTokenRewardBalances.map((reward) => {
                                       return (
                                           <TokenAmount
+                                              data-testid={`wallet-position-remaining-rewards-${reward.currency.address}`}
                                               key={reward.currency.address}
                                               amount={reward}
                                           />
@@ -249,9 +261,16 @@ export const WalletPosition = ({
                         >
                             {t("position.balance.label")}
                         </Typography>
-                        <TokenAmount amount={balance} loading={loading} />
+                        <TokenAmount
+                            data-testid={"wallet-position-balance"}
+                            amount={balance}
+                            loading={loading}
+                        />
                     </div>
-                    <div className="w-full md:w-1/2 p-6 flex-col">
+                    <div
+                        data-testid={"wallet-position-claimables"}
+                        className="w-full md:w-1/2 p-6 flex-col"
+                    >
                         <Typography
                             variant="xs"
                             uppercase
@@ -270,6 +289,7 @@ export const WalletPosition = ({
                                 {redeemableRewards.map((reward) => {
                                     return (
                                         <TokenAmount
+                                            data-testid={`wallet-position-claimable-${reward.currency.address}`}
                                             key={reward.currency.address}
                                             amount={reward}
                                         />
