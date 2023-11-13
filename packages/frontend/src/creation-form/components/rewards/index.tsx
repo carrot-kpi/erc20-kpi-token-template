@@ -8,6 +8,7 @@ import {
     ErrorText,
     type TokenInfoWithBalance,
     type NumberFormatValues,
+    Switch,
 } from "@carrot-kpi/ui";
 import {
     type NamespacedTranslateFunction,
@@ -57,6 +58,7 @@ export const Rewards = ({
     const [minimumPayoutErrorMessage, setMinimumPayoutErrorMessage] =
         useState("");
     const [protocolFeeAmount, setProtocolFeeAmount] = useState("");
+    const [minimumPayoutEnabled, setMinimumPayoutEnabled] = useState(false);
 
     // fetch picked erc20 token balance
     const { data: rewardTokenBalance, isLoading: loadingRewardTokenBalance } =
@@ -293,83 +295,104 @@ export const Rewards = ({
                                     />
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <div className="flex items-center gap-2">
-                                        <Typography variant="sm">
-                                            {t("label.rewards.balance")}:{" "}
-                                        </Typography>
-                                        {loadingRewardTokenBalance ? (
-                                            <Skeleton variant="sm" />
-                                        ) : !!rewardTokenBalance ? (
-                                            <>
-                                                <Typography variant="sm">
-                                                    {formatUnits(
-                                                        rewardTokenBalance.value,
-                                                        rewardTokenBalance.decimals,
-                                                    )}
-                                                </Typography>
-                                                <Typography
-                                                    variant="sm"
-                                                    className={{
-                                                        root: "text-orange cursor-pointer",
-                                                    }}
-                                                    uppercase
-                                                    onClick={handleMaxClick}
-                                                >
-                                                    {t(
-                                                        "label.rewards.picker.balance.max",
-                                                    )}
-                                                </Typography>
-                                            </>
-                                        ) : (
-                                            <Typography variant="sm">
-                                                -
-                                            </Typography>
-                                        )}
-                                    </div>
-                                    <div className="flex justify-end h-5">
-                                        <USDValue
-                                            token={rewardToken}
-                                            amount={rewardAmount}
-                                        />
-                                    </div>
+                                    {rewardToken && (
+                                        <>
+                                            <div className="flex items-center gap-2">
+                                                {loadingRewardTokenBalance ||
+                                                !rewardTokenBalance ? (
+                                                    <Skeleton variant="sm" />
+                                                ) : (
+                                                    <>
+                                                        <Typography variant="sm">
+                                                            {t(
+                                                                "label.rewards.balance",
+                                                            )}
+                                                            :{" "}
+                                                        </Typography>
+                                                        <Typography variant="sm">
+                                                            {formatUnits(
+                                                                rewardTokenBalance.value,
+                                                                rewardTokenBalance.decimals,
+                                                            )}
+                                                        </Typography>
+                                                        <Typography
+                                                            variant="sm"
+                                                            className={{
+                                                                root: "text-orange cursor-pointer",
+                                                            }}
+                                                            uppercase
+                                                            onClick={
+                                                                handleMaxClick
+                                                            }
+                                                        >
+                                                            {t(
+                                                                "label.rewards.picker.balance.max",
+                                                            )}
+                                                        </Typography>
+                                                    </>
+                                                )}
+                                            </div>
+                                            <div className="flex justify-end h-5">
+                                                <USDValue
+                                                    token={rewardToken}
+                                                    amount={rewardAmount}
+                                                />
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
-                                <div className="h-px w-full bg-black" />
-                                <div className="flex-col gap-2 pt-1.5">
-                                    <div className="flex items-center justify-between">
-                                        <Typography>
-                                            {t(
-                                                "label.rewards.picker.minimum.payout",
-                                            )}
-                                        </Typography>
-                                        <NumberInput
-                                            label=""
-                                            placeholder="0.0"
-                                            className={{
-                                                input: "border-none text-right w-full p-0",
-                                            }}
-                                            variant="xl"
-                                            disabled={!!!rewardToken}
-                                            allowNegative={false}
-                                            value={
-                                                rewardToken &&
-                                                rewardMinimumPayout !== null
-                                                    ? formatUnits(
-                                                          rewardMinimumPayout,
-                                                          rewardToken.decimals,
-                                                      )
-                                                    : ""
-                                            }
-                                            onValueChange={
-                                                handleRewardMinimumPayoutChange
-                                            }
-                                        />
-                                    </div>
-                                    <div className="flex justify-end h-5">
-                                        <USDValue
-                                            token={rewardToken}
-                                            amount={rewardMinimumPayout}
-                                        />
-                                    </div>
+                                {minimumPayoutEnabled && (
+                                    <>
+                                        <div className="flex-col gap-2 pt-1.5">
+                                            <div className="flex items-center justify-between">
+                                                <Typography>
+                                                    {t(
+                                                        "label.rewards.picker.minimum.payout",
+                                                    )}
+                                                </Typography>
+                                                <NumberInput
+                                                    label=""
+                                                    placeholder="0.0"
+                                                    className={{
+                                                        input: "border-none text-right w-full p-0",
+                                                    }}
+                                                    variant="xl"
+                                                    disabled={!!!rewardToken}
+                                                    allowNegative={false}
+                                                    value={
+                                                        rewardToken &&
+                                                        rewardMinimumPayout !==
+                                                            null
+                                                            ? formatUnits(
+                                                                  rewardMinimumPayout,
+                                                                  rewardToken.decimals,
+                                                              )
+                                                            : ""
+                                                    }
+                                                    onValueChange={
+                                                        handleRewardMinimumPayoutChange
+                                                    }
+                                                />
+                                            </div>
+                                            <div className="flex justify-end h-5">
+                                                <USDValue
+                                                    token={rewardToken}
+                                                    amount={rewardMinimumPayout}
+                                                />
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+                                <div className="flex gap-3 items-center">
+                                    <Typography variant="sm">
+                                        {t(
+                                            "label.rewards.picker.minimum.payout.toggle",
+                                        )}
+                                    </Typography>
+                                    <Switch
+                                        onChange={setMinimumPayoutEnabled}
+                                        checked={minimumPayoutEnabled}
+                                    />
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <Typography variant="sm">

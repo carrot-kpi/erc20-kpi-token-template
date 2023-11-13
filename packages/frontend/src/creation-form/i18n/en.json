@@ -58,6 +58,7 @@
     "label.rewards.table.amount": "Total amount",
     "label.rewards.table.amount.after.fees": "After fees",
     "label.rewards.table.minimum.payout": "Minimum payout",
+    "label.rewards.picker.minimum.payout.toggle": "Minimum payout:",
     "label.rewards.table.empty": "No rewards selected yet",
     "label.rewards.balance": "Balance",
     "label.rewards.approve.done": "Approved",

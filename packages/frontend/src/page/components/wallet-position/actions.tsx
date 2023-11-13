@@ -168,9 +168,14 @@ export const WalletActions = ({
 
     return (
         <div className="flex flex-col gap-4">
-            <Typography>{text}</Typography>
+            <Typography
+                data-testid={"wallet-position-actions-burn-redeem-text"}
+            >
+                {text}
+            </Typography>
             {(redeemable || burnable) && (
                 <Button
+                    data-testid={"wallet-position-actions-burn-redeem-button"}
                     size="small"
                     loading={loading}
                     disabled={!writeAsync}
