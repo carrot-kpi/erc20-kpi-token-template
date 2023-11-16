@@ -266,10 +266,10 @@ export const Rewards = ({
                 !value
                     ? t("error.erc20.name.empty")
                     : value.trim().length > MAX_KPI_TOKEN_NAME_CHARS
-                    ? t("error.erc20.name.tooLong", {
-                          chars: MAX_KPI_TOKEN_NAME_CHARS,
-                      })
-                    : "",
+                      ? t("error.erc20.name.tooLong", {
+                            chars: MAX_KPI_TOKEN_NAME_CHARS,
+                        })
+                      : "",
             );
             onStateChange((state) => ({
                 ...state,
@@ -285,10 +285,10 @@ export const Rewards = ({
                 !value
                     ? t("error.erc20.symbol.empty")
                     : value.trim().length > MAX_KPI_TOKEN_SYMBOL_CHARS
-                    ? t("error.erc20.symbol.tooLong", {
-                          chars: MAX_KPI_TOKEN_SYMBOL_CHARS,
-                      })
-                    : "",
+                      ? t("error.erc20.symbol.tooLong", {
+                            chars: MAX_KPI_TOKEN_SYMBOL_CHARS,
+                        })
+                      : "",
             );
             onStateChange((state) => ({
                 ...state,
