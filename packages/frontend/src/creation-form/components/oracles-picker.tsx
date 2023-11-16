@@ -87,6 +87,7 @@ export const OraclesPicker = ({
                                     (oracle) =>
                                         oracle.templateId === template.id,
                                 );
+
                             return (
                                 <div
                                     key={template.id}
@@ -98,7 +99,7 @@ export const OraclesPicker = ({
                                         template={template}
                                     />
                                     <Checkbox
-                                        checked={checked}
+                                        checked={!!checked}
                                         onChange={handleChange(template.id)}
                                     />
                                 </div>
