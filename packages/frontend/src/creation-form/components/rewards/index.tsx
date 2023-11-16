@@ -22,6 +22,11 @@ import { USDValue } from "./usd-value";
 import { formatUnits, parseUnits } from "viem";
 import { RewardTokenPicker } from "./picker";
 import { RewardsTable } from "./table";
+import { NoSpecialCharactersTextInput } from "../no-special-characters-text-input";
+import {
+    MAX_KPI_TOKEN_NAME_CHARS,
+    MAX_KPI_TOKEN_SYMBOL_CHARS,
+} from "../../constants";
 
 interface RewardsProps {
     t: NamespacedTranslateFunction;
@@ -57,6 +62,9 @@ export const Rewards = ({
     const [minimumPayoutErrorMessage, setMinimumPayoutErrorMessage] =
         useState("");
     const [protocolFeeAmount, setProtocolFeeAmount] = useState("");
+    const [tokenNameErrorText, setTokenNameErrorText] = useState("");
+    const [tokenSymbolErrorText, setTokenSymbolErrorText] = useState("");
+    const [tokenSupplyErrorText, setTokenSupplyErrorText] = useState("");
 
     // fetch picked erc20 token balance
     const { data: rewardTokenBalance, isLoading: loadingRewardTokenBalance } =
@@ -66,8 +74,20 @@ export const Rewards = ({
         });
 
     useEffect(() => {
-        setDisabled(state.rewards?.length === 0 || !state.rewards);
-    }, [state.rewards]);
+        setDisabled(
+            state.rewards?.length === 0 ||
+                !state.rewards ||
+                !state.tokenName ||
+                !state.tokenSymbol ||
+                !state.tokenName.trim() ||
+                state.tokenName.trim().length > MAX_KPI_TOKEN_NAME_CHARS ||
+                !state.tokenSymbol.trim() ||
+                state.tokenSymbol.trim().length > MAX_KPI_TOKEN_SYMBOL_CHARS ||
+                !state.tokenSupply ||
+                !state.tokenSupply ||
+                parseFloat(state.tokenSupply) === 0,
+        );
+    }, [state]);
 
     useEffect(() => {
         if (!rewardToken || !rewardAmount) {
@@ -240,8 +260,107 @@ export const Rewards = ({
         });
     }, [rewardTokenBalance, rewardToken, handleRewardAmountChange]);
 
+    const handleTokenNameChange = useCallback(
+        (value: string) => {
+            setTokenNameErrorText(
+                !value
+                    ? t("error.erc20.name.empty")
+                    : value.trim().length > MAX_KPI_TOKEN_NAME_CHARS
+                      ? t("error.erc20.name.tooLong", {
+                            chars: MAX_KPI_TOKEN_NAME_CHARS,
+                        })
+                      : "",
+            );
+            onStateChange((state) => ({
+                ...state,
+                tokenName: value,
+            }));
+        },
+        [onStateChange, t],
+    );
+
+    const handleTokenSymbolChange = useCallback(
+        (value: string) => {
+            setTokenSymbolErrorText(
+                !value
+                    ? t("error.erc20.symbol.empty")
+                    : value.trim().length > MAX_KPI_TOKEN_SYMBOL_CHARS
+                      ? t("error.erc20.symbol.tooLong", {
+                            chars: MAX_KPI_TOKEN_SYMBOL_CHARS,
+                        })
+                      : "",
+            );
+            onStateChange((state) => ({
+                ...state,
+                tokenSymbol: value,
+            }));
+        },
+        [onStateChange, t],
+    );
+
+    const handleTokenSupplyChange = useCallback(
+        (value: NumberFormatValues) => {
+            setTokenSupplyErrorText(
+                !value || !value.value || parseUnits(value.value, 18) === 0n
+                    ? t("error.erc20.supply.zero")
+                    : "",
+            );
+            onStateChange((state) => ({
+                ...state,
+                tokenSupply: parseUnits(value.value, 18).toString(),
+            }));
+        },
+        [onStateChange, t],
+    );
+
     return (
         <>
+            <div className="flex flex-col md:flex-row w-full gap-4 mb-4">
+                <NoSpecialCharactersTextInput
+                    label={t("general.label.token.name")}
+                    placeholder={"Example"}
+                    onChange={handleTokenNameChange}
+                    value={state.tokenName}
+                    error={!!tokenNameErrorText}
+                    errorText={tokenNameErrorText}
+                    className={{
+                        root: "w-full",
+                        input: "w-full",
+                        inputWrapper: "w-full",
+                    }}
+                />
+                <NoSpecialCharactersTextInput
+                    label={t("general.label.token.symbol")}
+                    placeholder={"XMPL"}
+                    onChange={handleTokenSymbolChange}
+                    value={state.tokenSymbol}
+                    error={!!tokenSymbolErrorText}
+                    errorText={tokenSymbolErrorText}
+                    className={{
+                        root: "w-full",
+                        input: "w-full",
+                        inputWrapper: "w-full",
+                    }}
+                />
+                <NumberInput
+                    allowNegative={false}
+                    label={t("general.label.token.supply")}
+                    placeholder={"1,000,000"}
+                    onValueChange={handleTokenSupplyChange}
+                    value={
+                        state.tokenSupply
+                            ? formatUnits(BigInt(state.tokenSupply), 18)
+                            : null
+                    }
+                    error={!!tokenSupplyErrorText}
+                    errorText={tokenSupplyErrorText}
+                    className={{
+                        root: "w-full",
+                        input: "w-full",
+                        inputWrapper: "w-full",
+                    }}
+                />
+            </div>
             <RewardTokenPicker
                 t={t}
                 open={rewardTokenPickerOpen}
