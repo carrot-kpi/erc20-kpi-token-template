@@ -127,6 +127,7 @@ export const Component = ({
                 </div>
                 <div className="w-full max-w-screen-2xl flex gap-6">
                     <Button
+                        data-testid={"page-open-explorer-button"}
                         size="xsmall"
                         iconPlacement="right"
                         icon={External}
@@ -137,7 +138,11 @@ export const Component = ({
                     >
                         {t("open.explorer")}
                     </Button>
-                    <Button size="xsmall" onClick={handleWatchERC20}>
+                    <Button
+                        data-testid={"page-add-reward-button"}
+                        size="xsmall"
+                        onClick={handleWatchERC20}
+                    >
                         {t("erc20.track", {
                             symbol: tokenData?.symbol,
                         })}

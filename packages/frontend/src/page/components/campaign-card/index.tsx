@@ -65,7 +65,9 @@ export const CampaignCard = ({
                     <Typography uppercase variant="xs">
                         {t("overview.description.label")}
                     </Typography>
-                    <Markdown>{kpiToken.specification.description}</Markdown>
+                    <Markdown data-testid={"campaign-card-description-text"}>
+                        {kpiToken.specification.description}
+                    </Markdown>
                 </div>
                 <div className="p-4 flex flex-wrap gap-3">
                     {kpiToken.specification.tags.map((tag) => (
@@ -80,13 +82,17 @@ export const CampaignCard = ({
                         >
                             {t("overview.rewards.label")}
                         </Typography>
-                        <div className="flex flex-col gap-2">
+                        <div
+                            data-testid={"campaign-card-rewards"}
+                            className="flex flex-col gap-2"
+                        >
                             {loading || !rewards ? (
                                 <RewardsRow loading />
                             ) : (
                                 rewards.map((reward) => {
                                     return (
                                         <RewardsRow
+                                            data-testid={`campaign-card-reward-${reward.amount.currency.address}`}
                                             key={reward.amount.currency.address}
                                             reward={reward}
                                         />
@@ -102,13 +108,17 @@ export const CampaignCard = ({
                         >
                             {t("overview.minimumPayout.label")}
                         </Typography>
-                        <div className="flex flex-col gap-2">
+                        <div
+                            data-testid={"campaign-card-minimum-payouts"}
+                            className="flex flex-col gap-2"
+                        >
                             {loading || !rewards ? (
                                 <RewardsRow loading />
                             ) : (
                                 rewards.map((reward) => {
                                     return (
                                         <RewardsRow
+                                            data-testid={`campaign-card-minimum-payout-${reward.amount.currency.address}`}
                                             key={reward.amount.currency.address}
                                             reward={reward}
                                             minimumPayout
@@ -128,7 +138,10 @@ export const CampaignCard = ({
                         {loading || !erc20Name || !erc20Symbol ? (
                             <Skeleton width="40px" />
                         ) : (
-                            <Typography truncate>
+                            <Typography
+                                data-testid={"campaign-card-kpi-token-text"}
+                                truncate
+                            >
                                 {erc20Name} ({erc20Symbol})
                             </Typography>
                         )}
@@ -145,7 +158,13 @@ export const CampaignCard = ({
                         {loading || !initialSupply ? (
                             <Skeleton />
                         ) : (
-                            <Typography uppercase truncate>
+                            <Typography
+                                data-testid={
+                                    "campaign-card-kpi-token-initial-supply-text"
+                                }
+                                uppercase
+                                truncate
+                            >
                                 {formatDecimals({
                                     number: formatUnits(initialSupply, 18),
                                 })}
@@ -164,7 +183,13 @@ export const CampaignCard = ({
                         erc20Supply === undefined ? (
                             <Skeleton width="60px" />
                         ) : (
-                            <Typography uppercase truncate>
+                            <Typography
+                                data-testid={
+                                    "campaign-card-kpi-token-current-supply-text"
+                                }
+                                uppercase
+                                truncate
+                            >
                                 {formatDecimals({
                                     number: formatUnits(erc20Supply, 18),
                                 })}
@@ -175,7 +200,9 @@ export const CampaignCard = ({
                         <Typography uppercase>
                             {t("overview.time.label")}
                         </Typography>
-                        <TimeLeft t={t} kpiToken={kpiToken} />
+                        <div data-testid={"campaign-card-time-left"}>
+                            <TimeLeft t={t} kpiToken={kpiToken} />
+                        </div>
                     </div>
                 </div>
             </CardContent>
