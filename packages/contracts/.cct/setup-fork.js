@@ -16,7 +16,7 @@ export const setupFork = async ({ nodeClient, walletClient }) => {
             hash: await walletClient.deployContract({
                 abi: templateAbi,
                 bytecode: templateBytecode,
-                args: [0], // 1% default fee
+                args: [10_000], // 1% default fee
             }),
         });
 

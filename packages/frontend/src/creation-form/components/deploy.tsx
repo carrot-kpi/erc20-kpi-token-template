@@ -341,10 +341,9 @@ export const Deploy = ({
                 />
                 <div className="flex items-center justify-between">
                     <Typography variant="sm">
-                        {t("label.rewards.picker.fee")}
-                    </Typography>
-                    <Typography variant="sm" className={{ root: "text-right" }}>
-                        {Number(protocolFeePpm) / 10_000}%
+                        {t("label.rewards.picker.fee", {
+                            fee: `${Number(protocolFeePpm) / 10_000}%`,
+                        })}
                     </Typography>
                 </div>
                 <ApproveRewards
