@@ -1,5 +1,5 @@
 import { type ReactElement, useCallback } from "react";
-import { Button, Markdown, Timer, Typography } from "@carrot-kpi/ui";
+import { Button, Markdown, Typography } from "@carrot-kpi/ui";
 import type {
     KPITokenCreationFormProps,
     NamespacedTranslateFunction,
@@ -29,7 +29,7 @@ export const Success = ({
 
     return (
         <div className="w-full h-full min-h-[1000px] flex justify-center">
-            <div className="h-fit flex flex-col gap-3 items-center p-8 max-w-lg rounded-xl border border-black dark:border-white bg-white dark:bg-black mx-4 my-10">
+            <div className="w-full h-fit flex flex-col gap-3 items-center p-4 max-w-lg rounded-xl border border-black dark:border-white bg-white dark:bg-black mx-4 my-10">
                 <CarrotFlag className="w-52 h-52" />
                 <Typography className={{ root: "text-center" }}>
                     {t("success.text")}
@@ -56,20 +56,9 @@ export const Success = ({
                             protocolFeePpm={protocolFeePpm}
                             noEdit
                             noFees
-                            noMinimumPayout
                             noBorder
                         />
                     </div>
-                    {!!state.expiration && (
-                        <div className="rounded-xxl border border-black px-4 py-2 dark:border-white">
-                            <div className="flex gap-1 justify-between">
-                                <Typography>
-                                    {t("success.summary.time.label")}
-                                </Typography>
-                                <Timer to={state.expiration} countdown />
-                            </div>
-                        </div>
-                    )}
                 </div>
                 <Button
                     size="small"
