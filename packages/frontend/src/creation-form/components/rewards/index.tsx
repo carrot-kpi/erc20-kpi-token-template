@@ -230,6 +230,7 @@ export const Rewards = ({
         setRewardAmount(null);
         setRewardMinimumPayout(null);
         setRewardToken(null);
+        setMinimumPayoutEnabled(false);
     }, [
         chainId,
         onStateChange,
@@ -383,7 +384,7 @@ export const Rewards = ({
                                 <div className="flex justify-between items-center">
                                     <div
                                         onClick={handleOpenRewardTokenPicker}
-                                        className="cursor-pointer w-3/4"
+                                        className="cursor-pointer w-4/5"
                                     >
                                         <TextInput
                                             label=""
@@ -525,11 +526,11 @@ export const Rewards = ({
                     <div className="flex items-center justify-center">
                         <Typography variant="sm">
                             {t("label.rewards.picker.fee", {
-                                fee: `${Number(protocolFeePpm) / 10_000}% (${
-                                    protocolFeeAmount &&
-                                    rewardToken &&
-                                    protocolFeeAmount
-                                })`,
+                                fee: `${Number(protocolFeePpm) / 10_000}% ${
+                                    protocolFeeAmount && rewardToken
+                                        ? `(${protocolFeeAmount})`
+                                        : ""
+                                }`,
                             })}
                         </Typography>
                     </div>
@@ -565,7 +566,11 @@ export const Rewards = ({
                     onRemove={handleRemoveReward}
                 />
             </div>
-            <NextStepButton onClick={onNext} disabled={disabled}>
+            <NextStepButton
+                onClick={onNext}
+                disabled={disabled}
+                className={{ root: "w-44 rounded-3xl" }}
+            >
                 {t("next")}
             </NextStepButton>
         </>

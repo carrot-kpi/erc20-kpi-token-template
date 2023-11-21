@@ -11,6 +11,7 @@ module.exports = {
         extend: {
             gridTemplateColumns: {
                 rewards: "1.8fr 1fr 1fr",
+                rewardsNoMinimumPayout: "1.8fr 1fr",
             },
         },
     },

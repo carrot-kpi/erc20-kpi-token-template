@@ -22,7 +22,7 @@
     "general.placeholder.title": "Enter campaign title",
     "general.placeholder.description": "Enter campaign description",
     "general.placeholder.tags": "Enter campaign tags",
-    "general.placeholder.expiration": "Pick a future date",
+    "general.placeholder.expiration": "Pick campaign expiry date",
     "error.title.empty": "A campaign title is required",
     "error.title.tooLong": "Campaign title can't be more than {{chars}} characters",
     "error.description.empty": "A campaign description is required",
@@ -42,7 +42,7 @@
     "error.rewards.empty": "A reward amount is required",
     "error.rewards.insufficient": "Reward amount exceeding balance",
     "error.rewards.minimumPayoutEmpty": "A minimum payout is required",
-    "error.rewards.minimumPayoutTooHigh": "Minimum payout is too high",
+    "error.rewards.minimumPayoutTooHigh": "Minimum payout should be less than reward token amount",
     "erc20.picker.search.title": "Select a token",
     "erc20.picker.search.placeholder": "Search...",
     "erc20.picker.search.no.token": "No results found.",
@@ -81,6 +81,7 @@
     "next": "Next",
     "step": "Step",
     "add": "Add",
-    "success.text": "Your Carrot Campaign has successfully been created!",
+    "success.text": "Your campaign has successfully been created!",
+    "success.summary.time.label": "Expires in",
     "success.button.label": "Go to campaign"
 }

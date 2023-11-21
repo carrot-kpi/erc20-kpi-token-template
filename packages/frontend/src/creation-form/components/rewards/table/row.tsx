@@ -9,6 +9,25 @@ import {
     useIPFSGatewayURL,
 } from "@carrot-kpi/react";
 import { Amount, Token, formatCurrencyAmount } from "@carrot-kpi/sdk";
+import { cva } from "class-variance-authority";
+
+const rootStyles = cva(["h-10", "grid", "items-center"], {
+    variants: {
+        noMinimumPayout: {
+            true: ["grid-cols-rewardsNoMinimumPayout"],
+            false: ["grid-cols-rewards"],
+        },
+    },
+});
+
+const amountFieldStyles = cva(["flex", "gap-2", "items-center"], {
+    variants: {
+        noMinimumPayout: {
+            true: ["justify-end"],
+            false: ["justify-center"],
+        },
+    },
+});
 
 type RewardsRowProps = Reward & {
     t: NamespacedTranslateFunction;
@@ -16,6 +35,7 @@ type RewardsRowProps = Reward & {
     protocolFeePpm: bigint;
     noEdit?: boolean;
     noFees?: boolean;
+    noMinimumPayout?: boolean;
     onRemove?: (index: number) => void;
 };
 
@@ -25,6 +45,7 @@ export const RewardRow = ({
     protocolFeePpm,
     noEdit,
     noFees,
+    noMinimumPayout,
     onRemove,
     chainId,
     address,
@@ -69,7 +90,7 @@ export const RewardRow = ({
     });
 
     return (
-        <div className="h-10 grid grid-cols-rewards items-center">
+        <div className={rootStyles({ noMinimumPayout })}>
             <div className="flex gap-2 items-center">
                 {!noEdit && (
                     <div
@@ -121,19 +142,26 @@ export const RewardRow = ({
             <div
                 onMouseEnter={!noFees ? handleFeeSplitPopoverOpen : undefined}
                 onMouseLeave={!noFees ? handleFeeSplitPopoverClose : undefined}
-                className="flex gap-2 justify-center items-center"
+                className={amountFieldStyles({ noMinimumPayout })}
             >
                 {!noFees && <Info className="w-4 h-4" />}
-                <Typography ref={anchorRef} className={{ root: "text-center" }}>
+                <Typography
+                    ref={anchorRef}
+                    className={{
+                        root: "text-center",
+                    }}
+                >
                     {!noFees ? formattedAmountAfterFees : formattedAmount}
                 </Typography>
             </div>
-            <Typography className={{ root: "text-right" }}>
-                {formatCurrencyAmount({
-                    amount: new Amount(rewardToken, BigInt(minimumPayout)),
-                    withSymbol: false,
-                })}
-            </Typography>
+            {!noMinimumPayout && (
+                <Typography className={{ root: "text-right" }}>
+                    {formatCurrencyAmount({
+                        amount: new Amount(rewardToken, BigInt(minimumPayout)),
+                        withSymbol: false,
+                    })}
+                </Typography>
+            )}
         </div>
     );
 };

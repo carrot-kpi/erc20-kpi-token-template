@@ -137,6 +137,8 @@ export const Component = ({
             <Success
                 t={t}
                 navigate={navigate}
+                state={state}
+                protocolFeePpm={protocolFeePpm}
                 kpiTokenAddress={createdKPITokenAddress}
             />
         );

@@ -21,6 +21,15 @@ const containerStyles = cva(
     },
 );
 
+const headerStyles = cva(["grid"], {
+    variants: {
+        noMinimumPayout: {
+            true: ["grid-cols-rewardsNoMinimumPayout"],
+            false: ["grid-cols-rewards"],
+        },
+    },
+});
+
 interface RewardsTableProps {
     t: NamespacedTranslateFunction;
     protocolFeePpm: bigint;
@@ -28,6 +37,7 @@ interface RewardsTableProps {
     rewards?: Reward[];
     noEdit?: boolean;
     noFees?: boolean;
+    noMinimumPayout?: boolean;
     noBorder?: boolean;
 }
 
@@ -36,30 +46,35 @@ export const RewardsTable = ({
     protocolFeePpm,
     noEdit,
     noFees,
+    noMinimumPayout = false,
     noBorder = false,
     onRemove,
     rewards,
 }: RewardsTableProps) => {
     return (
         <div className="flex flex-col gap-2">
-            <div className="grid grid-cols-rewards">
+            <div className={headerStyles({ noMinimumPayout })}>
                 <Typography weight="medium" variant="sm">
                     {t("label.rewards.table.reward")}
                 </Typography>
                 <Typography
                     weight="medium"
-                    className={{ root: "text-center" }}
+                    className={{
+                        root: noMinimumPayout ? "text-right" : "text-center",
+                    }}
                     variant="sm"
                 >
                     {t("label.rewards.table.amount")}
                 </Typography>
-                <Typography
-                    weight="medium"
-                    className={{ root: "text-right" }}
-                    variant="sm"
-                >
-                    {t("label.rewards.table.minimum.payout")}
-                </Typography>
+                {!noMinimumPayout && (
+                    <Typography
+                        weight="medium"
+                        className={{ root: "text-right" }}
+                        variant="sm"
+                    >
+                        {t("label.rewards.table.minimum.payout")}
+                    </Typography>
+                )}
             </div>
             <div className={containerStyles({ noBorder })}>
                 {!rewards || rewards.length === 0 ? (
@@ -80,6 +95,7 @@ export const RewardsTable = ({
                                 protocolFeePpm={protocolFeePpm}
                                 noEdit={noEdit}
                                 noFees={noFees}
+                                noMinimumPayout={noMinimumPayout}
                                 key={reward.address}
                                 index={index}
                                 onRemove={onRemove}

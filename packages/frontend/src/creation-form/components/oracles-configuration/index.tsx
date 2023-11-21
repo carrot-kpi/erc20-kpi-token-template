@@ -172,7 +172,11 @@ export const OraclesConfiguration = ({
                 templates={templates}
                 state={state}
             />
-            <NextStepButton onClick={handleNext} disabled={disabled}>
+            <NextStepButton
+                onClick={handleNext}
+                disabled={disabled}
+                className={{ root: "w-44 rounded-3xl" }}
+            >
                 {t("next")}
             </NextStepButton>
         </div>
