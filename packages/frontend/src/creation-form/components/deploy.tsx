@@ -333,8 +333,9 @@ export const Deploy = ({
         <div className="flex flex-col gap-6">
             <div className="rounded-xxl w-full flex flex-col gap-6 border border-black p-4">
                 <RewardsTable
-                    noBorder
                     t={t}
+                    noBorder
+                    noUSDValue
                     rewards={state.rewards}
                     protocolFeePpm={protocolFeePpm}
                     noEdit

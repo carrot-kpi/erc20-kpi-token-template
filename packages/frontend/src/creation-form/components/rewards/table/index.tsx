@@ -37,6 +37,7 @@ interface RewardsTableProps {
     rewards?: Reward[];
     noEdit?: boolean;
     noFees?: boolean;
+    noUSDValue?: boolean;
     noMinimumPayout?: boolean;
     noBorder?: boolean;
 }
@@ -46,6 +47,7 @@ export const RewardsTable = ({
     protocolFeePpm,
     noEdit,
     noFees,
+    noUSDValue = false,
     noMinimumPayout = false,
     noBorder = false,
     onRemove,
@@ -95,6 +97,7 @@ export const RewardsTable = ({
                                 protocolFeePpm={protocolFeePpm}
                                 noEdit={noEdit}
                                 noFees={noFees}
+                                noUSDValue={noUSDValue}
                                 noMinimumPayout={noMinimumPayout}
                                 key={reward.address}
                                 index={index}

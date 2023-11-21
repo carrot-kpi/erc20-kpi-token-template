@@ -562,6 +562,7 @@ export const Rewards = ({
                 <RewardsTable
                     t={t}
                     rewards={state.rewards}
+                    noUSDValue
                     protocolFeePpm={protocolFeePpm}
                     onRemove={handleRemoveReward}
                 />

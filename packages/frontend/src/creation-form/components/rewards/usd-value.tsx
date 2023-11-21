@@ -20,13 +20,17 @@ export const USDValue = ({ token, amount }: USDValueProps) => {
     if (loading) return <Skeleton variant="sm" width="60px" />;
 
     if (!token || !price || !amount)
-        return <Typography variant="sm">-</Typography>;
+        return (
+            <Typography variant="sm" className={{ root: "opacity-30" }}>
+                -
+            </Typography>
+        );
 
     const parsedAmount = parseFloat(formatUnits(amount, token.decimals));
     if (isNaN(parsedAmount)) return <Typography variant="sm">-</Typography>;
 
     return (
-        <Typography variant="sm">
+        <Typography variant="sm" className={{ root: "opacity-30" }}>
             $
             {formatDecimals({
                 number: (price * parsedAmount).toString(),

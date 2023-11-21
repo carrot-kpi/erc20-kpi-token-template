@@ -10,6 +10,8 @@ import {
 } from "@carrot-kpi/react";
 import { Amount, Token, formatCurrencyAmount } from "@carrot-kpi/sdk";
 import { cva } from "class-variance-authority";
+import { USDValue } from "../usd-value";
+import { parseUnits } from "viem";
 
 const rootStyles = cva(["h-10", "grid", "items-center"], {
     variants: {
@@ -35,6 +37,7 @@ type RewardsRowProps = Reward & {
     protocolFeePpm: bigint;
     noEdit?: boolean;
     noFees?: boolean;
+    noUSDValue?: boolean;
     noMinimumPayout?: boolean;
     onRemove?: (index: number) => void;
 };
@@ -45,6 +48,7 @@ export const RewardRow = ({
     protocolFeePpm,
     noEdit,
     noFees,
+    noUSDValue,
     noMinimumPayout,
     onRemove,
     chainId,
@@ -117,10 +121,9 @@ export const RewardRow = ({
             >
                 <div className="flex gap-3 justify-between">
                     <Typography variant="sm">
-                        {t("label.rewards.picker.fee")}
-                    </Typography>
-                    <Typography variant="sm">
-                        {Number(protocolFeePpm) / 10_000}%
+                        {t("label.rewards.picker.fee", {
+                            fee: `${Number(protocolFeePpm) / 10_000}%`,
+                        })}
                     </Typography>
                 </div>
                 <div className="w-full h-[1px] bg-black dark:bg-white" />
@@ -153,6 +156,17 @@ export const RewardRow = ({
                 >
                     {!noFees ? formattedAmountAfterFees : formattedAmount}
                 </Typography>
+                {!noUSDValue && (
+                    <USDValue
+                        amount={parseUnits(
+                            !noFees
+                                ? formattedAmountAfterFees
+                                : formattedAmount,
+                            decimals,
+                        )}
+                        token={{ address, chainId, decimals, name, symbol }}
+                    />
+                )}
             </div>
             {!noMinimumPayout && (
                 <Typography className={{ root: "text-right" }}>
