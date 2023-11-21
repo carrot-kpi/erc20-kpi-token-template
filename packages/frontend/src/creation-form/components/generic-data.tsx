@@ -232,7 +232,11 @@ export const GenericData = ({
                     inputWrapper: "w-full",
                 }}
             />
-            <NextStepButton onClick={onNext} disabled={disabled}>
+            <NextStepButton
+                onClick={onNext}
+                disabled={disabled}
+                className={{ root: "w-44 rounded-3xl" }}
+            >
                 {t("next")}
             </NextStepButton>
         </div>
