@@ -65,7 +65,7 @@ export const CampaignCard = ({
                     <Typography uppercase variant="xs">
                         {t("overview.description.label")}
                     </Typography>
-                    <Markdown data-testid={"campaign-card-description-text"}>
+                    <Markdown data-testid="campaign-card-description-text">
                         {kpiToken.specification.description}
                     </Markdown>
                 </div>
@@ -83,7 +83,7 @@ export const CampaignCard = ({
                             {t("overview.rewards.label")}
                         </Typography>
                         <div
-                            data-testid={"campaign-card-rewards"}
+                            data-testid="campaign-card-rewards"
                             className="flex flex-col gap-2"
                         >
                             {loading || !rewards ? (
@@ -109,7 +109,7 @@ export const CampaignCard = ({
                             {t("overview.minimumPayout.label")}
                         </Typography>
                         <div
-                            data-testid={"campaign-card-minimum-payouts"}
+                            data-testid="campaign-card-minimum-payouts"
                             className="flex flex-col gap-2"
                         >
                             {loading || !rewards ? (
@@ -139,7 +139,7 @@ export const CampaignCard = ({
                             <Skeleton width="40px" />
                         ) : (
                             <Typography
-                                data-testid={"campaign-card-kpi-token-text"}
+                                data-testid="campaign-card-kpi-token-text"
                                 truncate
                             >
                                 {erc20Name} ({erc20Symbol})
@@ -200,7 +200,7 @@ export const CampaignCard = ({
                         <Typography uppercase>
                             {t("overview.time.label")}
                         </Typography>
-                        <div data-testid={"campaign-card-time-left"}>
+                        <div data-testid="campaign-card-time-left">
                             <TimeLeft t={t} kpiToken={kpiToken} />
                         </div>
                     </div>
