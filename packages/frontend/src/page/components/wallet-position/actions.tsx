@@ -168,9 +168,7 @@ export const WalletActions = ({
 
     return (
         <div className="flex flex-col gap-4">
-            <Typography
-                data-testid="wallet-position-actions-burn-redeem-text"
-            >
+            <Typography data-testid="wallet-position-actions-burn-redeem-text">
                 {text}
             </Typography>
             {(redeemable || burnable) && (
