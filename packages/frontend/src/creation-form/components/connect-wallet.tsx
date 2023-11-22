@@ -9,7 +9,10 @@ interface GenericDataProps {
 
 export const ConnectWallet = ({ t }: GenericDataProps): ReactElement => {
     return (
-        <div className="flex flex-col gap-6 items-center">
+        <div
+            data-testid="connect-wallet"
+            className="flex flex-col gap-6 items-center"
+        >
             <WalletDisconnected className="w-52" />
             <div className="flex flex-col gap-3 items-center">
                 <Typography variant="h4">

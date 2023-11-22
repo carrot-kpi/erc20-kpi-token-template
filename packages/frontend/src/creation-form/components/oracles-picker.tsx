@@ -90,6 +90,7 @@ export const OraclesPicker = ({
 
                             return (
                                 <div
+                                    data-testid="oracles-picker-step-oracles"
                                     key={template.id}
                                     className="flex flex-col items-center gap-3 p-2"
                                 >
@@ -99,6 +100,7 @@ export const OraclesPicker = ({
                                         template={template}
                                     />
                                     <Checkbox
+                                        data-testid="oracles-picker-step-oracle-checkbox"
                                         checked={!!checked}
                                         onChange={handleChange(template.id)}
                                     />
@@ -113,6 +115,7 @@ export const OraclesPicker = ({
                 </>
             )}
             <NextStepButton
+                data-testid="oracles-picker-step-next-button"
                 onClick={handleNext}
                 disabled={disabled}
                 className={{ root: "w-44 rounded-3xl" }}

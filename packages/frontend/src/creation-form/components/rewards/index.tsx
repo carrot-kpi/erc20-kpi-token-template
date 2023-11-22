@@ -325,6 +325,7 @@ export const Rewards = ({
         <>
             <div className="flex flex-col md:flex-row w-full gap-4 mb-4">
                 <NoSpecialCharactersTextInput
+                    data-testid="rewards-step-token-name-input"
                     label={t("general.label.token.name")}
                     placeholder={"Example"}
                     onChange={handleTokenNameChange}
@@ -338,6 +339,7 @@ export const Rewards = ({
                     }}
                 />
                 <NoSpecialCharactersTextInput
+                    data-testid="rewards-step-token-symbol-input"
                     label={t("general.label.token.symbol")}
                     placeholder={"XMPL"}
                     onChange={handleTokenSymbolChange}
@@ -351,6 +353,7 @@ export const Rewards = ({
                     }}
                 />
                 <NumberInput
+                    data-testid="rewards-step-token-supply-input"
                     allowNegative={false}
                     label={t("general.label.token.supply")}
                     placeholder={"1,000,000"}
@@ -369,13 +372,15 @@ export const Rewards = ({
                     }}
                 />
             </div>
-            <RewardTokenPicker
-                t={t}
-                open={rewardTokenPickerOpen}
-                onDismiss={handleRewardTokenPickerDismiss}
-                token={rewardToken}
-                onChange={handleRewardPick}
-            />
+            <div data-testid="rewards-picker-modal-container">
+                <RewardTokenPicker
+                    t={t}
+                    open={rewardTokenPickerOpen}
+                    onDismiss={handleRewardTokenPickerDismiss}
+                    token={rewardToken}
+                    onChange={handleRewardPick}
+                />
+            </div>
             <div className="flex flex-col gap-6">
                 <div className="flex flex-col gap-3">
                     <div className="rounded-xxl border border-black p-4">
@@ -383,6 +388,7 @@ export const Rewards = ({
                             <div className="flex flex-col gap-2">
                                 <div className="flex justify-between items-center">
                                     <div
+                                        data-testid="rewards-step-open-rewards-picker-button"
                                         onClick={handleOpenRewardTokenPicker}
                                         className="cursor-pointer w-4/5"
                                     >
@@ -400,6 +406,7 @@ export const Rewards = ({
                                         />
                                     </div>
                                     <NumberInput
+                                        data-testid="rewards-step-reward-amount-input"
                                         label=""
                                         placeholder="0.0"
                                         className={{
@@ -474,6 +481,7 @@ export const Rewards = ({
                                             )}
                                         </Typography>
                                         <Switch
+                                            data-testid="rewards-step-minimum-payout-switch"
                                             onChange={handleMinimumPayoutToggle}
                                             checked={minimumPayoutEnabled}
                                         />
@@ -483,6 +491,7 @@ export const Rewards = ({
                                             <div className="flex-col gap-2 pt-1.5">
                                                 <div className="flex items-center justify-between">
                                                     <NumberInput
+                                                        data-testid="rewards-step-reward-minimum-payout-input"
                                                         label=""
                                                         placeholder="0.0"
                                                         className={{
@@ -536,6 +545,7 @@ export const Rewards = ({
                     </div>
                     <div className="flex flex-col gap-3 items-start">
                         <Button
+                            data-testid="rewards-step-add-reward-button"
                             size="small"
                             icon={ArrowDown}
                             onClick={handleRewardAdd}
@@ -568,6 +578,7 @@ export const Rewards = ({
                 />
             </div>
             <NextStepButton
+                data-testid="rewards-step-next-button"
                 onClick={onNext}
                 disabled={disabled}
                 className={{ root: "w-44 rounded-3xl" }}

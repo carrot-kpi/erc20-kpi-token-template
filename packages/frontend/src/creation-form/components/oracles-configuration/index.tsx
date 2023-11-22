@@ -173,6 +173,7 @@ export const OraclesConfiguration = ({
                 state={state}
             />
             <NextStepButton
+                data-testid="oracles-configuration-step-next-button"
                 onClick={handleNext}
                 disabled={disabled}
                 className={{ root: "w-44 rounded-3xl" }}

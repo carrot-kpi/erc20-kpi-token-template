@@ -86,7 +86,7 @@ export const OraclesAccordion = ({
         </div>
     ) : (
         oraclesWithResolvedTemplates.map((oracle, i) => (
-            <Accordion key={i}>
+            <Accordion data-testid="oracles-accordion" key={i}>
                 <AccordionSummary>
                     <Typography>
                         {oracle.resolvedTemplate.specification.name}
@@ -94,6 +94,7 @@ export const OraclesAccordion = ({
                 </AccordionSummary>
                 <AccordionDetails>
                     <SingleOracleCreationForm
+                        data-testid={`oracle-accordion-${oracle.template.address}`}
                         index={i}
                         t={t}
                         template={oracle.template}

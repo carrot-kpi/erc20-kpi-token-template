@@ -170,7 +170,7 @@ export const WalletPosition = ({
                             {t("position.rewards.guaranteed.label")}
                         </Typography>
                         <div
-                            data-testid={"wallet-position-guaranteed-rewards"}
+                            data-testid="wallet-position-guaranteed-rewards"
                             className="flex flex-col gap-2"
                         >
                             {loading || !guaranteedRewards
@@ -199,7 +199,7 @@ export const WalletPosition = ({
                             {t("position.rewards.maximum.label")}
                         </Typography>
                         <div
-                            data-testid={"wallet-position-maximum-rewards"}
+                            data-testid="wallet-position-maximum-rewards"
                             className="flex flex-col gap-2"
                         >
                             {loading || !maximumRewards
@@ -228,7 +228,7 @@ export const WalletPosition = ({
                             {t("position.rewards.remaining.label")}
                         </Typography>
                         <div
-                            data-testid={"wallet-position-remaining-rewards"}
+                            data-testid="wallet-position-remaining-rewards"
                             className="flex flex-col gap-2"
                         >
                             {loading ||
@@ -262,13 +262,13 @@ export const WalletPosition = ({
                             {t("position.balance.label")}
                         </Typography>
                         <TokenAmount
-                            data-testid={"wallet-position-balance"}
+                            data-testid="wallet-position-balance"
                             amount={balance}
                             loading={loading}
                         />
                     </div>
                     <div
-                        data-testid={"wallet-position-claimables"}
+                        data-testid="wallet-position-claimables"
                         className="w-full md:w-1/2 p-6 flex-col"
                     >
                         <Typography

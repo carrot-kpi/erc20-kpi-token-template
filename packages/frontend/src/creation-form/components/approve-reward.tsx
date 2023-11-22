@@ -71,6 +71,7 @@ export const ApproveReward = ({
 
     return (
         <Button
+            data-testid={`approve-reward-${reward.address}`}
             size="small"
             onClick={handleClick}
             disabled={!approveAsync}

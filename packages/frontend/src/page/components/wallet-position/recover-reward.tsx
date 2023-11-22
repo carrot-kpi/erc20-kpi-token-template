@@ -122,7 +122,7 @@ export const RecoverReward = ({
                 <Typography>{t("rewards.recover")}</Typography>
                 <div className="flex flex-col gap-4">
                     <Select
-                        data-testid={"wallet-position-recover-reward-select"}
+                        data-testid="wallet-position-recover-reward-select"
                         label={t("rewards.label")}
                         placeholder={t("rewards.recover.label")}
                         options={rewardOptions}
@@ -136,7 +136,7 @@ export const RecoverReward = ({
                         )}
                     />
                     <Button
-                        data-testid={"wallet-position-recover-reward-button"}
+                        data-testid="wallet-position-recover-reward-button"
                         size="small"
                         loading={loadingRecover}
                         disabled={!recoverAsync}

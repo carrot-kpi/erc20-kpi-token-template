@@ -171,6 +171,7 @@ export const GenericData = ({
     return (
         <div className="flex flex-col gap-6">
             <NoSpecialCharactersTextInput
+                data-testid="generic-data-step-title-input"
                 label={t("general.label.title")}
                 placeholder={t("general.placeholder.title")}
                 onChange={handleTitleChange}
@@ -183,6 +184,7 @@ export const GenericData = ({
                 }}
             />
             <MarkdownInput
+                data-testid="generic-data-step-description-input"
                 label={t("general.label.description")}
                 placeholder={t("general.placeholder.description")}
                 onChange={handleDescriptionChange}
@@ -195,6 +197,7 @@ export const GenericData = ({
                 }}
             />
             <TagsInput
+                data-testid="generic-data-step-tags-input"
                 label={t("general.label.tags")}
                 placeholder={t("general.placeholder.tags")}
                 onChange={handleTagsChange}
@@ -209,6 +212,7 @@ export const GenericData = ({
                 }}
             />
             <DateTimeInput
+                data-testid="generic-data-step-expiration-input"
                 label={t("general.label.expiration")}
                 placeholder={t("general.placeholder.expiration")}
                 onChange={handleExpirationChange}
@@ -233,6 +237,7 @@ export const GenericData = ({
                 }}
             />
             <NextStepButton
+                data-testid="generic-data-step-next-button"
                 onClick={onNext}
                 disabled={disabled}
                 className={{ root: "w-44 rounded-3xl" }}

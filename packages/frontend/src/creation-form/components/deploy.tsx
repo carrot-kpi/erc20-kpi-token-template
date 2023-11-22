@@ -358,6 +358,7 @@ export const Deploy = ({
             </div>
             <div className="flex flex-col gap-3">
                 <Button
+                    data-testid="deploy-step-create-button"
                     size="small"
                     onClick={handleCreate}
                     disabled={!writeAsync}
