@@ -72,6 +72,7 @@ export const Success = ({
                     )}
                 </div>
                 <Button
+                    data-testid="successs-step-go-to-campaign-button"
                     size="small"
                     onClick={handleClick}
                     className={{ root: "w-full" }}
