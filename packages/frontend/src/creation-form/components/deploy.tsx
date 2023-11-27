@@ -19,13 +19,14 @@ import type {
     OracleWithInitializationBundleGetter,
     State,
 } from "../types";
-import { Button, ErrorText, Typography } from "@carrot-kpi/ui";
+import { Button, DateTimeInput, ErrorText, Typography } from "@carrot-kpi/ui";
 import {
     type KPITokenCreationFormProps,
     type NamespacedTranslateFunction,
     TxType,
     useDevMode,
     useDecentralizedStorageUploader,
+    type TemplateComponentStateChangeCallback,
 } from "@carrot-kpi/react";
 import {
     CHAIN_ADDRESSES,
@@ -41,7 +42,11 @@ import {
 } from "../utils/data-encoding";
 import { getKPITokenAddressFromReceipt } from "../../utils/logs";
 import { zeroAddress, type Hex } from "viem";
-import { dateToUnixTimestamp } from "../../utils/dates";
+import {
+    dateToUnixTimestamp,
+    isUnixTimestampInThePast,
+    unixTimestampToDate,
+} from "../../utils/dates";
 import { RewardsTable } from "./rewards/table";
 import { ApproveRewards } from "./approve-rewards";
 
@@ -51,6 +56,7 @@ interface DeployProps {
     oraclesWithInitializationBundleGetter: OracleWithInitializationBundleGetter[];
     state: State;
     protocolFeePpm: bigint;
+    onStateChange: TemplateComponentStateChangeCallback<State>;
     onNext: (createdKPITokenAddress: Address) => void;
     onCreate: KPITokenCreationFormProps<State>["onCreate"];
     onTx: KPITokenCreationFormProps<State>["onTx"];
@@ -62,6 +68,7 @@ export const Deploy = ({
     oraclesWithInitializationBundleGetter,
     state,
     protocolFeePpm,
+    onStateChange,
     onNext,
     onCreate,
     onTx,
@@ -72,6 +79,8 @@ export const Deploy = ({
     const devMode = useDevMode();
     const uploadToDecentralizedStorage = useDecentralizedStorageUploader();
 
+    const [expirationErrorText, setExpirationErrorText] = useState("");
+    const [minimumDate, setMinimumDate] = useState(new Date());
     const [specificationCid, setSpecificationCid] = useState("");
     const [kpiTokenInitializationData, setKPITokenInitializationData] =
         useState<Hex>("0x");
@@ -273,6 +282,23 @@ export const Deploy = ({
     });
     const { writeAsync } = useContractWrite(config);
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setMinimumDate(
+                state.maximumSuggestedExirationTimestamp &&
+                    dateToUnixTimestamp(new Date()) <
+                        state.maximumSuggestedExirationTimestamp
+                    ? unixTimestampToDate(
+                          state.maximumSuggestedExirationTimestamp,
+                      )
+                    : new Date(),
+            );
+        }, 1_000);
+        return () => {
+            clearInterval(interval);
+        };
+    }, [state.maximumSuggestedExirationTimestamp]);
+
     const handleApprove = useCallback(() => {
         setApproved(true);
     }, []);
@@ -329,8 +355,53 @@ export const Deploy = ({
         void create();
     }, [devMode, onCreate, onNext, onTx, publicClient, writeAsync]);
 
+    const handleExpirationChange = useCallback(
+        (value: Date) => {
+            const converted = dateToUnixTimestamp(value);
+            setExpirationErrorText(
+                isUnixTimestampInThePast(converted)
+                    ? t("error.expiration.past")
+                    : "",
+            );
+            onStateChange((state) => ({
+                ...state,
+                expiration: converted,
+            }));
+        },
+        [onStateChange, t],
+    );
+
     return (
         <div className="flex flex-col gap-6">
+            <DateTimeInput
+                data-testid="generic-data-step-expiration-input"
+                label={t("general.label.expiration")}
+                placeholder={t("general.placeholder.expiration")}
+                onChange={handleExpirationChange}
+                value={
+                    state.expiration
+                        ? unixTimestampToDate(state.expiration)
+                        : null
+                }
+                error={!!expirationErrorText}
+                errorText={expirationErrorText}
+                info={
+                    <>
+                        <Typography variant="sm" className={{ root: "mb-2" }}>
+                            {t("general.info.expiration.1")}
+                        </Typography>
+                        <Typography variant="sm">
+                            {t("general.info.expiration.2")}
+                        </Typography>
+                    </>
+                }
+                min={minimumDate}
+                className={{
+                    root: "w-full",
+                    input: "w-full",
+                    inputWrapper: "w-full",
+                }}
+            />
             <div className="rounded-xxl w-full flex flex-col gap-6 border border-black p-4">
                 <RewardsTable
                     t={t}

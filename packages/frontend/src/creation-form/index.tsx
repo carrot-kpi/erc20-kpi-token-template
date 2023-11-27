@@ -257,6 +257,7 @@ export const Component = ({
                             }
                             state={state}
                             protocolFeePpm={protocolFeePpm}
+                            onStateChange={onStateChange}
                             onNext={setCreatedKPITokenAddress}
                             onCreate={onCreate}
                             onTx={onTx}

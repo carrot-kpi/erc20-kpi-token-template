@@ -129,9 +129,24 @@ export const OraclesConfiguration = ({
                 suggestedExpirationTimestamp,
             };
             newOracles[index] = newOracle;
-            onStateChange((state) => ({ ...state, oracles: newOracles }));
+
+            let expiration = state.expiration;
+            if (newOracle.suggestedExpirationTimestamp) {
+                if (
+                    !expiration ||
+                    newOracle.suggestedExpirationTimestamp > expiration
+                )
+                    expiration = newOracle.suggestedExpirationTimestamp;
+            }
+
+            onStateChange((state) => ({
+                ...state,
+                expiration,
+                maximumSuggestedExirationTimestamp: expiration,
+                oracles: newOracles,
+            }));
         },
-        [onStateChange, state.oracles],
+        [onStateChange, state.oracles, state.expiration],
     );
 
     const handleNext = useCallback(() => {
