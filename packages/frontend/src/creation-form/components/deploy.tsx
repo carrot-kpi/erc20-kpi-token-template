@@ -374,7 +374,7 @@ export const Deploy = ({
     return (
         <div className="flex flex-col gap-6">
             <DateTimeInput
-                data-testid="generic-data-step-expiration-input"
+                data-testid="deploy-step-expiration-input"
                 label={t("general.label.expiration")}
                 placeholder={t("general.placeholder.expiration")}
                 onChange={handleExpirationChange}
