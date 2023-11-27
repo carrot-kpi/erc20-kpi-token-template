@@ -24,7 +24,7 @@ export const setupFork = async ({ nodeClient, walletClient }) => {
     const {
         abi: erc20Abi,
         bytecode: { object: erc20Bytecode },
-    } = require("../out/Dependencies.sol/ERC20MintableDecimals.json");
+    } = require("../out/Dependencies.sol/ERC20Mintable.json");
     const { contractAddress: tst1Address } =
         await nodeClient.getTransactionReceipt({
             hash: await walletClient.deployContract({
