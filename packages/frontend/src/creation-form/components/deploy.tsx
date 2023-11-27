@@ -375,8 +375,8 @@ export const Deploy = ({
         <div className="flex flex-col gap-6">
             <DateTimeInput
                 data-testid="deploy-step-expiration-input"
-                label={t("general.label.expiration")}
-                placeholder={t("general.placeholder.expiration")}
+                label={t("deploy.label.expiration")}
+                placeholder={t("deploy.placeholder.expiration")}
                 onChange={handleExpirationChange}
                 value={
                     state.expiration
@@ -388,10 +388,10 @@ export const Deploy = ({
                 info={
                     <>
                         <Typography variant="sm" className={{ root: "mb-2" }}>
-                            {t("general.info.expiration.1")}
+                            {t("deploy.info.expiration.1")}
                         </Typography>
                         <Typography variant="sm">
-                            {t("general.info.expiration.2")}
+                            {t("deploy.info.expiration.2")}
                         </Typography>
                     </>
                 }
