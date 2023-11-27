@@ -37,10 +37,7 @@ contract ERC20KPITokenBaseRecoverTest is BaseTestSetup {
     function testNothingToRecoverToken() external {
         IERC20KPIToken kpiTokenInstance = createKpiToken("a");
 
-        ERC20Mintable token = new ERC20Mintable(
-            "Token 1",
-            "TKN1"
-        );
+        ERC20Mintable token = new ERC20Mintable("Token 1", "TKN1", 18);
 
         vm.expectRevert(abi.encodeWithSignature("NothingToRecover()"));
         kpiTokenInstance.recoverERC20(address(token), address(1));
@@ -49,10 +46,7 @@ contract ERC20KPITokenBaseRecoverTest is BaseTestSetup {
     function testRecoverExternalToken() external {
         IERC20KPIToken kpiTokenInstance = createKpiToken("a");
 
-        ERC20Mintable token = new ERC20Mintable(
-            "Token 1",
-            "TKN1"
-        );
+        ERC20Mintable token = new ERC20Mintable("Token 1", "TKN1", 18);
         token.mint(address(kpiTokenInstance), 2 ether);
 
         kpiTokenInstance.recoverERC20(address(token), address(1));

@@ -30,7 +30,7 @@ export const setupFork = async ({ nodeClient, walletClient }) => {
             hash: await walletClient.deployContract({
                 abi: erc20Abi,
                 bytecode: erc20Bytecode,
-                args: ["Test token 1", "TST1"],
+                args: ["Test token 1 (18)", "TST1", 18],
             }),
         });
     const tst1Contract = getContract({
@@ -45,12 +45,27 @@ export const setupFork = async ({ nodeClient, walletClient }) => {
             hash: await walletClient.deployContract({
                 abi: erc20Abi,
                 bytecode: erc20Bytecode,
-                args: ["Test token 2", "TST2"],
+                args: ["Test token 2 (6)", "TST2", 6],
             }),
         });
     const tst2Contract = getContract({
         abi: erc20Abi,
         address: tst2Address,
+        publicClient: nodeClient,
+        walletClient: walletClient,
+    });
+
+    const { contractAddress: tst3Address } =
+        await nodeClient.getTransactionReceipt({
+            hash: await walletClient.deployContract({
+                abi: erc20Abi,
+                bytecode: erc20Bytecode,
+                args: ["Test token 3 (0)", "TST3", 0],
+            }),
+        });
+    const tst3Contract = getContract({
+        abi: erc20Abi,
+        address: tst3Address,
         publicClient: nodeClient,
         walletClient: walletClient,
     });
@@ -62,8 +77,9 @@ export const setupFork = async ({ nodeClient, walletClient }) => {
     ]);
     await tst2Contract.write.mint([
         walletClient.account.address,
-        parseUnits("100", 18),
+        parseUnits("100", 6),
     ]);
+    await tst3Contract.write.mint([walletClient.account.address, 100n]);
 
     return {
         templateAddress,
@@ -76,10 +92,15 @@ export const setupFork = async ({ nodeClient, walletClient }) => {
                 name: "ERC20 2",
                 address: tst2Address,
             },
+            {
+                name: "ERC20 3",
+                address: tst3Address,
+            },
         ],
         frontendGlobals: {
             CCT_ERC20_1_ADDRESS: tst1Address,
             CCT_ERC20_2_ADDRESS: tst2Address,
+            CCT_ERC20_3_ADDRESS: tst3Address,
         },
     };
 };
