@@ -46,6 +46,7 @@
         "react-dom": "^18.2.0",
         "react-i18next": "^13.5.0",
         "react-test-renderer": "^18.2.0",
+        "react-use": "^17.4.0",
         "rimraf": "^5.0.5",
         "sanitize-html": "^2.11.0",
         "ts-jest": "^29.1.1",

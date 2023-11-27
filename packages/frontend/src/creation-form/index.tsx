@@ -7,6 +7,7 @@ import {
     useOracleTemplates,
 } from "@carrot-kpi/react";
 import { type ReactElement, useCallback, useEffect, useState } from "react";
+import { usePrevious } from "react-use";
 import type { OracleWithInitializationBundleGetter, State } from "./types";
 import { useAccount, useContractRead } from "wagmi";
 import { Rewards } from "./components/rewards";
@@ -29,6 +30,7 @@ export const Component = ({
     onTx,
 }: KPITokenRemoteCreationFormProps<State>): ReactElement => {
     const { address: connectedAddress } = useAccount();
+    const previousAddress = usePrevious(connectedAddress);
     const { loading: loadingOracleTemplates, templates: oracleTemplates } =
         useOracleTemplates();
     const { data: protocolFeePpm, isLoading: loadingProtocolFee } =
@@ -66,13 +68,13 @@ export const Component = ({
 
     const [createdKPITokenAddress, setCreatedKPITokenAddress] = useState("");
 
-    // on wallet disconnect, reset EVERYTHING
+    // on wallet disconnect or address change, reset everything
     useEffect(() => {
-        if (connectedAddress) return;
+        if (connectedAddress || previousAddress === connectedAddress) return;
         setStep(0);
         setMostUpdatedStep(0);
         onStateChange({});
-    }, [connectedAddress, onStateChange]);
+    }, [connectedAddress, onStateChange, previousAddress]);
 
     useEffect(() => {
         const bodyElement = window.document.getElementById("__app_body");
