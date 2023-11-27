@@ -43,6 +43,7 @@ export type State = {
     title?: string;
     description?: string;
     tags?: string[];
+    maximumSuggestedExirationTimestamp?: number;
     expiration?: number;
     tokenName?: string;
     tokenSymbol?: string;
