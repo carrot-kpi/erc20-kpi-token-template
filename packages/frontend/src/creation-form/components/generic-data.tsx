@@ -54,10 +54,10 @@ export const GenericData = ({
                 !value
                     ? t("error.title.empty")
                     : value.trim().length > MAX_KPI_TOKEN_TITLE_CHARS
-                    ? t("error.title.tooLong", {
-                          chars: MAX_KPI_TOKEN_TITLE_CHARS,
-                      })
-                    : "",
+                      ? t("error.title.tooLong", {
+                            chars: MAX_KPI_TOKEN_TITLE_CHARS,
+                        })
+                      : "",
             );
             onStateChange((state) => ({ ...state, title: value }));
         },
@@ -71,10 +71,10 @@ export const GenericData = ({
                 !trimmedValue
                     ? t("error.description.empty")
                     : trimmedValue.length > MAX_KPI_TOKEN_DESCRIPTION_CHARS
-                    ? t("error.description.tooLong", {
-                          chars: MAX_KPI_TOKEN_DESCRIPTION_CHARS,
-                      })
-                    : "",
+                      ? t("error.description.tooLong", {
+                            chars: MAX_KPI_TOKEN_DESCRIPTION_CHARS,
+                        })
+                      : "",
             );
             onStateChange((state) => ({ ...state, description: value }));
         },
@@ -99,10 +99,10 @@ export const GenericData = ({
                 value.length === 0
                     ? t("error.tags.empty")
                     : value.length > MAX_KPI_TOKEN_TAGS_COUNT
-                    ? t("error.tags.tooMany", {
-                          count: MAX_KPI_TOKEN_TAGS_COUNT,
-                      })
-                    : "",
+                      ? t("error.tags.tooMany", {
+                            count: MAX_KPI_TOKEN_TAGS_COUNT,
+                        })
+                      : "",
             );
             onStateChange((state) => ({ ...state, tags: value }));
         },
