@@ -313,6 +313,9 @@ export const WalletPosition = ({
                         t={t}
                         onTx={onTx}
                         kpiToken={kpiToken}
+                        loadingRewards={
+                            loading || loadingKPITokenRewardBalances
+                        }
                         rewards={rewards}
                         kpiTokenRewardBalances={kpiTokenRewardBalances}
                     />
