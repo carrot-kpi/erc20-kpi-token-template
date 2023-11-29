@@ -47,20 +47,22 @@ export const WalletActions = ({
     const [burnable, setBurnable] = useState(false);
     const [text, setText] = useState("");
 
-    const { config: redeemConfig } = usePrepareContractWrite({
-        chainId: chain?.id,
-        address: kpiToken.address as Address,
-        abi: KPI_TOKEN_ABI,
-        functionName: "redeem",
-        args: address && [
-            encodeAbiParameters(
-                [{ type: "address", name: "redeemer" }],
-                [address],
-            ) as `0x${string}`,
-        ],
-        enabled: !!chain?.id && !!address && (redeemable || burnable),
-    });
-    const { writeAsync } = useContractWrite(redeemConfig);
+    const { config: redeemConfig, isLoading: redeemConfigLoading } =
+        usePrepareContractWrite({
+            chainId: chain?.id,
+            address: kpiToken.address as Address,
+            abi: KPI_TOKEN_ABI,
+            functionName: "redeem",
+            args: address && [
+                encodeAbiParameters(
+                    [{ type: "address", name: "redeemer" }],
+                    [address],
+                ) as `0x${string}`,
+            ],
+            enabled: !!chain?.id && !!address && (redeemable || burnable),
+        });
+    const { writeAsync, isLoading: signingTransaction } =
+        useContractWrite(redeemConfig);
 
     useEffect(() => {
         const hasSomeRedeemableReward =
@@ -166,6 +168,8 @@ export const WalletActions = ({
         }
     }, [kpiToken.address, onTx, publicClient, writeAsync]);
 
+    const redeeming = loading || redeemConfigLoading || signingTransaction;
+
     return (
         <div className="flex flex-col gap-4">
             <Typography data-testid="wallet-position-actions-burn-redeem-text">
@@ -175,7 +179,7 @@ export const WalletActions = ({
                 <Button
                     data-testid="wallet-position-actions-burn-redeem-button"
                     size="small"
-                    loading={loading}
+                    loading={redeeming}
                     disabled={!writeAsync}
                     onClick={handleClick}
                 >

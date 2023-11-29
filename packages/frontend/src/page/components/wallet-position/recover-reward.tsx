@@ -32,6 +32,7 @@ interface RecoverRewardProps {
     t: NamespacedTranslateFunction;
     onTx: KPITokenPageProps["onTx"];
     kpiToken: ResolvedKPIToken;
+    loadingRewards?: boolean;
     rewards?: RewardData[];
     kpiTokenBalance?: Amount<Token> | null;
     kpiTokenRewardBalances?: Amount<Token>[];
@@ -42,6 +43,7 @@ export const RecoverReward = ({
     t,
     onTx,
     kpiToken,
+    loadingRewards,
     rewards,
     kpiTokenRewardBalances,
 }: RecoverRewardProps) => {
@@ -53,18 +55,20 @@ export const RecoverReward = ({
     const [rewardToRecover, setRewardToRecover] =
         useState<SelectOption<Address> | null>(null);
 
-    const { config: recoverConfig } = usePrepareContractWrite({
-        chainId: chain?.id,
-        address: kpiToken.address as Address,
-        abi: ERC20_KPI_TOKEN_ABI,
-        functionName: "recoverERC20",
-        args:
-            !!address && !!rewardToRecover
-                ? [rewardToRecover.value, address]
-                : undefined,
-        enabled: !!chain?.id && !!address && !!rewardToRecover,
-    });
-    const { writeAsync: recoverAsync } = useContractWrite(recoverConfig);
+    const { config: recoverConfig, isLoading: loadingRecoverConfig } =
+        usePrepareContractWrite({
+            chainId: chain?.id,
+            address: kpiToken.address as Address,
+            abi: ERC20_KPI_TOKEN_ABI,
+            functionName: "recoverERC20",
+            args:
+                !!address && !!rewardToRecover
+                    ? [rewardToRecover.value, address]
+                    : undefined,
+            enabled: !!chain?.id && !!address && !!rewardToRecover,
+        });
+    const { writeAsync: recoverAsync, isLoading: signingTransaction } =
+        useContractWrite(recoverConfig);
 
     const rewardOptions: RewardOption[] = useMemo(() => {
         if (!rewards || !kpiTokenRewardBalances) return [];
@@ -73,7 +77,9 @@ export const RecoverReward = ({
             kpiTokenRewardBalances,
             kpiToken.expired,
         ).map((reward) => ({
-            label: `${formatUnits(reward.raw, 18)} ${reward.currency.symbol}`,
+            label: `${formatUnits(reward.raw, reward.currency.decimals)} ${
+                reward.currency.symbol
+            }`,
             amount: reward,
             value: reward.currency.address,
         }));
@@ -115,6 +121,12 @@ export const RecoverReward = ({
         }
     }, [address, rewardToRecover, onTx, publicClient, recoverAsync]);
 
+    const recovering =
+        loadingRewards ||
+        loadingRecover ||
+        loadingRecoverConfig ||
+        signingTransaction;
+
     return (
         (kpiToken.expired || kpiToken.finalized) &&
         rewardOptions.length > 0 && (
@@ -126,6 +138,8 @@ export const RecoverReward = ({
                         label={t("rewards.label")}
                         placeholder={t("rewards.recover.label")}
                         options={rewardOptions}
+                        loading={recovering}
+                        disabled={recovering}
                         messages={{ noResults: "" }}
                         onChange={setRewardToRecover}
                         value={rewardToRecover}
@@ -134,11 +148,16 @@ export const RecoverReward = ({
                                 amount={(value as RewardOption).amount}
                             />
                         )}
+                        className={{
+                            root: "w-96",
+                            input: "w-96",
+                            inputWrapper: "w-96",
+                        }}
                     />
                     <Button
                         data-testid="wallet-position-recover-reward-button"
                         size="small"
-                        loading={loadingRecover}
+                        loading={recovering}
                         disabled={!recoverAsync}
                         onClick={handleRewardRecoverClick}
                     >
