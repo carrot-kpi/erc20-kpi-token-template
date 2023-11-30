@@ -1,5 +1,10 @@
 import type { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import { ResolvedKPIToken, formatDecimals } from "@carrot-kpi/sdk";
+import {
+    Amount,
+    ResolvedKPIToken,
+    Token,
+    formatCurrencyAmount,
+} from "@carrot-kpi/sdk";
 import {
     Card,
     CardContent,
@@ -15,7 +20,6 @@ import { RewardsRow } from "../rewards-row";
 import { TimeLeft } from "./time-left";
 import { type Address, useEnsName } from "wagmi";
 import { mainnet } from "wagmi/chains";
-import { formatUnits } from "viem";
 
 interface CampaignCardProps {
     t: NamespacedTranslateFunction;
@@ -23,10 +27,8 @@ interface CampaignCardProps {
     kpiToken: ResolvedKPIToken;
     rewards?: RewardData[] | null;
     allOrNone?: boolean | null;
-    initialSupply?: bigint | null;
-    erc20Name?: string | null;
-    erc20Symbol?: string | null;
-    erc20Supply?: bigint | null;
+    initialSupply?: Amount<Token> | null;
+    currentSupply?: Amount<Token> | null;
 }
 
 export const CampaignCard = ({
@@ -35,9 +37,7 @@ export const CampaignCard = ({
     kpiToken,
     rewards,
     initialSupply,
-    erc20Name,
-    erc20Symbol,
-    erc20Supply,
+    currentSupply,
 }: CampaignCardProps): ReactElement => {
     const { data: ensName, isLoading: resolvingENSName } = useEnsName({
         address: kpiToken.owner as Address,
@@ -135,14 +135,15 @@ export const CampaignCard = ({
                         >
                             {t("overview.token.label")}
                         </Typography>
-                        {loading || !erc20Name || !erc20Symbol ? (
+                        {loading || !initialSupply ? (
                             <Skeleton width="40px" />
                         ) : (
                             <Typography
                                 data-testid="campaign-card-kpi-token-text"
                                 truncate
                             >
-                                {erc20Name} ({erc20Symbol})
+                                {initialSupply.currency.name} (
+                                {initialSupply.currency.symbol})
                             </Typography>
                         )}
                     </div>
@@ -165,8 +166,8 @@ export const CampaignCard = ({
                                 uppercase
                                 truncate
                             >
-                                {formatDecimals({
-                                    number: formatUnits(initialSupply, 18),
+                                {formatCurrencyAmount({
+                                    amount: initialSupply,
                                 })}
                             </Typography>
                         )}
@@ -178,9 +179,7 @@ export const CampaignCard = ({
                         >
                             {t("overview.supply.current.label")}
                         </Typography>
-                        {loading ||
-                        erc20Supply === null ||
-                        erc20Supply === undefined ? (
+                        {loading || !currentSupply ? (
                             <Skeleton width="60px" />
                         ) : (
                             <Typography
@@ -190,8 +189,8 @@ export const CampaignCard = ({
                                 uppercase
                                 truncate
                             >
-                                {formatDecimals({
-                                    number: formatUnits(erc20Supply, 18),
+                                {formatCurrencyAmount({
+                                    amount: currentSupply,
                                 })}
                             </Typography>
                         )}

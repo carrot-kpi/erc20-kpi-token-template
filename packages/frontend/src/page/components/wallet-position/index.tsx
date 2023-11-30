@@ -165,98 +165,109 @@ export const WalletPosition = ({
                         </Typography>
                     )}
                 </div>
-                <div className="w-full flex flex-col md:flex-row justify-between">
-                    <div className="w-full md:w-1/3 p-6 flex-col border-b border-black md:border-r">
-                        <Typography
-                            variant="xs"
-                            uppercase
-                            className={{ root: "mb-2" }}
-                        >
-                            {t("position.rewards.guaranteed.label")}
-                        </Typography>
-                        <div
-                            data-testid="wallet-position-guaranteed-rewards"
-                            className="flex flex-col gap-2"
-                        >
-                            {loading || !guaranteedRewards
-                                ? new Array(rewards?.length || 1)
-                                      .fill(null)
-                                      .map((_, index) => (
-                                          <TokenAmount key={index} loading />
-                                      ))
-                                : guaranteedRewards.map((reward) => {
-                                      return (
-                                          <TokenAmount
-                                              data-testid={`wallet-position-guaranteed-reward-${reward.currency.address}`}
-                                              key={reward.currency.address}
-                                              amount={reward}
-                                          />
-                                      );
-                                  })}
+                {!kpiToken.finalized && (
+                    <div className="w-full flex flex-col md:flex-row justify-between">
+                        <div className="w-full md:w-1/3 p-6 flex-col border-b border-black md:border-r">
+                            <Typography
+                                variant="xs"
+                                uppercase
+                                className={{ root: "mb-2" }}
+                            >
+                                {t("position.rewards.guaranteed.label")}
+                            </Typography>
+                            <div
+                                data-testid="wallet-position-guaranteed-rewards"
+                                className="flex flex-col gap-2"
+                            >
+                                {loading || !guaranteedRewards
+                                    ? new Array(rewards?.length || 1)
+                                          .fill(null)
+                                          .map((_, index) => (
+                                              <TokenAmount
+                                                  key={index}
+                                                  loading
+                                              />
+                                          ))
+                                    : guaranteedRewards.map((reward) => {
+                                          return (
+                                              <TokenAmount
+                                                  data-testid={`wallet-position-guaranteed-reward-${reward.currency.address}`}
+                                                  key={reward.currency.address}
+                                                  amount={reward}
+                                              />
+                                          );
+                                      })}
+                            </div>
+                        </div>
+                        <div className="w-full md:w-1/3 p-6 flex-col border-b border-black md:border-r">
+                            <Typography
+                                variant="xs"
+                                uppercase
+                                className={{ root: "mb-2" }}
+                            >
+                                {t("position.rewards.maximum.label")}
+                            </Typography>
+                            <div
+                                data-testid="wallet-position-maximum-rewards"
+                                className="flex flex-col gap-2"
+                            >
+                                {loading || !maximumRewards
+                                    ? new Array(rewards?.length || 1)
+                                          .fill(null)
+                                          .map((_, index) => (
+                                              <TokenAmount
+                                                  key={index}
+                                                  loading
+                                              />
+                                          ))
+                                    : maximumRewards.map((reward) => {
+                                          return (
+                                              <TokenAmount
+                                                  data-testid={`wallet-position-maximum-rewards-${reward.currency.address}`}
+                                                  key={reward.currency.address}
+                                                  amount={reward}
+                                              />
+                                          );
+                                      })}
+                            </div>
+                        </div>
+                        <div className="w-full md:w-1/3 p-6 flex-col border-black border-b">
+                            <Typography
+                                variant="xs"
+                                uppercase
+                                className={{ root: "mb-2" }}
+                            >
+                                {t("position.rewards.remaining.label")}
+                            </Typography>
+                            <div
+                                data-testid="wallet-position-remaining-rewards"
+                                className="flex flex-col gap-2"
+                            >
+                                {loading ||
+                                !kpiTokenRewardBalances ||
+                                loadingKPITokenRewardBalances ||
+                                kpiTokenRewardBalances.length === 0
+                                    ? new Array(rewards?.length || 1)
+                                          .fill(null)
+                                          .map((_, index) => (
+                                              <TokenAmount
+                                                  key={index}
+                                                  loading
+                                              />
+                                          ))
+                                    : kpiTokenRewardBalances.map((reward) => {
+                                          return (
+                                              <TokenAmount
+                                                  data-testid={`wallet-position-remaining-rewards-${reward.currency.address}`}
+                                                  key={reward.currency.address}
+                                                  amount={reward}
+                                              />
+                                          );
+                                      })}
+                            </div>
                         </div>
                     </div>
-                    <div className="w-full md:w-1/3 p-6 flex-col border-b border-black md:border-r">
-                        <Typography
-                            variant="xs"
-                            uppercase
-                            className={{ root: "mb-2" }}
-                        >
-                            {t("position.rewards.maximum.label")}
-                        </Typography>
-                        <div
-                            data-testid="wallet-position-maximum-rewards"
-                            className="flex flex-col gap-2"
-                        >
-                            {loading || !maximumRewards
-                                ? new Array(rewards?.length || 1)
-                                      .fill(null)
-                                      .map((_, index) => (
-                                          <TokenAmount key={index} loading />
-                                      ))
-                                : maximumRewards.map((reward) => {
-                                      return (
-                                          <TokenAmount
-                                              data-testid={`wallet-position-maximum-rewards-${reward.currency.address}`}
-                                              key={reward.currency.address}
-                                              amount={reward}
-                                          />
-                                      );
-                                  })}
-                        </div>
-                    </div>
-                    <div className="w-full md:w-1/3 p-6 flex-col border-black border-b">
-                        <Typography
-                            variant="xs"
-                            uppercase
-                            className={{ root: "mb-2" }}
-                        >
-                            {t("position.rewards.remaining.label")}
-                        </Typography>
-                        <div
-                            data-testid="wallet-position-remaining-rewards"
-                            className="flex flex-col gap-2"
-                        >
-                            {loading ||
-                            !kpiTokenRewardBalances ||
-                            loadingKPITokenRewardBalances ||
-                            kpiTokenRewardBalances.length === 0
-                                ? new Array(rewards?.length || 1)
-                                      .fill(null)
-                                      .map((_, index) => (
-                                          <TokenAmount key={index} loading />
-                                      ))
-                                : kpiTokenRewardBalances.map((reward) => {
-                                      return (
-                                          <TokenAmount
-                                              data-testid={`wallet-position-remaining-rewards-${reward.currency.address}`}
-                                              key={reward.currency.address}
-                                              amount={reward}
-                                          />
-                                      );
-                                  })}
-                        </div>
-                    </div>
-                </div>
+                )}
                 <div className="w-full flex flex-col md:flex-row justify-between border-black border-b">
                     <div className="w-full md:w-1/2 p-6 flex-col border-b border-black md:border-b-0 md:border-r">
                         <Typography

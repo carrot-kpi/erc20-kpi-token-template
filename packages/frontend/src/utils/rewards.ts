@@ -22,6 +22,7 @@ export const getMaximumRewards = (
     kpiTokenSupply: Amount<Token>,
     rewards: RewardData[],
 ) => {
+    if (kpiTokenSupply.isZero()) return rewards;
     return rewards.map(
         (reward) =>
             new Amount(
@@ -30,8 +31,6 @@ export const getMaximumRewards = (
             ),
     );
 };
-
-const MULTIPLIER = 2n ** 64n;
 
 export const getRedeemableRewards = (
     oracles: FinalizableOracle[],
@@ -54,38 +53,7 @@ export const getRedeemableRewards = (
         });
     }
 
-    // replicating the on-chain logic, calculate the remaining rewards
-    // after all the oracles have settled
-    const totalWeight = oracles.reduce(
-        (accumulator: bigint, oracle) => accumulator + oracle.weight,
-        0n,
-    );
-    const remainingRewardsAfterResolutions = [...rewards];
-    for (const oracle of oracles) {
-        if (oracle.finalResult < 1_000_000) {
-            for (let i = 0; i < remainingRewardsAfterResolutions.length; i++) {
-                const reward = remainingRewardsAfterResolutions[i];
-                const numerator =
-                    (reward.amount.raw - reward.minimumPayout.raw) *
-                    oracle.weight *
-                    (1_000_000n - oracle.finalResult) *
-                    MULTIPLIER;
-                const denominator = 1_000_000n * totalWeight;
-                const reimboursement = numerator / denominator / MULTIPLIER;
-                remainingRewardsAfterResolutions[i] = {
-                    amount: new Amount(
-                        reward.amount.currency,
-                        reward.amount.raw - reimboursement,
-                    ),
-                    minimumPayout: reward.minimumPayout,
-                };
-            }
-        }
-    }
-
-    // based on the remaining reward, the initial supply, and the user's
-    // holdings, calculate the redeemable rewards
-    return remainingRewardsAfterResolutions.map((reward) => {
+    return rewards.map((reward) => {
         return new Amount(
             reward.amount.currency,
             (reward.amount.raw * kpiTokenBalance.raw) /
