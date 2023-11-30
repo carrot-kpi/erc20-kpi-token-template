@@ -22,7 +22,10 @@ export const getMaximumRewards = (
     kpiTokenSupply: Amount<Token>,
     rewards: RewardData[],
 ) => {
-    if (kpiTokenSupply.isZero()) return rewards;
+    if (kpiTokenSupply.isZero())
+        return rewards.map(
+            (reward) => new Amount(reward.amount.currency, reward.amount.raw),
+        );
     return rewards.map(
         (reward) =>
             new Amount(
