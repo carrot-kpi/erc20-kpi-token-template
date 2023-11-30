@@ -285,14 +285,13 @@ export const Deploy = ({
     useEffect(() => {
         const interval = setInterval(() => {
             setMinimumDate(
-                new Date(),
-                // state.maximumSuggestedExirationTimestamp &&
-                //     dateToUnixTimestamp(new Date()) <
-                //         state.maximumSuggestedExirationTimestamp
-                //     ? unixTimestampToDate(
-                //           state.maximumSuggestedExirationTimestamp,
-                //       )
-                //     : new Date(),
+                state.maximumSuggestedExirationTimestamp &&
+                    dateToUnixTimestamp(new Date()) <
+                        state.maximumSuggestedExirationTimestamp
+                    ? unixTimestampToDate(
+                          state.maximumSuggestedExirationTimestamp,
+                      )
+                    : new Date(),
             );
         }, 1_000);
         return () => {
