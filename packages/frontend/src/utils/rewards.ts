@@ -19,15 +19,14 @@ export const getGuaranteedRewards = (
 
 export const getMaximumRewards = (
     kpiTokenBalance: Amount<Token>,
-    kpiTokenInitialSupply: Amount<Token>,
+    kpiTokenSupply: Amount<Token>,
     rewards: RewardData[],
 ) => {
     return rewards.map(
         (reward) =>
             new Amount(
                 reward.amount.currency,
-                (reward.amount.raw * kpiTokenBalance.raw) /
-                    kpiTokenInitialSupply.raw,
+                (reward.amount.raw * kpiTokenBalance.raw) / kpiTokenSupply.raw,
             ),
     );
 };
@@ -38,6 +37,7 @@ export const getRedeemableRewards = (
     oracles: FinalizableOracle[],
     kpiTokenBalance: Amount<Token>,
     kpiTokenInitialSupply: Amount<Token>,
+    kpiTokenCurrentSupply: Amount<Token>,
     rewards: RewardData[],
     expired: boolean,
 ): Amount<Token>[] => {
@@ -89,7 +89,7 @@ export const getRedeemableRewards = (
         return new Amount(
             reward.amount.currency,
             (reward.amount.raw * kpiTokenBalance.raw) /
-                kpiTokenInitialSupply.raw,
+                kpiTokenCurrentSupply.raw,
         );
     });
 };
