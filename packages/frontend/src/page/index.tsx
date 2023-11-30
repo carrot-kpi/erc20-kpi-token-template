@@ -12,6 +12,7 @@ import {
     usePublicClient,
     useToken,
     useWalletClient,
+    useContractRead,
 } from "wagmi";
 import { ReactComponent as External } from "../assets/external.svg";
 import { Loader } from "../ui/loader";
@@ -20,6 +21,7 @@ import { WalletPosition } from "./components/wallet-position";
 import { ExpandableContent } from "../ui/expandable-content";
 import { decodeKPITokenData } from "../utils/data-decoding";
 import type { FinalizableOracle } from "./types";
+import ERC20_KPI_TOKEN_ABI from "../abis/erc20-kpi-token";
 
 export const Component = ({
     i18n,
@@ -31,10 +33,17 @@ export const Component = ({
     const { data: walletClient } = useWalletClient();
     const { chain } = useNetwork();
 
-    const { data: tokenData } = useToken({
+    const { data: tokenData, isLoading: loadingTokenData } = useToken({
         address: kpiToken?.address as Address,
         staleTime: 2_000,
     });
+    const { data: rawTotalSupply, isLoading: loadingRawTotalSupply } =
+        useContractRead({
+            address: kpiToken?.address as Address,
+            abi: ERC20_KPI_TOKEN_ABI,
+            functionName: "totalSupply",
+            watch: true,
+        });
 
     const [decodingKPITokenData, setDecodingKPITokenData] = useState(false);
     const [rewards, setRewards] = useState<RewardData[]>([]);
@@ -94,6 +103,34 @@ export const Component = ({
     ]);
 
     useEffect(() => {
+        if (
+            !kpiToken?.chainId ||
+            !kpiToken?.address ||
+            !tokenData?.symbol ||
+            !tokenData.name ||
+            loadingRawTotalSupply ||
+            rawTotalSupply === undefined
+        )
+            return;
+        const erc20KPIToken = new Token(
+            kpiToken.chainId,
+            kpiToken.address,
+            18,
+            tokenData.symbol,
+            tokenData.name,
+        );
+        setCurrentSupply(new Amount(erc20KPIToken, rawTotalSupply));
+    }, [
+        kpiToken?.chainId,
+        kpiToken?.address,
+        publicClient,
+        tokenData?.name,
+        tokenData?.symbol,
+        loadingRawTotalSupply,
+        rawTotalSupply,
+    ]);
+
+    useEffect(() => {
         if (!chain || !chain.blockExplorers || !kpiToken) return;
         setOpenInExplorerHref(
             `${chain.blockExplorers.default.url}/address/${kpiToken.address}`,
@@ -123,6 +160,9 @@ export const Component = ({
             console.error("could not add KPI token to wallet", error);
         }
     };
+
+    const loading =
+        decodingKPITokenData || loadingTokenData || loadingRawTotalSupply;
 
     return (
         <div className="overflow-x-hidden">
@@ -163,14 +203,12 @@ export const Component = ({
                 </div>
                 <CampaignCard
                     t={t}
-                    loading={decodingKPITokenData}
+                    loading={loading}
                     kpiToken={kpiToken}
                     rewards={rewards}
                     allOrNone={allOrNone}
-                    initialSupply={initialSupply?.raw}
-                    erc20Name={tokenData?.name}
-                    erc20Symbol={tokenData?.symbol}
-                    erc20Supply={tokenData?.totalSupply.value}
+                    initialSupply={initialSupply}
+                    currentSupply={currentSupply}
                 />
             </div>
             <div className="bg-white dark:bg-black">
@@ -182,7 +220,7 @@ export const Component = ({
                         <WalletPosition
                             t={t}
                             onTx={onTx}
-                            loading={decodingKPITokenData}
+                            loading={loading}
                             kpiToken={kpiToken}
                             rewards={rewards}
                             oracles={oracles}
