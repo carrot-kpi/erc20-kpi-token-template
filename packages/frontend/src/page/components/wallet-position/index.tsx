@@ -165,7 +165,7 @@ export const WalletPosition = ({
                         </Typography>
                     )}
                 </div>
-                {!kpiToken.finalized && (
+                {!kpiToken.finalized && !kpiToken.expired && (
                     <div className="w-full flex flex-col md:flex-row justify-between">
                         <div className="w-full md:w-1/3 p-6 flex-col border-b border-black md:border-r">
                             <Typography
