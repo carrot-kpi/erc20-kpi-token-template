@@ -43,6 +43,9 @@ export const Component = ({
     const [initialSupply, setInitialSupply] = useState<Amount<Token> | null>(
         null,
     );
+    const [currentSupply, setCurrentSupply] = useState<Amount<Token> | null>(
+        null,
+    );
     const [openInExplorerHref, setOpenInExplorerHref] = useState("");
 
     useEffect(() => {
@@ -73,12 +76,22 @@ export const Component = ({
                 tokenData.name,
             );
             setInitialSupply(new Amount(erc20KPIToken, decoded.initialSupply));
+            if (tokenData?.totalSupply)
+                setCurrentSupply(
+                    new Amount(erc20KPIToken, tokenData.totalSupply.value),
+                );
         };
         void fetchData();
         return () => {
             cancelled = true;
         };
-    }, [kpiToken, publicClient, tokenData?.name, tokenData?.symbol]);
+    }, [
+        kpiToken,
+        publicClient,
+        tokenData?.name,
+        tokenData?.symbol,
+        tokenData?.totalSupply,
+    ]);
 
     useEffect(() => {
         if (!chain || !chain.blockExplorers || !kpiToken) return;
@@ -176,6 +189,7 @@ export const Component = ({
                             erc20Symbol={tokenData?.symbol}
                             erc20Name={tokenData?.name}
                             initialSupply={initialSupply}
+                            currentSupply={currentSupply}
                         />
                     </div>
                     <div className="w-full max-w-screen-2xl flex flex-col gap-6 md:gap-8">

@@ -39,6 +39,7 @@ interface WalletPositionProps {
     rewards?: RewardData[];
     oracles?: FinalizableOracle[];
     initialSupply?: Amount<Token> | null;
+    currentSupply?: Amount<Token> | null;
     erc20Symbol?: string;
     erc20Name?: string;
 }
@@ -51,6 +52,7 @@ export const WalletPosition = ({
     rewards,
     oracles,
     initialSupply,
+    currentSupply,
     erc20Symbol,
     erc20Name,
 }: WalletPositionProps): ReactElement => {
@@ -93,6 +95,7 @@ export const WalletPosition = ({
         if (
             !rawKpiTokenBalance ||
             !initialSupply ||
+            !currentSupply ||
             !oracles ||
             oracles.length === 0
         )
@@ -108,7 +111,7 @@ export const WalletPosition = ({
             setMaximumRewards(null);
             return;
         }
-        setMaximumRewards(getMaximumRewards(balance, initialSupply, rewards));
+        setMaximumRewards(getMaximumRewards(balance, currentSupply, rewards));
         setGuaranteedRewards(
             getGuaranteedRewards(balance, initialSupply, rewards),
         );
@@ -117,6 +120,7 @@ export const WalletPosition = ({
                 oracles,
                 balance,
                 initialSupply,
+                currentSupply,
                 rewards,
                 kpiToken.expired,
             ),
@@ -126,6 +130,7 @@ export const WalletPosition = ({
         erc20Name,
         erc20Symbol,
         initialSupply,
+        currentSupply,
         kpiToken.address,
         kpiToken.chainId,
         kpiToken.expired,
