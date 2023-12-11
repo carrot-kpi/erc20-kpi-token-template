@@ -353,8 +353,8 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
     function testSuccess() external {
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(Clones.clone(address(erc20KpiTokenTemplate)));
 
-        firstErc20.mint(address(this), 10 ether);
-        firstErc20.approve(address(kpiTokenInstance), 10 ether);
+        firstErc20.mint(address(this), 10.1 ether);
+        firstErc20.approve(address(kpiTokenInstance), 10.1 ether);
 
         Collateral[] memory collaterals = new Collateral[](1);
         collaterals[0] = Collateral({token: address(firstErc20), amount: 10 ether, minimumPayout: 1 ether});
@@ -391,7 +391,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].token, address(firstErc20));
-        assertEq(onChainCollaterals[0].amount, 9.97 ether);
+        assertEq(onChainCollaterals[0].amount, 10 ether);
         assertEq(onChainCollaterals[0].minimumPayout, 1 ether);
         assertEq(onChainFinalizableOracles.length, 1);
         assertEq(kpiTokenInstance.totalSupply(), 100 ether);
@@ -410,11 +410,11 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 110 ether);
+        firstErc20.mint(address(this), 111.1 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 3, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 110 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 111.1 ether);
 
         uint256 _expiration = block.timestamp + 3;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
@@ -432,11 +432,11 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 10 ether, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 110 ether);
+        firstErc20.mint(address(this), 111.1 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 3, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 110 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 111.1 ether);
 
         vm.deal(address(this), 10 ether);
 

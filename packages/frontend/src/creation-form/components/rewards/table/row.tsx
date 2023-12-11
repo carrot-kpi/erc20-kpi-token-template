@@ -85,10 +85,10 @@ export const RewardRow = ({
         amount: parsedAmount,
         withSymbol: false,
     });
-    const formattedAmountAfterFees = formatCurrencyAmount({
+    const formattedAmountPlusFees = formatCurrencyAmount({
         amount: new Amount(
             rewardToken,
-            bigIntAmount - (bigIntAmount * protocolFeePpm) / 1_000_000n,
+            bigIntAmount + (bigIntAmount * protocolFeePpm) / 1_000_000n,
         ),
         withSymbol: false,
     });
@@ -138,7 +138,7 @@ export const RewardRow = ({
                         {t("label.rewards.table.amount.after.fees")}
                     </Typography>
                     <Typography variant="sm">
-                        {formattedAmountAfterFees}
+                        {formattedAmountPlusFees}
                     </Typography>
                 </div>
             </Popover>
@@ -154,14 +154,12 @@ export const RewardRow = ({
                         root: "text-center",
                     }}
                 >
-                    {!noFees ? formattedAmountAfterFees : formattedAmount}
+                    {formattedAmount}
                 </Typography>
                 {!noUSDValue && (
                     <USDValue
                         amount={parseUnits(
-                            !noFees
-                                ? formattedAmountAfterFees
-                                : formattedAmount,
+                            !noFees ? formattedAmountPlusFees : formattedAmount,
                             decimals,
                         )}
                         token={{ address, chainId, decimals, name, symbol }}

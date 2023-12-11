@@ -24,7 +24,7 @@ contract ERC20KPITokenInvalidAnswerFinalizeTest is BaseTestSetup {
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -67,7 +67,7 @@ contract ERC20KPITokenInvalidAnswerFinalizeTest is BaseTestSetup {
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -110,7 +110,7 @@ contract ERC20KPITokenInvalidAnswerFinalizeTest is BaseTestSetup {
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -153,7 +153,7 @@ contract ERC20KPITokenInvalidAnswerFinalizeTest is BaseTestSetup {
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -197,7 +197,7 @@ contract ERC20KPITokenInvalidAnswerFinalizeTest is BaseTestSetup {
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -242,7 +242,7 @@ contract ERC20KPITokenInvalidAnswerFinalizeTest is BaseTestSetup {
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -284,12 +284,12 @@ contract ERC20KPITokenInvalidAnswerFinalizeTest is BaseTestSetup {
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 2);
-        secondErc20.mint(address(this), 3 ether);
+        secondErc20.mint(address(this), 3.03 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2);
-        secondErc20.approve(_predictedKpiTokenAddress, 3 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
+        secondErc20.approve(_predictedKpiTokenAddress, 3.03 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -334,12 +334,12 @@ contract ERC20KPITokenInvalidAnswerFinalizeTest is BaseTestSetup {
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 2);
-        secondErc20.mint(address(this), 32 ether);
+        secondErc20.mint(address(this), 32.32 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2);
-        secondErc20.approve(_predictedKpiTokenAddress, 32 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
+        secondErc20.approve(_predictedKpiTokenAddress, 32.32 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -384,12 +384,12 @@ contract ERC20KPITokenInvalidAnswerFinalizeTest is BaseTestSetup {
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
         firstErc20.mint(address(this), 2);
-        secondErc20.mint(address(this), 4.5 ether);
+        secondErc20.mint(address(this), 4.545 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2);
-        secondErc20.approve(_predictedKpiTokenAddress, 4.5 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
+        secondErc20.approve(_predictedKpiTokenAddress, 4.545 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -433,13 +433,13 @@ contract ERC20KPITokenInvalidAnswerFinalizeTest is BaseTestSetup {
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
-        firstErc20.mint(address(this), 2 ether);
-        secondErc20.mint(address(this), 20 ether);
+        firstErc20.mint(address(this), 2.02 ether);
+        secondErc20.mint(address(this), 20.2 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2 ether);
-        secondErc20.approve(_predictedKpiTokenAddress, 20 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
+        secondErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -485,12 +485,12 @@ contract ERC20KPITokenInvalidAnswerFinalizeTest is BaseTestSetup {
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 2);
-        secondErc20.mint(address(this), 23.2 ether);
+        secondErc20.mint(address(this), 23.432 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2);
-        secondErc20.approve(_predictedKpiTokenAddress, 23.2 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
+        secondErc20.approve(_predictedKpiTokenAddress, 23.432 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -537,12 +537,12 @@ contract ERC20KPITokenInvalidAnswerFinalizeTest is BaseTestSetup {
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
         firstErc20.mint(address(this), 2);
-        secondErc20.mint(address(this), 290.2 ether);
+        secondErc20.mint(address(this), 293.102 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2);
-        secondErc20.approve(_predictedKpiTokenAddress, 290.2 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
+        secondErc20.approve(_predictedKpiTokenAddress, 293.102 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 

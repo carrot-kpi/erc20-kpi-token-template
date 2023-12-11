@@ -230,32 +230,26 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
 
         for (uint8 _i = 0; _i < _collaterals.length; _i++) {
             Collateral memory _collateral = _collaterals[_i];
-            uint256 _collateralAmountBeforeFee = _collateral.amount;
+            uint256 _collateralAmount = _collateral.amount;
             if (
-                _collateral.token == address(0) || _collateralAmountBeforeFee == 0
-                    || _collateral.minimumPayout >= _collateralAmountBeforeFee
+                _collateral.token == address(0) || _collateralAmount == 0
+                    || _collateral.minimumPayout >= _collateralAmount
             ) revert InvalidCollateral();
             for (uint8 _j = _i + 1; _j < _collaterals.length; _j++) {
                 if (_collateral.token == _collaterals[_j].token) {
                     revert DuplicatedCollateral();
                 }
             }
-            uint256 _fee = (_collateralAmountBeforeFee * fee) / UNIT;
-            uint256 _amountMinusFees;
-            unchecked {
-                _amountMinusFees = _collateralAmountBeforeFee - _fee;
-            }
-            if (_amountMinusFees <= _collateral.minimumPayout) {
-                revert InvalidMinimumPayoutAfterFee();
-            }
-            unchecked {
-                _collateral.amount = _amountMinusFees;
-            }
-            collateral[_collateral.token].amount = _collateral.amount;
+            collateral[_collateral.token].amount = _collateralAmount;
             collateral[_collateral.token].minimumPayout = _collateral.minimumPayout;
             collateral[_collateral.token].postFinalizationAmount = 0;
             collateralAddressByIndex[_i] = _collateral.token;
-            IERC20(_collateral.token).safeTransferFrom(_creator, address(this), _collateralAmountBeforeFee);
+            uint256 _fee = (_collateralAmount * fee) / UNIT;
+            uint256 _collateralAmountPlusFees;
+            unchecked {
+                _collateralAmountPlusFees = _collateralAmount + _fee;
+            }
+            IERC20(_collateral.token).safeTransferFrom(_creator, address(this), _collateralAmountPlusFees);
             if (_fee > 0) {
                 IERC20(_collateral.token).safeTransfer(_feeReceiver, _fee);
                 emit CollectProtocolFee(_collateral.token, _fee, _feeReceiver);
