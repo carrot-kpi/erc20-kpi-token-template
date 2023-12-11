@@ -154,7 +154,7 @@ export const RewardRow = ({
                         root: "text-center",
                     }}
                 >
-                    {formattedAmount}
+                    {!noFees ? formattedAmountPlusFees : formattedAmount}
                 </Typography>
                 {!noUSDValue && (
                     <USDValue

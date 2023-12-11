@@ -586,6 +586,7 @@ export const Rewards = ({
                     t={t}
                     rewards={state.rewards}
                     noUSDValue
+                    noFees
                     protocolFeePpm={protocolFeePpm}
                     onRemove={handleRemoveReward}
                 />
