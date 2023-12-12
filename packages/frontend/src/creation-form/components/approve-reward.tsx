@@ -11,10 +11,12 @@ import {
 } from "wagmi";
 import { type TransactionReceipt } from "viem";
 import type { Reward } from "../types";
+import { getRewardAmountPlusFees } from "../../utils/rewards";
 
 interface ApproveRewardProps {
     t: NamespacedTranslateFunction;
     reward: Reward;
+    protocolFeePpm: bigint;
     index: number;
     totalAmount: number;
     spender: Address;
@@ -24,6 +26,7 @@ interface ApproveRewardProps {
 export const ApproveReward = ({
     t,
     reward,
+    protocolFeePpm,
     index,
     totalAmount,
     spender,
@@ -39,7 +42,13 @@ export const ApproveReward = ({
             address: reward.address,
             abi: erc20ABI,
             functionName: "approve",
-            args: [spender, BigInt(reward.amount)],
+            args: [
+                spender,
+                getRewardAmountPlusFees({
+                    amount: BigInt(reward.amount),
+                    protocolFeePpm,
+                }),
+            ],
             enabled: !!spender && !!reward.address,
         },
     );

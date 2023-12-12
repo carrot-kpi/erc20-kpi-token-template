@@ -28,6 +28,7 @@ import {
     MAX_KPI_TOKEN_NAME_CHARS,
     MAX_KPI_TOKEN_SYMBOL_CHARS,
 } from "../../constants";
+import { getRewardAmountPlusFees } from "../../../utils/rewards";
 
 interface RewardsProps {
     t: NamespacedTranslateFunction;
@@ -101,8 +102,10 @@ export const Rewards = ({
             return;
         }
 
-        const rewardAmountPlusFees =
-            rewardAmount + (rewardAmount * protocolFeePpm) / 1_000_000n;
+        const rewardAmountPlusFees = getRewardAmountPlusFees({
+            amount: rewardAmount,
+            protocolFeePpm,
+        });
         // check if the user has enough balance of the picked token
         if (
             rewardTokenBalance &&

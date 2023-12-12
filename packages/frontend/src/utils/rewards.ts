@@ -2,6 +2,18 @@ import { Amount, Token } from "@carrot-kpi/sdk";
 import type { RewardData } from "../page/types";
 import type { FinalizableOracle } from "../page/types";
 
+interface GetRewardAmountPlusFeesArgs {
+    amount: bigint;
+    protocolFeePpm: bigint;
+}
+
+export const getRewardAmountPlusFees = ({
+    amount,
+    protocolFeePpm,
+}: GetRewardAmountPlusFeesArgs) => {
+    return amount + (amount * protocolFeePpm) / 1_000_000n;
+};
+
 export const getGuaranteedRewards = (
     kpiTokenBalance: Amount<Token>,
     kpiTokenInitialSupply: Amount<Token>,

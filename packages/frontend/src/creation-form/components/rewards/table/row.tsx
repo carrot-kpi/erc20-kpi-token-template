@@ -12,6 +12,7 @@ import { Amount, Token, formatCurrencyAmount } from "@carrot-kpi/sdk";
 import { cva } from "class-variance-authority";
 import { USDValue } from "../usd-value";
 import { parseUnits } from "viem";
+import { getRewardAmountPlusFees } from "../../../../utils/rewards";
 
 const rootStyles = cva(["h-10", "grid", "items-center"], {
     variants: {
@@ -80,15 +81,14 @@ export const RewardRow = ({
 
     const rewardToken = new Token(chainId, address, decimals, symbol, name);
     const bigIntAmount = BigInt(amount);
-    const parsedAmount = new Amount(rewardToken, bigIntAmount);
     const formattedAmount = formatCurrencyAmount({
-        amount: parsedAmount,
+        amount: new Amount(rewardToken, bigIntAmount),
         withSymbol: false,
     });
     const formattedAmountPlusFees = formatCurrencyAmount({
         amount: new Amount(
             rewardToken,
-            bigIntAmount + (bigIntAmount * protocolFeePpm) / 1_000_000n,
+            getRewardAmountPlusFees({ amount: bigIntAmount, protocolFeePpm }),
         ),
         withSymbol: false,
     });
@@ -143,11 +143,11 @@ export const RewardRow = ({
                 </div>
             </Popover>
             <div
-                onMouseEnter={!noFees ? handleFeeSplitPopoverOpen : undefined}
-                onMouseLeave={!noFees ? handleFeeSplitPopoverClose : undefined}
+                onMouseEnter={handleFeeSplitPopoverOpen}
+                onMouseLeave={handleFeeSplitPopoverClose}
                 className={amountFieldStyles({ noMinimumPayout })}
             >
-                {!noFees && <Info className="w-4 h-4" />}
+                <Info className="w-4 h-4" />
                 <Typography
                     ref={anchorRef}
                     className={{

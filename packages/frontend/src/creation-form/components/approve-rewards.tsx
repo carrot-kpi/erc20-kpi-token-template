@@ -15,6 +15,7 @@ interface ApproveRewardsProps {
     t: NamespacedTranslateFunction;
     loading?: boolean;
     rewards?: Reward[];
+    protocolFeePpm: bigint;
     spender?: Address;
     onApprove: () => void;
     onTx: KPITokenCreationFormProps<object>["onTx"];
@@ -24,6 +25,7 @@ export const ApproveRewards = ({
     t,
     loading,
     rewards,
+    protocolFeePpm,
     spender,
     onApprove,
     onTx,
@@ -137,6 +139,7 @@ export const ApproveRewards = ({
         <ApproveReward
             t={t}
             reward={currentlyApprovingReward}
+            protocolFeePpm={protocolFeePpm}
             index={currentIndex + 1}
             totalAmount={rewards?.length || 0}
             spender={spender}
