@@ -422,6 +422,7 @@ export const Deploy = ({
                     t={t}
                     loading={loadingPredictedKPITokenAddress}
                     rewards={state.rewards}
+                    protocolFeePpm={protocolFeePpm}
                     spender={predictedKPITokenAddress}
                     onApprove={handleApprove}
                     onTx={onTx}

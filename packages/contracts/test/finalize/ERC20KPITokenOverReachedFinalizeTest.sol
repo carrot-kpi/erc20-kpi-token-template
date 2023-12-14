@@ -18,11 +18,11 @@ contract ERC20KPITokenOverReachedFinalizeTest is BaseTestSetup {
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 20 ether);
+        firstErc20.mint(address(this), 20.2 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -42,7 +42,7 @@ contract ERC20KPITokenOverReachedFinalizeTest is BaseTestSetup {
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].token, _collaterals[0].token);
-        assertEq(onChainCollaterals[0].amount, 19.94 ether);
+        assertEq(onChainCollaterals[0].amount, 20 ether);
         assertEq(onChainCollaterals[0].minimumPayout, 10 ether);
 
         assertEq(onChainFinalizableOracles.length, 1);
@@ -62,11 +62,11 @@ contract ERC20KPITokenOverReachedFinalizeTest is BaseTestSetup {
         _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 20 ether);
+        firstErc20.mint(address(this), 20.2 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -86,7 +86,7 @@ contract ERC20KPITokenOverReachedFinalizeTest is BaseTestSetup {
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].token, _collaterals[0].token);
-        assertEq(onChainCollaterals[0].amount, 19.94 ether);
+        assertEq(onChainCollaterals[0].amount, 20 ether);
         assertEq(onChainCollaterals[0].minimumPayout, 10 ether);
 
         assertEq(onChainFinalizableOracles.length, 2);
@@ -106,11 +106,11 @@ contract ERC20KPITokenOverReachedFinalizeTest is BaseTestSetup {
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
-        firstErc20.mint(address(this), 20 ether);
+        firstErc20.mint(address(this), 20.2 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -130,7 +130,7 @@ contract ERC20KPITokenOverReachedFinalizeTest is BaseTestSetup {
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].token, _collaterals[0].token);
-        assertEq(onChainCollaterals[0].amount, 19.94 ether);
+        assertEq(onChainCollaterals[0].amount, 20 ether);
         assertEq(onChainCollaterals[0].minimumPayout, 10 ether);
 
         assertEq(onChainFinalizableOracles.length, 1);
@@ -150,11 +150,11 @@ contract ERC20KPITokenOverReachedFinalizeTest is BaseTestSetup {
         _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
-        firstErc20.mint(address(this), 20 ether);
+        firstErc20.mint(address(this), 20.2 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -174,7 +174,7 @@ contract ERC20KPITokenOverReachedFinalizeTest is BaseTestSetup {
 
         assertEq(onChainCollaterals.length, 1);
         assertEq(onChainCollaterals[0].token, _collaterals[0].token);
-        assertEq(onChainCollaterals[0].amount, 19.94 ether);
+        assertEq(onChainCollaterals[0].amount, 20 ether);
         assertEq(onChainCollaterals[0].minimumPayout, 10 ether);
 
         assertEq(onChainFinalizableOracles.length, 2);
@@ -195,13 +195,13 @@ contract ERC20KPITokenOverReachedFinalizeTest is BaseTestSetup {
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 20 ether);
-        secondErc20.mint(address(this), 35 ether);
+        firstErc20.mint(address(this), 20.2 ether);
+        secondErc20.mint(address(this), 35.35 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
-        secondErc20.approve(_predictedKpiTokenAddress, 35 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
+        secondErc20.approve(_predictedKpiTokenAddress, 35.35 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -221,10 +221,10 @@ contract ERC20KPITokenOverReachedFinalizeTest is BaseTestSetup {
 
         assertEq(onChainCollaterals.length, 2);
         assertEq(onChainCollaterals[0].token, _collaterals[0].token);
-        assertEq(onChainCollaterals[0].amount, 19.94 ether);
+        assertEq(onChainCollaterals[0].amount, 20 ether);
         assertEq(onChainCollaterals[0].minimumPayout, 10 ether);
         assertEq(onChainCollaterals[1].token, _collaterals[1].token);
-        assertEq(onChainCollaterals[1].amount, 34.895 ether);
+        assertEq(onChainCollaterals[1].amount, 35 ether);
         assertEq(onChainCollaterals[1].minimumPayout, 12.2 ether);
 
         assertEq(onChainFinalizableOracles.length, 1);
@@ -246,13 +246,13 @@ contract ERC20KPITokenOverReachedFinalizeTest is BaseTestSetup {
         _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 20 ether);
-        secondErc20.mint(address(this), 20.23 ether);
+        firstErc20.mint(address(this), 20.2 ether);
+        secondErc20.mint(address(this), 20.4323 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
-        secondErc20.approve(_predictedKpiTokenAddress, 20.23 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
+        secondErc20.approve(_predictedKpiTokenAddress, 20.4323 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -272,10 +272,10 @@ contract ERC20KPITokenOverReachedFinalizeTest is BaseTestSetup {
 
         assertEq(onChainCollaterals.length, 2);
         assertEq(onChainCollaterals[0].token, _collaterals[0].token);
-        assertEq(onChainCollaterals[0].amount, 19.94 ether);
+        assertEq(onChainCollaterals[0].amount, 20 ether);
         assertEq(onChainCollaterals[0].minimumPayout, 10 ether);
         assertEq(onChainCollaterals[1].token, _collaterals[1].token);
-        assertEq(onChainCollaterals[1].amount, 20.16931 ether);
+        assertEq(onChainCollaterals[1].amount, 20.23 ether);
         assertEq(onChainCollaterals[1].minimumPayout, 18.9 ether);
 
         assertEq(onChainFinalizableOracles.length, 2);
@@ -288,6 +288,9 @@ contract ERC20KPITokenOverReachedFinalizeTest is BaseTestSetup {
     }
 
     function testOverReachedOrRelationshipSingleOracleMultiCollateral() external {
+        assertEq(firstErc20.balanceOf(address(this)), 0 ether);
+        assertEq(secondErc20.balanceOf(address(this)), 0 ether);
+
         Collateral[] memory _collaterals = new Collateral[](2);
         _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
         _collaterals[1] = Collateral({token: address(secondErc20), amount: 29 ether, minimumPayout: 28 ether});
@@ -297,15 +300,17 @@ contract ERC20KPITokenOverReachedFinalizeTest is BaseTestSetup {
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
-        firstErc20.mint(address(this), 20 ether);
-        secondErc20.mint(address(this), 29 ether);
+        firstErc20.mint(address(this), 20.2 ether);
+        secondErc20.mint(address(this), 29.29 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
-        secondErc20.approve(_predictedKpiTokenAddress, 29 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
+        secondErc20.approve(_predictedKpiTokenAddress, 29.29 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
+        assertEq(firstErc20.balanceOf(address(this)), 0 ether);
+        assertEq(secondErc20.balanceOf(address(this)), 0 ether);
 
         uint256 kpiTokensAmount = factory.kpiTokensAmount();
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(
@@ -316,17 +321,17 @@ contract ERC20KPITokenOverReachedFinalizeTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(10023 ether);
+        kpiTokenInstance.finalize(1_002_300 ether);
 
         (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
             abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainCollaterals.length, 2);
         assertEq(onChainCollaterals[0].token, _collaterals[0].token);
-        assertEq(onChainCollaterals[0].amount, 19.94 ether);
+        assertEq(onChainCollaterals[0].amount, 20 ether);
         assertEq(onChainCollaterals[0].minimumPayout, 10 ether);
         assertEq(onChainCollaterals[1].token, _collaterals[1].token);
-        assertEq(onChainCollaterals[1].amount, 28.913 ether);
+        assertEq(onChainCollaterals[1].amount, 29 ether);
         assertEq(onChainCollaterals[1].minimumPayout, 28 ether);
 
         assertEq(onChainFinalizableOracles.length, 1);
@@ -348,13 +353,13 @@ contract ERC20KPITokenOverReachedFinalizeTest is BaseTestSetup {
         _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
-        firstErc20.mint(address(this), 20 ether);
-        secondErc20.mint(address(this), 12.65 ether);
+        firstErc20.mint(address(this), 20.2 ether);
+        secondErc20.mint(address(this), 12.7765 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
-        secondErc20.approve(_predictedKpiTokenAddress, 12.65 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
+        secondErc20.approve(_predictedKpiTokenAddress, 12.7765 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -374,10 +379,10 @@ contract ERC20KPITokenOverReachedFinalizeTest is BaseTestSetup {
 
         assertEq(onChainCollaterals.length, 2);
         assertEq(onChainCollaterals[0].token, _collaterals[0].token);
-        assertEq(onChainCollaterals[0].amount, 19.94 ether);
+        assertEq(onChainCollaterals[0].amount, 20 ether);
         assertEq(onChainCollaterals[0].minimumPayout, 10 ether);
         assertEq(onChainCollaterals[1].token, _collaterals[1].token);
-        assertEq(onChainCollaterals[1].amount, 12.61205 ether);
+        assertEq(onChainCollaterals[1].amount, 12.65 ether);
         assertEq(onChainCollaterals[1].minimumPayout, 10 ether);
 
         assertEq(onChainFinalizableOracles.length, 2);

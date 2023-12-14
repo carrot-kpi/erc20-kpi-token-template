@@ -18,11 +18,11 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 20 ether);
+        firstErc20.mint(address(this), 20.2 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -52,11 +52,11 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 20 ether);
+        firstErc20.mint(address(this), 20.2 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
 
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
@@ -74,10 +74,10 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(10023 ether);
 
-        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 19.94 ether);
+        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 20 ether);
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
 
-        assertEq(firstErc20.balanceOf(address(this)), 9.94 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 10 ether);
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 10 ether);
     }
 
@@ -91,11 +91,11 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 20 ether);
+        firstErc20.mint(address(this), 20.2 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -126,11 +126,11 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 20 ether);
+        firstErc20.mint(address(this), 20.2 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
 
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
@@ -147,14 +147,14 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         kpiTokenInstance.finalize(97 ether);
 
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
-        assertEq(firstErc20.balanceOf(address(this)), 9.94 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 10 ether);
 
         vm.prank(kpiTokenInstance.oracles()[1]);
         kpiTokenInstance.finalize(97 ether);
 
         vm.expectRevert(abi.encodeWithSignature("NothingToRecover()"));
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
-        assertEq(firstErc20.balanceOf(address(this)), 9.94 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 10 ether);
 
         vm.prank(_holder);
         kpiTokenInstance.redeem(abi.encode(_holder));
@@ -170,11 +170,11 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
-        firstErc20.mint(address(this), 20 ether);
+        firstErc20.mint(address(this), 20.2 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -204,11 +204,11 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
-        firstErc20.mint(address(this), 20 ether);
+        firstErc20.mint(address(this), 20.2 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
 
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
@@ -228,7 +228,7 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
 
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
 
-        assertEq(firstErc20.balanceOf(address(this)), 9.94 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 10 ether);
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 10 ether);
     }
 
@@ -242,11 +242,11 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
-        firstErc20.mint(address(this), 20 ether);
+        firstErc20.mint(address(this), 20.2 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
 
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
@@ -266,7 +266,7 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
 
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
 
-        assertEq(firstErc20.balanceOf(address(this)), 9.94 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 10 ether);
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 10 ether);
     }
 
@@ -280,11 +280,11 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
-        firstErc20.mint(address(this), 20 ether);
+        firstErc20.mint(address(this), 20.2 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
 
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
@@ -316,11 +316,11 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
-        firstErc20.mint(address(this), 50 ether);
+        firstErc20.mint(address(this), 50.5 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 50 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 50.5 ether);
 
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
@@ -339,7 +339,7 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         kpiTokenInstance.finalize(97 ether);
 
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
-        assertEq(firstErc20.balanceOf(address(this)), 39.85 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 40 ether);
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 10 ether);
     }
 
@@ -353,13 +353,13 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 20 ether);
-        secondErc20.mint(address(this), 35 ether);
+        firstErc20.mint(address(this), 20.2 ether);
+        secondErc20.mint(address(this), 35.35 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
-        secondErc20.approve(_predictedKpiTokenAddress, 35 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
+        secondErc20.approve(_predictedKpiTokenAddress, 35.35 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -393,13 +393,13 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 20 ether);
-        secondErc20.mint(address(this), 35 ether);
+        firstErc20.mint(address(this), 20.2 ether);
+        secondErc20.mint(address(this), 35.35 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
-        secondErc20.approve(_predictedKpiTokenAddress, 35 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
+        secondErc20.approve(_predictedKpiTokenAddress, 35.35 ether);
 
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
@@ -420,9 +420,9 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
         kpiTokenInstance.recoverERC20(address(secondErc20), address(this));
 
-        assertEq(firstErc20.balanceOf(address(this)), 9.94 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 10 ether);
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 10 ether);
-        assertEq(secondErc20.balanceOf(address(this)), 22.695 ether);
+        assertEq(secondErc20.balanceOf(address(this)), 22.8 ether);
         assertEq(secondErc20.balanceOf(address(kpiTokenInstance)), 12.2 ether);
     }
 
@@ -437,13 +437,13 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 20 ether);
-        secondErc20.mint(address(this), 20.23 ether);
+        firstErc20.mint(address(this), 20.2 ether);
+        secondErc20.mint(address(this), 20.4323 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
-        secondErc20.approve(_predictedKpiTokenAddress, 20.23 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
+        secondErc20.approve(_predictedKpiTokenAddress, 20.4323 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -478,13 +478,13 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 20 ether);
-        secondErc20.mint(address(this), 20.23 ether);
+        firstErc20.mint(address(this), 20.2 ether);
+        secondErc20.mint(address(this), 20.4323 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
-        secondErc20.approve(_predictedKpiTokenAddress, 20.23 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
+        secondErc20.approve(_predictedKpiTokenAddress, 20.4323 ether);
 
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
@@ -505,9 +505,9 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
         kpiTokenInstance.recoverERC20(address(secondErc20), address(this));
 
-        assertEq(firstErc20.balanceOf(address(this)), 9.94 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 10 ether);
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 10 ether);
-        assertEq(secondErc20.balanceOf(address(this)), 1.26931 ether);
+        assertEq(secondErc20.balanceOf(address(this)), 1.33 ether);
         assertEq(secondErc20.balanceOf(address(kpiTokenInstance)), 18.9 ether);
     }
 
@@ -521,13 +521,13 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
-        firstErc20.mint(address(this), 20 ether);
-        secondErc20.mint(address(this), 29 ether);
+        firstErc20.mint(address(this), 20.2 ether);
+        secondErc20.mint(address(this), 29.29 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
-        secondErc20.approve(_predictedKpiTokenAddress, 29 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
+        secondErc20.approve(_predictedKpiTokenAddress, 29.29 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -561,13 +561,13 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
-        firstErc20.mint(address(this), 20 ether);
-        secondErc20.mint(address(this), 29 ether);
+        firstErc20.mint(address(this), 20.2 ether);
+        secondErc20.mint(address(this), 29.29 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
-        secondErc20.approve(_predictedKpiTokenAddress, 29 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
+        secondErc20.approve(_predictedKpiTokenAddress, 29.29 ether);
 
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
@@ -583,14 +583,14 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(10023 ether);
+        kpiTokenInstance.finalize(1_002_300 ether);
 
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
         kpiTokenInstance.recoverERC20(address(secondErc20), address(this));
 
-        assertEq(firstErc20.balanceOf(address(this)), 9.94 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 10 ether);
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 10 ether);
-        assertEq(secondErc20.balanceOf(address(this)), 0.913 ether);
+        assertEq(secondErc20.balanceOf(address(this)), 1 ether);
         assertEq(secondErc20.balanceOf(address(kpiTokenInstance)), 28 ether);
     }
 
@@ -605,13 +605,13 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
-        firstErc20.mint(address(this), 20 ether);
-        secondErc20.mint(address(this), 12.65 ether);
+        firstErc20.mint(address(this), 20.2 ether);
+        secondErc20.mint(address(this), 12.7765 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
-        secondErc20.approve(_predictedKpiTokenAddress, 12.65 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
+        secondErc20.approve(_predictedKpiTokenAddress, 12.7765 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -646,13 +646,13 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
-        firstErc20.mint(address(this), 20 ether);
-        secondErc20.mint(address(this), 12.65 ether);
+        firstErc20.mint(address(this), 20.2 ether);
+        secondErc20.mint(address(this), 12.7765 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 20 ether);
-        secondErc20.approve(_predictedKpiTokenAddress, 12.65 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 20.2 ether);
+        secondErc20.approve(_predictedKpiTokenAddress, 12.7765 ether);
 
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
@@ -673,9 +673,9 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
         kpiTokenInstance.recoverERC20(address(secondErc20), address(this));
 
-        assertEq(firstErc20.balanceOf(address(this)), 9.94 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 10 ether);
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 10 ether);
-        assertEq(secondErc20.balanceOf(address(this)), 2.61205 ether);
+        assertEq(secondErc20.balanceOf(address(this)), 2.65 ether);
         assertEq(secondErc20.balanceOf(address(kpiTokenInstance)), 10 ether);
     }
 }

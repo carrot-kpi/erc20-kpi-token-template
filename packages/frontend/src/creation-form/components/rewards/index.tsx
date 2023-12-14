@@ -28,6 +28,7 @@ import {
     MAX_KPI_TOKEN_NAME_CHARS,
     MAX_KPI_TOKEN_SYMBOL_CHARS,
 } from "../../constants";
+import { getRewardAmountPlusFees } from "../../../utils/rewards";
 
 interface RewardsProps {
     t: NamespacedTranslateFunction;
@@ -96,23 +97,24 @@ export const Rewards = ({
             setAddDisabled(true);
             return;
         }
-        // check if the user has enough balance of the picked token
-        if (rewardTokenBalance && rewardTokenBalance.value < rewardAmount) {
+        if (rewardMinimumPayout && rewardMinimumPayout >= rewardAmount) {
             setAddDisabled(true);
             return;
         }
 
-        const amountMinusFees =
-            rewardAmount - (rewardAmount * protocolFeePpm) / 1_000_000n;
-
+        const rewardAmountPlusFees = getRewardAmountPlusFees({
+            amount: rewardAmount,
+            protocolFeePpm,
+        });
+        // check if the user has enough balance of the picked token
         if (
-            !amountMinusFees ||
-            (rewardMinimumPayout !== null &&
-                rewardMinimumPayout >= amountMinusFees)
+            rewardTokenBalance &&
+            rewardTokenBalance.value < rewardAmountPlusFees
         ) {
             setAddDisabled(true);
             return;
         }
+
         setAddDisabled(
             !!state.rewards &&
                 !!state.rewards.find(
@@ -164,11 +166,19 @@ export const Rewards = ({
                 rawNewAmount.value,
                 rewardToken.decimals,
             );
+            const newAmountPlusFees =
+                newAmount + (newAmount * protocolFeePpm) / 1_000_000n;
 
             let errorMessage = "";
             if (!newAmount) errorMessage = t("error.rewards.empty");
-            else if (rewardTokenBalance.value < newAmount)
-                errorMessage = t("error.rewards.insufficient");
+            else if (rewardTokenBalance.value < newAmountPlusFees)
+                errorMessage = t("error.rewards.insufficient", {
+                    amountPlusFees: formatCurrencyAmount({
+                        amount: new Amount(rewardToken, newAmountPlusFees),
+                        withSymbol: false,
+                    }),
+                    symbol: rewardToken.symbol,
+                });
             setAmountErrorMessage(errorMessage);
 
             if (rewardMinimumPayout !== null && rewardMinimumPayout > 0) {
@@ -181,7 +191,13 @@ export const Rewards = ({
 
             setRewardAmount(newAmount);
         },
-        [rewardMinimumPayout, rewardToken, rewardTokenBalance, t],
+        [
+            protocolFeePpm,
+            rewardMinimumPayout,
+            rewardToken,
+            rewardTokenBalance,
+            t,
+        ],
     );
 
     const handleRewardMinimumPayoutChange = useCallback(
@@ -573,6 +589,7 @@ export const Rewards = ({
                     t={t}
                     rewards={state.rewards}
                     noUSDValue
+                    noFees
                     protocolFeePpm={protocolFeePpm}
                     onRemove={handleRemoveReward}
                 />

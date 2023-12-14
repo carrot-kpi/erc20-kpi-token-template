@@ -45,8 +45,8 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
     }
 
     function prepareCollateral(address kpiTokenInstance) internal returns (Collateral[] memory) {
-        firstErc20.mint(address(this), 10 ether);
-        firstErc20.approve(address(kpiTokenInstance), 10 ether);
+        firstErc20.mint(address(this), 10.1 ether);
+        firstErc20.approve(address(kpiTokenInstance), 10.1 ether);
 
         Collateral[] memory collaterals = new Collateral[](1);
         collaterals[0] = Collateral({token: address(firstErc20), amount: 10 ether, minimumPayout: 1 ether});

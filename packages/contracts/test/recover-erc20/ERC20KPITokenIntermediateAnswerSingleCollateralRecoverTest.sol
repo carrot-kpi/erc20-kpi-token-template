@@ -22,7 +22,7 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -55,7 +55,7 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
 
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
@@ -88,11 +88,11 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 10 ether);
+        firstErc20.mint(address(this), 10.1 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 10 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 10.1 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -109,7 +109,7 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
 
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
 
-        assertEq(firstErc20.balanceOf(address(this)), 7.176 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 7.2 ether);
     }
 
     function testIntermediateAnswerAndRelationshipSingleOracleNonZeroMinimumPayoutExpired() external {
@@ -121,11 +121,11 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 10 ether);
+        firstErc20.mint(address(this), 10.1 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 10 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 10.1 ether);
 
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
@@ -145,7 +145,7 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
 
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
 
-        assertEq(firstErc20.balanceOf(address(this)), 8.97 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 9 ether);
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 1 ether);
     }
 
@@ -158,11 +158,11 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
-        firstErc20.mint(address(this), 2 ether);
+        firstErc20.mint(address(this), 2.02 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -179,7 +179,7 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
 
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
 
-        assertEq(firstErc20.balanceOf(address(this)), 0.997 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 1 ether);
     }
 
     function testIntermediateAnswerOrRelationshipSingleOracleZeroMinimumPayoutExpired() external {
@@ -191,11 +191,11 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
-        firstErc20.mint(address(this), 2 ether);
+        firstErc20.mint(address(this), 2.02 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
 
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
@@ -215,7 +215,7 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
 
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
 
-        assertEq(firstErc20.balanceOf(address(this)), 1.994 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 2 ether);
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 0);
     }
 
@@ -228,11 +228,11 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
-        firstErc20.mint(address(this), 45 ether);
+        firstErc20.mint(address(this), 45.45 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 45 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 45.45 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -249,7 +249,7 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
 
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
 
-        assertEq(firstErc20.balanceOf(address(this)), 16.527439355 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 16.625021 ether);
     }
 
     function testIntermediateAnswerOrRelationshipSingleOracleNonZeroMinimumPayoutExpired() external {
@@ -261,11 +261,11 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, false);
 
-        firstErc20.mint(address(this), 45 ether);
+        firstErc20.mint(address(this), 45.45 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 45 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 45.45 ether);
 
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
@@ -285,7 +285,7 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
 
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
 
-        assertEq(firstErc20.balanceOf(address(this)), 22.865 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 23 ether);
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 22 ether);
     }
 
@@ -299,11 +299,11 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
         _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 2 ether);
+        firstErc20.mint(address(this), 2.02 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -320,7 +320,7 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
 
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
 
-        assertEq(firstErc20.balanceOf(address(this)), 0.332333998 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 0.333334 ether);
     }
 
     function testIntermediateAnswerAndRelationshipMultipleOraclesZeroMinimumPayoutExpired() external {
@@ -333,11 +333,11 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
         _oracleDatas[1] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 2 ether);
+        firstErc20.mint(address(this), 2.02 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
 
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
@@ -353,11 +353,11 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
 
         address oracle = kpiTokenInstance.oracles()[0];
         vm.prank(oracle);
-        kpiTokenInstance.finalize(13 ether);
+        kpiTokenInstance.finalize(1_300_000);
 
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
 
-        assertEq(firstErc20.balanceOf(address(this)), 1.994 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 2 ether);
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 0);
     }
 
@@ -371,11 +371,11 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
         _oracleDatas[1] = OracleData({templateId: 1, weight: 2, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 2 ether);
+        firstErc20.mint(address(this), 2.02 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
 
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
 
@@ -401,11 +401,11 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
         _oracleDatas[1] = OracleData({templateId: 1, weight: 2, value: 0, data: abi.encode("2")});
         bytes memory _oraclesInitializationData = abi.encode(_oracleDatas, true);
 
-        firstErc20.mint(address(this), 2 ether);
+        firstErc20.mint(address(this), 2.02 ether);
         address _predictedKpiTokenAddress = kpiTokensManager.predictInstanceAddress(
             address(this), 1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
-        firstErc20.approve(_predictedKpiTokenAddress, 2 ether);
+        firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
 
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
@@ -425,7 +425,7 @@ contract ERC20KPITokenIntermediateAnswerSingleCollateralRecoverTest is BaseTestS
 
         kpiTokenInstance.recoverERC20(address(firstErc20), address(this));
 
-        assertEq(firstErc20.balanceOf(address(this)), 0.994 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 1 ether);
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 1 ether);
     }
 }
