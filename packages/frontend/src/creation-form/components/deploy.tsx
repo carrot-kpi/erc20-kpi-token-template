@@ -19,7 +19,13 @@ import type {
     OracleWithInitializationBundleGetter,
     State,
 } from "../types";
-import { Button, DateTimeInput, ErrorText, Typography } from "@carrot-kpi/ui";
+import {
+    Button,
+    DateTimeInput,
+    ErrorText,
+    FeedbackBox,
+    Typography,
+} from "@carrot-kpi/ui";
 import {
     type KPITokenCreationFormProps,
     type NamespacedTranslateFunction,
@@ -403,6 +409,14 @@ export const Deploy = ({
                 }}
             />
             <div className="rounded-xxl w-full flex flex-col gap-6 border border-black p-4">
+                <FeedbackBox variant="info">
+                    <Typography>
+                        {t("deploy.info.fees", {
+                            protocolFee:
+                                (Number(protocolFeePpm) / 1_000_000) * 100,
+                        })}
+                    </Typography>
+                </FeedbackBox>
                 <RewardsTable
                     t={t}
                     noBorder
