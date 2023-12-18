@@ -12,6 +12,7 @@ import {
 import { type TransactionReceipt } from "viem";
 import type { Reward } from "../types";
 import { getRewardAmountPlusFees } from "../../utils/rewards";
+import { Amount, Token, formatCurrencyAmount } from "@carrot-kpi/sdk";
 
 interface ApproveRewardProps {
     t: NamespacedTranslateFunction;
@@ -36,19 +37,27 @@ export const ApproveReward = ({
     const chainId = useChainId();
     const [approving, setApproving] = useState(false);
 
+    const rewardPlusFees = new Amount(
+        new Token(
+            reward.chainId,
+            reward.address,
+            reward.decimals,
+            reward.symbol,
+            reward.name,
+        ),
+        getRewardAmountPlusFees({
+            amount: BigInt(reward.amount),
+            protocolFeePpm,
+        }),
+    );
+
     const { config, isLoading: loadingApproveConfig } = usePrepareContractWrite(
         {
             chainId,
             address: reward.address,
             abi: erc20ABI,
             functionName: "approve",
-            args: [
-                spender,
-                getRewardAmountPlusFees({
-                    amount: BigInt(reward.amount),
-                    protocolFeePpm,
-                }),
-            ],
+            args: [spender, rewardPlusFees.raw],
             enabled: !!spender && !!reward.address,
         },
     );
@@ -78,6 +87,10 @@ export const ApproveReward = ({
         };
     }, [approveAsync, onApprove, publicClient]);
 
+    const formattedRewardWithFees = formatCurrencyAmount({
+        amount: rewardPlusFees,
+        withSymbol: false,
+    });
     return (
         <Button
             data-testid={`approve-reward-${reward.address}`}
@@ -89,11 +102,13 @@ export const ApproveReward = ({
         >
             {signingTransaction || approving
                 ? t("label.rewards.approving", {
+                      amount: formattedRewardWithFees,
                       symbol: reward.symbol,
                       currentIndex: index,
                       totalAmount,
                   })
                 : t("label.rewards.approve", {
+                      amount: formattedRewardWithFees,
                       symbol: reward.symbol,
                       currentIndex: index,
                       totalAmount,
