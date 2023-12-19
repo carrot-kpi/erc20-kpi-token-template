@@ -1081,7 +1081,7 @@
   resolved "https://registry.yarnpkg.com/@carrot-kpi/contracts/-/contracts-0.9.0.tgz#03918589d5b37adda1549bbe60cb0a543515c3f1"
   integrity sha512-pVxQiTXkTqJwm1xHnkLN/Trwbw9F509ZLfp1ovwujgJN1Kz+Nv7rVg0Y6QpMgXXC6hlvyMJIn/kIFsq+gl4m+w==
 
-"@carrot-kpi/host-frontend@^0.33.2":
+"@carrot-kpi/host-frontend@^0.33.3":
   version "0.33.3"
   resolved "https://registry.yarnpkg.com/@carrot-kpi/host-frontend/-/host-frontend-0.33.3.tgz#db7ddb52369bae91dc100e2c8f85bc957dd20219"
   integrity sha512-UTo1OucH8rxxX7aopJJZiPNuH2VyUYxfqiUvTOA0xeOfOl389O4phSVrDBmPdUmnDMV0X5It9XwDQb4NEbbLYQ==

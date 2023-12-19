@@ -58,7 +58,7 @@
         "webpack-dev-server": "^4.15.1"
     },
     "devDependencies": {
-        "@carrot-kpi/host-frontend": "^0.33.2",
+        "@carrot-kpi/host-frontend": "^0.33.3",
         "@carrot-kpi/switzer-font": "^0.1.0",
         "@commitlint/cli": "^18.4.3",
         "@commitlint/config-conventional": "^18.4.3",
