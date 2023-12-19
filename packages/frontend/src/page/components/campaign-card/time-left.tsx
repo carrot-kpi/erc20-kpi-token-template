@@ -1,6 +1,6 @@
 import type { NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { ResolvedKPIToken } from "@carrot-kpi/sdk";
-import { Timer, Typography } from "@carrot-kpi/ui";
+import { Chip, Timer } from "@carrot-kpi/ui";
 
 interface TimeLeftProps {
     t: NamespacedTranslateFunction;
@@ -10,15 +10,15 @@ interface TimeLeftProps {
 export const TimeLeft = ({ t, kpiToken }: TimeLeftProps) => {
     if (kpiToken.finalized)
         return (
-            <Typography uppercase className={{ root: "text-green" }}>
+            <Chip className={{ root: "bg-green bg-opacity-80 uppercase" }}>
                 {t("overview.finalized")}
-            </Typography>
+            </Chip>
         );
     if (kpiToken.expired)
         return (
-            <Typography uppercase className={{ root: "text-red" }}>
+            <Chip className={{ root: "bg-red bg-opacity-80 uppercase" }}>
                 {t("overview.expired")}
-            </Typography>
+            </Chip>
         );
     return <Timer to={kpiToken.expiration} countdown />;
 };

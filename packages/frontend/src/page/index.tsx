@@ -22,6 +22,7 @@ import { ExpandableContent } from "../ui/expandable-content";
 import { decodeKPITokenData } from "../utils/data-decoding";
 import type { FinalizableOracle } from "./types";
 import ERC20_KPI_TOKEN_ABI from "../abis/erc20-kpi-token";
+import { useWatchKPITokenData } from "./hooks/useWatchKPITokenData";
 
 export const Component = ({
     i18n,
@@ -36,6 +37,9 @@ export const Component = ({
     const { data: tokenData, isLoading: loadingTokenData } = useToken({
         address: kpiToken?.address as Address,
         staleTime: 2_000,
+    });
+    const kpiTokenData = useWatchKPITokenData({
+        kpiTokenAddress: kpiToken?.address,
     });
     const { data: rawTotalSupply, isLoading: loadingRawTotalSupply } =
         useContractRead({
@@ -60,11 +64,14 @@ export const Component = ({
     useEffect(() => {
         let cancelled = false;
         const fetchData = async () => {
-            if (!kpiToken) return;
+            if (!kpiToken || !kpiTokenData) return;
             if (!cancelled) setDecodingKPITokenData(true);
             let decoded;
             try {
-                decoded = await decodeKPITokenData(publicClient, kpiToken.data);
+                decoded = await decodeKPITokenData(
+                    publicClient,
+                    kpiTokenData.data,
+                );
             } catch (error) {
                 console.warn("could not decode kpi token data", error);
             } finally {
@@ -95,6 +102,7 @@ export const Component = ({
             cancelled = true;
         };
     }, [
+        kpiTokenData,
         kpiToken,
         publicClient,
         tokenData?.name,
