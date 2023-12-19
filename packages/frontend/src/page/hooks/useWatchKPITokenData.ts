@@ -1,5 +1,6 @@
 import { KPI_TOKEN_ABI } from "@carrot-kpi/sdk";
 import { useEffect, useState } from "react";
+import type { Hex } from "viem";
 import { type Address, useContractReads } from "wagmi";
 
 interface WatchKPITokenDataParams {
@@ -8,7 +9,7 @@ interface WatchKPITokenDataParams {
 
 interface KPITokenData {
     finalized: boolean;
-    data: Address;
+    data: Hex;
 }
 
 export function useWatchKPITokenData(
@@ -37,7 +38,7 @@ export function useWatchKPITokenData(
         if (!readResults || !params?.kpiTokenAddress) return;
 
         setData({
-            data: readResults[0].result as Address,
+            data: readResults[0].result as Hex,
             finalized: readResults[1].result as boolean,
         });
     }, [params?.kpiTokenAddress, readResults]);

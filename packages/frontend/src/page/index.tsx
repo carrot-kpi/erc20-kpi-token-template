@@ -145,7 +145,7 @@ export const Component = ({
         );
     }, [chain, kpiToken]);
 
-    if (!kpiToken || !kpiToken) {
+    if (!kpiToken) {
         return (
             <div className="h-screen py-20 bg-orange text-black flex justify-center">
                 <Loader />
