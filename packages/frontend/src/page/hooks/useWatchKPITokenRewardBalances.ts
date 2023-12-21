@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { erc20ABI, useContractReads } from "wagmi";
 import type { Address } from "viem";
 import type { RewardData } from "../types";
-import { useWagmiPassiveHook } from "./useWagmiPassiveHook";
+import { useWagmiPassiveHook } from "@carrot-kpi/react";
 
 export const useWatchKPITokenRewardBalances = (
     kpiTokenAddress?: Address,

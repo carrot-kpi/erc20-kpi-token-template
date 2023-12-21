@@ -1,8 +1,8 @@
+import { useWagmiPassiveHook } from "@carrot-kpi/react";
 import { KPI_TOKEN_ABI } from "@carrot-kpi/sdk";
 import { useEffect, useState } from "react";
 import type { Hex } from "viem";
 import { type Address, useContractReads } from "wagmi";
-import { useWagmiPassiveHook } from "./useWagmiPassiveHook";
 
 interface WatchKPITokenDataParams {
     kpiTokenAddress?: Address;
