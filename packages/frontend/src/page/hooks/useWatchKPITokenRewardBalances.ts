@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { erc20ABI, useContractReads } from "wagmi";
 import type { Address } from "viem";
 import type { RewardData } from "../types";
+import { useWagmiPassiveHook } from "@carrot-kpi/react";
 
 export const useWatchKPITokenRewardBalances = (
     kpiTokenAddress?: Address,
@@ -10,20 +11,23 @@ export const useWatchKPITokenRewardBalances = (
 ) => {
     const [balances, setBalances] = useState<Amount<Token>[]>([]);
 
-    const { data: rawBalances, isLoading: loading } = useContractReads({
-        contracts:
-            kpiTokenAddress &&
-            rewards &&
-            rewards.map((reward) => {
-                return {
-                    address: reward.amount.currency.address,
-                    abi: erc20ABI,
-                    functionName: "balanceOf",
-                    args: [kpiTokenAddress],
-                };
-            }),
-        watch: true,
-        enabled: !!(rewards && kpiTokenAddress),
+    const { data: rawBalances, isLoading: loading } = useWagmiPassiveHook({
+        hook: useContractReads,
+        params: {
+            contracts:
+                kpiTokenAddress &&
+                rewards &&
+                rewards.map((reward) => {
+                    return {
+                        address: reward.amount.currency.address,
+                        abi: erc20ABI,
+                        functionName: "balanceOf",
+                        args: [kpiTokenAddress],
+                    };
+                }),
+            enabled: !!(rewards && kpiTokenAddress),
+            watch: true,
+        },
     });
 
     useEffect(() => {
