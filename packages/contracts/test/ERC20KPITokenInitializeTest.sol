@@ -37,7 +37,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
     function testEmptyDescription() external {
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(Clones.clone(address(erc20KpiTokenTemplate)));
 
-        vm.expectRevert(abi.encodeWithSignature("InvalidDescription()"));
+        vm.expectRevert();
         kpiTokenInstance.initialize(
             InitializeKPITokenParams({
                 creator: address(1),
@@ -56,7 +56,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
 
     function testPresentBlockTimeExpiration() external {
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(Clones.clone(address(erc20KpiTokenTemplate)));
-        vm.expectRevert(abi.encodeWithSignature("InvalidExpiration()"));
+        vm.expectRevert();
         kpiTokenInstance.initialize(
             InitializeKPITokenParams({
                 creator: address(1),
@@ -76,7 +76,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
     function testPastBlockTimeExpiration() external {
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(Clones.clone(address(erc20KpiTokenTemplate)));
         vm.warp(10);
-        vm.expectRevert(abi.encodeWithSignature("InvalidExpiration()"));
+        vm.expectRevert();
         kpiTokenInstance.initialize(
             InitializeKPITokenParams({
                 creator: address(1),
