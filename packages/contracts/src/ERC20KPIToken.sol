@@ -5,6 +5,7 @@ import {IERC20} from "oz/token/ERC20/IERC20.sol";
 import {SafeERC20} from "oz/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuardUpgradeable} from "oz-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import {IOraclesManager} from "carrot/interfaces/IOraclesManager.sol";
+import {BaseKPIToken} from "carrot/presets/kpi-tokens/BaseKPIToken.sol";
 import {Template, IBaseTemplatesManager} from "carrot/interfaces/IBaseTemplatesManager.sol";
 import {
     IERC20KPIToken,
@@ -32,7 +33,7 @@ import {TokenAmount, InitializeKPITokenParams} from "carrot/commons/Types.sol";
 /// multiple detached resolution or all-in-one reaching of goals (explained more in
 /// detail later).
 /// @author Federico Luzzi - <federico.luzzi@carrot-labs.xyz>
-contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgradeable {
+contract ERC20KPIToken is BaseKPIToken, ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgradeable {
     using SafeERC20 for IERC20;
 
     uint256 internal constant INVALID_ANSWER = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
@@ -43,15 +44,8 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
 
     bool internal allOrNone;
     uint16 internal toBeFinalized;
-    address public owner;
     uint8 internal oraclesAmount;
     uint8 internal collateralsAmount;
-    address internal kpiTokensManager;
-    uint128 internal kpiTokenTemplateVersion;
-    uint256 internal kpiTokenTemplateId;
-    string public description;
-    uint256 public expiration;
-    uint256 public creationTimestamp;
     uint256 internal initialSupply;
     uint256 internal totalWeight;
     mapping(address => FinalizableOracleWithoutAddress) internal finalizableOracleByAddress;
@@ -61,15 +55,12 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     mapping(address => uint256) internal registeredBurn;
 
     error InvalidFee();
-    error Forbidden();
     error NotInitialized();
     error InvalidCollateral();
     error InvalidFeeReceiver();
     error InvalidOraclesManager();
     error InvalidOracleBounds();
     error InvalidOracleWeights();
-    error InvalidExpiration();
-    error InvalidDescription();
     error TooManyCollaterals();
     error TooManyOracles();
     error InvalidName();
@@ -188,9 +179,6 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
         uint256 _expiration,
         bytes memory _data
     ) internal onlyInitializing {
-        if (bytes(_description).length == 0) revert InvalidDescription();
-        if (_expiration <= block.timestamp) revert InvalidExpiration();
-
         (, string memory _erc20Name, string memory _erc20Symbol, uint256 _erc20Supply) =
             abi.decode(_data, (Collateral[], string, string, uint256));
 
@@ -198,18 +186,14 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
         if (bytes(_erc20Symbol).length == 0) revert InvalidSymbol();
         if (_erc20Supply == 0) revert InvalidTotalSupply();
 
+        __BaseKPIToken_init(
+            _creator, _description, _expiration, _kpiTokensManager, _kpiTokenTemplateId, _kpiTokenTemplateVersion
+        );
         __ReentrancyGuard_init();
         __ERC20_init(_erc20Name, _erc20Symbol);
         _mint(_creator, _erc20Supply);
 
         initialSupply = _erc20Supply;
-        owner = _creator;
-        description = _description;
-        expiration = _expiration;
-        creationTimestamp = block.timestamp;
-        kpiTokensManager = _kpiTokensManager;
-        kpiTokenTemplateId = _kpiTokenTemplateId;
-        kpiTokenTemplateVersion = _kpiTokenTemplateVersion;
     }
 
     /// @dev Utility function used to collect collaterals and fees from the KPI token
@@ -314,18 +298,6 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
             revert Forbidden();
         }
         return _finalizableOracle;
-    }
-
-    /// @dev Transfers ownership of the KPI token. The owner is the one that has a claim
-    /// over the unused, leftover collateral on finalization.
-    /// @param _newOwner The new owner.
-    // TODO: add tests
-    function transferOwnership(address _newOwner) external override {
-        if (_newOwner == address(0)) revert ZeroAddressOwner();
-        address _owner = owner;
-        if (msg.sender != _owner) revert Forbidden();
-        owner = _newOwner;
-        emit OwnershipTransferred(_owner, _newOwner);
     }
 
     /// @dev Used by oracles linked to the KPI token to communicate their finalization.
@@ -481,7 +453,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     /// @param _receiver The address to which the recovered ERC20 tokens (if any) will be sent.
     function recoverERC20(address _token, address _receiver) external override {
         if (_receiver == address(0)) revert ZeroAddressReceiver();
-        if (msg.sender != owner) revert Forbidden();
+        if (msg.sender != internalOwner) revert Forbidden();
         bool _expired = _isExpired();
         CollateralWithoutToken storage _collateral = collateral[_token];
         if (_collateral.amount > 0) {
@@ -514,7 +486,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     function redeem(bytes calldata _data) external override {
         address _receiver = abi.decode(_data, (address));
         if (_receiver == address(0)) revert ZeroAddressReceiver();
-        if (!_isFinalized() && block.timestamp < expiration) revert Forbidden();
+        if (!_isFinalized() && block.timestamp < internalExpiration) revert Forbidden();
         uint256 _kpiTokenBalance = balanceOf(msg.sender);
         if (_kpiTokenBalance == 0) revert Forbidden();
         _burn(msg.sender, _kpiTokenBalance);
@@ -540,7 +512,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     /// by the KPI token resolution must be explicitly requested by the user through
     /// the `redeemCollateral` function.
     function registerRedemption() external override {
-        if (!_isFinalized() && block.timestamp < expiration) revert Forbidden();
+        if (!_isFinalized() && block.timestamp < internalExpiration) revert Forbidden();
         uint256 _kpiTokenBalance = balanceOf(msg.sender);
         if (_kpiTokenBalance == 0) revert Forbidden();
         _burn(msg.sender, _kpiTokenBalance);
@@ -555,7 +527,7 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     function redeemCollateral(address _token, address _receiver) external override {
         if (_token == address(0)) revert ZeroAddressToken();
         if (_receiver == address(0)) revert ZeroAddressReceiver();
-        if (!_isFinalized() && block.timestamp < expiration) revert Forbidden();
+        if (!_isFinalized() && block.timestamp < internalExpiration) revert Forbidden();
         uint256 _burned = registeredBurn[msg.sender];
         if (_burned == 0) revert Forbidden();
         CollateralWithoutToken storage _collateral = collateral[_token];
@@ -590,13 +562,13 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
     /// considered expired when not finalized before the expiration date comes.
     /// @return A bool describing whether the token is finalized or not.
     function _isExpired() internal view returns (bool) {
-        return !_isFinalized() && expiration <= block.timestamp;
+        return !_isFinalized() && internalExpiration <= block.timestamp;
     }
 
     /// @dev View function to check if the KPI token is initialized.
     /// @return A bool describing whether the token is initialized or not.
     function _isInitialized() internal view returns (bool) {
-        return owner != address(0);
+        return internalOwner != address(0);
     }
 
     /// @dev View function to query all the oracles associated with the KPI token at once.
@@ -637,11 +609,5 @@ contract ERC20KPIToken is ERC20Upgradeable, IERC20KPIToken, ReentrancyGuardUpgra
             });
         }
         return abi.encode(_collaterals, _finalizableOracles, allOrNone, initialSupply);
-    }
-
-    /// @dev View function returning info about the template used to instantiate this KPI token.
-    /// @return The template struct.
-    function template() external view override returns (Template memory) {
-        return IBaseTemplatesManager(kpiTokensManager).template(kpiTokenTemplateId, kpiTokenTemplateVersion);
     }
 }
