@@ -1,8 +1,8 @@
-pragma solidity 0.8.21;
+pragma solidity 0.8.23;
 
 import {BaseTestSetup} from "../commons/BaseTestSetup.sol";
 import {ERC20KPIToken} from "../../src/ERC20KPIToken.sol";
-import {IERC20KPIToken, OracleData, Collateral, FinalizableOracle} from "../../src/interfaces/IERC20KPIToken.sol";
+import {IERC20KPIToken, OracleData, Reward, FinalizableOracle} from "../../src/interfaces/IERC20KPIToken.sol";
 
 /// SPDX-License-Identifier: GPL-3.0-or-later
 /// @title ERC20 KPI token finalize test
@@ -10,9 +10,9 @@ import {IERC20KPIToken, OracleData, Collateral, FinalizableOracle} from "../../s
 /// @author Federico Luzzi - <federico.luzzi@carrot-labs.xyz>
 contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
     function testOverReachedAndRelationshipSingleOracle() external {
-        Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
+        Reward[] memory _rewards = new Reward[](1);
+        _rewards[0] = Reward({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -44,9 +44,9 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
     }
 
     function testOverReachedAndRelationshipSingleOracleExpired() external {
-        Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
+        Reward[] memory _rewards = new Reward[](1);
+        _rewards[0] = Reward({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -82,9 +82,9 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
     }
 
     function testOverReachedAndRelationshipMultipleOracle() external {
-        Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
+        Reward[] memory _rewards = new Reward[](1);
+        _rewards[0] = Reward({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
@@ -117,9 +117,9 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
     }
 
     function testOverReachedAndRelationshipMultipleOracleExpired() external {
-        Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
+        Reward[] memory _rewards = new Reward[](1);
+        _rewards[0] = Reward({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
@@ -162,9 +162,9 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
     }
 
     function testOverReachedOrRelationshipSingleOracle() external {
-        Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
+        Reward[] memory _rewards = new Reward[](1);
+        _rewards[0] = Reward({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -196,9 +196,9 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
     }
 
     function testOverReachedOrRelationshipSingleOracleExpired() external {
-        Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
+        Reward[] memory _rewards = new Reward[](1);
+        _rewards[0] = Reward({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -233,9 +233,9 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
     }
 
     function testOverReachedOrRelationshipMultiOracleExpiredExpired() external {
-        Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
+        Reward[] memory _rewards = new Reward[](1);
+        _rewards[0] = Reward({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
@@ -271,9 +271,9 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
     }
 
     function testOverReachedOrRelationshipMultipleOracle() external {
-        Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
+        Reward[] memory _rewards = new Reward[](1);
+        _rewards[0] = Reward({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
@@ -307,9 +307,9 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
     }
 
     function testOverReachedOrRelationshipMultipleOracleExpired() external {
-        Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 50 ether, minimumPayout: 10 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
+        Reward[] memory _rewards = new Reward[](1);
+        _rewards[0] = Reward({token: address(firstErc20), amount: 50 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
@@ -343,11 +343,11 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 10 ether);
     }
 
-    function testOverReachedAndRelationshipSingleOracleMultiCollateral() external {
-        Collateral[] memory _collaterals = new Collateral[](2);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
-        _collaterals[1] = Collateral({token: address(secondErc20), amount: 35 ether, minimumPayout: 12.2 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
+    function testOverReachedAndRelationshipSingleOracleMultiReward() external {
+        Reward[] memory _rewards = new Reward[](2);
+        _rewards[0] = Reward({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        _rewards[1] = Reward({token: address(secondErc20), amount: 35 ether, minimumPayout: 12.2 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -383,11 +383,11 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(this)), 0);
     }
 
-    function testOverReachedAndRelationshipSingleOracleMultiCollateralExpired() external {
-        Collateral[] memory _collaterals = new Collateral[](2);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
-        _collaterals[1] = Collateral({token: address(secondErc20), amount: 35 ether, minimumPayout: 12.2 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
+    function testOverReachedAndRelationshipSingleOracleMultiRewardExpired() external {
+        Reward[] memory _rewards = new Reward[](2);
+        _rewards[0] = Reward({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        _rewards[1] = Reward({token: address(secondErc20), amount: 35 ether, minimumPayout: 12.2 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -426,11 +426,11 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(kpiTokenInstance)), 12.2 ether);
     }
 
-    function testOverReachedAndRelationshipMultipleOracleMultiCollateral() external {
-        Collateral[] memory _collaterals = new Collateral[](2);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
-        _collaterals[1] = Collateral({token: address(secondErc20), amount: 20.23 ether, minimumPayout: 18.9 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
+    function testOverReachedAndRelationshipMultipleOracleMultiReward() external {
+        Reward[] memory _rewards = new Reward[](2);
+        _rewards[0] = Reward({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        _rewards[1] = Reward({token: address(secondErc20), amount: 20.23 ether, minimumPayout: 18.9 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
@@ -467,11 +467,11 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(this)), 0);
     }
 
-    function testOverReachedAndRelationshipMultipleOracleMultiCollateralExpired() external {
-        Collateral[] memory _collaterals = new Collateral[](2);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
-        _collaterals[1] = Collateral({token: address(secondErc20), amount: 20.23 ether, minimumPayout: 18.9 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
+    function testOverReachedAndRelationshipMultipleOracleMultiRewardExpired() external {
+        Reward[] memory _rewards = new Reward[](2);
+        _rewards[0] = Reward({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        _rewards[1] = Reward({token: address(secondErc20), amount: 20.23 ether, minimumPayout: 18.9 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
@@ -511,11 +511,11 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(kpiTokenInstance)), 18.9 ether);
     }
 
-    function testOverReachedOrRelationshipSingleOracleMultiCollateral() external {
-        Collateral[] memory _collaterals = new Collateral[](2);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
-        _collaterals[1] = Collateral({token: address(secondErc20), amount: 29 ether, minimumPayout: 28 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
+    function testOverReachedOrRelationshipSingleOracleMultiReward() external {
+        Reward[] memory _rewards = new Reward[](2);
+        _rewards[0] = Reward({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        _rewards[1] = Reward({token: address(secondErc20), amount: 29 ether, minimumPayout: 28 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -551,11 +551,11 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(this)), 0);
     }
 
-    function testOverReachedOrRelationshipSingleOracleMultiCollateralExpired() external {
-        Collateral[] memory _collaterals = new Collateral[](2);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
-        _collaterals[1] = Collateral({token: address(secondErc20), amount: 29 ether, minimumPayout: 28 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
+    function testOverReachedOrRelationshipSingleOracleMultiRewardExpired() external {
+        Reward[] memory _rewards = new Reward[](2);
+        _rewards[0] = Reward({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        _rewards[1] = Reward({token: address(secondErc20), amount: 29 ether, minimumPayout: 28 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -594,11 +594,11 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(kpiTokenInstance)), 28 ether);
     }
 
-    function testOverReachedOrRelationshipMultipleOracleMultiCollateral() external {
-        Collateral[] memory _collaterals = new Collateral[](2);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
-        _collaterals[1] = Collateral({token: address(secondErc20), amount: 12.65 ether, minimumPayout: 10 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
+    function testOverReachedOrRelationshipMultipleOracleMultiReward() external {
+        Reward[] memory _rewards = new Reward[](2);
+        _rewards[0] = Reward({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        _rewards[1] = Reward({token: address(secondErc20), amount: 12.65 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
@@ -635,11 +635,11 @@ contract ERC20KPITokenOverReachedRecoverTest is BaseTestSetup {
         assertEq(secondErc20.balanceOf(address(this)), 0);
     }
 
-    function testOverReachedOrRelationshipMultipleOracleMultiCollateralExpired() external {
-        Collateral[] memory _collaterals = new Collateral[](2);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
-        _collaterals[1] = Collateral({token: address(secondErc20), amount: 12.65 ether, minimumPayout: 10 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
+    function testOverReachedOrRelationshipMultipleOracleMultiRewardExpired() external {
+        Reward[] memory _rewards = new Reward[](2);
+        _rewards[0] = Reward({token: address(firstErc20), amount: 20 ether, minimumPayout: 10 ether});
+        _rewards[1] = Reward({token: address(secondErc20), amount: 12.65 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});

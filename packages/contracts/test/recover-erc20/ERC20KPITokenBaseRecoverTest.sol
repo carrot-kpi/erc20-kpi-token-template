@@ -1,8 +1,8 @@
-pragma solidity 0.8.21;
+pragma solidity 0.8.23;
 
 import {BaseTestSetup} from "tests/commons/BaseTestSetup.sol";
 import {ERC20KPIToken} from "../../src/ERC20KPIToken.sol";
-import {IERC20KPIToken, OracleData, Collateral, FinalizableOracle} from "../../src/interfaces/IERC20KPIToken.sol";
+import {IERC20KPIToken, OracleData, Reward, FinalizableOracle} from "../../src/interfaces/IERC20KPIToken.sol";
 import {ERC20Mintable} from "src/Dependencies.sol";
 import {Clones} from "oz/proxy/Clones.sol";
 
@@ -24,18 +24,18 @@ contract ERC20KPITokenBaseRecoverTest is BaseTestSetup {
         kpiTokenInstance.recoverERC20(address(33333), address(0));
     }
 
-    function testNothingToRecoverCollateral() external {
-        IERC20KPIToken kpiTokenInstance = createKpiToken("a");
+    function testNothingToRecoverReward() external {
+        IERC20KPIToken kpiTokenInstance = createKpiToken("a", false);
 
-        (Collateral[] memory _collaterals,,,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
+        (Reward[] memory _rewards,,,) =
+            abi.decode(kpiTokenInstance.data(), (Reward[], FinalizableOracle[], bool, uint256));
 
         vm.expectRevert(abi.encodeWithSignature("NothingToRecover()"));
-        kpiTokenInstance.recoverERC20(_collaterals[0].token, address(1));
+        kpiTokenInstance.recoverERC20(_rewards[0].token, address(1));
     }
 
     function testNothingToRecoverToken() external {
-        IERC20KPIToken kpiTokenInstance = createKpiToken("a");
+        IERC20KPIToken kpiTokenInstance = createKpiToken("a", false);
 
         ERC20Mintable token = new ERC20Mintable("Token 1", "TKN1", 18);
 
@@ -44,7 +44,18 @@ contract ERC20KPITokenBaseRecoverTest is BaseTestSetup {
     }
 
     function testRecoverExternalToken() external {
-        IERC20KPIToken kpiTokenInstance = createKpiToken("a");
+        IERC20KPIToken kpiTokenInstance = createKpiToken("a", false);
+
+        ERC20Mintable token = new ERC20Mintable("Token 1", "TKN1", 18);
+        token.mint(address(kpiTokenInstance), 2 ether);
+
+        kpiTokenInstance.recoverERC20(address(token), address(1));
+
+        assertEq(token.balanceOf(address(1)), 2 ether);
+    }
+
+    function testRecoverExternalTokenJustInTimeFunding() external {
+        IERC20KPIToken kpiTokenInstance = createKpiToken("a", true);
 
         ERC20Mintable token = new ERC20Mintable("Token 1", "TKN1", 18);
         token.mint(address(kpiTokenInstance), 2 ether);

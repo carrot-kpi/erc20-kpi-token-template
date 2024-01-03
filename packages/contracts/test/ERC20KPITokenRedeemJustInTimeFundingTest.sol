@@ -1,48 +1,24 @@
 pragma solidity 0.8.23;
 
 import {BaseTestSetup} from "tests/commons/BaseTestSetup.sol";
-import {ERC20KPIToken} from "../src/ERC20KPIToken.sol";
+import {ERC20KPIToken, JIT_FUNDING_FEATURE_ID} from "../src/ERC20KPIToken.sol";
 import {Clones} from "oz/proxy/Clones.sol";
 import {IERC20KPIToken, OracleData, Reward, FinalizableOracle} from "../src/interfaces/IERC20KPIToken.sol";
+import {IBaseTemplatesManager} from "carrot/interfaces/IBaseTemplatesManager.sol";
 
 /// SPDX-License-Identifier: GPL-3.0-or-later
-/// @title ERC20 KPI token redeem test
-/// @dev Tests redemption in ERC20 KPI token.
+/// @title ERC20 KPI token redeem test with the just in time
+/// funding feature turned on.
+/// @dev Tests redemption in ERC20 KPI token with just in time
+/// funding feature turned on.
 /// @author Federico Luzzi - <federico.luzzi@carrot-labs.xyz>
-contract ERC20KPITokenRedeemTest is BaseTestSetup {
-    function testZeroAddressReceiver() external {
-        ERC20KPIToken kpiTokenInstance = ERC20KPIToken(Clones.clone(address(erc20KpiTokenTemplate)));
-        vm.expectRevert(abi.encodeWithSignature("ZeroAddressReceiver()"));
-        kpiTokenInstance.redeem(abi.encode(address(0)));
-    }
-
-    function testNotInitialized() external {
-        ERC20KPIToken kpiTokenInstance = ERC20KPIToken(Clones.clone(address(erc20KpiTokenTemplate)));
-        vm.expectRevert(abi.encodeWithSignature("Forbidden()"));
-        kpiTokenInstance.redeem(abi.encode(address(this)));
-    }
-
-    function testNotFinalized() external {
-        IERC20KPIToken kpiTokenInstance = createKpiToken("a", false);
-        vm.expectRevert(abi.encodeWithSignature("Forbidden()"));
-        kpiTokenInstance.redeem(abi.encode(address(this)));
-    }
-
-    function testNoBalance() external {
-        IERC20KPIToken kpiTokenInstance = createKpiToken("a", false);
-        vm.prank(kpiTokenInstance.oracles()[0]);
-        kpiTokenInstance.finalize(0);
-        vm.expectRevert(abi.encodeWithSignature("Forbidden()"));
-        vm.prank(address(12345));
-        kpiTokenInstance.redeem(abi.encode(address(this)));
-    }
-
+contract ERC20KPITokenRedeemJustInTimeFundingTest is BaseTestSetup {
     function testGoalNotReachedSingleOracle() external {
         address holder = address(123321);
 
         Reward[] memory _rewards = new Reward[](1);
         _rewards[0] = Reward({token: address(firstErc20), amount: 110 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, true);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -54,7 +30,10 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
         );
         firstErc20.approve(_predictedKpiTokenAddress, 111.1 ether);
 
+        IBaseTemplatesManager(kpiTokensManager).enableTemplateFeatureFor(1, JIT_FUNDING_FEATURE_ID, address(this));
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
+        assertEq(firstErc20.balanceOf(feeReceiver), 1.1 ether);
+        assertEq(firstErc20.balanceOf(_predictedKpiTokenAddress), 0 ether);
 
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(_predictedKpiTokenAddress);
 
@@ -82,7 +61,7 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
 
         Reward[] memory _rewards = new Reward[](1);
         _rewards[0] = Reward({token: address(firstErc20), amount: 110 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, true);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -94,8 +73,11 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
         );
         firstErc20.approve(_predictedKpiTokenAddress, 111.1 ether);
 
+        IBaseTemplatesManager(kpiTokensManager).enableTemplateFeatureFor(1, JIT_FUNDING_FEATURE_ID, address(this));
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
+        assertEq(firstErc20.balanceOf(feeReceiver), 1.1 ether);
+        assertEq(firstErc20.balanceOf(_predictedKpiTokenAddress), 0 ether);
 
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(_predictedKpiTokenAddress);
 
@@ -119,7 +101,7 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
 
         Reward[] memory _rewards = new Reward[](1);
         _rewards[0] = Reward({token: address(firstErc20), amount: 110 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, true);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -131,7 +113,10 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
         );
         firstErc20.approve(_predictedKpiTokenAddress, 111.1 ether);
 
+        IBaseTemplatesManager(kpiTokensManager).enableTemplateFeatureFor(1, JIT_FUNDING_FEATURE_ID, address(this));
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
+        assertEq(firstErc20.balanceOf(feeReceiver), 1.1 ether);
+        assertEq(firstErc20.balanceOf(_predictedKpiTokenAddress), 0 ether);
 
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(_predictedKpiTokenAddress);
 
@@ -167,7 +152,7 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
 
         Reward[] memory _rewards = new Reward[](1);
         _rewards[0] = Reward({token: address(firstErc20), amount: 110 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, true);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -179,7 +164,10 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
         );
         firstErc20.approve(_predictedKpiTokenAddress, 111.1 ether);
 
+        IBaseTemplatesManager(kpiTokensManager).enableTemplateFeatureFor(1, JIT_FUNDING_FEATURE_ID, address(this));
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
+        assertEq(firstErc20.balanceOf(feeReceiver), 1.1 ether);
+        assertEq(firstErc20.balanceOf(_predictedKpiTokenAddress), 0 ether);
 
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(_predictedKpiTokenAddress);
 
@@ -216,7 +204,7 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
 
         Reward[] memory _rewards = new Reward[](1);
         _rewards[0] = Reward({token: address(firstErc20), amount: 110 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, true);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -228,8 +216,11 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
         );
         firstErc20.approve(_predictedKpiTokenAddress, 111.1 ether);
 
+        IBaseTemplatesManager(kpiTokensManager).enableTemplateFeatureFor(1, JIT_FUNDING_FEATURE_ID, address(this));
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
+        assertEq(firstErc20.balanceOf(feeReceiver), 1.1 ether);
+        assertEq(firstErc20.balanceOf(_predictedKpiTokenAddress), 0 ether);
 
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(_predictedKpiTokenAddress);
 
@@ -262,7 +253,7 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
 
         Reward[] memory _rewards = new Reward[](1);
         _rewards[0] = Reward({token: address(firstErc20), amount: 22 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, true);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -274,7 +265,10 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
         );
         firstErc20.approve(_predictedKpiTokenAddress, 22.22 ether);
 
+        IBaseTemplatesManager(kpiTokensManager).enableTemplateFeatureFor(1, JIT_FUNDING_FEATURE_ID, address(this));
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
+        assertEq(firstErc20.balanceOf(feeReceiver), 0.22 ether);
+        assertEq(firstErc20.balanceOf(_predictedKpiTokenAddress), 0 ether);
 
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(_predictedKpiTokenAddress);
 
@@ -291,7 +285,7 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
 
         assertEq(onChainRewards.length, 1);
         assertEq(onChainRewards[0].amount, 7.333326 ether);
-        assertEq(firstErc20.balanceOf(address(this)), 0);
+        assertEq(firstErc20.balanceOf(address(this)), 22 ether);
 
         assertEq(firstErc20.balanceOf(holder), 0 ether);
         vm.prank(holder);
@@ -301,6 +295,7 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
 
         assertEq(onChainRewards.length, 1);
         assertEq(onChainRewards[0].amount, 7.25999274 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 21.92666674 ether);
 
         assertEq(kpiTokenInstance.balanceOf(holder), 0);
         assertEq(firstErc20.balanceOf(holder), 0.07333326 ether);
@@ -311,7 +306,7 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
 
         Reward[] memory _rewards = new Reward[](1);
         _rewards[0] = Reward({token: address(firstErc20), amount: 22 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, true);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -323,8 +318,11 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
         );
         firstErc20.approve(_predictedKpiTokenAddress, 22.22 ether);
 
+        IBaseTemplatesManager(kpiTokensManager).enableTemplateFeatureFor(1, JIT_FUNDING_FEATURE_ID, address(this));
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
+        assertEq(firstErc20.balanceOf(feeReceiver), 0.22 ether);
+        assertEq(firstErc20.balanceOf(_predictedKpiTokenAddress), 0 ether);
 
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(_predictedKpiTokenAddress);
 
@@ -343,7 +341,7 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
 
         assertEq(onChainRewards.length, 1);
         assertEq(onChainRewards[0].amount, 22 ether);
-        assertEq(firstErc20.balanceOf(address(this)), 0);
+        assertEq(firstErc20.balanceOf(address(this)), 22 ether);
 
         assertEq(firstErc20.balanceOf(holder), 0 ether);
         vm.prank(holder);
@@ -359,7 +357,7 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
 
         Reward[] memory _rewards = new Reward[](1);
         _rewards[0] = Reward({token: address(firstErc20), amount: 110 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, true);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -371,7 +369,10 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
         );
         firstErc20.approve(_predictedKpiTokenAddress, 111.1 ether);
 
+        IBaseTemplatesManager(kpiTokensManager).enableTemplateFeatureFor(1, JIT_FUNDING_FEATURE_ID, address(this));
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
+        assertEq(firstErc20.balanceOf(feeReceiver), 1.1 ether);
+        assertEq(firstErc20.balanceOf(_predictedKpiTokenAddress), 0 ether);
 
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(_predictedKpiTokenAddress);
 
@@ -408,7 +409,7 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
 
         Reward[] memory _rewards = new Reward[](1);
         _rewards[0] = Reward({token: address(firstErc20), amount: 110 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, true);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -420,8 +421,11 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
         );
         firstErc20.approve(_predictedKpiTokenAddress, 111.1 ether);
 
+        IBaseTemplatesManager(kpiTokensManager).enableTemplateFeatureFor(1, JIT_FUNDING_FEATURE_ID, address(this));
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
+        assertEq(firstErc20.balanceOf(feeReceiver), 1.1 ether);
+        assertEq(firstErc20.balanceOf(_predictedKpiTokenAddress), 0 ether);
 
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(_predictedKpiTokenAddress);
 
@@ -454,7 +458,7 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
 
         Reward[] memory _rewards = new Reward[](1);
         _rewards[0] = Reward({token: address(firstErc20), amount: 110 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, true);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -466,7 +470,10 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
         );
         firstErc20.approve(_predictedKpiTokenAddress, 111.1 ether);
 
+        IBaseTemplatesManager(kpiTokensManager).enableTemplateFeatureFor(1, JIT_FUNDING_FEATURE_ID, address(this));
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
+        assertEq(firstErc20.balanceOf(feeReceiver), 1.1 ether);
+        assertEq(firstErc20.balanceOf(_predictedKpiTokenAddress), 0 ether);
 
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(_predictedKpiTokenAddress);
 
@@ -505,7 +512,7 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
 
         Reward[] memory _rewards = new Reward[](1);
         _rewards[0] = Reward({token: address(firstErc20), amount: 110 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, true);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -517,8 +524,11 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
         );
         firstErc20.approve(_predictedKpiTokenAddress, 111.1 ether);
 
+        IBaseTemplatesManager(kpiTokensManager).enableTemplateFeatureFor(1, JIT_FUNDING_FEATURE_ID, address(this));
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
+        assertEq(firstErc20.balanceOf(feeReceiver), 1.1 ether);
+        assertEq(firstErc20.balanceOf(_predictedKpiTokenAddress), 0 ether);
 
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(_predictedKpiTokenAddress);
 
@@ -553,7 +563,7 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
 
         Reward[] memory _rewards = new Reward[](1);
         _rewards[0] = Reward({token: address(firstErc20), amount: 110 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, true);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -565,7 +575,10 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
         );
         firstErc20.approve(_predictedKpiTokenAddress, 111.1 ether);
 
+        IBaseTemplatesManager(kpiTokensManager).enableTemplateFeatureFor(1, JIT_FUNDING_FEATURE_ID, address(this));
         factory.createToken(1, "a", block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData);
+        assertEq(firstErc20.balanceOf(feeReceiver), 1.1 ether);
+        assertEq(firstErc20.balanceOf(_predictedKpiTokenAddress), 0 ether);
 
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(_predictedKpiTokenAddress);
 
@@ -584,19 +597,21 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
 
         assertEq(onChainRewards.length, 1);
         assertEq(onChainRewards[0].amount, 36.66663 ether);
-        assertEq(firstErc20.balanceOf(address(this)), 0);
+        assertEq(firstErc20.balanceOf(address(this)), 110 ether);
 
         vm.prank(holder1);
         kpiTokenInstance.redeem(abi.encode(holder1));
         assertEq(kpiTokenInstance.balanceOf(holder1), 0);
         assertEq(kpiTokenInstance.totalSupply(), 99 ether);
         assertEq(firstErc20.balanceOf(holder1), 0.3666663 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 109.6333337 ether);
 
         vm.prank(holder2);
         kpiTokenInstance.redeem(abi.encode(holder2));
         assertEq(kpiTokenInstance.balanceOf(holder2), 0);
         assertEq(kpiTokenInstance.totalSupply(), 89 ether);
         assertEq(firstErc20.balanceOf(holder2), 3.666663 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 105.9666707 ether);
     }
 
     function testIntermediateSingleOracleMultipleParticipantsExpired() external {
@@ -605,7 +620,7 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
 
         Reward[] memory _rewards = new Reward[](1);
         _rewards[0] = Reward({token: address(firstErc20), amount: 110 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, true);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -617,8 +632,11 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
         );
         firstErc20.approve(_predictedKpiTokenAddress, 111.1 ether);
 
+        IBaseTemplatesManager(kpiTokensManager).enableTemplateFeatureFor(1, JIT_FUNDING_FEATURE_ID, address(this));
         uint256 _expiration = block.timestamp + 60;
         factory.createToken(1, "a", _expiration, _erc20KpiTokenInitializationData, _oraclesInitializationData);
+        assertEq(firstErc20.balanceOf(feeReceiver), 1.1 ether);
+        assertEq(firstErc20.balanceOf(_predictedKpiTokenAddress), 0 ether);
 
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(_predictedKpiTokenAddress);
 
@@ -626,7 +644,6 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
         kpiTokenInstance.transfer(holder2, 10 ether);
         assertEq(kpiTokenInstance.balanceOf(holder1), 1 ether);
         assertEq(kpiTokenInstance.balanceOf(holder2), 10 ether);
-        assertEq(kpiTokenInstance.balanceOf(address(this)), 89 ether);
 
         vm.warp(_expiration);
 
@@ -634,19 +651,21 @@ contract ERC20KPITokenRedeemTest is BaseTestSetup {
         vm.prank(oracle);
         kpiTokenInstance.finalize(11);
 
-        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 110 ether);
-        assertEq(firstErc20.balanceOf(address(this)), 0);
+        assertEq(firstErc20.balanceOf(address(kpiTokenInstance)), 0 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 110 ether);
 
         vm.prank(holder1);
         kpiTokenInstance.redeem(abi.encode(holder1));
         assertEq(kpiTokenInstance.balanceOf(holder1), 0);
         assertEq(kpiTokenInstance.totalSupply(), 99 ether);
         assertEq(firstErc20.balanceOf(holder1), 0 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 110 ether);
 
         vm.prank(holder2);
         kpiTokenInstance.redeem(abi.encode(holder2));
         assertEq(kpiTokenInstance.balanceOf(holder2), 0);
         assertEq(kpiTokenInstance.totalSupply(), 89 ether);
         assertEq(firstErc20.balanceOf(holder2), 0 ether);
+        assertEq(firstErc20.balanceOf(address(this)), 110 ether);
     }
 }

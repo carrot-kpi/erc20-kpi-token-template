@@ -1,10 +1,10 @@
-pragma solidity 0.8.21;
+pragma solidity 0.8.23;
 
 import {InitializeKPITokenParams} from "carrot/commons/Types.sol";
 import {BaseTestSetup} from "tests/commons/BaseTestSetup.sol";
 import {ERC20KPIToken} from "../src/ERC20KPIToken.sol";
 import {Clones} from "oz/proxy/Clones.sol";
-import {IERC20KPIToken, OracleData, Collateral, FinalizableOracle} from "../src/interfaces/IERC20KPIToken.sol";
+import {IERC20KPIToken, OracleData, Reward, FinalizableOracle} from "../src/interfaces/IERC20KPIToken.sol";
 
 /// SPDX-License-Identifier: GPL-3.0-or-later
 /// @title ERC20 KPI token initialize oracles test
@@ -19,7 +19,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
     ) internal returns (ERC20KPIToken) {
         ERC20KPIToken kpiTokenInstance = ERC20KPIToken(Clones.clone(address(erc20KpiTokenTemplate)));
 
-        Collateral[] memory collaterals = prepareCollateral(address(kpiTokenInstance));
+        Reward[] memory rewards = prepareReward(address(kpiTokenInstance));
         mockCalls(oracleData, oraclesManager);
 
         if (bytes(expectedErrorSignature).length > 0) {
@@ -36,7 +36,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(collaterals, "Token", "TKN", 100 ether),
+                kpiTokenData: abi.encode(rewards, "Token", "TKN", 100 ether, false),
                 oraclesData: oracleData
             })
         );
@@ -44,14 +44,14 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
         return (kpiTokenInstance);
     }
 
-    function prepareCollateral(address kpiTokenInstance) internal returns (Collateral[] memory) {
+    function prepareReward(address kpiTokenInstance) internal returns (Reward[] memory) {
         firstErc20.mint(address(this), 10.1 ether);
         firstErc20.approve(address(kpiTokenInstance), 10.1 ether);
 
-        Collateral[] memory collaterals = new Collateral[](1);
-        collaterals[0] = Collateral({token: address(firstErc20), amount: 10 ether, minimumPayout: 1 ether});
+        Reward[] memory rewards = new Reward[](1);
+        rewards[0] = Reward({token: address(firstErc20), amount: 10 ether, minimumPayout: 1 ether});
 
-        return collaterals;
+        return rewards;
     }
 
     function mockCalls(bytes memory oracleData, address oraclesManager) internal {
@@ -95,7 +95,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
         ERC20KPIToken kpiTokenInstance = initializeKpiToken(oraclesManager, abi.encode(oracleData, true), "", 0);
 
         (, FinalizableOracle[] memory onChainFinalizableOracles, bool andRelationship,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
+            abi.decode(kpiTokenInstance.data(), (Reward[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainFinalizableOracles.length, 1);
         FinalizableOracle memory finalizableOracle = onChainFinalizableOracles[0];
@@ -111,7 +111,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
         ERC20KPIToken kpiTokenInstance = initializeKpiToken(oraclesManager, abi.encode(oracleData, false), "", 0);
 
         (, FinalizableOracle[] memory onChainFinalizableOracles, bool andRelationship,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
+            abi.decode(kpiTokenInstance.data(), (Reward[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainFinalizableOracles.length, 1);
         FinalizableOracle memory finalizableOracle = onChainFinalizableOracles[0];
@@ -128,7 +128,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
         ERC20KPIToken kpiTokenInstance = initializeKpiToken(oraclesManager, abi.encode(oracleData, true), "", 0);
 
         (, FinalizableOracle[] memory onChainFinalizableOracles, bool andRelationship,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
+            abi.decode(kpiTokenInstance.data(), (Reward[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainFinalizableOracles.length, 2);
 
@@ -197,7 +197,7 @@ contract ERC20KPITokenInitializeOraclesTest is BaseTestSetup {
         ERC20KPIToken kpiTokenInstance = initializeKpiToken(oraclesManager, abi.encode(oracleData, false), "", 0);
 
         (, FinalizableOracle[] memory onChainFinalizableOracles, bool andRelationship,) =
-            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
+            abi.decode(kpiTokenInstance.data(), (Reward[], FinalizableOracle[], bool, uint256));
 
         assertEq(onChainFinalizableOracles.length, 2);
 

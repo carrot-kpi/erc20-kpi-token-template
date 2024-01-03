@@ -10,13 +10,13 @@ struct OracleData {
     bytes data;
 }
 
-struct Collateral {
+struct Reward {
     address token;
     uint256 amount;
     uint256 minimumPayout;
 }
 
-struct CollateralWithoutToken {
+struct RewardWithoutToken {
     uint256 amount;
     uint256 minimumPayout;
     uint256 postFinalizationAmount;
@@ -45,5 +45,5 @@ interface IERC20KPIToken is IKPIToken, IERC20 {
 
     function registerRedemption() external;
 
-    function redeemCollateral(address _token, address _receiver) external;
+    function redeemReward(address _token, address _receiver) external;
 }
