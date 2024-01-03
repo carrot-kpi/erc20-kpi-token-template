@@ -29,7 +29,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(rewards, "Token", "TKN", 100 ether),
+                kpiTokenData: abi.encode(rewards, "Token", "TKN", 100 ether, false),
                 oraclesData: abi.encode(uint256(1))
             })
         );
@@ -154,7 +154,7 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
                 kpiTokenTemplateVersion: 1,
                 description: "a",
                 expiration: block.timestamp + 60,
-                kpiTokenData: abi.encode(rewards, "Token", "TKN", 10 ether),
+                kpiTokenData: abi.encode(rewards, "Token", "TKN", 10 ether, false),
                 oraclesData: abi.encode(uint256(1))
             })
         );
