@@ -1,19 +1,21 @@
-pragma solidity 0.8.23;
+pragma solidity 0.8.21;
 
 import {BaseTestSetup} from "../../../commons/BaseTestSetup.sol";
 import {ERC20KPIToken} from "../../../../src/ERC20KPIToken.sol";
-import {IERC20KPIToken, OracleData, Reward, FinalizableOracle} from "../../../../src/interfaces/IERC20KPIToken.sol";
+import {
+    IERC20KPIToken, OracleData, Collateral, FinalizableOracle
+} from "../../../../src/interfaces/IERC20KPIToken.sol";
 
 /// SPDX-License-Identifier: GPL-3.0-or-later
 /// @title ERC20 KPI token finalize test
 /// @dev Tests finalization in ERC20 KPI token.
 /// @author Federico Luzzi - <federico.luzzi@carrot-labs.xyz>
-contract ERC20KPITokenIntermediateAnswerMultiRewardFinalizeTest2 is BaseTestSetup {
-    function testIntermediateAnswerAndRelationshipMultipleOraclesZeroMinimumPayoutMultiReward() external {
-        Reward[] memory _rewards = new Reward[](2);
-        _rewards[0] = Reward({token: address(firstErc20), amount: 2 ether, minimumPayout: 0});
-        _rewards[1] = Reward({token: address(secondErc20), amount: 4 ether, minimumPayout: 0});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
+contract ERC20KPITokenIntermediateAnswerMultiCollateralFinalizeTest2 is BaseTestSetup {
+    function testIntermediateAnswerAndRelationshipMultipleOraclesZeroMinimumPayoutMultiCollateral() external {
+        Collateral[] memory _collaterals = new Collateral[](2);
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 2 ether, minimumPayout: 0});
+        _collaterals[1] = Collateral({token: address(secondErc20), amount: 4 ether, minimumPayout: 0});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
@@ -41,16 +43,16 @@ contract ERC20KPITokenIntermediateAnswerMultiRewardFinalizeTest2 is BaseTestSetu
         vm.prank(oracle);
         kpiTokenInstance.finalize(750_000);
 
-        (Reward[] memory onChainRewards, FinalizableOracle[] memory onChainFinalizableOracles,,) =
-            abi.decode(kpiTokenInstance.data(), (Reward[], FinalizableOracle[], bool, uint256));
+        (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
-        assertEq(onChainRewards.length, 2);
-        assertEq(onChainRewards[0].token, _rewards[0].token);
-        assertEq(onChainRewards[0].amount, 1.75 ether);
-        assertEq(onChainRewards[0].minimumPayout, 0);
-        assertEq(onChainRewards[1].token, _rewards[1].token);
-        assertEq(onChainRewards[1].amount, 3.5 ether);
-        assertEq(onChainRewards[1].minimumPayout, 0);
+        assertEq(onChainCollaterals.length, 2);
+        assertEq(onChainCollaterals[0].token, _collaterals[0].token);
+        assertEq(onChainCollaterals[0].amount, 1.75 ether);
+        assertEq(onChainCollaterals[0].minimumPayout, 0);
+        assertEq(onChainCollaterals[1].token, _collaterals[1].token);
+        assertEq(onChainCollaterals[1].amount, 3.5 ether);
+        assertEq(onChainCollaterals[1].minimumPayout, 0);
 
         assertEq(onChainFinalizableOracles.length, 2);
         assertTrue(onChainFinalizableOracles[0].finalized);
@@ -61,11 +63,11 @@ contract ERC20KPITokenIntermediateAnswerMultiRewardFinalizeTest2 is BaseTestSetu
         assertEq(secondErc20.balanceOf(address(this)), 0);
     }
 
-    function testIntermediateAnswerAndRelationshipMultipleOraclesNonZeroMinimumPayoutMultiReward() external {
-        Reward[] memory _rewards = new Reward[](2);
-        _rewards[0] = Reward({token: address(firstErc20), amount: 2 ether, minimumPayout: 1 ether});
-        _rewards[1] = Reward({token: address(secondErc20), amount: 26 ether, minimumPayout: 10 ether});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_rewards, "Test", "TST", 100 ether, false);
+    function testIntermediateAnswerAndRelationshipMultipleOraclesNonZeroMinimumPayoutMultiCollateral() external {
+        Collateral[] memory _collaterals = new Collateral[](2);
+        _collaterals[0] = Collateral({token: address(firstErc20), amount: 2 ether, minimumPayout: 1 ether});
+        _collaterals[1] = Collateral({token: address(secondErc20), amount: 26 ether, minimumPayout: 10 ether});
+        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
 
         OracleData[] memory _oracleDatas = new OracleData[](2);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("1")});
@@ -93,16 +95,16 @@ contract ERC20KPITokenIntermediateAnswerMultiRewardFinalizeTest2 is BaseTestSetu
         vm.prank(oracle);
         kpiTokenInstance.finalize(696_969);
 
-        (Reward[] memory onChainRewards, FinalizableOracle[] memory onChainFinalizableOracles,,) =
-            abi.decode(kpiTokenInstance.data(), (Reward[], FinalizableOracle[], bool, uint256));
+        (Collateral[] memory onChainCollaterals, FinalizableOracle[] memory onChainFinalizableOracles,,) =
+            abi.decode(kpiTokenInstance.data(), (Collateral[], FinalizableOracle[], bool, uint256));
 
-        assertEq(onChainRewards.length, 2);
-        assertEq(onChainRewards[0].token, _rewards[0].token);
-        assertEq(onChainRewards[0].amount, 1.898989666666666667 ether);
-        assertEq(onChainRewards[0].minimumPayout, 1 ether);
-        assertEq(onChainRewards[1].token, _rewards[1].token);
-        assertEq(onChainRewards[1].amount, 24.383834666666666667 ether);
-        assertEq(onChainRewards[1].minimumPayout, 10 ether);
+        assertEq(onChainCollaterals.length, 2);
+        assertEq(onChainCollaterals[0].token, _collaterals[0].token);
+        assertEq(onChainCollaterals[0].amount, 1.898989666666666667 ether);
+        assertEq(onChainCollaterals[0].minimumPayout, 1 ether);
+        assertEq(onChainCollaterals[1].token, _collaterals[1].token);
+        assertEq(onChainCollaterals[1].amount, 24.383834666666666667 ether);
+        assertEq(onChainCollaterals[1].minimumPayout, 10 ether);
 
         assertEq(onChainFinalizableOracles.length, 2);
         assertTrue(onChainFinalizableOracles[0].finalized);
