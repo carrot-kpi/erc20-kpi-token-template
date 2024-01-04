@@ -1,13 +1,14 @@
-pragma solidity 0.8.21;
+pragma solidity 0.8.23;
 
 import {Test} from "forge-std/Test.sol";
 import {ERC20Mintable} from "src/Dependencies.sol";
-import {ERC20KPIToken} from "../../src/ERC20KPIToken.sol";
+import {ERC20KPIToken, JIT_FUNDING_FEATURE_ID} from "../../src/ERC20KPIToken.sol";
 import {KPITokensManager} from "carrot/KPITokensManager.sol";
 import {OraclesManager} from "carrot/OraclesManager.sol";
 import {KPITokensFactory} from "carrot/KPITokensFactory.sol";
 import {BaseTemplatesManager} from "carrot/BaseTemplatesManager.sol";
-import {IERC20KPIToken, Collateral, OracleData} from "../../src/interfaces/IERC20KPIToken.sol";
+import {IBaseTemplatesManager} from "carrot/interfaces/IBaseTemplatesManager.sol";
+import {IERC20KPIToken, Reward, OracleData} from "../../src/interfaces/IERC20KPIToken.sol";
 import {MockOracle} from "tests/mocks/MockOracle.sol";
 import {ERC1967Proxy} from "oz/proxy/ERC1967/ERC1967Proxy.sol";
 
@@ -78,10 +79,11 @@ abstract contract BaseTestSetup is Test {
         return KPITokensManager(address(_proxy));
     }
 
-    function createKpiToken(string memory _description) public returns (ERC20KPIToken) {
-        Collateral[] memory _collaterals = new Collateral[](1);
-        _collaterals[0] = Collateral({token: address(firstErc20), amount: 2, minimumPayout: 1});
-        bytes memory _erc20KpiTokenInitializationData = abi.encode(_collaterals, "Test", "TST", 100 ether);
+    function createKpiToken(string memory _description, bool _justInTimeFunding) public returns (ERC20KPIToken) {
+        Reward[] memory _rewards = new Reward[](1);
+        _rewards[0] = Reward({token: address(firstErc20), amount: 2, minimumPayout: 1});
+        bytes memory _erc20KpiTokenInitializationData =
+            abi.encode(_rewards, "Test", "TST", 100 ether, _justInTimeFunding);
 
         OracleData[] memory _oracleDatas = new OracleData[](1);
         _oracleDatas[0] = OracleData({templateId: 1, weight: 1, value: 0, data: abi.encode("")});
@@ -98,6 +100,9 @@ abstract contract BaseTestSetup is Test {
         );
         firstErc20.approve(_predictedKpiTokenAddress, 2.02 ether);
 
+        if (_justInTimeFunding) {
+            IBaseTemplatesManager(kpiTokensManager).enableTemplateFeatureFor(1, JIT_FUNDING_FEATURE_ID, address(this));
+        }
         factory.createToken(
             1, _description, block.timestamp + 60, _erc20KpiTokenInitializationData, _oraclesInitializationData
         );
