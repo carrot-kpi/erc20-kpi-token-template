@@ -387,8 +387,9 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
             Reward[] memory onChainRewards,
             FinalizableOracle[] memory onChainFinalizableOracles,
             bool onChainAndRelationship,
+            bool onChainJitFunding,
             uint256 onChainInitialSupply
-        ) = abi.decode(kpiTokenInstance.data(), (Reward[], FinalizableOracle[], bool, uint256));
+        ) = abi.decode(kpiTokenInstance.data(), (Reward[], FinalizableOracle[], bool, bool, uint256));
 
         assertEq(onChainRewards.length, 1);
         assertEq(onChainRewards[0].token, address(firstErc20));
@@ -440,8 +441,9 @@ contract ERC20KPITokenInitializeTest is BaseTestSetup {
             Reward[] memory onChainRewards,
             FinalizableOracle[] memory onChainFinalizableOracles,
             bool onChainAndRelationship,
+            bool onChainJitFunding,
             uint256 onChainInitialSupply
-        ) = abi.decode(kpiTokenInstance.data(), (Reward[], FinalizableOracle[], bool, uint256));
+        ) = abi.decode(kpiTokenInstance.data(), (Reward[], FinalizableOracle[], bool, bool, uint256));
 
         assertEq(onChainRewards.length, 1);
         assertEq(onChainRewards[0].token, address(firstErc20));

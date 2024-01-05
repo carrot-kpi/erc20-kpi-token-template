@@ -5,6 +5,7 @@ import { Loader, MultiStepCards, StepCard, Stepper } from "@carrot-kpi/ui";
 import {
     type KPITokenRemoteCreationFormProps,
     useOracleTemplates,
+    useKPITokenTemplateFeatureEnabledFor,
 } from "@carrot-kpi/react";
 import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { usePrevious } from "react-use";
@@ -18,6 +19,7 @@ import { ConnectWallet } from "./components/connect-wallet";
 import { GenericData } from "./components/generic-data";
 import { OraclesPicker } from "./components/oracles-picker";
 import erc20KpiToken from "../abis/erc20-kpi-token";
+import { JIT_FUNDING_FEATURE_ID } from "./constants";
 
 export const Component = ({
     template,
@@ -39,6 +41,14 @@ export const Component = ({
             abi: erc20KpiToken,
             functionName: "fee",
         });
+    const {
+        loading: jitFundingFeatureAllowanceLoading,
+        enabled: jitFundingFeatureAllowed,
+    } = useKPITokenTemplateFeatureEnabledFor({
+        templateId: template.id,
+        featureId: JIT_FUNDING_FEATURE_ID,
+        account: connectedAddress,
+    });
 
     const enableOraclePickStep =
         !loadingOracleTemplates && oracleTemplates.length > 1;
@@ -86,6 +96,7 @@ export const Component = ({
         if (
             (!!state.oracles && state.oracles.length > 0) ||
             loadingOracleTemplates ||
+            jitFundingFeatureAllowanceLoading ||
             oracleTemplates?.length !== 1
         )
             return;
@@ -93,7 +104,13 @@ export const Component = ({
             ...state,
             oracles: [{ templateId: oracleTemplates[0].id, state: {} }],
         }));
-    }, [loadingOracleTemplates, onStateChange, oracleTemplates, state.oracles]);
+    }, [
+        loadingOracleTemplates,
+        jitFundingFeatureAllowanceLoading,
+        onStateChange,
+        oracleTemplates,
+        state.oracles,
+    ]);
 
     const handleStepClick = useCallback((clickedStep: number) => {
         setStep(clickedStep);
@@ -125,7 +142,8 @@ export const Component = ({
     if (
         loadingOracleTemplates ||
         loadingProtocolFee ||
-        protocolFeePpm === undefined
+        protocolFeePpm === undefined ||
+        jitFundingFeatureAllowanceLoading
     ) {
         return (
             <div className="h-screen py-20 text-black flex justify-center">
@@ -204,6 +222,7 @@ export const Component = ({
                     >
                         <Rewards
                             t={t}
+                            jitFundingFeatureAllowed={jitFundingFeatureAllowed}
                             state={state}
                             protocolFeePpm={protocolFeePpm}
                             onStateChange={onStateChange}

@@ -639,6 +639,6 @@ contract ERC20KPIToken is BaseKPIToken, ERC20Upgradeable, IERC20KPIToken, Reentr
             RewardWithoutToken storage _reward = reward[_rewardAddress];
             _rewards[_i] = Reward({token: _rewardAddress, amount: _reward.amount, minimumPayout: _reward.minimumPayout});
         }
-        return abi.encode(_rewards, _finalizableOracles, allOrNone, initialSupply);
+        return abi.encode(_rewards, _finalizableOracles, allOrNone, jitFunding, initialSupply);
     }
 }

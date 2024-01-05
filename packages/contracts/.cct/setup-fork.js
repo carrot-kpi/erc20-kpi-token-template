@@ -4,7 +4,12 @@ import { parseUnits, getContract } from "viem";
 
 const require = createRequire(fileURLToPath(import.meta.url));
 
-export const setupFork = async ({ nodeClient, walletClient }) => {
+export const setupFork = async ({
+    nodeClient,
+    walletClient,
+    kpiTokensManager,
+    predictedTemplateId,
+}) => {
     // deploy template
     const {
         abi: templateAbi,
@@ -80,6 +85,19 @@ export const setupFork = async ({ nodeClient, walletClient }) => {
         parseUnits("100", 6),
     ]);
     await tst3Contract.write.mint([walletClient.account.address, 100n]);
+
+    // allow connected address to use the jit funding feature
+    const kpiTokensManagerOwner = await kpiTokensManager.read.owner();
+    await kpiTokensManager.write.enableTemplateFeatureFor(
+        [
+            predictedTemplateId,
+            1, // const jit funding feature id
+            walletClient.account.address,
+        ],
+        {
+            account: kpiTokensManagerOwner,
+        },
+    );
 
     return {
         templateAddress,

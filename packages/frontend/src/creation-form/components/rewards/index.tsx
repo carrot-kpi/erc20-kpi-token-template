@@ -9,6 +9,7 @@ import {
     type TokenInfoWithBalance,
     type NumberFormatValues,
     Switch,
+    FeedbackBox,
 } from "@carrot-kpi/ui";
 import {
     type NamespacedTranslateFunction,
@@ -32,6 +33,7 @@ import { getRewardAmountPlusFees } from "../../../utils/rewards";
 
 interface RewardsProps {
     t: NamespacedTranslateFunction;
+    jitFundingFeatureAllowed: boolean;
     state: State;
     protocolFeePpm: bigint;
     onStateChange: TemplateComponentStateChangeCallback<State>;
@@ -40,6 +42,7 @@ interface RewardsProps {
 
 export const Rewards = ({
     t,
+    jitFundingFeatureAllowed,
     state,
     protocolFeePpm,
     onStateChange,
@@ -147,6 +150,13 @@ export const Rewards = ({
     const handleOpenRewardTokenPicker = useCallback((): void => {
         setRewardTokenPickerOpen(true);
     }, []);
+
+    const handleJitFundingFeatureChange = useCallback(
+        (checked: boolean): void => {
+            onStateChange({ ...state, jitFundingFeatureEnabled: checked });
+        },
+        [onStateChange, state],
+    );
 
     const handleRewardTokenPickerDismiss = useCallback((): void => {
         setRewardTokenPickerOpen(false);
@@ -339,6 +349,22 @@ export const Rewards = ({
 
     return (
         <>
+            {jitFundingFeatureAllowed && (
+                <div className="flex flex-col gap-2 mb-3">
+                    <FeedbackBox variant="info">
+                        <Typography>{t("info.rewards.funding.jit")}</Typography>
+                    </FeedbackBox>
+                    <div className="flex justify-between items-center mb-2">
+                        <Typography>
+                            {t("label.rewards.funding.jit")}:
+                        </Typography>
+                        <Switch
+                            checked={state.jitFundingFeatureEnabled}
+                            onChange={handleJitFundingFeatureChange}
+                        />
+                    </div>
+                </div>
+            )}
             <div className="flex flex-col md:flex-row w-full gap-4 mb-4">
                 <NoSpecialCharactersTextInput
                     data-testid="rewards-step-token-name-input"

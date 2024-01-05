@@ -23,6 +23,7 @@ import { useCallback, useMemo, useState } from "react";
 import { getRecoverableRewards } from "../../../utils/rewards";
 import { dateToUnixTimestamp } from "../../../utils/dates";
 import { TokenAmount } from "../token-amount";
+import { useWatchKPITokenRewardBalances } from "../../hooks/useWatchKPITokenRewardBalances";
 
 interface RewardOption extends SelectOption<Address> {
     amount: Amount<Token>;
@@ -32,20 +33,21 @@ interface RecoverRewardProps {
     t: NamespacedTranslateFunction;
     onTx: KPITokenPageProps["onTx"];
     kpiToken: ResolvedKPIToken;
-    loadingRewards?: boolean;
+    loading?: boolean;
     rewards?: RewardData[];
     kpiTokenBalance?: Amount<Token> | null;
     kpiTokenRewardBalances?: Amount<Token>[];
     redeemableRewards?: Amount<Token>[] | null;
+    jitFunding: boolean;
 }
 
 export const RecoverReward = ({
     t,
     onTx,
     kpiToken,
-    loadingRewards,
+    loading,
     rewards,
-    kpiTokenRewardBalances,
+    jitFunding,
 }: RecoverRewardProps) => {
     const { address } = useAccount();
     const { chain } = useNetwork();
@@ -54,6 +56,11 @@ export const RecoverReward = ({
     const [loadingRecover, setLoadingRecover] = useState(false);
     const [rewardToRecover, setRewardToRecover] =
         useState<SelectOption<Address> | null>(null);
+
+    const {
+        balances: effectiveRewardBalances,
+        loading: loadingEffectiveRewardBalances,
+    } = useWatchKPITokenRewardBalances(kpiToken.address, rewards);
 
     const { config: recoverConfig, isLoading: loadingRecoverConfig } =
         usePrepareContractWrite({
@@ -71,11 +78,12 @@ export const RecoverReward = ({
         useContractWrite(recoverConfig);
 
     const rewardOptions: RewardOption[] = useMemo(() => {
-        if (!rewards || !kpiTokenRewardBalances) return [];
+        if (!rewards || !effectiveRewardBalances) return [];
         return getRecoverableRewards(
             rewards,
-            kpiTokenRewardBalances,
+            effectiveRewardBalances,
             kpiToken.expired,
+            jitFunding,
         ).map((reward) => ({
             label: `${formatUnits(reward.raw, reward.currency.decimals)} ${
                 reward.currency.symbol
@@ -83,7 +91,7 @@ export const RecoverReward = ({
             amount: reward,
             value: reward.currency.address,
         }));
-    }, [rewards, kpiTokenRewardBalances, kpiToken.expired]);
+    }, [rewards, effectiveRewardBalances, kpiToken.expired, jitFunding]);
 
     const handleRewardRecoverClick = useCallback(async () => {
         if (!recoverAsync || !address || !rewardToRecover) return;
@@ -122,7 +130,8 @@ export const RecoverReward = ({
     }, [address, rewardToRecover, onTx, publicClient, recoverAsync]);
 
     const recovering =
-        loadingRewards ||
+        loading ||
+        loadingEffectiveRewardBalances ||
         loadingRecover ||
         loadingRecoverConfig ||
         signingTransaction;

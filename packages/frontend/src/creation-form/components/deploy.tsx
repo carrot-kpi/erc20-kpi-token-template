@@ -166,6 +166,7 @@ export const Deploy = ({
                     state.tokenName,
                     state.tokenSymbol,
                     BigInt(state.tokenSupply),
+                    state.jitFundingFeatureEnabled,
                 );
 
                 if (!cancelled) {
@@ -188,6 +189,7 @@ export const Deploy = ({
         state.tokenName,
         state.tokenSupply,
         state.tokenSymbol,
+        state.jitFundingFeatureEnabled,
     ]);
 
     // upload specification to decentralized storage and get back the cid,
@@ -379,6 +381,11 @@ export const Deploy = ({
 
     return (
         <div className="flex flex-col gap-6">
+            {state.jitFundingFeatureEnabled && (
+                <FeedbackBox variant="info">
+                    <Typography>{t("deploy.info.jit.funding")}</Typography>
+                </FeedbackBox>
+            )}
             <DateTimeInput
                 data-testid="deploy-step-expiration-input"
                 label={t("deploy.label.expiration")}

@@ -48,6 +48,7 @@ export type State = {
     tokenName?: string;
     tokenSymbol?: string;
     tokenSupply?: string;
+    jitFundingFeatureEnabled?: boolean;
 
     // rewards
     rewards?: Reward[];

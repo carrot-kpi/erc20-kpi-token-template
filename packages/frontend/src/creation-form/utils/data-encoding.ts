@@ -6,6 +6,7 @@ export const encodeKPITokenData = (
     tokenName: string,
     tokenSymbol: string,
     tokenSupply: bigint,
+    jitFunding?: boolean,
 ) => {
     return encodeAbiParameters(
         [
@@ -21,6 +22,7 @@ export const encodeKPITokenData = (
             { type: "string", name: "erc20Name" },
             { type: "string", name: "erc20Symbol" },
             { type: "uint256", name: "supply" },
+            { type: "bool", name: "jitFunding" },
         ],
         [
             rewards.map((reward) => {
@@ -33,6 +35,7 @@ export const encodeKPITokenData = (
             tokenName,
             tokenSymbol,
             tokenSupply,
+            !!jitFunding,
         ],
     );
 };
