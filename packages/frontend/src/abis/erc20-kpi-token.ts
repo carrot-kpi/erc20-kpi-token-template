@@ -1,170 +1,82 @@
 export default [
     {
         type: "constructor",
-        inputs: [
-            {
-                name: "_fee",
-                type: "uint256",
-                internalType: "uint256",
-            },
-        ],
+        inputs: [{ name: "_fee", type: "uint256", internalType: "uint256" }],
         stateMutability: "nonpayable",
     },
     {
         type: "function",
         name: "allowance",
         inputs: [
-            {
-                name: "owner",
-                type: "address",
-                internalType: "address",
-            },
-            {
-                name: "spender",
-                type: "address",
-                internalType: "address",
-            },
+            { name: "owner", type: "address", internalType: "address" },
+            { name: "spender", type: "address", internalType: "address" },
         ],
-        outputs: [
-            {
-                name: "",
-                type: "uint256",
-                internalType: "uint256",
-            },
-        ],
+        outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
         stateMutability: "view",
     },
     {
         type: "function",
         name: "approve",
         inputs: [
-            {
-                name: "spender",
-                type: "address",
-                internalType: "address",
-            },
-            {
-                name: "value",
-                type: "uint256",
-                internalType: "uint256",
-            },
+            { name: "spender", type: "address", internalType: "address" },
+            { name: "value", type: "uint256", internalType: "uint256" },
         ],
-        outputs: [
-            {
-                name: "",
-                type: "bool",
-                internalType: "bool",
-            },
-        ],
+        outputs: [{ name: "", type: "bool", internalType: "bool" }],
         stateMutability: "nonpayable",
     },
     {
         type: "function",
         name: "balanceOf",
-        inputs: [
-            {
-                name: "account",
-                type: "address",
-                internalType: "address",
-            },
-        ],
-        outputs: [
-            {
-                name: "",
-                type: "uint256",
-                internalType: "uint256",
-            },
-        ],
+        inputs: [{ name: "account", type: "address", internalType: "address" }],
+        outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
         stateMutability: "view",
     },
     {
         type: "function",
         name: "creationTimestamp",
         inputs: [],
-        outputs: [
-            {
-                name: "",
-                type: "uint256",
-                internalType: "uint256",
-            },
-        ],
+        outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
         stateMutability: "view",
     },
     {
         type: "function",
         name: "data",
         inputs: [],
-        outputs: [
-            {
-                name: "",
-                type: "bytes",
-                internalType: "bytes",
-            },
-        ],
+        outputs: [{ name: "", type: "bytes", internalType: "bytes" }],
         stateMutability: "view",
     },
     {
         type: "function",
         name: "decimals",
         inputs: [],
-        outputs: [
-            {
-                name: "",
-                type: "uint8",
-                internalType: "uint8",
-            },
-        ],
+        outputs: [{ name: "", type: "uint8", internalType: "uint8" }],
         stateMutability: "view",
     },
     {
         type: "function",
         name: "description",
         inputs: [],
-        outputs: [
-            {
-                name: "",
-                type: "string",
-                internalType: "string",
-            },
-        ],
+        outputs: [{ name: "", type: "string", internalType: "string" }],
         stateMutability: "view",
     },
     {
         type: "function",
         name: "expiration",
         inputs: [],
-        outputs: [
-            {
-                name: "",
-                type: "uint256",
-                internalType: "uint256",
-            },
-        ],
+        outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
         stateMutability: "view",
     },
     {
         type: "function",
         name: "fee",
         inputs: [],
-        outputs: [
-            {
-                name: "",
-                type: "uint256",
-                internalType: "uint256",
-            },
-        ],
+        outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
         stateMutability: "view",
     },
     {
         type: "function",
         name: "finalize",
-        inputs: [
-            {
-                name: "_result",
-                type: "uint256",
-                internalType: "uint256",
-            },
-        ],
+        inputs: [{ name: "_result", type: "uint256", internalType: "uint256" }],
         outputs: [],
         stateMutability: "nonpayable",
     },
@@ -172,13 +84,7 @@ export default [
         type: "function",
         name: "finalized",
         inputs: [],
-        outputs: [
-            {
-                name: "",
-                type: "bool",
-                internalType: "bool",
-            },
-        ],
+        outputs: [{ name: "", type: "bool", internalType: "bool" }],
         stateMutability: "view",
     },
     {
@@ -250,55 +156,29 @@ export default [
         type: "function",
         name: "name",
         inputs: [],
-        outputs: [
-            {
-                name: "",
-                type: "string",
-                internalType: "string",
-            },
-        ],
+        outputs: [{ name: "", type: "string", internalType: "string" }],
         stateMutability: "view",
     },
     {
         type: "function",
         name: "oracles",
         inputs: [],
-        outputs: [
-            {
-                name: "",
-                type: "address[]",
-                internalType: "address[]",
-            },
-        ],
+        outputs: [{ name: "", type: "address[]", internalType: "address[]" }],
         stateMutability: "view",
     },
     {
         type: "function",
         name: "owner",
         inputs: [],
-        outputs: [
-            {
-                name: "",
-                type: "address",
-                internalType: "address",
-            },
-        ],
+        outputs: [{ name: "", type: "address", internalType: "address" }],
         stateMutability: "view",
     },
     {
         type: "function",
         name: "recoverERC20",
         inputs: [
-            {
-                name: "_token",
-                type: "address",
-                internalType: "address",
-            },
-            {
-                name: "_receiver",
-                type: "address",
-                internalType: "address",
-            },
+            { name: "_token", type: "address", internalType: "address" },
+            { name: "_receiver", type: "address", internalType: "address" },
         ],
         outputs: [],
         stateMutability: "nonpayable",
@@ -306,30 +186,16 @@ export default [
     {
         type: "function",
         name: "redeem",
-        inputs: [
-            {
-                name: "_data",
-                type: "bytes",
-                internalType: "bytes",
-            },
-        ],
+        inputs: [{ name: "_data", type: "bytes", internalType: "bytes" }],
         outputs: [],
         stateMutability: "nonpayable",
     },
     {
         type: "function",
-        name: "redeemCollateral",
+        name: "redeemReward",
         inputs: [
-            {
-                name: "_token",
-                type: "address",
-                internalType: "address",
-            },
-            {
-                name: "_receiver",
-                type: "address",
-                internalType: "address",
-            },
+            { name: "_token", type: "address", internalType: "address" },
+            { name: "_receiver", type: "address", internalType: "address" },
         ],
         outputs: [],
         stateMutability: "nonpayable",
@@ -345,13 +211,7 @@ export default [
         type: "function",
         name: "symbol",
         inputs: [],
-        outputs: [
-            {
-                name: "",
-                type: "string",
-                internalType: "string",
-            },
-        ],
+        outputs: [{ name: "", type: "string", internalType: "string" }],
         stateMutability: "view",
     },
     {
@@ -374,11 +234,7 @@ export default [
                         type: "uint128",
                         internalType: "uint128",
                     },
-                    {
-                        name: "id",
-                        type: "uint256",
-                        internalType: "uint256",
-                    },
+                    { name: "id", type: "uint256", internalType: "uint256" },
                     {
                         name: "specification",
                         type: "string",
@@ -393,77 +249,35 @@ export default [
         type: "function",
         name: "totalSupply",
         inputs: [],
-        outputs: [
-            {
-                name: "",
-                type: "uint256",
-                internalType: "uint256",
-            },
-        ],
+        outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
         stateMutability: "view",
     },
     {
         type: "function",
         name: "transfer",
         inputs: [
-            {
-                name: "to",
-                type: "address",
-                internalType: "address",
-            },
-            {
-                name: "value",
-                type: "uint256",
-                internalType: "uint256",
-            },
+            { name: "to", type: "address", internalType: "address" },
+            { name: "value", type: "uint256", internalType: "uint256" },
         ],
-        outputs: [
-            {
-                name: "",
-                type: "bool",
-                internalType: "bool",
-            },
-        ],
+        outputs: [{ name: "", type: "bool", internalType: "bool" }],
         stateMutability: "nonpayable",
     },
     {
         type: "function",
         name: "transferFrom",
         inputs: [
-            {
-                name: "from",
-                type: "address",
-                internalType: "address",
-            },
-            {
-                name: "to",
-                type: "address",
-                internalType: "address",
-            },
-            {
-                name: "value",
-                type: "uint256",
-                internalType: "uint256",
-            },
+            { name: "from", type: "address", internalType: "address" },
+            { name: "to", type: "address", internalType: "address" },
+            { name: "value", type: "uint256", internalType: "uint256" },
         ],
-        outputs: [
-            {
-                name: "",
-                type: "bool",
-                internalType: "bool",
-            },
-        ],
+        outputs: [{ name: "", type: "bool", internalType: "bool" }],
         stateMutability: "nonpayable",
     },
     {
         type: "function",
         name: "transferOwnership",
         inputs: [
-            {
-                name: "_newOwner",
-                type: "address",
-                internalType: "address",
-            },
+            { name: "_newOwner", type: "address", internalType: "address" },
         ],
         outputs: [],
         stateMutability: "nonpayable",
@@ -518,12 +332,7 @@ export default [
         ],
         anonymous: false,
     },
-    {
-        type: "event",
-        name: "Finalize",
-        inputs: [],
-        anonymous: false,
-    },
+    { type: "event", name: "Finalize", inputs: [], anonymous: false },
     {
         type: "event",
         name: "Initialize",
@@ -651,7 +460,7 @@ export default [
     },
     {
         type: "event",
-        name: "RedeemCollateral",
+        name: "RedeemReward",
         inputs: [
             {
                 name: "account",
@@ -727,280 +536,96 @@ export default [
     {
         type: "error",
         name: "AddressEmptyCode",
-        inputs: [
-            {
-                name: "target",
-                type: "address",
-                internalType: "address",
-            },
-        ],
+        inputs: [{ name: "target", type: "address", internalType: "address" }],
     },
     {
         type: "error",
         name: "AddressInsufficientBalance",
-        inputs: [
-            {
-                name: "account",
-                type: "address",
-                internalType: "address",
-            },
-        ],
+        inputs: [{ name: "account", type: "address", internalType: "address" }],
     },
-    {
-        type: "error",
-        name: "DuplicatedCollateral",
-        inputs: [],
-    },
+    { type: "error", name: "DisallowedJustInTimeFunding", inputs: [] },
+    { type: "error", name: "DuplicatedReward", inputs: [] },
     {
         type: "error",
         name: "ERC20InsufficientAllowance",
         inputs: [
-            {
-                name: "spender",
-                type: "address",
-                internalType: "address",
-            },
-            {
-                name: "allowance",
-                type: "uint256",
-                internalType: "uint256",
-            },
-            {
-                name: "needed",
-                type: "uint256",
-                internalType: "uint256",
-            },
+            { name: "spender", type: "address", internalType: "address" },
+            { name: "allowance", type: "uint256", internalType: "uint256" },
+            { name: "needed", type: "uint256", internalType: "uint256" },
         ],
     },
     {
         type: "error",
         name: "ERC20InsufficientBalance",
         inputs: [
-            {
-                name: "sender",
-                type: "address",
-                internalType: "address",
-            },
-            {
-                name: "balance",
-                type: "uint256",
-                internalType: "uint256",
-            },
-            {
-                name: "needed",
-                type: "uint256",
-                internalType: "uint256",
-            },
+            { name: "sender", type: "address", internalType: "address" },
+            { name: "balance", type: "uint256", internalType: "uint256" },
+            { name: "needed", type: "uint256", internalType: "uint256" },
         ],
     },
     {
         type: "error",
         name: "ERC20InvalidApprover",
         inputs: [
-            {
-                name: "approver",
-                type: "address",
-                internalType: "address",
-            },
+            { name: "approver", type: "address", internalType: "address" },
         ],
     },
     {
         type: "error",
         name: "ERC20InvalidReceiver",
         inputs: [
-            {
-                name: "receiver",
-                type: "address",
-                internalType: "address",
-            },
+            { name: "receiver", type: "address", internalType: "address" },
         ],
     },
     {
         type: "error",
         name: "ERC20InvalidSender",
-        inputs: [
-            {
-                name: "sender",
-                type: "address",
-                internalType: "address",
-            },
-        ],
+        inputs: [{ name: "sender", type: "address", internalType: "address" }],
     },
     {
         type: "error",
         name: "ERC20InvalidSpender",
-        inputs: [
-            {
-                name: "spender",
-                type: "address",
-                internalType: "address",
-            },
-        ],
+        inputs: [{ name: "spender", type: "address", internalType: "address" }],
     },
-    {
-        type: "error",
-        name: "FailedInnerCall",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "Forbidden",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "InvalidCollateral",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "InvalidCreator",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "InvalidDescription",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "InvalidExpiration",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "InvalidFee",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "InvalidFeeReceiver",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "InvalidInitialization",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "InvalidKpiTokensManager",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "InvalidMinimumPayoutAfterFee",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "InvalidName",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "InvalidOracleBounds",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "InvalidOracleWeights",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "InvalidOraclesManager",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "InvalidSymbol",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "InvalidTotalSupply",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "NoCollaterals",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "NoOracles",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "NotEnoughCollateral",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "NotEnoughValue",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "NotInitialized",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "NotInitializing",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "NothingToRecover",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "NothingToRedeem",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "ReentrancyGuardReentrantCall",
-        inputs: [],
-    },
+    { type: "error", name: "FailedInnerCall", inputs: [] },
+    { type: "error", name: "Forbidden", inputs: [] },
+    { type: "error", name: "InvalidCreator", inputs: [] },
+    { type: "error", name: "InvalidDescription", inputs: [] },
+    { type: "error", name: "InvalidExpiration", inputs: [] },
+    { type: "error", name: "InvalidFee", inputs: [] },
+    { type: "error", name: "InvalidFeeReceiver", inputs: [] },
+    { type: "error", name: "InvalidInitialization", inputs: [] },
+    { type: "error", name: "InvalidKPITokensManager", inputs: [] },
+    { type: "error", name: "InvalidKpiTokensManager", inputs: [] },
+    { type: "error", name: "InvalidMinimumPayoutAfterFee", inputs: [] },
+    { type: "error", name: "InvalidName", inputs: [] },
+    { type: "error", name: "InvalidOracleBounds", inputs: [] },
+    { type: "error", name: "InvalidOracleWeights", inputs: [] },
+    { type: "error", name: "InvalidOraclesManager", inputs: [] },
+    { type: "error", name: "InvalidOwner", inputs: [] },
+    { type: "error", name: "InvalidReward", inputs: [] },
+    { type: "error", name: "InvalidSymbol", inputs: [] },
+    { type: "error", name: "InvalidTemplateId", inputs: [] },
+    { type: "error", name: "InvalidTemplateVersion", inputs: [] },
+    { type: "error", name: "InvalidTotalSupply", inputs: [] },
+    { type: "error", name: "JustInTimeFunding", inputs: [] },
+    { type: "error", name: "NoOracles", inputs: [] },
+    { type: "error", name: "NoRewards", inputs: [] },
+    { type: "error", name: "NotEnoughReward", inputs: [] },
+    { type: "error", name: "NotEnoughValue", inputs: [] },
+    { type: "error", name: "NotInitialized", inputs: [] },
+    { type: "error", name: "NotInitializing", inputs: [] },
+    { type: "error", name: "NothingToRecover", inputs: [] },
+    { type: "error", name: "NothingToRedeem", inputs: [] },
+    { type: "error", name: "ReentrancyGuardReentrantCall", inputs: [] },
     {
         type: "error",
         name: "SafeERC20FailedOperation",
-        inputs: [
-            {
-                name: "token",
-                type: "address",
-                internalType: "address",
-            },
-        ],
+        inputs: [{ name: "token", type: "address", internalType: "address" }],
     },
-    {
-        type: "error",
-        name: "TooManyCollaterals",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "TooManyOracles",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "ZeroAddressOwner",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "ZeroAddressReceiver",
-        inputs: [],
-    },
-    {
-        type: "error",
-        name: "ZeroAddressToken",
-        inputs: [],
-    },
+    { type: "error", name: "TooManyOracles", inputs: [] },
+    { type: "error", name: "TooManyRewards", inputs: [] },
+    { type: "error", name: "ZeroAddressOwner", inputs: [] },
+    { type: "error", name: "ZeroAddressReceiver", inputs: [] },
+    { type: "error", name: "ZeroAddressToken", inputs: [] },
 ] as const;

@@ -25,7 +25,6 @@ import {
     getMaximumRewards,
     getRedeemableRewards,
 } from "../../../utils/rewards";
-import { useWatchKPITokenRewardBalances } from "../../hooks/useWatchKPITokenRewardBalances";
 import type { FinalizableOracle } from "../../types";
 import { TokenAmount } from "../token-amount";
 import { WalletActions } from "./actions";
@@ -42,6 +41,7 @@ interface WalletPositionProps {
     currentSupply?: Amount<Token> | null;
     erc20Symbol?: string;
     erc20Name?: string;
+    jitFunding: boolean;
 }
 
 export const WalletPosition = ({
@@ -55,6 +55,7 @@ export const WalletPosition = ({
     currentSupply,
     erc20Symbol,
     erc20Name,
+    jitFunding,
 }: WalletPositionProps): ReactElement => {
     const { address: connectedAddress } = useAccount();
     const { chain } = useNetwork();
@@ -67,10 +68,6 @@ export const WalletPosition = ({
         token: kpiToken.address as Address,
         watch: true,
     });
-    const {
-        balances: kpiTokenRewardBalances,
-        loading: loadingKPITokenRewardBalances,
-    } = useWatchKPITokenRewardBalances(kpiToken.address, rewards);
 
     const { data: kpiTokenOwner } = useContractRead({
         chainId: chain?.id,
@@ -243,10 +240,7 @@ export const WalletPosition = ({
                                 data-testid="wallet-position-remaining-rewards"
                                 className="flex flex-col gap-2"
                             >
-                                {loading ||
-                                !kpiTokenRewardBalances ||
-                                loadingKPITokenRewardBalances ||
-                                kpiTokenRewardBalances.length === 0
+                                {loading || !rewards
                                     ? new Array(rewards?.length || 1)
                                           .fill(null)
                                           .map((_, index) => (
@@ -255,12 +249,15 @@ export const WalletPosition = ({
                                                   loading
                                               />
                                           ))
-                                    : kpiTokenRewardBalances.map((reward) => {
+                                    : rewards.map((reward) => {
                                           return (
                                               <TokenAmount
-                                                  data-testid={`wallet-position-remaining-rewards-${reward.currency.address}`}
-                                                  key={reward.currency.address}
-                                                  amount={reward}
+                                                  data-testid={`wallet-position-remaining-rewards-${reward.amount.currency.address}`}
+                                                  key={
+                                                      reward.amount.currency
+                                                          .address
+                                                  }
+                                                  amount={reward.amount}
                                               />
                                           );
                                       })}
@@ -329,11 +326,9 @@ export const WalletPosition = ({
                         t={t}
                         onTx={onTx}
                         kpiToken={kpiToken}
-                        loadingRewards={
-                            loading || loadingKPITokenRewardBalances
-                        }
+                        loading={loading}
                         rewards={rewards}
-                        kpiTokenRewardBalances={kpiTokenRewardBalances}
+                        jitFunding={jitFunding}
                     />
                 )}
             </div>

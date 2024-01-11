@@ -53,6 +53,7 @@ export const Component = ({
     const [rewards, setRewards] = useState<RewardData[]>([]);
     const [oracles, setOracles] = useState<FinalizableOracle[]>([]);
     const [allOrNone, setAllOrNone] = useState(false);
+    const [jitFunding, setJitFunding] = useState(false);
     const [initialSupply, setInitialSupply] = useState<Amount<Token> | null>(
         null,
     );
@@ -82,6 +83,7 @@ export const Component = ({
                 setRewards(decoded.rewards);
                 setOracles(decoded.finalizableOracles);
                 setAllOrNone(decoded.allOrNone);
+                setJitFunding(decoded.jitFunding);
             }
             if (!tokenData?.symbol || !tokenData.name) return;
             const erc20KPIToken = new Token(
@@ -236,6 +238,7 @@ export const Component = ({
                             erc20Name={tokenData?.name}
                             initialSupply={initialSupply}
                             currentSupply={currentSupply}
+                            jitFunding={jitFunding}
                         />
                     </div>
                     <div className="w-full max-w-screen-2xl flex flex-col gap-6 md:gap-8">

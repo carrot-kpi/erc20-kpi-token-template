@@ -15,3 +15,5 @@ export const DEFAULT_NUMBER_FORMAT_VALUE = {
     value: "",
     formattedValue: "",
 };
+
+export const JIT_FUNDING_FEATURE_ID = 1;

@@ -81,9 +81,12 @@ export const getRecoverableRewards = (
     rewards: RewardData[],
     kpiTokenRewardBalances: Amount<Token>[],
     expired: boolean,
+    jitFunding: boolean,
 ): Amount<Token>[] => {
     return kpiTokenRewardBalances
         .map((balance) => {
+            if (jitFunding) return balance;
+
             const neededAmount = rewards.find(
                 (reward) => reward.amount.currency === balance.currency,
             );
