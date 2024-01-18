@@ -1,7 +1,13 @@
 import "../global.css";
 import "@carrot-kpi/ui/styles.css";
 
-import { Loader, MultiStepCards, StepCard, Stepper } from "@carrot-kpi/ui";
+import {
+    Button,
+    Loader,
+    MultiStepCards,
+    StepCard,
+    Stepper,
+} from "@carrot-kpi/ui";
 import {
     type KPITokenRemoteCreationFormProps,
     useOracleTemplates,
@@ -30,6 +36,7 @@ export const Component = ({
     onCreate,
     navigate,
     onTx,
+    onCreateDraft,
 }: KPITokenRemoteCreationFormProps<State>): ReactElement => {
     const { address: connectedAddress } = useAccount();
     const previousAddress = usePrevious(connectedAddress);
@@ -70,6 +77,7 @@ export const Component = ({
 
     const [step, setStep] = useState(0);
     const [mostUpdatedStep, setMostUpdatedStep] = useState(0);
+    const [creatingDraft, setCreatingDraft] = useState(false);
 
     const [
         oraclesWithInitializationBundleGetter,
@@ -139,6 +147,14 @@ export const Component = ({
         [enableOraclePickStep],
     );
 
+    const handleDraftCreate = useCallback(() => {
+        onCreateDraft();
+        setCreatingDraft(true);
+        setTimeout(() => {
+            setCreatingDraft(false);
+        }, 300);
+    }, [onCreateDraft]);
+
     if (
         loadingOracleTemplates ||
         loadingProtocolFee ||
@@ -168,6 +184,16 @@ export const Component = ({
         <div className="relative h-full w-full bg-green scrollbar overflow-y-auto px-4 pt-10">
             <div className="absolute bg-grid-light top-0 left-0 w-full h-full" />
             <div className="h-full flex flex-col items-center justify-between">
+                <Button
+                    size="small"
+                    className={{
+                        root: "hidden lg:block z-[1] absolute left-9 mt-12",
+                    }}
+                    loading={creatingDraft}
+                    onClick={handleDraftCreate}
+                >
+                    {t("draft.create")}
+                </Button>
                 <div className="flex lg:hidden mb-8">
                     <Stepper
                         layout="horizontal"

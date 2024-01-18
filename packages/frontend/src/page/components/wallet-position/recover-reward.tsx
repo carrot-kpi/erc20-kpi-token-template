@@ -102,7 +102,7 @@ export const RecoverReward = ({
                 hash: tx.hash,
             });
             onTx({
-                type: TxType.KPI_TOKEN_COLLATERAL_RECOVER,
+                type: TxType.KPI_TOKEN_REWARDS_RECOVERY,
                 from: receipt.from,
                 hash: tx.hash,
                 payload: {
