@@ -26,6 +26,7 @@ import { GenericData } from "./components/generic-data";
 import { OraclesPicker } from "./components/oracles-picker";
 import erc20KpiToken from "../abis/erc20-kpi-token";
 import { JIT_FUNDING_FEATURE_ID } from "./constants";
+import { ReactComponent as ArrowDown } from "../assets/arrow-down.svg";
 
 export const Component = ({
     template,
@@ -152,7 +153,7 @@ export const Component = ({
         setCreatingDraft(true);
         setTimeout(() => {
             setCreatingDraft(false);
-        }, 300);
+        }, 100);
     }, [onCreateDraft]);
 
     if (
@@ -184,16 +185,6 @@ export const Component = ({
         <div className="relative h-full w-full bg-green scrollbar overflow-y-auto px-4 pt-10">
             <div className="absolute bg-grid-light top-0 left-0 w-full h-full" />
             <div className="h-full flex flex-col items-center justify-between">
-                <Button
-                    size="small"
-                    className={{
-                        root: "hidden lg:block z-[1] absolute left-9 mt-12",
-                    }}
-                    loading={creatingDraft}
-                    onClick={handleDraftCreate}
-                >
-                    {t("draft.create")}
-                </Button>
                 <div className="flex lg:hidden mb-8">
                     <Stepper
                         layout="horizontal"
@@ -207,7 +198,7 @@ export const Component = ({
                         }}
                     />
                 </div>
-                <div className="absolute left-10 top-40 hidden lg:flex">
+                <div className="flex-col gap-14 absolute left-10 top-40 hidden lg:flex">
                     <Stepper
                         layout="vertical"
                         stepTitles={stepTitles}
@@ -215,6 +206,14 @@ export const Component = ({
                         lastStepCompleted={mostUpdatedStep}
                         onClick={handleStepClick}
                     />
+                    <Button
+                        size="small"
+                        icon={ArrowDown}
+                        disabled={creatingDraft}
+                        onClick={handleDraftCreate}
+                    >
+                        {t("draft.create")}
+                    </Button>
                 </div>
                 <MultiStepCards
                     activeStep={step}
