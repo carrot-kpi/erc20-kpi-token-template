@@ -31,7 +31,7 @@ import {
     type NamespacedTranslateFunction,
     TxType,
     useDevMode,
-    useDecentralizedStorageUploader,
+    useJSONUploader,
     type TemplateComponentStateChangeCallback,
 } from "@carrot-kpi/react";
 import {
@@ -83,7 +83,7 @@ export const Deploy = ({
     const { chain } = useNetwork();
     const publicClient = usePublicClient();
     const devMode = useDevMode();
-    const uploadToDecentralizedStorage = useDecentralizedStorageUploader();
+    const uploadJSON = useJSONUploader();
 
     const [expirationErrorText, setExpirationErrorText] = useState("");
     const [minimumDate, setMinimumDate] = useState(new Date());
@@ -211,9 +211,7 @@ export const Deploy = ({
                     tags: state.tags,
                 };
                 const uploadedSpecificationCid =
-                    await uploadToDecentralizedStorage(
-                        JSON.stringify(specification),
-                    );
+                    await uploadJSON(specification);
                 if (!cancelled) setSpecificationCid(uploadedSpecificationCid);
             } finally {
                 if (!cancelled) setLoading(false);
@@ -228,7 +226,7 @@ export const Deploy = ({
         state.description,
         state.tags,
         state.title,
-        uploadToDecentralizedStorage,
+        uploadJSON,
     ]);
 
     const {
