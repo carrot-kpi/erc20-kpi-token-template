@@ -27,6 +27,7 @@ import { OraclesPicker } from "./components/oracles-picker";
 import erc20KpiToken from "../abis/erc20-kpi-token";
 import { JIT_FUNDING_FEATURE_ID } from "./constants";
 import { ReactComponent as ArrowDown } from "../assets/arrow-down.svg";
+import { ReactComponent as CircleOk } from "../assets/circle-ok.svg";
 
 export const Component = ({
     template,
@@ -78,7 +79,7 @@ export const Component = ({
 
     const [step, setStep] = useState(0);
     const [mostUpdatedStep, setMostUpdatedStep] = useState(0);
-    const [creatingDraft, setCreatingDraft] = useState(false);
+    const [draftSaved, setDraftSaved] = useState(false);
 
     const [
         oraclesWithInitializationBundleGetter,
@@ -148,12 +149,12 @@ export const Component = ({
         [enableOraclePickStep],
     );
 
-    const handleDraftCreate = useCallback(() => {
+    const handleDraftSave = useCallback(() => {
         onCreateDraft();
-        setCreatingDraft(true);
+        setDraftSaved(true);
         setTimeout(() => {
-            setCreatingDraft(false);
-        }, 100);
+            setDraftSaved(false);
+        }, 600);
     }, [onCreateDraft]);
 
     if (
@@ -208,9 +209,12 @@ export const Component = ({
                     />
                     <Button
                         size="small"
-                        icon={ArrowDown}
-                        disabled={creatingDraft}
-                        onClick={handleDraftCreate}
+                        icon={draftSaved ? CircleOk : ArrowDown}
+                        variant={draftSaved ? "secondary" : "primary"}
+                        onClick={handleDraftSave}
+                        className={{
+                            icon: "stroke-current",
+                        }}
                     >
                         {t("draft.create")}
                     </Button>
