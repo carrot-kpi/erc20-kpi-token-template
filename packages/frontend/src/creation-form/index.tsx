@@ -1,7 +1,13 @@
 import "../global.css";
 import "@carrot-kpi/ui/styles.css";
 
-import { Loader, MultiStepCards, StepCard, Stepper } from "@carrot-kpi/ui";
+import {
+    Button,
+    Loader,
+    MultiStepCards,
+    StepCard,
+    Stepper,
+} from "@carrot-kpi/ui";
 import {
     type KPITokenRemoteCreationFormProps,
     useOracleTemplates,
@@ -20,6 +26,8 @@ import { GenericData } from "./components/generic-data";
 import { OraclesPicker } from "./components/oracles-picker";
 import erc20KpiToken from "../abis/erc20-kpi-token";
 import { JIT_FUNDING_FEATURE_ID } from "./constants";
+import { ReactComponent as ArrowDown } from "../assets/arrow-down.svg";
+import { ReactComponent as CircleOk } from "../assets/circle-ok.svg";
 
 export const Component = ({
     template,
@@ -30,6 +38,7 @@ export const Component = ({
     onCreate,
     navigate,
     onTx,
+    onCreateDraft,
 }: KPITokenRemoteCreationFormProps<State>): ReactElement => {
     const { address: connectedAddress } = useAccount();
     const previousAddress = usePrevious(connectedAddress);
@@ -70,6 +79,7 @@ export const Component = ({
 
     const [step, setStep] = useState(0);
     const [mostUpdatedStep, setMostUpdatedStep] = useState(0);
+    const [draftSaved, setDraftSaved] = useState(false);
 
     const [
         oraclesWithInitializationBundleGetter,
@@ -139,6 +149,14 @@ export const Component = ({
         [enableOraclePickStep],
     );
 
+    const handleDraftSave = useCallback(() => {
+        onCreateDraft();
+        setDraftSaved(true);
+        setTimeout(() => {
+            setDraftSaved(false);
+        }, 600);
+    }, [onCreateDraft]);
+
     if (
         loadingOracleTemplates ||
         loadingProtocolFee ||
@@ -181,7 +199,7 @@ export const Component = ({
                         }}
                     />
                 </div>
-                <div className="absolute left-10 top-40 hidden lg:flex">
+                <div className="flex-col gap-14 absolute left-10 top-40 hidden lg:flex">
                     <Stepper
                         layout="vertical"
                         stepTitles={stepTitles}
@@ -189,6 +207,17 @@ export const Component = ({
                         lastStepCompleted={mostUpdatedStep}
                         onClick={handleStepClick}
                     />
+                    <Button
+                        size="small"
+                        icon={draftSaved ? CircleOk : ArrowDown}
+                        variant={draftSaved ? "secondary" : "primary"}
+                        onClick={handleDraftSave}
+                        className={{
+                            icon: "stroke-current",
+                        }}
+                    >
+                        {t("draft.create")}
+                    </Button>
                 </div>
                 <MultiStepCards
                     activeStep={step}

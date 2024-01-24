@@ -85,6 +85,7 @@
     "next": "Next",
     "step": "Step",
     "add": "Add",
+    "draft.create": "Save draft",
     "success.text": "Your campaign has successfully been created!",
     "success.summary.time.label": "Expires in",
     "success.button.label": "Go to campaign"
