@@ -1684,10 +1684,10 @@
     react-use "^17.4.2"
     viem "^1.20.0"
 
-"@carrot-kpi/react@^0.76.0":
-  version "0.76.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.76.0.tgz#c0755f34ade8ed2b2a3131d3396aa015af348ff7"
-  integrity sha512-Ewb91TFC5peoPLoIxpCA0viLAfufmQ8moM5v9TAen1j1hz52bmoJ/Rdpd4cmWYZ2fE/F62qpTZg+Od8+W5nGnw==
+"@carrot-kpi/react@^0.76.1":
+  version "0.76.1"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.76.1.tgz#d9034000f5ea6ddc6cc7b873e253db44ba5ff846"
+  integrity sha512-WNve+F+dsq8l5YCDZTzOIY2N89APn5pFshuY1hv/dbJbB3VcfY2EohuTNVgFSIjq24w1LM7eApxK6IA4rMoYkQ==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@uniswap/token-lists" "1.0.0-beta.33"

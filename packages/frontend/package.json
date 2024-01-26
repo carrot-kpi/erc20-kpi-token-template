@@ -27,7 +27,7 @@
         "size-limit": "size-limit"
     },
     "dependencies": {
-        "@carrot-kpi/react": "^0.76.0",
+        "@carrot-kpi/react": "^0.76.1",
         "@carrot-kpi/sdk": "^1.49.0",
         "@carrot-kpi/shared-state": "^0.16.0",
         "@carrot-kpi/ui": "^0.67.0",
