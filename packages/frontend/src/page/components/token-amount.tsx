@@ -1,6 +1,6 @@
 import { Amount, formatCurrencyAmount, Token } from "@carrot-kpi/sdk";
 import { ERC20TokenLogo, Skeleton, Typography } from "@carrot-kpi/ui";
-import { useNetwork } from "wagmi";
+import { useAccount } from "wagmi";
 
 export interface TokenAmountProps {
     loading?: boolean;
@@ -13,7 +13,7 @@ export const TokenAmount = ({
     amount,
     withSymbol,
 }: TokenAmountProps) => {
-    const { chain } = useNetwork();
+    const { chain } = useAccount();
 
     return (
         <div className="flex items-center gap-2">

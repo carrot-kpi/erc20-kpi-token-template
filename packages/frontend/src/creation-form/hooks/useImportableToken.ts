@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { isAddress } from "viem";
-import { type Address, useBalance, useNetwork, useToken } from "wagmi";
+import { isAddress, type Address, erc20Abi } from "viem";
+import { useAccount, useBalance, useReadContracts } from "wagmi";
 import type { TokenInfoWithBalance } from "@carrot-kpi/ui";
 
 export const useImportableToken = (
@@ -11,7 +11,7 @@ export const useImportableToken = (
     importableToken?: TokenInfoWithBalance | null;
     loadingBalance: boolean;
 } => {
-    const { chain } = useNetwork();
+    const { chain } = useAccount();
 
     const [importableToken, setImportableToken] =
         useState<TokenInfoWithBalance | null>(null);
@@ -20,9 +20,26 @@ export const useImportableToken = (
         data: rawImportableToken,
         isLoading: loadingImportableToken,
         isFetching: fetchingImportableToken,
-    } = useToken({
-        address: debouncedQuery as Address,
-        enabled: !!(debouncedQuery && isAddress(debouncedQuery)),
+    } = useReadContracts({
+        contracts: [
+            {
+                address: debouncedQuery as Address,
+                abi: erc20Abi,
+                functionName: "name",
+            },
+            {
+                address: debouncedQuery as Address,
+                abi: erc20Abi,
+                functionName: "decimals",
+            },
+            {
+                address: debouncedQuery as Address,
+                abi: erc20Abi,
+                functionName: "symbol",
+            },
+        ],
+        allowFailure: false,
+        query: { enabled: !!(debouncedQuery && isAddress(debouncedQuery)) },
     });
 
     const {
@@ -31,12 +48,14 @@ export const useImportableToken = (
         isFetching: fetchingBalance,
     } = useBalance({
         address: connectedAccountAddress as Address,
-        token: rawImportableToken?.address,
-        enabled: !!(
-            withBalances &&
-            connectedAccountAddress &&
-            rawImportableToken
-        ),
+        token: debouncedQuery as Address,
+        query: {
+            enabled: !!(
+                withBalances &&
+                connectedAccountAddress &&
+                rawImportableToken
+            ),
+        },
     });
 
     // whenever the query is not an address anymore and the importable
@@ -57,14 +76,15 @@ export const useImportableToken = (
         )
             return;
         setImportableToken({
-            address: rawImportableToken.address,
-            name: rawImportableToken.name,
-            decimals: rawImportableToken.decimals,
-            symbol: rawImportableToken.symbol,
+            address: debouncedQuery as Address,
+            name: rawImportableToken[0],
+            decimals: rawImportableToken[1],
+            symbol: rawImportableToken[2],
             chainId: chain.id,
         });
     }, [
         chain,
+        debouncedQuery,
         fetchingImportableToken,
         loadingImportableToken,
         rawImportableToken,

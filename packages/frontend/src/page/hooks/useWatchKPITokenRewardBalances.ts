@@ -1,8 +1,8 @@
 import { Amount, Token } from "@carrot-kpi/sdk";
 import { useEffect, useState } from "react";
-import { erc20ABI, useContractReads } from "wagmi";
-import type { Address } from "viem";
+import { erc20Abi, type Address } from "viem";
 import type { RewardData } from "../types";
+import { useReadContracts } from "wagmi";
 import { useWagmiPassiveHook } from "@carrot-kpi/react";
 
 export const useWatchKPITokenRewardBalances = (
@@ -12,7 +12,7 @@ export const useWatchKPITokenRewardBalances = (
     const [balances, setBalances] = useState<Amount<Token>[]>([]);
 
     const { data: rawBalances, isLoading: loading } = useWagmiPassiveHook({
-        hook: useContractReads,
+        hook: useReadContracts,
         params: {
             contracts:
                 kpiTokenAddress &&
@@ -20,12 +20,12 @@ export const useWatchKPITokenRewardBalances = (
                 rewards.map((reward) => {
                     return {
                         address: reward.amount.currency.address,
-                        abi: erc20ABI,
+                        abi: erc20Abi,
                         functionName: "balanceOf",
                         args: [kpiTokenAddress],
                     };
                 }),
-            enabled: !!(rewards && kpiTokenAddress),
+            query: { enabled: !!(rewards && kpiTokenAddress) },
             watch: true,
         },
     });

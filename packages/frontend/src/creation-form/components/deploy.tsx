@@ -6,12 +6,10 @@ import {
     useEffect,
 } from "react";
 import {
-    type Address,
     useAccount,
-    useNetwork,
-    useContractRead,
-    useContractWrite,
-    usePrepareContractWrite,
+    useReadContract,
+    useWriteContract,
+    useSimulateContract,
     usePublicClient,
 } from "wagmi";
 import type {
@@ -47,7 +45,7 @@ import {
     encodeOracleInitializationData,
 } from "../utils/data-encoding";
 import { getKPITokenAddressFromReceipt } from "../../utils/logs";
-import { zeroAddress, type Hex } from "viem";
+import { zeroAddress, type Hex, type Address } from "viem";
 import {
     dateToUnixTimestamp,
     isUnixTimestampInThePast,
@@ -79,8 +77,7 @@ export const Deploy = ({
     onCreate,
     onTx,
 }: DeployProps): ReactElement => {
-    const { address } = useAccount();
-    const { chain } = useNetwork();
+    const { address, chain } = useAccount();
     const publicClient = usePublicClient();
     const devMode = useDevMode();
     const uploadJSON = useJSONUploader();
@@ -232,7 +229,7 @@ export const Deploy = ({
     const {
         data: predictedKPITokenAddress,
         isLoading: loadingPredictedKPITokenAddress,
-    } = useContractRead({
+    } = useReadContract({
         address: kpiTokensManagerAddress,
         abi: KPI_TOKENS_MANAGER_ABI,
         functionName: "predictInstanceAddress",
@@ -247,23 +244,25 @@ export const Deploy = ({
                       oraclesInitializationData,
                   ]
                 : undefined,
-        enabled:
-            !!address &&
-            !!specificationCid &&
-            kpiTokenInitializationData !== "0x" &&
-            oraclesInitializationData !== "0x",
+        query: {
+            enabled:
+                !!address &&
+                !!specificationCid &&
+                kpiTokenInitializationData !== "0x" &&
+                oraclesInitializationData !== "0x",
+        },
     });
 
     const [approved, setApproved] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const {
-        config,
+        data,
         isLoading: loadingTxConfig,
         isFetching: fetchingTxConfig,
         error,
         isError,
-    } = usePrepareContractWrite({
+    } = useSimulateContract({
         chainId: chain?.id,
         address: factoryAddress,
         abi: FACTORY_ABI,
@@ -277,16 +276,18 @@ export const Deploy = ({
                   oraclesInitializationData,
               ]
             : undefined,
-        enabled:
-            !!chain?.id &&
-            factoryAddress &&
-            approved &&
-            !!state.expiration &&
-            kpiTokenInitializationData !== "0x" &&
-            oraclesInitializationData !== "0x",
+        query: {
+            enabled:
+                !!chain?.id &&
+                factoryAddress &&
+                approved &&
+                !!state.expiration &&
+                kpiTokenInitializationData !== "0x" &&
+                oraclesInitializationData !== "0x",
+        },
         value: totalValue,
     });
-    const { writeAsync } = useContractWrite(config);
+    const { writeContractAsync } = useWriteContract();
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -310,13 +311,13 @@ export const Deploy = ({
     }, []);
 
     const handleCreate = useCallback(() => {
-        if (!writeAsync) return;
+        if (!writeContractAsync || !publicClient) return;
         const create = async () => {
             setLoading(true);
             try {
-                const tx = await writeAsync();
+                const tx = await writeContractAsync(data!.request);
                 const receipt = await publicClient.waitForTransactionReceipt({
-                    hash: tx.hash,
+                    hash: tx,
                     confirmations: devMode ? 1 : 3,
                 });
                 if (receipt.status === "reverted") {
@@ -335,7 +336,7 @@ export const Deploy = ({
                 onTx({
                     type: TxType.KPI_TOKEN_CREATION,
                     from: receipt.from,
-                    hash: tx.hash,
+                    hash: tx,
                     payload: {
                         address: createdKPITokenAddress,
                     },
@@ -359,7 +360,15 @@ export const Deploy = ({
             }
         };
         void create();
-    }, [devMode, onCreate, onNext, onTx, publicClient, writeAsync]);
+    }, [
+        data,
+        devMode,
+        onCreate,
+        onNext,
+        onTx,
+        publicClient,
+        writeContractAsync,
+    ]);
 
     const handleExpirationChange = useCallback(
         (value: Date) => {
@@ -452,7 +461,7 @@ export const Deploy = ({
                     data-testid="deploy-step-create-button"
                     size="small"
                     onClick={handleCreate}
-                    disabled={!writeAsync}
+                    disabled={!writeContractAsync}
                     loading={loading || loadingTxConfig || fetchingTxConfig}
                     className={{ root: "w-full" }}
                 >

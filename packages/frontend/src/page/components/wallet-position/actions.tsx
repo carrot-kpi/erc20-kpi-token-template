@@ -14,14 +14,12 @@ import { Button, Typography } from "@carrot-kpi/ui";
 import { useCallback, useEffect, useState } from "react";
 import {
     useAccount,
-    useContractWrite,
-    usePrepareContractWrite,
-    type Address,
+    useWriteContract,
+    useSimulateContract,
     usePublicClient,
-    useNetwork,
 } from "wagmi";
 import { dateToUnixTimestamp } from "../../../utils/dates";
-import { encodeAbiParameters, zeroAddress } from "viem";
+import { encodeAbiParameters, zeroAddress, type Address } from "viem";
 
 interface WalletActionsProps {
     t: NamespacedTranslateFunction;
@@ -38,8 +36,7 @@ export const WalletActions = ({
     kpiTokenBalance,
     redeemableRewards,
 }: WalletActionsProps) => {
-    const { address } = useAccount();
-    const { chain } = useNetwork();
+    const { address, chain } = useAccount();
     const publicClient = usePublicClient();
 
     const [loading, setLoading] = useState(false);
@@ -47,8 +44,8 @@ export const WalletActions = ({
     const [burnable, setBurnable] = useState(false);
     const [text, setText] = useState("");
 
-    const { config: redeemConfig, isLoading: redeemConfigLoading } =
-        usePrepareContractWrite({
+    const { data: redeemConfig, isLoading: redeemConfigLoading } =
+        useSimulateContract({
             chainId: chain?.id,
             address: kpiToken.address as Address,
             abi: KPI_TOKEN_ABI,
@@ -59,10 +56,12 @@ export const WalletActions = ({
                     [address],
                 ) as `0x${string}`,
             ],
-            enabled: !!chain?.id && !!address && (redeemable || burnable),
+            query: {
+                enabled: !!chain?.id && !!address && (redeemable || burnable),
+            },
         });
-    const { writeAsync, isLoading: signingTransaction } =
-        useContractWrite(redeemConfig);
+    const { writeContractAsync, isPending: signingTransaction } =
+        useWriteContract();
 
     useEffect(() => {
         const hasSomeRedeemableReward =
@@ -135,17 +134,17 @@ export const WalletActions = ({
     ]);
 
     const handleClick = useCallback(async () => {
-        if (!writeAsync) return;
+        if (!writeContractAsync || !publicClient) return;
         setLoading(true);
         try {
-            const tx = await writeAsync();
+            const tx = await writeContractAsync(redeemConfig!.request);
             const receipt = await publicClient.waitForTransactionReceipt({
-                hash: tx.hash,
+                hash: tx,
             });
             onTx({
                 type: TxType.KPI_TOKEN_REDEMPTION,
                 from: receipt.from,
-                hash: tx.hash,
+                hash: tx,
                 payload: {
                     address: kpiToken.address,
                 },
@@ -166,7 +165,13 @@ export const WalletActions = ({
         } finally {
             setLoading(false);
         }
-    }, [kpiToken.address, onTx, publicClient, writeAsync]);
+    }, [
+        kpiToken.address,
+        onTx,
+        publicClient,
+        redeemConfig,
+        writeContractAsync,
+    ]);
 
     const redeeming = loading || redeemConfigLoading || signingTransaction;
 
@@ -180,7 +185,7 @@ export const WalletActions = ({
                     data-testid="wallet-position-actions-burn-redeem-button"
                     size="small"
                     loading={redeeming}
-                    disabled={!writeAsync}
+                    disabled={!writeContractAsync}
                     onClick={handleClick}
                 >
                     {redeemable && t("redeem")}

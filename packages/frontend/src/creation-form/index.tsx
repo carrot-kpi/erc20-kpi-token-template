@@ -16,7 +16,7 @@ import {
 import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { usePrevious } from "react-use";
 import type { OracleWithInitializationBundleGetter, State } from "./types";
-import { useAccount, useContractRead } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import { Rewards } from "./components/rewards";
 import { OraclesConfiguration } from "./components/oracles-configuration";
 import { Deploy } from "./components/deploy";
@@ -45,7 +45,7 @@ export const Component = ({
     const { loading: loadingOracleTemplates, templates: oracleTemplates } =
         useOracleTemplates();
     const { data: protocolFeePpm, isLoading: loadingProtocolFee } =
-        useContractRead({
+        useReadContract({
             address: template.address,
             abi: erc20KpiToken,
             functionName: "fee",

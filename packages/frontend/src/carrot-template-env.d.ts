@@ -1,6 +1,5 @@
 import "carrot-scripts";
-
-import { Address } from "wagmi";
+import type { Address } from "viem";
 
 declare global {
     const __ROOT_ID__: string;

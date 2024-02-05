@@ -7,40 +7,24 @@ import "@carrot-kpi/switzer-font/700.css";
 import "@carrot-kpi/ui/styles.css";
 import "@carrot-kpi/host-frontend/styles.css";
 
-import { CarrotConnector, Root } from "@carrot-kpi/host-frontend";
+import { Root } from "@carrot-kpi/host-frontend";
 import { createRoot } from "react-dom/client";
-import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import * as chains from "wagmi/chains";
+import type { Chain } from "viem";
 
 const forkedChain = Object.values(chains).find(
     (chain) => chain.id === CCT_CHAIN_ID,
-);
+) as Chain;
 if (!forkedChain) {
     console.log(`unsupported chain id ${CCT_CHAIN_ID}`);
     process.exit(0);
 }
-const supportedChains = [forkedChain];
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 createRoot(document.getElementById("root")!).render(
     <Root
-        supportedChains={supportedChains}
-        providers={[
-            jsonRpcProvider({
-                rpc: () => ({
-                    http: CCT_RPC_URL,
-                }),
-            }),
-        ]}
-        getConnectors={() => [
-            new CarrotConnector({
-                chains: supportedChains,
-                options: {
-                    rpcURL: CCT_RPC_URL,
-                    privateKey: CCT_DEPLOYMENT_ACCOUNT_PRIVATE_KEY,
-                },
-            }),
-        ]}
+        supportedChain={forkedChain}
+        rpcURL={CCT_RPC_URL}
+        privateKey={CCT_DEPLOYMENT_ACCOUNT_PRIVATE_KEY}
         ipfsGatewayURL={CCT_IPFS_GATEWAY_URL}
         kpiTokenTemplateBaseURL={CCT_TEMPLATE_URL}
         templateId={CCT_TEMPLATE_ID}

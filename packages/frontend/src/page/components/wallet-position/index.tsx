@@ -1,6 +1,7 @@
-import type {
-    KPITokenPageProps,
-    NamespacedTranslateFunction,
+import {
+    useWagmiPassiveHook,
+    type KPITokenPageProps,
+    type NamespacedTranslateFunction,
 } from "@carrot-kpi/react";
 import {
     Amount,
@@ -10,14 +11,7 @@ import {
 } from "@carrot-kpi/sdk";
 import { Skeleton, Typography } from "@carrot-kpi/ui";
 import { type ReactElement, useEffect, useState } from "react";
-import {
-    type Address,
-    useAccount,
-    useBalance,
-    useEnsName,
-    useContractRead,
-    useNetwork,
-} from "wagmi";
+import { useAccount, useBalance, useEnsName, useReadContract } from "wagmi";
 import { mainnet } from "wagmi/chains";
 import type { RewardData } from "../../types";
 import {
@@ -29,6 +23,7 @@ import type { FinalizableOracle } from "../../types";
 import { TokenAmount } from "../token-amount";
 import { WalletActions } from "./actions";
 import { RecoverReward } from "./recover-reward";
+import type { Address } from "viem";
 
 interface WalletPositionProps {
     t: NamespacedTranslateFunction;
@@ -57,24 +52,25 @@ export const WalletPosition = ({
     erc20Name,
     jitFunding,
 }: WalletPositionProps): ReactElement => {
-    const { address: connectedAddress } = useAccount();
-    const { chain } = useNetwork();
+    const { address: connectedAddress, chain } = useAccount();
     const { data: ensName, isLoading: loadingENSName } = useEnsName({
-        address: connectedAddress as Address,
+        address: connectedAddress,
         chainId: mainnet.id,
     });
-    const { data: rawKpiTokenBalance } = useBalance({
-        address: connectedAddress,
-        token: kpiToken.address as Address,
-        watch: true,
+    const { data: rawKpiTokenBalance } = useWagmiPassiveHook({
+        hook: useBalance,
+        params: {
+            address: connectedAddress,
+            token: kpiToken.address,
+        },
     });
 
-    const { data: kpiTokenOwner } = useContractRead({
+    const { data: kpiTokenOwner } = useReadContract({
         chainId: chain?.id,
         address: kpiToken.address as Address,
         abi: KPI_TOKEN_ABI,
         functionName: "owner",
-        enabled: !!chain?.id && !!connectedAddress,
+        query: { enabled: !!chain?.id && !!connectedAddress },
     });
 
     const [balance, setBalance] = useState<Amount<Token> | null>(null);

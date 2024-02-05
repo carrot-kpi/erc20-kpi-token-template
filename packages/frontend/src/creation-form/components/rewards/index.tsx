@@ -18,10 +18,10 @@ import {
 import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { type State } from "../../types";
 import { Amount, formatCurrencyAmount } from "@carrot-kpi/sdk";
-import { type Address, useAccount, useBalance, useChainId } from "wagmi";
+import { useAccount, useBalance, useChainId } from "wagmi";
 import { ReactComponent as ArrowDown } from "../../../assets/arrow-down.svg";
 import { USDValue } from "./usd-value";
-import { formatUnits, parseUnits } from "viem";
+import { formatUnits, parseUnits, type Address } from "viem";
 import { RewardTokenPicker } from "./picker";
 import { RewardsTable } from "./table";
 import { NoSpecialCharactersTextInput } from "../no-special-characters-text-input";

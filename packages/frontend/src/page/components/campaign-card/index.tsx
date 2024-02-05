@@ -18,7 +18,7 @@ import type { RewardData } from "../../types";
 import { shortenAddress } from "../../../utils/address";
 import { RewardsRow } from "../rewards-row";
 import { TimeLeft } from "./time-left";
-import { type Address, useEnsName } from "wagmi";
+import { useEnsName } from "wagmi";
 import { mainnet } from "wagmi/chains";
 
 interface CampaignCardProps {
@@ -40,7 +40,7 @@ export const CampaignCard = ({
     currentSupply,
 }: CampaignCardProps): ReactElement => {
     const { data: ensName, isLoading: resolvingENSName } = useEnsName({
-        address: kpiToken.owner as Address,
+        address: kpiToken.owner,
         chainId: mainnet.id,
     });
 

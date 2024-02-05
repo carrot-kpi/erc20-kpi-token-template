@@ -13,10 +13,9 @@ import type { RewardData } from "../../types";
 import ERC20_KPI_TOKEN_ABI from "../../../abis/erc20-kpi-token";
 import { type Address, zeroAddress, formatUnits } from "viem";
 import {
-    usePrepareContractWrite,
-    useContractWrite,
+    useSimulateContract,
+    useWriteContract,
     useAccount,
-    useNetwork,
     usePublicClient,
 } from "wagmi";
 import { useCallback, useMemo, useState } from "react";
@@ -49,8 +48,7 @@ export const RecoverReward = ({
     rewards,
     jitFunding,
 }: RecoverRewardProps) => {
-    const { address } = useAccount();
-    const { chain } = useNetwork();
+    const { address, chain } = useAccount();
     const publicClient = usePublicClient();
 
     const [loadingRecover, setLoadingRecover] = useState(false);
@@ -62,8 +60,8 @@ export const RecoverReward = ({
         loading: loadingEffectiveRewardBalances,
     } = useWatchKPITokenRewardBalances(kpiToken.address, rewards);
 
-    const { config: recoverConfig, isLoading: loadingRecoverConfig } =
-        usePrepareContractWrite({
+    const { data: recoverConfig, isLoading: loadingRecoverConfig } =
+        useSimulateContract({
             chainId: chain?.id,
             address: kpiToken.address as Address,
             abi: ERC20_KPI_TOKEN_ABI,
@@ -72,10 +70,10 @@ export const RecoverReward = ({
                 !!address && !!rewardToRecover
                     ? [rewardToRecover.value, address]
                     : undefined,
-            enabled: !!chain?.id && !!address && !!rewardToRecover,
+            query: { enabled: !!chain?.id && !!address && !!rewardToRecover },
         });
-    const { writeAsync: recoverAsync, isLoading: signingTransaction } =
-        useContractWrite(recoverConfig);
+    const { writeContractAsync: recoverAsync, isPending: signingTransaction } =
+        useWriteContract();
 
     const rewardOptions: RewardOption[] = useMemo(() => {
         if (!rewards || !effectiveRewardBalances) return [];
@@ -94,17 +92,18 @@ export const RecoverReward = ({
     }, [rewards, effectiveRewardBalances, kpiToken.expired, jitFunding]);
 
     const handleRewardRecoverClick = useCallback(async () => {
-        if (!recoverAsync || !address || !rewardToRecover) return;
+        if (!recoverAsync || !address || !rewardToRecover || !publicClient)
+            return;
         setLoadingRecover(true);
         try {
-            const tx = await recoverAsync();
+            const tx = await recoverAsync(recoverConfig!.request);
             const receipt = await publicClient.waitForTransactionReceipt({
-                hash: tx.hash,
+                hash: tx,
             });
             onTx({
                 type: TxType.KPI_TOKEN_REWARDS_RECOVERY,
                 from: receipt.from,
-                hash: tx.hash,
+                hash: tx,
                 payload: {
                     receiver: address,
                     token: rewardToRecover?.value,
@@ -127,7 +126,14 @@ export const RecoverReward = ({
         } finally {
             setLoadingRecover(false);
         }
-    }, [address, rewardToRecover, onTx, publicClient, recoverAsync]);
+    }, [
+        recoverAsync,
+        address,
+        rewardToRecover,
+        publicClient,
+        recoverConfig,
+        onTx,
+    ]);
 
     const recovering =
         loading ||
