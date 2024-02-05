@@ -78,6 +78,7 @@ export const Component = ({
         });
 
     const [decodingKPITokenData, setDecodingKPITokenData] = useState(false);
+    const [erc20KPIToken, setERC20KPIToken] = useState<Token>();
     const [rewards, setRewards] = useState<RewardData[]>([]);
     const [oracles, setOracles] = useState<FinalizableOracle[]>([]);
     const [allOrNone, setAllOrNone] = useState(false);
@@ -91,10 +92,28 @@ export const Component = ({
     const [openInExplorerHref, setOpenInExplorerHref] = useState("");
 
     useEffect(() => {
+        if (
+            !kpiToken?.chainId ||
+            !kpiToken.address ||
+            !tokenData?.[2] ||
+            !tokenData?.[0]
+        )
+            return;
+        setERC20KPIToken(
+            new Token(
+                kpiToken.chainId,
+                kpiToken.address,
+                18,
+                tokenData[2],
+                tokenData[0],
+            ),
+        );
+    }, [kpiToken?.address, kpiToken?.chainId, tokenData]);
+
+    useEffect(() => {
         let cancelled = false;
-        const fetchData = async () => {
-            if (!kpiToken || !kpiTokenData || !publicClient || !tokenData)
-                return;
+        const decodeData = async () => {
+            if (!kpiTokenData?.data || !publicClient || !erc20KPIToken) return;
             if (!cancelled) setDecodingKPITokenData(true);
             let decoded;
             try {
@@ -113,24 +132,16 @@ export const Component = ({
                 setOracles(decoded.finalizableOracles);
                 setAllOrNone(decoded.allOrNone);
                 setJitFunding(decoded.jitFunding);
+                setInitialSupply(
+                    new Amount(erc20KPIToken, decoded.initialSupply),
+                );
             }
-            if (!tokenData[2] || !tokenData[0]) return;
-            const erc20KPIToken = new Token(
-                kpiToken.chainId,
-                kpiToken.address,
-                18,
-                tokenData[2],
-                tokenData[0],
-            );
-            setInitialSupply(new Amount(erc20KPIToken, decoded.initialSupply));
-            if (tokenData[3])
-                setCurrentSupply(new Amount(erc20KPIToken, tokenData[3]));
         };
-        void fetchData();
+        void decodeData();
         return () => {
             cancelled = true;
         };
-    }, [kpiTokenData, kpiToken, publicClient, tokenData]);
+    }, [kpiTokenData?.data, publicClient, erc20KPIToken]);
 
     useEffect(() => {
         if (

@@ -44,7 +44,7 @@ export const WalletActions = ({
     const [burnable, setBurnable] = useState(false);
     const [text, setText] = useState("");
 
-    const { data: redeemConfig, isLoading: redeemConfigLoading } =
+    const { data: simulatedRedeem, isLoading: simulatingRedeem } =
         useSimulateContract({
             chainId: chain?.id,
             address: kpiToken.address as Address,
@@ -134,10 +134,11 @@ export const WalletActions = ({
     ]);
 
     const handleClick = useCallback(async () => {
-        if (!writeContractAsync || !publicClient) return;
+        if (!writeContractAsync || !publicClient || !simulatedRedeem?.request)
+            return;
         setLoading(true);
         try {
-            const tx = await writeContractAsync(redeemConfig!.request);
+            const tx = await writeContractAsync(simulatedRedeem.request);
             const receipt = await publicClient.waitForTransactionReceipt({
                 hash: tx,
             });
@@ -169,11 +170,11 @@ export const WalletActions = ({
         kpiToken.address,
         onTx,
         publicClient,
-        redeemConfig,
+        simulatedRedeem?.request,
         writeContractAsync,
     ]);
 
-    const redeeming = loading || redeemConfigLoading || signingTransaction;
+    const redeeming = loading || simulatingRedeem || signingTransaction;
 
     return (
         <div className="flex flex-col gap-4">
@@ -185,7 +186,7 @@ export const WalletActions = ({
                     data-testid="wallet-position-actions-burn-redeem-button"
                     size="small"
                     loading={redeeming}
-                    disabled={!writeContractAsync}
+                    disabled={!simulatedRedeem?.request}
                     onClick={handleClick}
                 >
                     {redeemable && t("redeem")}

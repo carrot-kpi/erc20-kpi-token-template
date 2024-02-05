@@ -257,9 +257,9 @@ export const Deploy = ({
     const [loading, setLoading] = useState(false);
 
     const {
-        data,
-        isLoading: loadingTxConfig,
-        isFetching: fetchingTxConfig,
+        data: simulatedCreateToken,
+        isLoading: simulatingCreateToken,
+        isFetching: simulatingFetchCreateToken,
         error,
         isError,
     } = useSimulateContract({
@@ -311,11 +311,18 @@ export const Deploy = ({
     }, []);
 
     const handleCreate = useCallback(() => {
-        if (!writeContractAsync || !publicClient) return;
+        if (
+            !writeContractAsync ||
+            !publicClient ||
+            !simulatedCreateToken?.request
+        )
+            return;
         const create = async () => {
             setLoading(true);
             try {
-                const tx = await writeContractAsync(data!.request);
+                const tx = await writeContractAsync(
+                    simulatedCreateToken.request,
+                );
                 const receipt = await publicClient.waitForTransactionReceipt({
                     hash: tx,
                     confirmations: devMode ? 1 : 3,
@@ -361,7 +368,7 @@ export const Deploy = ({
         };
         void create();
     }, [
-        data,
+        simulatedCreateToken?.request,
         devMode,
         onCreate,
         onNext,
@@ -461,8 +468,12 @@ export const Deploy = ({
                     data-testid="deploy-step-create-button"
                     size="small"
                     onClick={handleCreate}
-                    disabled={!writeContractAsync}
-                    loading={loading || loadingTxConfig || fetchingTxConfig}
+                    disabled={!simulatedCreateToken?.request}
+                    loading={
+                        loading ||
+                        simulatingCreateToken ||
+                        simulatingFetchCreateToken
+                    }
                     className={{ root: "w-full" }}
                 >
                     {t("label.create")}

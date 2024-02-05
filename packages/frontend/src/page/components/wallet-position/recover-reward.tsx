@@ -60,7 +60,7 @@ export const RecoverReward = ({
         loading: loadingEffectiveRewardBalances,
     } = useWatchKPITokenRewardBalances(kpiToken.address, rewards);
 
-    const { data: recoverConfig, isLoading: loadingRecoverConfig } =
+    const { data: simulatedRecoverERC20, isLoading: simulatingRecoverERC20 } =
         useSimulateContract({
             chainId: chain?.id,
             address: kpiToken.address as Address,
@@ -92,11 +92,17 @@ export const RecoverReward = ({
     }, [rewards, effectiveRewardBalances, kpiToken.expired, jitFunding]);
 
     const handleRewardRecoverClick = useCallback(async () => {
-        if (!recoverAsync || !address || !rewardToRecover || !publicClient)
+        if (
+            !recoverAsync ||
+            !address ||
+            !rewardToRecover ||
+            !publicClient ||
+            !simulatedRecoverERC20?.request
+        )
             return;
         setLoadingRecover(true);
         try {
-            const tx = await recoverAsync(recoverConfig!.request);
+            const tx = await recoverAsync(simulatedRecoverERC20?.request);
             const receipt = await publicClient.waitForTransactionReceipt({
                 hash: tx,
             });
@@ -131,7 +137,7 @@ export const RecoverReward = ({
         address,
         rewardToRecover,
         publicClient,
-        recoverConfig,
+        simulatedRecoverERC20?.request,
         onTx,
     ]);
 
@@ -139,7 +145,7 @@ export const RecoverReward = ({
         loading ||
         loadingEffectiveRewardBalances ||
         loadingRecover ||
-        loadingRecoverConfig ||
+        simulatingRecoverERC20 ||
         signingTransaction;
 
     return (
@@ -173,7 +179,7 @@ export const RecoverReward = ({
                         data-testid="wallet-position-recover-reward-button"
                         size="small"
                         loading={recovering}
-                        disabled={!recoverAsync}
+                        disabled={!simulatedRecoverERC20?.request}
                         onClick={handleRewardRecoverClick}
                     >
                         {t("recover")}
