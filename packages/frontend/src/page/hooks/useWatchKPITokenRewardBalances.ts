@@ -26,7 +26,6 @@ export const useWatchKPITokenRewardBalances = (
                     };
                 }),
             query: { enabled: !!(rewards && kpiTokenAddress) },
-            watch: true,
         },
     });
 
