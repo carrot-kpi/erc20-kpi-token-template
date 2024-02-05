@@ -55,11 +55,6 @@ export const Component = ({
                 abi: erc20Abi,
                 functionName: "symbol",
             },
-            {
-                address: kpiToken?.address,
-                abi: erc20Abi,
-                functionName: "totalSupply",
-            },
         ],
         allowFailure: false,
         query: { enabled: !!kpiToken?.address },
