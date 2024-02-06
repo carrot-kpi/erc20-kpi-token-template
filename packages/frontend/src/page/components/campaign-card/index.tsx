@@ -39,7 +39,7 @@ export const CampaignCard = ({
     initialSupply,
     currentSupply,
 }: CampaignCardProps): ReactElement => {
-    const { data: ensName, isPending: pendingENSName } = useEnsName({
+    const { data: ensName, isLoading: loadingENSName } = useEnsName({
         address: kpiToken.owner,
         chainId: mainnet.id,
     });
@@ -53,7 +53,7 @@ export const CampaignCard = ({
                     <Typography uppercase variant="xs">
                         {t("overview.owner.label")}
                     </Typography>
-                    {pendingENSName ? (
+                    {loadingENSName ? (
                         <Skeleton width="100px" />
                     ) : (
                         <Typography truncate>

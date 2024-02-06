@@ -16,7 +16,7 @@ export const useImportableToken = (
     const [importableToken, setImportableToken] =
         useState<TokenInfoWithBalance | null>(null);
 
-    const { data: rawImportableToken, isPending: pendingImportableToken } =
+    const { data: rawImportableToken, isLoading: loadingImportableToken } =
         useReadContracts({
             contracts: [
                 {
@@ -39,7 +39,7 @@ export const useImportableToken = (
             query: { enabled: !!(debouncedQuery && isAddress(debouncedQuery)) },
         });
 
-    const { data: rawBalance, isPending: pendingBalance } = useBalance({
+    const { data: rawBalance, isLoading: pendingBalance } = useBalance({
         address: connectedAccountAddress as Address,
         token: debouncedQuery as Address,
         query: {
@@ -61,7 +61,7 @@ export const useImportableToken = (
     // whenever the wagmi hook fetches an importable token, set it in
     // the internal state
     useEffect(() => {
-        if (!chain || !rawImportableToken || pendingImportableToken) return;
+        if (!chain || !rawImportableToken || loadingImportableToken) return;
         setImportableToken({
             address: debouncedQuery as Address,
             name: rawImportableToken[0],
@@ -69,7 +69,7 @@ export const useImportableToken = (
             symbol: rawImportableToken[2],
             chainId: chain.id,
         });
-    }, [chain, debouncedQuery, pendingImportableToken, rawImportableToken]);
+    }, [chain, debouncedQuery, loadingImportableToken, rawImportableToken]);
 
     // whenever the wagmi hook fetches the importable token balance,
     // update it
@@ -83,6 +83,6 @@ export const useImportableToken = (
 
     return {
         importableToken,
-        loadingBalance: pendingImportableToken || pendingBalance,
+        loadingBalance: loadingImportableToken || pendingBalance,
     };
 };

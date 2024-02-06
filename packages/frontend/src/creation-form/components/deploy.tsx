@@ -228,7 +228,7 @@ export const Deploy = ({
 
     const {
         data: predictedKPITokenAddress,
-        isPending: pendingPredictedKPITokenAddress,
+        isLoading: loadingPredictedKPITokenAddress,
     } = useReadContract({
         address: kpiTokensManagerAddress,
         abi: KPI_TOKENS_MANAGER_ABI,
@@ -258,7 +258,7 @@ export const Deploy = ({
 
     const {
         data: simulatedCreateToken,
-        isPending: simulatingCreateToken,
+        isLoading: simulatingCreateToken,
         error,
         isError,
     } = useSimulateContract({
@@ -454,7 +454,7 @@ export const Deploy = ({
                 </div>
                 <ApproveRewards
                     t={t}
-                    loading={pendingPredictedKPITokenAddress}
+                    loading={loadingPredictedKPITokenAddress}
                     rewards={state.rewards}
                     protocolFeePpm={protocolFeePpm}
                     spender={predictedKPITokenAddress}

@@ -53,7 +53,7 @@ export const WalletPosition = ({
     jitFunding,
 }: WalletPositionProps): ReactElement => {
     const { address: connectedAddress, chain } = useAccount();
-    const { data: ensName, isPending: pendingENSName } = useEnsName({
+    const { data: ensName, isLoading: loadingENSName } = useEnsName({
         address: connectedAddress,
         chainId: mainnet.id,
     });
@@ -144,7 +144,7 @@ export const WalletPosition = ({
         <div className="flex flex-col gap-6">
             <div className="flex flex-col w-full max-w-screen-2xl bg-white dark:bg-black border border-black dark:border-gray-400">
                 <div className="w-full p-6 bg-gray-200 dark:bg-gray-700 border-b border-black dark:border-gray-400">
-                    {pendingENSName ? (
+                    {loadingENSName ? (
                         <Skeleton width="120px" />
                     ) : (
                         <Typography

@@ -57,10 +57,10 @@ export const RecoverReward = ({
 
     const {
         balances: effectiveRewardBalances,
-        pending: pendingEffectiveRewardBalances,
+        loading: loadingEffectiveRewardBalances,
     } = useWatchKPITokenRewardBalances(kpiToken.address, rewards);
 
-    const { data: simulatedRecoverERC20, isPending: simulatingRecoverERC20 } =
+    const { data: simulatedRecoverERC20, isLoading: simulatingRecoverERC20 } =
         useSimulateContract({
             chainId: chain?.id,
             address: kpiToken.address as Address,
@@ -143,7 +143,7 @@ export const RecoverReward = ({
 
     const recovering =
         loading ||
-        pendingEffectiveRewardBalances ||
+        loadingEffectiveRewardBalances ||
         loadingRecover ||
         simulatingRecoverERC20 ||
         signingTransaction;

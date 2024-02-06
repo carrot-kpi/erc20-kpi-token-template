@@ -71,20 +71,21 @@ export const RewardTokenPicker = ({
             (token) => token.chainId === chainId,
         );
     }, [chainId, selectedTokenList]);
-    const { data: rawBalances, isPending: pendingBalances } = useReadContracts({
-        contracts:
-            address &&
-            selectedTokenListTokensInChain.map((token) => {
-                return {
-                    abi: erc20Abi,
-                    address: token.address as Address,
-                    functionName: "balanceOf",
-                    args: [address],
-                };
-            }),
-        allowFailure: true,
-        query: { enabled: !!address },
-    });
+    const { data: rawBalances, isLoading: isLoadingBalances } =
+        useReadContracts({
+            contracts:
+                address &&
+                selectedTokenListTokensInChain.map((token) => {
+                    return {
+                        abi: erc20Abi,
+                        address: token.address as Address,
+                        functionName: "balanceOf",
+                        args: [address],
+                    };
+                }),
+            allowFailure: true,
+            query: { enabled: !!address },
+        });
     const selectedTokenListWithBalances = useMemo(() => {
         if (importableToken) {
             return {
@@ -187,7 +188,7 @@ export const RewardTokenPicker = ({
             onSelectedTokenChange={handleSelectedTokenChange}
             lists={tokenLists as TokenListWithBalance[]}
             loading={
-                loading || pendingBalances || loadingImportableTokenBalance
+                loading || isLoadingBalances || loadingImportableTokenBalance
             }
             selectedList={selectedTokenListWithBalances}
             onSelectedListChange={setSelectedTokenList}

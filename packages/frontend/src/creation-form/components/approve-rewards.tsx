@@ -43,7 +43,7 @@ export const ApproveRewards = ({
     const currentlyApprovingReward: Reward | undefined =
         toApprove[currentIndex];
 
-    const { data: allowances, isPending: pendingAllowances } = useReadContracts(
+    const { data: allowances, isLoading: loadingAllowances } = useReadContracts(
         {
             contracts:
                 connectedAddress &&
@@ -131,7 +131,7 @@ export const ApproveRewards = ({
         ],
     );
 
-    return pendingAllowances ||
+    return loadingAllowances ||
         !currentlyApprovingReward ||
         loading ||
         !spender ? (

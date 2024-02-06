@@ -73,7 +73,7 @@ export const Rewards = ({
     const [minimumPayoutEnabled, setMinimumPayoutEnabled] = useState(false);
 
     // fetch picked erc20 token balance
-    const { data: rewardTokenBalance, isPending: pendingRewardTokenBalance } =
+    const { data: rewardTokenBalance, isLoading: loadingRewardTokenBalance } =
         useBalance({
             address: !!rewardToken ? address : undefined,
             token: !!rewardToken ? (rewardToken.address as Address) : undefined,
@@ -472,7 +472,7 @@ export const Rewards = ({
                                     {rewardToken && (
                                         <>
                                             <div className="flex items-center gap-2">
-                                                {pendingRewardTokenBalance ||
+                                                {loadingRewardTokenBalance ||
                                                 !rewardTokenBalance ? (
                                                     <Skeleton variant="sm" />
                                                 ) : (

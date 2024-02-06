@@ -44,7 +44,7 @@ export const WalletActions = ({
     const [burnable, setBurnable] = useState(false);
     const [text, setText] = useState("");
 
-    const { data: simulatedRedeem, isPending: simulatingRedeem } =
+    const { data: simulatedRedeem, isLoading: simulatingRedeem } =
         useSimulateContract({
             chainId: chain?.id,
             address: kpiToken.address as Address,
