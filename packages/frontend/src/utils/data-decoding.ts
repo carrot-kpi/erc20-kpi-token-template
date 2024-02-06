@@ -1,7 +1,11 @@
 import { Amount, Fetcher } from "@carrot-kpi/sdk";
-import { type PublicClient } from "wagmi";
 import type { RewardData } from "../page/types";
-import { type Hex, decodeAbiParameters, type Address } from "viem";
+import {
+    type Hex,
+    decodeAbiParameters,
+    type Address,
+    type PublicClient,
+} from "viem";
 import type { FinalizableOracle } from "../page/types";
 
 interface DecodedData {

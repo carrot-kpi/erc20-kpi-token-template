@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { isAddress } from "viem";
-import { type Address, useBalance, useNetwork, useToken } from "wagmi";
+import { isAddress, type Address, erc20Abi } from "viem";
+import { useAccount, useBalance, useReadContracts } from "wagmi";
 import type { TokenInfoWithBalance } from "@carrot-kpi/ui";
 
 export const useImportableToken = (
@@ -11,32 +11,44 @@ export const useImportableToken = (
     importableToken?: TokenInfoWithBalance | null;
     loadingBalance: boolean;
 } => {
-    const { chain } = useNetwork();
+    const { chain } = useAccount();
 
     const [importableToken, setImportableToken] =
         useState<TokenInfoWithBalance | null>(null);
 
-    const {
-        data: rawImportableToken,
-        isLoading: loadingImportableToken,
-        isFetching: fetchingImportableToken,
-    } = useToken({
-        address: debouncedQuery as Address,
-        enabled: !!(debouncedQuery && isAddress(debouncedQuery)),
-    });
+    const { data: rawImportableToken, isPending: pendingImportableToken } =
+        useReadContracts({
+            contracts: [
+                {
+                    address: debouncedQuery as Address,
+                    abi: erc20Abi,
+                    functionName: "name",
+                },
+                {
+                    address: debouncedQuery as Address,
+                    abi: erc20Abi,
+                    functionName: "decimals",
+                },
+                {
+                    address: debouncedQuery as Address,
+                    abi: erc20Abi,
+                    functionName: "symbol",
+                },
+            ],
+            allowFailure: false,
+            query: { enabled: !!(debouncedQuery && isAddress(debouncedQuery)) },
+        });
 
-    const {
-        data: rawBalance,
-        isLoading: loadingBalance,
-        isFetching: fetchingBalance,
-    } = useBalance({
+    const { data: rawBalance, isPending: pendingBalance } = useBalance({
         address: connectedAccountAddress as Address,
-        token: rawImportableToken?.address,
-        enabled: !!(
-            withBalances &&
-            connectedAccountAddress &&
-            rawImportableToken
-        ),
+        token: debouncedQuery as Address,
+        query: {
+            enabled: !!(
+                withBalances &&
+                connectedAccountAddress &&
+                rawImportableToken
+            ),
+        },
     });
 
     // whenever the query is not an address anymore and the importable
@@ -49,43 +61,28 @@ export const useImportableToken = (
     // whenever the wagmi hook fetches an importable token, set it in
     // the internal state
     useEffect(() => {
-        if (
-            !chain ||
-            !rawImportableToken ||
-            loadingImportableToken ||
-            fetchingImportableToken
-        )
-            return;
+        if (!chain || !rawImportableToken || pendingImportableToken) return;
         setImportableToken({
-            address: rawImportableToken.address,
-            name: rawImportableToken.name,
-            decimals: rawImportableToken.decimals,
-            symbol: rawImportableToken.symbol,
+            address: debouncedQuery as Address,
+            name: rawImportableToken[0],
+            decimals: rawImportableToken[1],
+            symbol: rawImportableToken[2],
             chainId: chain.id,
         });
-    }, [
-        chain,
-        fetchingImportableToken,
-        loadingImportableToken,
-        rawImportableToken,
-    ]);
+    }, [chain, debouncedQuery, pendingImportableToken, rawImportableToken]);
 
     // whenever the wagmi hook fetches the importable token balance,
     // update it
     useEffect(() => {
-        if (!rawBalance || loadingBalance || fetchingBalance) return;
+        if (!rawBalance || pendingBalance) return;
         setImportableToken((prevState) => {
             if (!prevState) return null;
             return { ...prevState, balance: rawBalance.value };
         });
-    }, [fetchingBalance, loadingBalance, rawBalance]);
+    }, [pendingBalance, rawBalance]);
 
     return {
         importableToken,
-        loadingBalance:
-            loadingImportableToken ||
-            fetchingImportableToken ||
-            loadingBalance ||
-            fetchingBalance,
+        loadingBalance: pendingImportableToken || pendingBalance,
     };
 };

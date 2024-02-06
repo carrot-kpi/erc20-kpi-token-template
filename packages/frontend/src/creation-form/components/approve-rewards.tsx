@@ -5,8 +5,13 @@ import {
 } from "@carrot-kpi/react";
 import { Button } from "@carrot-kpi/ui";
 import { type ReactElement, useCallback, useState, useEffect } from "react";
-import { type Address, useContractReads, useAccount, erc20ABI } from "wagmi";
-import { zeroAddress, type TransactionReceipt } from "viem";
+import { useReadContracts, useAccount } from "wagmi";
+import {
+    zeroAddress,
+    type TransactionReceipt,
+    type Address,
+    erc20Abi,
+} from "viem";
 import type { Reward } from "../types";
 import { ApproveReward } from "./approve-reward";
 import { dateToUnixTimestamp } from "../../utils/dates";
@@ -38,7 +43,7 @@ export const ApproveRewards = ({
     const currentlyApprovingReward: Reward | undefined =
         toApprove[currentIndex];
 
-    const { data: allowances, isLoading: loadingAllowances } = useContractReads(
+    const { data: allowances, isPending: pendingAllowances } = useReadContracts(
         {
             contracts:
                 connectedAddress &&
@@ -46,12 +51,14 @@ export const ApproveRewards = ({
                 rewards?.map((reward) => {
                     return {
                         address: reward.address,
-                        abi: erc20ABI,
+                        abi: erc20Abi,
                         functionName: "allowance",
                         args: [connectedAddress, spender],
                     };
                 }),
-            enabled: !!connectedAddress && !!rewards && !!spender,
+            query: {
+                enabled: !!connectedAddress && !!rewards && !!spender,
+            },
         },
     );
 
@@ -124,7 +131,7 @@ export const ApproveRewards = ({
         ],
     );
 
-    return loadingAllowances ||
+    return pendingAllowances ||
         !currentlyApprovingReward ||
         loading ||
         !spender ? (

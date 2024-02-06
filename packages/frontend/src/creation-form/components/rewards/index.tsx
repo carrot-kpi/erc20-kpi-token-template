@@ -18,10 +18,10 @@ import {
 import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { type State } from "../../types";
 import { Amount, formatCurrencyAmount } from "@carrot-kpi/sdk";
-import { type Address, useAccount, useBalance, useChainId } from "wagmi";
+import { useAccount, useBalance, useChainId } from "wagmi";
 import { ReactComponent as ArrowDown } from "../../../assets/arrow-down.svg";
 import { USDValue } from "./usd-value";
-import { formatUnits, parseUnits } from "viem";
+import { formatUnits, parseUnits, type Address } from "viem";
 import { RewardTokenPicker } from "./picker";
 import { RewardsTable } from "./table";
 import { NoSpecialCharactersTextInput } from "../no-special-characters-text-input";
@@ -73,7 +73,7 @@ export const Rewards = ({
     const [minimumPayoutEnabled, setMinimumPayoutEnabled] = useState(false);
 
     // fetch picked erc20 token balance
-    const { data: rewardTokenBalance, isLoading: loadingRewardTokenBalance } =
+    const { data: rewardTokenBalance, isPending: pendingRewardTokenBalance } =
         useBalance({
             address: !!rewardToken ? address : undefined,
             token: !!rewardToken ? (rewardToken.address as Address) : undefined,
@@ -472,7 +472,7 @@ export const Rewards = ({
                                     {rewardToken && (
                                         <>
                                             <div className="flex items-center gap-2">
-                                                {loadingRewardTokenBalance ||
+                                                {pendingRewardTokenBalance ||
                                                 !rewardTokenBalance ? (
                                                     <Skeleton variant="sm" />
                                                 ) : (

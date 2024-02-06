@@ -6,19 +6,20 @@ import {
 } from "@carrot-kpi/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { COINGECKO_LIST_URL } from "../../constants";
-import { ERC20_ABI, Service, getServiceURL } from "@carrot-kpi/sdk";
+import { Service, getServiceURL } from "@carrot-kpi/sdk";
 import { useImportableToken } from "../../hooks/useImportableToken";
 import {
     ERC20TokenPicker,
     type TokenInfoWithBalance,
     type TokenListWithBalance,
 } from "@carrot-kpi/ui";
-import { useAccount, useChainId, useContractReads, type Address } from "wagmi";
+import { useAccount, useChainId, useReadContracts } from "wagmi";
 import {
     cacheTokenInfoWithBalance,
     cachedTokenInfoWithBalanceInChain,
     tokenInfoWithBalanceEquals,
 } from "../../utils/cache";
+import { erc20Abi, type Address } from "viem";
 
 export interface ERC20TokenPickerProps {
     t: NamespacedTranslateFunction;
@@ -70,23 +71,19 @@ export const RewardTokenPicker = ({
             (token) => token.chainId === chainId,
         );
     }, [chainId, selectedTokenList]);
-    const {
-        data: rawBalances,
-        isLoading: loadingBalances,
-        isFetching: fetchingBalances,
-    } = useContractReads({
-        contracts: selectedTokenListTokensInChain.map((token) => {
-            return (
-                address && {
-                    abi: ERC20_ABI,
+    const { data: rawBalances, isPending: pendingBalances } = useReadContracts({
+        contracts:
+            address &&
+            selectedTokenListTokensInChain.map((token) => {
+                return {
+                    abi: erc20Abi,
                     address: token.address as Address,
                     functionName: "balanceOf",
                     args: [address],
-                }
-            );
-        }),
+                };
+            }),
         allowFailure: true,
-        enabled: !!address,
+        query: { enabled: !!address },
     });
     const selectedTokenListWithBalances = useMemo(() => {
         if (importableToken) {
@@ -190,10 +187,7 @@ export const RewardTokenPicker = ({
             onSelectedTokenChange={handleSelectedTokenChange}
             lists={tokenLists as TokenListWithBalance[]}
             loading={
-                loading ||
-                loadingBalances ||
-                fetchingBalances ||
-                loadingImportableTokenBalance
+                loading || pendingBalances || loadingImportableTokenBalance
             }
             selectedList={selectedTokenListWithBalances}
             onSelectedListChange={setSelectedTokenList}

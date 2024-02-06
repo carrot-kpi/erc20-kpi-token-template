@@ -1,8 +1,8 @@
 import { useWagmiPassiveHook } from "@carrot-kpi/react";
 import { KPI_TOKEN_ABI } from "@carrot-kpi/sdk";
 import { useEffect, useState } from "react";
-import type { Hex } from "viem";
-import { type Address, useContractReads } from "wagmi";
+import type { Address, Hex } from "viem";
+import { useReadContracts } from "wagmi";
 
 interface WatchKPITokenDataParams {
     kpiTokenAddress?: Address;
@@ -19,7 +19,7 @@ export function useWatchKPITokenData(
     const [data, setData] = useState<KPITokenData | null>(null);
 
     const { data: readResults } = useWagmiPassiveHook({
-        hook: useContractReads,
+        hook: useReadContracts,
         params: {
             contracts: [
                 {
@@ -33,8 +33,9 @@ export function useWatchKPITokenData(
                     functionName: "finalized",
                 },
             ],
-            enabled: !!params?.kpiTokenAddress,
-            watch: true,
+            query: {
+                enabled: !!params?.kpiTokenAddress,
+            },
         },
     });
 

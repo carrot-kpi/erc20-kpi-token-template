@@ -2,14 +2,12 @@ import { type NamespacedTranslateFunction } from "@carrot-kpi/react";
 import { Button } from "@carrot-kpi/ui";
 import { type ReactElement, useCallback, useState } from "react";
 import {
-    usePrepareContractWrite,
-    erc20ABI,
-    useContractWrite,
-    type Address,
+    useWriteContract,
     usePublicClient,
     useChainId,
+    useSimulateContract,
 } from "wagmi";
-import { type TransactionReceipt } from "viem";
+import { erc20Abi, type Address, type TransactionReceipt } from "viem";
 import type { Reward } from "../types";
 import { getRewardAmountPlusFees } from "../../utils/rewards";
 import { Amount, Token, formatCurrencyAmount } from "@carrot-kpi/sdk";
@@ -51,28 +49,30 @@ export const ApproveReward = ({
         }),
     );
 
-    const { config, isLoading: loadingApproveConfig } = usePrepareContractWrite(
-        {
+    const { data: simulatedApprove, isPending: simulatingApprove } =
+        useSimulateContract({
             chainId,
             address: reward.address,
-            abi: erc20ABI,
+            abi: erc20Abi,
             functionName: "approve",
             args: [spender, rewardPlusFees.raw],
-            enabled: !!spender && !!reward.address,
-        },
-    );
-    const { writeAsync: approveAsync, isLoading: signingTransaction } =
-        useContractWrite(config);
+            query: {
+                enabled: !!spender && !!reward.address,
+            },
+        });
+    const { writeContractAsync: approveAsync, isPending: signingTransaction } =
+        useWriteContract();
 
     const handleClick = useCallback(() => {
-        if (!approveAsync) return;
+        if (!approveAsync || !publicClient || !simulatedApprove?.request)
+            return;
         let cancelled = false;
         const approve = async () => {
             setApproving(true);
             try {
-                const tx = await approveAsync();
+                const tx = await approveAsync(simulatedApprove.request);
                 const receipt = await publicClient.waitForTransactionReceipt({
-                    hash: tx.hash,
+                    hash: tx,
                 });
                 if (!cancelled) onApprove(receipt);
             } catch (error) {
@@ -85,7 +85,7 @@ export const ApproveReward = ({
         return () => {
             cancelled = true;
         };
-    }, [approveAsync, onApprove, publicClient]);
+    }, [approveAsync, simulatedApprove?.request, onApprove, publicClient]);
 
     const formattedRewardWithFees = formatCurrencyAmount({
         amount: rewardPlusFees,
@@ -97,7 +97,7 @@ export const ApproveReward = ({
             size="small"
             onClick={handleClick}
             disabled={!approveAsync}
-            loading={loadingApproveConfig || signingTransaction || approving}
+            loading={simulatingApprove || signingTransaction || approving}
             className={{ root: "w-full" }}
         >
             {signingTransaction || approving

@@ -4,15 +4,18 @@ import "@carrot-kpi/ui/styles.css";
 import { Amount, Token } from "@carrot-kpi/sdk";
 import { Button, ErrorFeedback, Typography } from "@carrot-kpi/ui";
 import { type ReactElement, useEffect, useState } from "react";
-import { OraclePage, type KPITokenRemotePageProps } from "@carrot-kpi/react";
+import {
+    OraclePage,
+    type KPITokenRemotePageProps,
+    useWagmiPassiveHook,
+} from "@carrot-kpi/react";
 import type { RewardData } from "./types";
 import {
-    type Address,
-    useNetwork,
     usePublicClient,
-    useToken,
     useWalletClient,
-    useContractRead,
+    useReadContract,
+    useAccount,
+    useReadContracts,
 } from "wagmi";
 import { ReactComponent as External } from "../assets/external.svg";
 import { Loader } from "../ui/loader";
@@ -23,6 +26,7 @@ import { decodeKPITokenData } from "../utils/data-decoding";
 import type { FinalizableOracle } from "./types";
 import ERC20_KPI_TOKEN_ABI from "../abis/erc20-kpi-token";
 import { useWatchKPITokenData } from "./hooks/useWatchKPITokenData";
+import { erc20Abi, type Address } from "viem";
 
 export const Component = ({
     i18n,
@@ -32,24 +36,44 @@ export const Component = ({
 }: KPITokenRemotePageProps): ReactElement => {
     const publicClient = usePublicClient();
     const { data: walletClient } = useWalletClient();
-    const { chain } = useNetwork();
+    const { chain } = useAccount();
 
-    const { data: tokenData, isLoading: loadingTokenData } = useToken({
-        address: kpiToken?.address as Address,
-        staleTime: 2_000,
+    const { data: tokenData, isPending: pendingTokenData } = useReadContracts({
+        contracts: [
+            {
+                address: kpiToken?.address,
+                abi: erc20Abi,
+                functionName: "name",
+            },
+            {
+                address: kpiToken?.address,
+                abi: erc20Abi,
+                functionName: "decimals",
+            },
+            {
+                address: kpiToken?.address,
+                abi: erc20Abi,
+                functionName: "symbol",
+            },
+        ],
+        allowFailure: false,
+        query: { enabled: !!kpiToken?.address },
     });
     const kpiTokenData = useWatchKPITokenData({
         kpiTokenAddress: kpiToken?.address,
     });
-    const { data: rawTotalSupply, isLoading: loadingRawTotalSupply } =
-        useContractRead({
-            address: kpiToken?.address as Address,
-            abi: ERC20_KPI_TOKEN_ABI,
-            functionName: "totalSupply",
-            watch: true,
+    const { data: rawTotalSupply, isPending: pendingRawTotalSupply } =
+        useWagmiPassiveHook({
+            hook: useReadContract,
+            params: {
+                address: kpiToken?.address as Address,
+                abi: ERC20_KPI_TOKEN_ABI,
+                functionName: "totalSupply",
+            },
         });
 
     const [decodingKPITokenData, setDecodingKPITokenData] = useState(false);
+    const [erc20KPIToken, setERC20KPIToken] = useState<Token>();
     const [rewards, setRewards] = useState<RewardData[]>([]);
     const [oracles, setOracles] = useState<FinalizableOracle[]>([]);
     const [allOrNone, setAllOrNone] = useState(false);
@@ -63,9 +87,28 @@ export const Component = ({
     const [openInExplorerHref, setOpenInExplorerHref] = useState("");
 
     useEffect(() => {
+        if (
+            !kpiToken?.chainId ||
+            !kpiToken.address ||
+            !tokenData?.[2] ||
+            !tokenData?.[0]
+        )
+            return;
+        setERC20KPIToken(
+            new Token(
+                kpiToken.chainId,
+                kpiToken.address,
+                18,
+                tokenData[2],
+                tokenData[0],
+            ),
+        );
+    }, [kpiToken?.address, kpiToken?.chainId, tokenData]);
+
+    useEffect(() => {
         let cancelled = false;
-        const fetchData = async () => {
-            if (!kpiToken || !kpiTokenData) return;
+        const decodeData = async () => {
+            if (!kpiTokenData?.data || !publicClient || !erc20KPIToken) return;
             if (!cancelled) setDecodingKPITokenData(true);
             let decoded;
             try {
@@ -84,61 +127,27 @@ export const Component = ({
                 setOracles(decoded.finalizableOracles);
                 setAllOrNone(decoded.allOrNone);
                 setJitFunding(decoded.jitFunding);
-            }
-            if (!tokenData?.symbol || !tokenData.name) return;
-            const erc20KPIToken = new Token(
-                kpiToken.chainId,
-                kpiToken.address,
-                18,
-                tokenData.symbol,
-                tokenData.name,
-            );
-            setInitialSupply(new Amount(erc20KPIToken, decoded.initialSupply));
-            if (tokenData?.totalSupply)
-                setCurrentSupply(
-                    new Amount(erc20KPIToken, tokenData.totalSupply.value),
+                setInitialSupply(
+                    new Amount(erc20KPIToken, decoded.initialSupply),
                 );
+            }
         };
-        void fetchData();
+        void decodeData();
         return () => {
             cancelled = true;
         };
-    }, [
-        kpiTokenData,
-        kpiToken,
-        publicClient,
-        tokenData?.name,
-        tokenData?.symbol,
-        tokenData?.totalSupply,
-    ]);
+    }, [kpiTokenData?.data, publicClient, erc20KPIToken]);
 
     useEffect(() => {
         if (
             !kpiToken?.chainId ||
             !kpiToken?.address ||
-            !tokenData?.symbol ||
-            !tokenData.name ||
-            loadingRawTotalSupply ||
+            !erc20KPIToken ||
             rawTotalSupply === undefined
         )
             return;
-        const erc20KPIToken = new Token(
-            kpiToken.chainId,
-            kpiToken.address,
-            18,
-            tokenData.symbol,
-            tokenData.name,
-        );
-        setCurrentSupply(new Amount(erc20KPIToken, rawTotalSupply));
-    }, [
-        kpiToken?.chainId,
-        kpiToken?.address,
-        publicClient,
-        tokenData?.name,
-        tokenData?.symbol,
-        loadingRawTotalSupply,
-        rawTotalSupply,
-    ]);
+        setCurrentSupply(new Amount(erc20KPIToken, rawTotalSupply as bigint));
+    }, [kpiToken?.chainId, kpiToken?.address, rawTotalSupply, erc20KPIToken]);
 
     useEffect(() => {
         if (!chain || !chain.blockExplorers || !kpiToken) return;
@@ -160,9 +169,9 @@ export const Component = ({
         try {
             await walletClient.watchAsset({
                 options: {
-                    address: tokenData.address,
-                    decimals: tokenData.decimals,
-                    symbol: tokenData.symbol,
+                    address: kpiToken?.address,
+                    decimals: tokenData[1],
+                    symbol: tokenData[2],
                 },
                 type: "ERC20",
             });
@@ -172,7 +181,7 @@ export const Component = ({
     };
 
     const loading =
-        decodingKPITokenData || loadingTokenData || loadingRawTotalSupply;
+        decodingKPITokenData || pendingTokenData || pendingRawTotalSupply;
 
     return (
         <div className="overflow-x-hidden">
@@ -207,7 +216,7 @@ export const Component = ({
                         onClick={handleWatchERC20}
                     >
                         {t("erc20.track", {
-                            symbol: tokenData?.symbol,
+                            symbol: tokenData?.[2],
                         })}
                     </Button>
                 </div>
@@ -234,8 +243,8 @@ export const Component = ({
                             kpiToken={kpiToken}
                             rewards={rewards}
                             oracles={oracles}
-                            erc20Symbol={tokenData?.symbol}
-                            erc20Name={tokenData?.name}
+                            erc20Symbol={tokenData?.[2]}
+                            erc20Name={tokenData?.[0]}
                             initialSupply={initialSupply}
                             currentSupply={currentSupply}
                             jitFunding={jitFunding}
