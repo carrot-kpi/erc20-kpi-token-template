@@ -102,7 +102,7 @@ export const RecoverReward = ({
             return;
         setLoadingRecover(true);
         try {
-            const tx = await recoverAsync(simulatedRecoverERC20?.request);
+            const tx = await recoverAsync(simulatedRecoverERC20.request);
             const receipt = await publicClient.waitForTransactionReceipt({
                 hash: tx,
             });

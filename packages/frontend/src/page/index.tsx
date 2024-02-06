@@ -142,27 +142,12 @@ export const Component = ({
         if (
             !kpiToken?.chainId ||
             !kpiToken?.address ||
-            !tokenData ||
-            loadingRawTotalSupply ||
+            !erc20KPIToken ||
             rawTotalSupply === undefined
         )
             return;
-        const erc20KPIToken = new Token(
-            kpiToken.chainId,
-            kpiToken.address,
-            18,
-            tokenData[2],
-            tokenData[0],
-        );
         setCurrentSupply(new Amount(erc20KPIToken, rawTotalSupply as bigint));
-    }, [
-        kpiToken?.chainId,
-        kpiToken?.address,
-        publicClient,
-        tokenData,
-        loadingRawTotalSupply,
-        rawTotalSupply,
-    ]);
+    }, [kpiToken?.chainId, kpiToken?.address, rawTotalSupply, erc20KPIToken]);
 
     useEffect(() => {
         if (!chain || !chain.blockExplorers || !kpiToken) return;

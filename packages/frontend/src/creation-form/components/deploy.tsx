@@ -259,7 +259,7 @@ export const Deploy = ({
     const {
         data: simulatedCreateToken,
         isLoading: simulatingCreateToken,
-        isFetching: simulatingFetchCreateToken,
+        isPending: simulatingPendingCreateToken,
         error,
         isError,
     } = useSimulateContract({
@@ -472,7 +472,7 @@ export const Deploy = ({
                     loading={
                         loading ||
                         simulatingCreateToken ||
-                        simulatingFetchCreateToken
+                        simulatingPendingCreateToken
                     }
                     className={{ root: "w-full" }}
                 >
