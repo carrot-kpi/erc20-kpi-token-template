@@ -228,7 +228,7 @@ export const Deploy = ({
 
     const {
         data: predictedKPITokenAddress,
-        isLoading: loadingPredictedKPITokenAddress,
+        isPending: pendingPredictedKPITokenAddress,
     } = useReadContract({
         address: kpiTokensManagerAddress,
         abi: KPI_TOKENS_MANAGER_ABI,
@@ -258,8 +258,7 @@ export const Deploy = ({
 
     const {
         data: simulatedCreateToken,
-        isLoading: simulatingCreateToken,
-        isPending: simulatingPendingCreateToken,
+        isPending: simulatingCreateToken,
         error,
         isError,
     } = useSimulateContract({
@@ -455,7 +454,7 @@ export const Deploy = ({
                 </div>
                 <ApproveRewards
                     t={t}
-                    loading={loadingPredictedKPITokenAddress}
+                    loading={pendingPredictedKPITokenAddress}
                     rewards={state.rewards}
                     protocolFeePpm={protocolFeePpm}
                     spender={predictedKPITokenAddress}
@@ -469,11 +468,7 @@ export const Deploy = ({
                     size="small"
                     onClick={handleCreate}
                     disabled={!simulatedCreateToken?.request}
-                    loading={
-                        loading ||
-                        simulatingCreateToken ||
-                        simulatingPendingCreateToken
-                    }
+                    loading={loading || simulatingCreateToken}
                     className={{ root: "w-full" }}
                 >
                     {t("label.create")}

@@ -44,7 +44,7 @@ export const Component = ({
     const previousAddress = usePrevious(connectedAddress);
     const { loading: loadingOracleTemplates, templates: oracleTemplates } =
         useOracleTemplates();
-    const { data: protocolFeePpm, isLoading: loadingProtocolFee } =
+    const { data: protocolFeePpm, isPending: pendingProtocolFee } =
         useReadContract({
             address: template.address,
             abi: erc20KpiToken,
@@ -159,7 +159,7 @@ export const Component = ({
 
     if (
         loadingOracleTemplates ||
-        loadingProtocolFee ||
+        pendingProtocolFee ||
         protocolFeePpm === undefined ||
         jitFundingFeatureAllowanceLoading
     ) {

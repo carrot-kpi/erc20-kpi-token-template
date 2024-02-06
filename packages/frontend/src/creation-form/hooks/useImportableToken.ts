@@ -16,37 +16,30 @@ export const useImportableToken = (
     const [importableToken, setImportableToken] =
         useState<TokenInfoWithBalance | null>(null);
 
-    const {
-        data: rawImportableToken,
-        isLoading: loadingImportableToken,
-        isFetching: fetchingImportableToken,
-    } = useReadContracts({
-        contracts: [
-            {
-                address: debouncedQuery as Address,
-                abi: erc20Abi,
-                functionName: "name",
-            },
-            {
-                address: debouncedQuery as Address,
-                abi: erc20Abi,
-                functionName: "decimals",
-            },
-            {
-                address: debouncedQuery as Address,
-                abi: erc20Abi,
-                functionName: "symbol",
-            },
-        ],
-        allowFailure: false,
-        query: { enabled: !!(debouncedQuery && isAddress(debouncedQuery)) },
-    });
+    const { data: rawImportableToken, isPending: pendingImportableToken } =
+        useReadContracts({
+            contracts: [
+                {
+                    address: debouncedQuery as Address,
+                    abi: erc20Abi,
+                    functionName: "name",
+                },
+                {
+                    address: debouncedQuery as Address,
+                    abi: erc20Abi,
+                    functionName: "decimals",
+                },
+                {
+                    address: debouncedQuery as Address,
+                    abi: erc20Abi,
+                    functionName: "symbol",
+                },
+            ],
+            allowFailure: false,
+            query: { enabled: !!(debouncedQuery && isAddress(debouncedQuery)) },
+        });
 
-    const {
-        data: rawBalance,
-        isLoading: loadingBalance,
-        isFetching: fetchingBalance,
-    } = useBalance({
+    const { data: rawBalance, isPending: pendingBalance } = useBalance({
         address: connectedAccountAddress as Address,
         token: debouncedQuery as Address,
         query: {
@@ -68,13 +61,7 @@ export const useImportableToken = (
     // whenever the wagmi hook fetches an importable token, set it in
     // the internal state
     useEffect(() => {
-        if (
-            !chain ||
-            !rawImportableToken ||
-            loadingImportableToken ||
-            fetchingImportableToken
-        )
-            return;
+        if (!chain || !rawImportableToken || pendingImportableToken) return;
         setImportableToken({
             address: debouncedQuery as Address,
             name: rawImportableToken[0],
@@ -82,30 +69,20 @@ export const useImportableToken = (
             symbol: rawImportableToken[2],
             chainId: chain.id,
         });
-    }, [
-        chain,
-        debouncedQuery,
-        fetchingImportableToken,
-        loadingImportableToken,
-        rawImportableToken,
-    ]);
+    }, [chain, debouncedQuery, pendingImportableToken, rawImportableToken]);
 
     // whenever the wagmi hook fetches the importable token balance,
     // update it
     useEffect(() => {
-        if (!rawBalance || loadingBalance || fetchingBalance) return;
+        if (!rawBalance || pendingBalance) return;
         setImportableToken((prevState) => {
             if (!prevState) return null;
             return { ...prevState, balance: rawBalance.value };
         });
-    }, [fetchingBalance, loadingBalance, rawBalance]);
+    }, [pendingBalance, rawBalance]);
 
     return {
         importableToken,
-        loadingBalance:
-            loadingImportableToken ||
-            fetchingImportableToken ||
-            loadingBalance ||
-            fetchingBalance,
+        loadingBalance: pendingImportableToken || pendingBalance,
     };
 };

@@ -38,7 +38,7 @@ export const Component = ({
     const { data: walletClient } = useWalletClient();
     const { chain } = useAccount();
 
-    const { data: tokenData, isLoading: loadingTokenData } = useReadContracts({
+    const { data: tokenData, isPending: pendingTokenData } = useReadContracts({
         contracts: [
             {
                 address: kpiToken?.address,
@@ -62,7 +62,7 @@ export const Component = ({
     const kpiTokenData = useWatchKPITokenData({
         kpiTokenAddress: kpiToken?.address,
     });
-    const { data: rawTotalSupply, isLoading: loadingRawTotalSupply } =
+    const { data: rawTotalSupply, isPending: pendingRawTotalSupply } =
         useWagmiPassiveHook({
             hook: useReadContract,
             params: {
@@ -181,7 +181,7 @@ export const Component = ({
     };
 
     const loading =
-        decodingKPITokenData || loadingTokenData || loadingRawTotalSupply;
+        decodingKPITokenData || pendingTokenData || pendingRawTotalSupply;
 
     return (
         <div className="overflow-x-hidden">

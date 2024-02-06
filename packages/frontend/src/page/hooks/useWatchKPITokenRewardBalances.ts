@@ -11,7 +11,7 @@ export const useWatchKPITokenRewardBalances = (
 ) => {
     const [balances, setBalances] = useState<Amount<Token>[]>([]);
 
-    const { data: rawBalances, isLoading: loading } = useWagmiPassiveHook({
+    const { data: rawBalances, isPending: pending } = useWagmiPassiveHook({
         hook: useReadContracts,
         params: {
             contracts:
@@ -32,7 +32,7 @@ export const useWatchKPITokenRewardBalances = (
     useEffect(() => {
         if (
             !rewards ||
-            loading ||
+            pending ||
             !rawBalances ||
             rawBalances.length !== rewards?.length
         )
@@ -45,7 +45,7 @@ export const useWatchKPITokenRewardBalances = (
                 );
             }),
         );
-    }, [rewards, loading, rawBalances]);
+    }, [rewards, pending, rawBalances]);
 
-    return { loading, balances };
+    return { pending, balances };
 };

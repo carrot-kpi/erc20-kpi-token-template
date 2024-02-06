@@ -71,11 +71,7 @@ export const RewardTokenPicker = ({
             (token) => token.chainId === chainId,
         );
     }, [chainId, selectedTokenList]);
-    const {
-        data: rawBalances,
-        isLoading: loadingBalances,
-        isFetching: fetchingBalances,
-    } = useReadContracts({
+    const { data: rawBalances, isPending: pendingBalances } = useReadContracts({
         contracts:
             address &&
             selectedTokenListTokensInChain.map((token) => {
@@ -191,10 +187,7 @@ export const RewardTokenPicker = ({
             onSelectedTokenChange={handleSelectedTokenChange}
             lists={tokenLists as TokenListWithBalance[]}
             loading={
-                loading ||
-                loadingBalances ||
-                fetchingBalances ||
-                loadingImportableTokenBalance
+                loading || pendingBalances || loadingImportableTokenBalance
             }
             selectedList={selectedTokenListWithBalances}
             onSelectedListChange={setSelectedTokenList}

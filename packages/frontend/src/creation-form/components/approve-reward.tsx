@@ -49,7 +49,7 @@ export const ApproveReward = ({
         }),
     );
 
-    const { data: simulatedApprove, isLoading: simulatingApprove } =
+    const { data: simulatedApprove, isPending: simulatingApprove } =
         useSimulateContract({
             chainId,
             address: reward.address,
