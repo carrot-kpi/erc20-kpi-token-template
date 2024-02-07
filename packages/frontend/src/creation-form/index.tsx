@@ -127,12 +127,21 @@ export const Component = ({
         setMostUpdatedStep(clickedStep);
     }, []);
 
+    const handleDraftSave = useCallback(() => {
+        onCreateDraft();
+        setDraftSaved(true);
+        setTimeout(() => {
+            setDraftSaved(false);
+        }, 600);
+    }, [onCreateDraft]);
+
     const getNextHandler = useCallback(
         (nextStepIndex: number) => () => {
+            handleDraftSave();
             setStep(nextStepIndex);
             setMostUpdatedStep(nextStepIndex);
         },
-        [],
+        [handleDraftSave],
     );
 
     const handleOraclesConfigurationNext = useCallback(
@@ -148,14 +157,6 @@ export const Component = ({
         },
         [enableOraclePickStep],
     );
-
-    const handleDraftSave = useCallback(() => {
-        onCreateDraft();
-        setDraftSaved(true);
-        setTimeout(() => {
-            setDraftSaved(false);
-        }, 600);
-    }, [onCreateDraft]);
 
     if (
         loadingOracleTemplates ||
