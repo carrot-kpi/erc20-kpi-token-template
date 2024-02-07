@@ -4,12 +4,10 @@ import {
     type NamespacedTranslateFunction,
     type TemplateComponentStateChangeCallback,
 } from "@carrot-kpi/react";
-import { MarkdownInput, TagsInput, NextStepButton } from "@carrot-kpi/ui";
+import { MarkdownInput, NextStepButton } from "@carrot-kpi/ui";
 import { NoSpecialCharactersTextInput } from "./no-special-characters-text-input";
 import {
     MAX_KPI_TOKEN_DESCRIPTION_CHARS,
-    MAX_KPI_TOKEN_TAGS_COUNT,
-    MAX_KPI_TOKEN_TAG_CHARS,
     MAX_KPI_TOKEN_TITLE_CHARS,
 } from "../constants";
 
@@ -30,7 +28,7 @@ export const GenericData = ({
 }: GenericDataProps): ReactElement => {
     const [titleErrorText, setTitleErrorText] = useState("");
     const [descriptionErrorText, setDescriptionErrorText] = useState("");
-    const [tagsErrorText, setTagsErrorText] = useState("");
+    // const [tagsErrorText, setTagsErrorText] = useState("");
     const [disabled, setDisabled] = useState(true);
 
     useEffect(() => {
@@ -41,10 +39,10 @@ export const GenericData = ({
                 state.title.trim().length > MAX_KPI_TOKEN_TITLE_CHARS ||
                 !stripHtml(state.description).trim() ||
                 stripHtml(state.description).trim().length >
-                    MAX_KPI_TOKEN_DESCRIPTION_CHARS ||
-                !state.tags ||
-                state.tags.length === 0 ||
-                state.tags.length > MAX_KPI_TOKEN_TAGS_COUNT,
+                    MAX_KPI_TOKEN_DESCRIPTION_CHARS,
+            // !state.tags ||
+            // state.tags.length === 0 ||
+            // state.tags.length > MAX_KPI_TOKEN_TAGS_COUNT,
         );
     }, [state]);
 
@@ -81,33 +79,33 @@ export const GenericData = ({
         [onStateChange, t],
     );
 
-    const handleTagsChange = useCallback(
-        (value: string[]) => {
-            if (value.some((tag) => tag.length > MAX_KPI_TOKEN_TAG_CHARS)) {
-                setTagsErrorText(
-                    t("error.tags.tooLong", {
-                        chars: MAX_KPI_TOKEN_TAG_CHARS,
-                    }),
-                );
-                return;
-            }
-            if (value.some((tag, i) => value.indexOf(tag) !== i)) {
-                setTagsErrorText(t("error.tags.duplicated"));
-                return;
-            }
-            setTagsErrorText(
-                value.length === 0
-                    ? t("error.tags.empty")
-                    : value.length > MAX_KPI_TOKEN_TAGS_COUNT
-                      ? t("error.tags.tooMany", {
-                            count: MAX_KPI_TOKEN_TAGS_COUNT,
-                        })
-                      : "",
-            );
-            onStateChange((state) => ({ ...state, tags: value }));
-        },
-        [onStateChange, t],
-    );
+    // const handleTagsChange = useCallback(
+    //     (value: string[]) => {
+    //         if (value.some((tag) => tag.length > MAX_KPI_TOKEN_TAG_CHARS)) {
+    //             setTagsErrorText(
+    //                 t("error.tags.tooLong", {
+    //                     chars: MAX_KPI_TOKEN_TAG_CHARS,
+    //                 }),
+    //             );
+    //             return;
+    //         }
+    //         if (value.some((tag, i) => value.indexOf(tag) !== i)) {
+    //             setTagsErrorText(t("error.tags.duplicated"));
+    //             return;
+    //         }
+    //         setTagsErrorText(
+    //             value.length === 0
+    //                 ? t("error.tags.empty")
+    //                 : value.length > MAX_KPI_TOKEN_TAGS_COUNT
+    //                   ? t("error.tags.tooMany", {
+    //                         count: MAX_KPI_TOKEN_TAGS_COUNT,
+    //                     })
+    //                   : "",
+    //         );
+    //         onStateChange((state) => ({ ...state, tags: value }));
+    //     },
+    //     [onStateChange, t],
+    // );
 
     return (
         <div className="flex flex-col gap-6">
@@ -137,7 +135,8 @@ export const GenericData = ({
                     inputWrapper: "w-full",
                 }}
             />
-            <TagsInput
+            {/* TODO: add the tags back once they need to be used */}
+            {/* <TagsInput
                 data-testid="generic-data-step-tags-input"
                 label={t("general.label.tags")}
                 placeholder={t("general.placeholder.tags")}
@@ -151,7 +150,7 @@ export const GenericData = ({
                     input: "w-full",
                     inputWrapper: "w-full",
                 }}
-            />
+            /> */}
             <NextStepButton
                 data-testid="generic-data-step-next-button"
                 onClick={onNext}

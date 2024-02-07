@@ -195,7 +195,7 @@ export const Deploy = ({
         if (specificationCid) return;
         let cancelled = false;
         const uploadAndGetSpecificationCid = async () => {
-            if (!state.title || !state.description || !state.tags) {
+            if (!state.title || !state.description) {
                 if (!cancelled) setSpecificationCid("");
                 return;
             }
@@ -205,7 +205,9 @@ export const Deploy = ({
                 const specification: KPITokenSpecification = {
                     title: state.title,
                     description: state.description,
-                    tags: state.tags,
+                    // TODO: add the tags back once they need to be used
+                    // tags: state.tags,
+                    tags: [],
                 };
                 const uploadedSpecificationCid =
                     await uploadJSON(specification);
@@ -218,13 +220,7 @@ export const Deploy = ({
         return () => {
             cancelled = true;
         };
-    }, [
-        specificationCid,
-        state.description,
-        state.tags,
-        state.title,
-        uploadJSON,
-    ]);
+    }, [specificationCid, state.description, state.title, uploadJSON]);
 
     const {
         data: predictedKPITokenAddress,
