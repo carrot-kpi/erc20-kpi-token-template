@@ -365,55 +365,6 @@ export const Rewards = ({
                     </div>
                 </div>
             )}
-            <div className="flex flex-col md:flex-row w-full gap-4 mb-4">
-                <NoSpecialCharactersTextInput
-                    data-testid="rewards-step-token-name-input"
-                    label={t("general.label.token.name")}
-                    placeholder={"Example"}
-                    onChange={handleTokenNameChange}
-                    value={state.tokenName}
-                    error={!!tokenNameErrorText}
-                    errorText={tokenNameErrorText}
-                    className={{
-                        root: "w-full",
-                        input: "w-full",
-                        inputWrapper: "w-full",
-                    }}
-                />
-                <NoSpecialCharactersTextInput
-                    data-testid="rewards-step-token-symbol-input"
-                    label={t("general.label.token.symbol")}
-                    placeholder={"XMPL"}
-                    onChange={handleTokenSymbolChange}
-                    value={state.tokenSymbol}
-                    error={!!tokenSymbolErrorText}
-                    errorText={tokenSymbolErrorText}
-                    className={{
-                        root: "w-full",
-                        input: "w-full",
-                        inputWrapper: "w-full",
-                    }}
-                />
-                <NumberInput
-                    data-testid="rewards-step-token-supply-input"
-                    allowNegative={false}
-                    label={t("general.label.token.supply")}
-                    placeholder={"1,000,000"}
-                    onValueChange={handleTokenSupplyChange}
-                    value={
-                        state.tokenSupply
-                            ? formatUnits(BigInt(state.tokenSupply), 18)
-                            : null
-                    }
-                    error={!!tokenSupplyErrorText}
-                    errorText={tokenSupplyErrorText}
-                    className={{
-                        root: "w-full",
-                        input: "w-full",
-                        inputWrapper: "w-full",
-                    }}
-                />
-            </div>
             <div data-testid="rewards-picker-modal-container">
                 <RewardTokenPicker
                     t={t}
@@ -619,6 +570,55 @@ export const Rewards = ({
                     protocolFeePpm={protocolFeePpm}
                     onRemove={handleRemoveReward}
                 />
+                <div className="flex flex-col md:flex-row w-full gap-4 mb-4">
+                    <NoSpecialCharactersTextInput
+                        data-testid="rewards-step-token-name-input"
+                        label={t("general.label.token.name")}
+                        placeholder={"Example"}
+                        onChange={handleTokenNameChange}
+                        value={state.tokenName}
+                        error={!!tokenNameErrorText}
+                        errorText={tokenNameErrorText}
+                        className={{
+                            root: "w-full",
+                            input: "w-full",
+                            inputWrapper: "w-full",
+                        }}
+                    />
+                    <NoSpecialCharactersTextInput
+                        data-testid="rewards-step-token-symbol-input"
+                        label={t("general.label.token.symbol")}
+                        placeholder={"XMPL"}
+                        onChange={handleTokenSymbolChange}
+                        value={state.tokenSymbol}
+                        error={!!tokenSymbolErrorText}
+                        errorText={tokenSymbolErrorText}
+                        className={{
+                            root: "w-full",
+                            input: "w-full",
+                            inputWrapper: "w-full",
+                        }}
+                    />
+                    <NumberInput
+                        data-testid="rewards-step-token-supply-input"
+                        allowNegative={false}
+                        label={t("general.label.token.supply")}
+                        placeholder={"1,000,000"}
+                        onValueChange={handleTokenSupplyChange}
+                        value={
+                            state.tokenSupply
+                                ? formatUnits(BigInt(state.tokenSupply), 18)
+                                : null
+                        }
+                        error={!!tokenSupplyErrorText}
+                        errorText={tokenSupplyErrorText}
+                        className={{
+                            root: "w-full",
+                            input: "w-full",
+                            inputWrapper: "w-full",
+                        }}
+                    />
+                </div>
             </div>
             <NextStepButton
                 data-testid="rewards-step-next-button"
