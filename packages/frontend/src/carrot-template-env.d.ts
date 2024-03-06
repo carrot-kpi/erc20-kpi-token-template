@@ -7,5 +7,5 @@ declare global {
     const CCT_ERC20_2_ADDRESS: Address;
     const CCT_ERC20_3_ADDRESS: Address;
     const CCT_TEMPLATE_URL: string;
-    const STAGING_MODE: boolean;
+    const ENVIRONMENT: string;
 }

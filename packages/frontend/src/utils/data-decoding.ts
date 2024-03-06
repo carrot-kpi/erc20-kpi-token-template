@@ -1,10 +1,11 @@
-import { Amount, Fetcher } from "@carrot-kpi/sdk";
+import { Amount, Fetcher, type SupportedChain } from "@carrot-kpi/sdk";
 import type { RewardData } from "../page/types";
 import {
     type Hex,
     decodeAbiParameters,
     type Address,
     type PublicClient,
+    type Transport,
 } from "viem";
 import type { FinalizableOracle } from "../page/types";
 
@@ -17,7 +18,7 @@ interface DecodedData {
 }
 
 export const decodeKPITokenData = async (
-    publicClient: PublicClient,
+    publicClient: PublicClient<Transport, SupportedChain | undefined>,
     data: Hex,
 ): Promise<DecodedData | null> => {
     const [
