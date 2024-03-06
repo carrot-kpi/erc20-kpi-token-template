@@ -1,12 +1,10 @@
 import {
-    useDevMode,
-    useStagingMode,
     useTokenLists,
     type NamespacedTranslateFunction,
 } from "@carrot-kpi/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { COINGECKO_LIST_URL } from "../../constants";
-import { Service, getServiceURL } from "@carrot-kpi/sdk";
+import { SUPPORTED_CHAIN } from "@carrot-kpi/sdk";
 import { useImportableToken } from "../../hooks/useImportableToken";
 import {
     ERC20TokenPicker,
@@ -39,18 +37,12 @@ export const RewardTokenPicker = ({
     const { address } = useAccount();
     const chainId = useChainId();
 
-    // fetch token lists
-    const devMode = useDevMode();
-    const stagingMode = useStagingMode();
     const tokenListUrls = useMemo(() => {
         return [
             COINGECKO_LIST_URL,
-            `${getServiceURL(
-                Service.STATIC_CDN,
-                !devMode && !stagingMode,
-            )}/token-list.json`,
+            `${SUPPORTED_CHAIN[chainId].serviceUrls.staticCdn}/token-list.json`,
         ];
-    }, [devMode, stagingMode]);
+    }, [chainId]);
     const { lists: tokenLists, loading } = useTokenLists({
         urls: tokenListUrls,
     });

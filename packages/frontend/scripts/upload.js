@@ -10,13 +10,13 @@ import { UnixFS } from "@web3-storage/upload-client";
 import { filesFromPaths } from "files-from-path";
 import mime from "mime";
 
-const SUPPORTED_ENVIRONMENTS = ["staging", "prod"];
+const ALLOWED_ENVIRONMENTS = ["prod", "staging", "dev"];
 
 let spinner = ora();
 const [, , environment] = process.argv;
-if (!SUPPORTED_ENVIRONMENTS.includes(environment)) {
+if (!ALLOWED_ENVIRONMENTS.includes(environment)) {
     spinner.fail(
-        `Invalid environment ${chalk.blue(environment)}, supported: ${chalk.blue(SUPPORTED_ENVIRONMENTS.join(", "))}`,
+        `Invalid environment ${chalk.blue(environment)} specified, supported values are: ${chalk.blue(ALLOWED_ENVIRONMENTS.join(", "))}`,
     );
     process.exit(1);
 }

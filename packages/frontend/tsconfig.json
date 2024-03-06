@@ -5,6 +5,7 @@
         "./tests/**/*.ts",
         "./tests/**/*.tsx",
         "./custom.d.ts",
+        "./wagmi-config.d.ts",
         "./playground/*.tsx",
         "./.cct/**/*.tsx"
     ],

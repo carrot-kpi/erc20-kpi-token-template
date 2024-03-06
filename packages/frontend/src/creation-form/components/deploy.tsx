@@ -33,12 +33,12 @@ import {
     type TemplateComponentStateChangeCallback,
 } from "@carrot-kpi/react";
 import {
-    CHAIN_ADDRESSES,
     ChainId,
     FACTORY_ABI,
     KPI_TOKENS_MANAGER_ABI,
     ResolvedTemplate,
     type KPITokenSpecification,
+    SUPPORTED_CHAIN,
 } from "@carrot-kpi/sdk";
 import {
     encodeKPITokenData,
@@ -97,11 +97,12 @@ export const Deploy = ({
                 factoryAddress: undefined,
                 kpiTokensManagerAddress: undefined,
             };
-        const chainAddresses = CHAIN_ADDRESSES[chain.id as ChainId];
+        const chainAddresses = SUPPORTED_CHAIN[chain.id as ChainId];
         return chainAddresses
             ? {
-                  factoryAddress: chainAddresses.factory,
-                  kpiTokensManagerAddress: chainAddresses.kpiTokensManager,
+                  factoryAddress: chainAddresses.contracts.factory.address,
+                  kpiTokensManagerAddress:
+                      chainAddresses.contracts.kpiTokensManager.address,
               }
             : { factoryAddress: undefined, kpiTokensManagerAddress: undefined };
     }, [chain]);

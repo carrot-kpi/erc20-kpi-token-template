@@ -9,12 +9,12 @@ import "@carrot-kpi/host-frontend/styles.css";
 
 import { Root } from "@carrot-kpi/host-frontend";
 import { createRoot } from "react-dom/client";
-import * as chains from "wagmi/chains";
-import type { Chain } from "viem";
+import { SUPPORTED_CHAIN } from "@carrot-kpi/sdk";
+import { ReactComponent as Plus } from "../src/assets/plus.svg";
 
-const forkedChain = Object.values(chains).find(
+const forkedChain = Object.values(SUPPORTED_CHAIN).find(
     (chain) => chain.id === CCT_CHAIN_ID,
-) as Chain;
+);
 if (!forkedChain) {
     console.log(`unsupported chain id ${CCT_CHAIN_ID}`);
     process.exit(0);
@@ -22,12 +22,15 @@ if (!forkedChain) {
 
 createRoot(document.getElementById("root")!).render(
     <Root
-        supportedChain={forkedChain}
+        supportedChain={{
+            ...forkedChain,
+            icon: { backgroundColor: "orange", logo: Plus },
+        }}
         rpcURL={CCT_RPC_URL}
         privateKey={CCT_DEPLOYMENT_ACCOUNT_PRIVATE_KEY}
         ipfsGatewayURL={CCT_IPFS_GATEWAY_URL}
         kpiTokenTemplateBaseURL={CCT_TEMPLATE_URL}
         templateId={CCT_TEMPLATE_ID}
-        enableStagingMode={STAGING_MODE}
+        enableStagingMode={ENVIRONMENT !== "prod"}
     />,
 );
