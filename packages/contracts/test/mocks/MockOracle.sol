@@ -1,8 +1,8 @@
-pragma solidity 0.8.19;
+pragma solidity 0.8.23;
 
 import {Initializable} from "oz/proxy/utils/Initializable.sol";
-import {IOracle} from "carrot/interfaces/oracles/IOracle.sol";
-import {IKPIToken} from "carrot/interfaces/kpi-tokens/IKPIToken.sol";
+import {IOracle} from "carrot/interfaces/IOracle.sol";
+import {IKPIToken} from "carrot/interfaces/IKPIToken.sol";
 import {IBaseTemplatesManager, Template} from "carrot/interfaces/IBaseTemplatesManager.sol";
 import {InitializeOracleParams} from "carrot/commons/Types.sol";
 

@@ -1,146 +1,156 @@
 import "../global.css";
 import "@carrot-kpi/ui/styles.css";
 
-import { Loader, MultiStepCards, StepCard, Stepper } from "@carrot-kpi/ui";
+import {
+    Button,
+    Loader,
+    MultiStepCards,
+    StepCard,
+    Stepper,
+} from "@carrot-kpi/ui";
 import {
     type KPITokenRemoteCreationFormProps,
     useOracleTemplates,
+    useKPITokenTemplateFeatureEnabledFor,
 } from "@carrot-kpi/react";
-import { Template } from "@carrot-kpi/sdk";
 import { type ReactElement, useCallback, useEffect, useState } from "react";
-import { OraclesPicker } from "./components/oracles-picker";
-import type {
-    CollateralData,
-    CollateralsStepState,
-    GenericDataStepState,
-    OracleData,
-    OraclesConfigurationStepState,
-    SpecificationData,
-    TokenData as TokenDataType,
-} from "./types";
-import { useAccount } from "wagmi";
-import { GenericData } from "./components/generic-data";
-import { Collaterals } from "./components/collaterals";
+import { usePrevious } from "react-use";
+import type { OracleWithInitializationBundleGetter, State } from "./types";
+import { useAccount, useReadContract } from "wagmi";
+import { Rewards } from "./components/rewards";
 import { OraclesConfiguration } from "./components/oracles-configuration";
 import { Deploy } from "./components/deploy";
 import { Success } from "./components/success";
 import { ConnectWallet } from "./components/connect-wallet";
+import { GenericData } from "./components/generic-data";
+import { OraclesPicker } from "./components/oracles-picker";
+import erc20KpiToken from "../abis/erc20-kpi-token";
+import { JIT_FUNDING_FEATURE_ID } from "./constants";
+import { ReactComponent as ArrowDown } from "../assets/arrow-down.svg";
+import { ReactComponent as CircleOk } from "../assets/circle-ok.svg";
 
-// TODO: when we have more than one oracle template, implement state
-// and state change features for the oracle picker state too
 export const Component = ({
+    template,
     i18n,
     t,
-    template,
+    state,
+    onStateChange,
     onCreate,
     navigate,
     onTx,
-}: KPITokenRemoteCreationFormProps): ReactElement => {
+    onCreateDraft,
+}: KPITokenRemoteCreationFormProps<State>): ReactElement => {
     const { address: connectedAddress } = useAccount();
-    const { loading, templates: oracleTemplates } = useOracleTemplates();
+    const previousAddress = usePrevious(connectedAddress);
+    const { loading: loadingOracleTemplates, templates: oracleTemplates } =
+        useOracleTemplates();
+    const { data: protocolFeePpm, isLoading: loadingProtocolFee } =
+        useReadContract({
+            address: template.address,
+            abi: erc20KpiToken,
+            functionName: "fee",
+        });
+    const {
+        loading: jitFundingFeatureAllowanceLoading,
+        enabled: jitFundingFeatureAllowed,
+    } = useKPITokenTemplateFeatureEnabledFor({
+        templateId: template.id,
+        featureId: JIT_FUNDING_FEATURE_ID,
+        account: connectedAddress,
+    });
 
-    const enableOraclePickStep = !loading && oracleTemplates.length > 1;
+    const enableOraclePickStep =
+        !loadingOracleTemplates && oracleTemplates.length > 1;
+
     const stepTitles = enableOraclePickStep
         ? [
               t("card.general.title"),
-              t("card.collateral.title"),
+              t("card.rewards.title"),
               t("card.oracle.pick.title"),
               t("card.oracle.configuration.title"),
               t("card.deploy.title"),
-              t("card.success.title"),
           ]
         : [
               t("card.general.title"),
-              t("card.collateral.title"),
+              t("card.rewards.title"),
               t("card.oracle.configuration.title"),
               t("card.deploy.title"),
-              t("card.success.title"),
           ];
 
     const [step, setStep] = useState(0);
     const [mostUpdatedStep, setMostUpdatedStep] = useState(0);
+    const [draftSaved, setDraftSaved] = useState(false);
 
-    const [genericDataStepState, setGenericDataStepState] =
-        useState<GenericDataStepState>({});
-    const [specificationData, setSpecificationData] =
-        useState<SpecificationData | null>(null);
-    const [specificationCID, setSpecificationCID] = useState("");
-    const [tokenData, setTokenData] = useState<TokenDataType | null>(null);
-
-    const [collateralsStepState, setCollateralsStepState] =
-        useState<CollateralsStepState>({
-            collaterals: [],
-        });
-    const [collateralsData, setCollateralsData] = useState<CollateralData[]>(
-        [],
-    );
-
-    const [oracleTemplatesData, setOracleTemplatesData] = useState<Template[]>(
-        [],
-    );
-
-    const [oraclesConfigurationStepState, setOraclesConfigurationStepState] =
-        useState<OraclesConfigurationStepState>({});
-    const [oraclesData, setOraclesData] = useState<Required<OracleData>[]>([]);
+    const [
+        oraclesWithInitializationBundleGetter,
+        setOraclesWithInitializationBundleGetter,
+    ] = useState<OracleWithInitializationBundleGetter[]>([]);
 
     const [createdKPITokenAddress, setCreatedKPITokenAddress] = useState("");
 
-    // on wallet disconnect, reset EVERYTHING
+    // on wallet disconnect or address change, reset everything
     useEffect(() => {
-        if (connectedAddress) return;
+        if (connectedAddress || previousAddress === connectedAddress) return;
         setStep(0);
         setMostUpdatedStep(0);
-        setSpecificationData(null);
-        setCollateralsData([]);
-        setTokenData(null);
-        setOracleTemplatesData([]);
-        setOraclesData([]);
-        setCreatedKPITokenAddress("");
-    }, [connectedAddress]);
+        onStateChange({});
+    }, [connectedAddress, onStateChange, previousAddress]);
 
     useEffect(() => {
-        if (oracleTemplates.length === 1 && oracleTemplatesData.length === 0)
-            setOracleTemplatesData([oracleTemplates[0]]);
-    }, [oracleTemplates, oracleTemplatesData.length]);
+        const bodyElement = window.document.getElementById("__app_body");
+        if (!bodyElement) return;
+        bodyElement.scrollIntoView();
+    }, [step]);
+
+    useEffect(() => {
+        if (
+            (!!state.oracles && state.oracles.length > 0) ||
+            loadingOracleTemplates ||
+            jitFundingFeatureAllowanceLoading ||
+            oracleTemplates?.length !== 1
+        )
+            return;
+        onStateChange((state) => ({
+            ...state,
+            oracles: [{ templateId: oracleTemplates[0].id, state: {} }],
+        }));
+    }, [
+        loadingOracleTemplates,
+        jitFundingFeatureAllowanceLoading,
+        onStateChange,
+        oracleTemplates,
+        state.oracles,
+    ]);
 
     const handleStepClick = useCallback((clickedStep: number) => {
         setStep(clickedStep);
         setMostUpdatedStep(clickedStep);
     }, []);
 
-    const handleGenericDataNext = useCallback(
-        (
-            specificationData: SpecificationData,
-            specificationCID: string,
-            tokenData: TokenDataType,
-        ) => {
-            setSpecificationData(specificationData);
-            setSpecificationCID(specificationCID);
-            setTokenData(tokenData);
-            setStep(1);
-            setMostUpdatedStep(1);
-        },
-        [],
-    );
+    const handleDraftSave = useCallback(() => {
+        onCreateDraft();
+        setDraftSaved(true);
+        setTimeout(() => {
+            setDraftSaved(false);
+        }, 600);
+    }, [onCreateDraft]);
 
-    const handleCollateralsNext = useCallback(
-        (collaterals: CollateralData[]) => {
-            setCollateralsData(collaterals);
-            setStep(2);
-            setMostUpdatedStep(2);
+    const getNextHandler = useCallback(
+        (nextStepIndex: number) => () => {
+            handleDraftSave();
+            setStep(nextStepIndex);
+            setMostUpdatedStep(nextStepIndex);
         },
-        [],
+        [handleDraftSave],
     );
-
-    const handleOraclesPickerNext = useCallback((templates: Template[]) => {
-        setOracleTemplatesData(templates);
-        setStep(3);
-        setMostUpdatedStep(3);
-    }, []);
 
     const handleOraclesConfigurationNext = useCallback(
-        (oracleData: Required<OracleData>[]) => {
-            setOraclesData(oracleData);
+        (
+            oraclesWithInitializationBundleGetter: OracleWithInitializationBundleGetter[],
+        ) => {
+            setOraclesWithInitializationBundleGetter(
+                oraclesWithInitializationBundleGetter,
+            );
             const nextStep = enableOraclePickStep ? 4 : 3;
             setStep(nextStep);
             setMostUpdatedStep(nextStep);
@@ -148,23 +158,31 @@ export const Component = ({
         [enableOraclePickStep],
     );
 
-    const handleDeployNext = useCallback(
-        (address: string) => {
-            setCreatedKPITokenAddress(address);
-            const nextStep = enableOraclePickStep ? 6 : 5;
-            setStep(nextStep);
-            setMostUpdatedStep(nextStep);
-        },
-        [enableOraclePickStep],
-    );
-
-    if (loading) {
+    if (
+        loadingOracleTemplates ||
+        loadingProtocolFee ||
+        protocolFeePpm === undefined ||
+        jitFundingFeatureAllowanceLoading
+    ) {
         return (
-            <div className="bg-green py-10 text-black flex justify-center">
+            <div className="h-screen py-20 text-black flex justify-center">
                 <Loader />
             </div>
         );
     }
+
+    if (createdKPITokenAddress) {
+        return (
+            <Success
+                t={t}
+                navigate={navigate}
+                state={state}
+                protocolFeePpm={protocolFeePpm}
+                kpiTokenAddress={createdKPITokenAddress}
+            />
+        );
+    }
+
     return (
         <div className="relative h-full w-full bg-green scrollbar overflow-y-auto px-4 pt-10">
             <div className="absolute bg-grid-light top-0 left-0 w-full h-full" />
@@ -182,7 +200,7 @@ export const Component = ({
                         }}
                     />
                 </div>
-                <div className="absolute left-10 top-40 hidden lg:flex">
+                <div className="flex-col gap-14 absolute left-10 top-40 hidden lg:flex">
                     <Stepper
                         layout="vertical"
                         stepTitles={stepTitles}
@@ -190,11 +208,24 @@ export const Component = ({
                         lastStepCompleted={mostUpdatedStep}
                         onClick={handleStepClick}
                     />
+                    <Button
+                        size="small"
+                        icon={draftSaved ? CircleOk : ArrowDown}
+                        variant={draftSaved ? "secondary" : "primary"}
+                        onClick={handleDraftSave}
+                        className={{
+                            icon: "stroke-current",
+                        }}
+                    >
+                        {t("draft.create")}
+                    </Button>
                 </div>
                 <MultiStepCards
                     activeStep={step}
                     messages={{ step: t("step") }}
-                    className={{ root: "h-full justify-between z-[1]" }}
+                    className={{
+                        root: "h-full min-h-[1000px] justify-between z-[1]",
+                    }}
                 >
                     <StepCard
                         title={t("card.general.title")}
@@ -207,23 +238,25 @@ export const Component = ({
                         ) : (
                             <GenericData
                                 t={t}
-                                state={genericDataStepState}
-                                onStateChange={setGenericDataStepState}
-                                onNext={handleGenericDataNext}
+                                state={state}
+                                onStateChange={onStateChange}
+                                onNext={getNextHandler(1)}
                             />
                         )}
                     </StepCard>
                     <StepCard
-                        title={t("card.collateral.title")}
+                        title={t("card.rewards.title")}
                         step={2}
                         className={{ root: "relative pb-10" }}
                         messages={{ step: t("step") }}
                     >
-                        <Collaterals
+                        <Rewards
                             t={t}
-                            state={collateralsStepState}
-                            onStateChange={setCollateralsStepState}
-                            onNext={handleCollateralsNext}
+                            jitFundingFeatureAllowed={jitFundingFeatureAllowed}
+                            state={state}
+                            protocolFeePpm={protocolFeePpm}
+                            onStateChange={onStateChange}
+                            onNext={getNextHandler(2)}
                         />
                     </StepCard>
                     {enableOraclePickStep && (
@@ -235,10 +268,10 @@ export const Component = ({
                         >
                             <OraclesPicker
                                 t={t}
-                                loading={loading}
                                 templates={oracleTemplates}
-                                oracleTemplatesData={oracleTemplatesData}
-                                onNext={handleOraclesPickerNext}
+                                state={state}
+                                onStateChange={onStateChange}
+                                onNext={getNextHandler(3)}
                             />
                         </StepCard>
                     )}
@@ -248,57 +281,35 @@ export const Component = ({
                         className={{ root: "relative pb-10", content: "px-0" }}
                         messages={{ step: t("step") }}
                     >
-                        {!connectedAddress ? (
-                            <ConnectWallet t={t} />
-                        ) : (
-                            <OraclesConfiguration
-                                t={t}
-                                i18n={i18n}
-                                specificationData={specificationData}
-                                templates={oracleTemplatesData}
-                                state={oraclesConfigurationStepState}
-                                onStateChange={setOraclesConfigurationStepState}
-                                onNext={handleOraclesConfigurationNext}
-                                navigate={navigate}
-                                onTx={onTx}
-                            />
-                        )}
+                        <OraclesConfiguration
+                            t={t}
+                            i18n={i18n}
+                            templates={oracleTemplates}
+                            state={state}
+                            onStateChange={onStateChange}
+                            onNext={handleOraclesConfigurationNext}
+                            navigate={navigate}
+                            onTx={onTx}
+                        />
                     </StepCard>
-                    {!!specificationData && !!tokenData && (
-                        <StepCard
-                            title={t("card.deploy.title")}
-                            step={enableOraclePickStep ? 5 : 4}
-                            className={{ root: "relative" }}
-                            messages={{ step: t("step") }}
-                        >
-                            {!connectedAddress ? (
-                                <ConnectWallet t={t} />
-                            ) : (
-                                <Deploy
-                                    t={t}
-                                    templateId={template.id}
-                                    specificationCID={specificationCID}
-                                    expiration={specificationData.expiration}
-                                    tokenData={tokenData}
-                                    collateralsData={collateralsData}
-                                    oracleTemplatesData={oracleTemplatesData}
-                                    oraclesData={oraclesData}
-                                    onNext={handleDeployNext}
-                                    onCreate={onCreate}
-                                    onTx={onTx}
-                                />
-                            )}
-                        </StepCard>
-                    )}
                     <StepCard
-                        title={t("card.success.title")}
-                        step={enableOraclePickStep ? 6 : 5}
+                        title={t("card.deploy.title")}
+                        step={enableOraclePickStep ? 5 : 4}
+                        className={{ root: "relative" }}
                         messages={{ step: t("step") }}
                     >
-                        <Success
+                        <Deploy
                             t={t}
-                            navigate={navigate}
-                            kpiTokenAddress={createdKPITokenAddress}
+                            template={template}
+                            oraclesWithInitializationBundleGetter={
+                                oraclesWithInitializationBundleGetter
+                            }
+                            state={state}
+                            protocolFeePpm={protocolFeePpm}
+                            onStateChange={onStateChange}
+                            onNext={setCreatedKPITokenAddress}
+                            onCreate={onCreate}
+                            onTx={onTx}
                         />
                     </StepCard>
                 </MultiStepCards>

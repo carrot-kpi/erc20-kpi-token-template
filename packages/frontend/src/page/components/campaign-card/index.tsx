@@ -1,5 +1,10 @@
 import type { NamespacedTranslateFunction } from "@carrot-kpi/react";
-import { ResolvedKPIToken } from "@carrot-kpi/sdk";
+import {
+    Amount,
+    ResolvedKPIToken,
+    Token,
+    formatCurrencyAmount,
+} from "@carrot-kpi/sdk";
 import {
     Card,
     CardContent,
@@ -9,49 +14,46 @@ import {
     Typography,
 } from "@carrot-kpi/ui";
 import type { ReactElement } from "react";
-import type { CollateralData } from "../../../creation-form/types";
+import type { RewardData } from "../../types";
 import { shortenAddress } from "../../../utils/address";
-import { CollateralRow } from "../collateral-row";
+import { RewardsRow } from "../rewards-row";
 import { TimeLeft } from "./time-left";
-import { type Address, useEnsName } from "wagmi";
+import { useEnsName } from "wagmi";
 import { mainnet } from "wagmi/chains";
-import { formatUnits } from "viem";
 
 interface CampaignCardProps {
     t: NamespacedTranslateFunction;
     loading?: boolean;
     kpiToken: ResolvedKPIToken;
-    collaterals?: CollateralData[] | null;
+    rewards?: RewardData[] | null;
     allOrNone?: boolean | null;
-    initialSupply?: bigint | null;
-    erc20Name?: string | null;
-    erc20Symbol?: string | null;
-    erc20Supply?: bigint | null;
+    initialSupply?: Amount<Token> | null;
+    currentSupply?: Amount<Token> | null;
 }
 
 export const CampaignCard = ({
     t,
     loading,
     kpiToken,
-    collaterals,
+    rewards,
     initialSupply,
-    erc20Name,
-    erc20Symbol,
-    erc20Supply,
+    currentSupply,
 }: CampaignCardProps): ReactElement => {
-    const { data: ensName, isLoading: resolvingENSName } = useEnsName({
-        address: kpiToken.owner as Address,
+    const { data: ensName, isLoading: loadingENSName } = useEnsName({
+        address: kpiToken.owner,
         chainId: mainnet.id,
     });
 
     return (
-        <Card className={{ root: "w-full max-w-7xl dark:border-gray-400" }}>
+        <Card
+            className={{ root: "w-full max-w-screen-2xl dark:border-gray-400" }}
+        >
             <CardContent>
                 <div className="flex flex-col gap-1 border-b border-black w-full py-3 px-4">
                     <Typography uppercase variant="xs">
                         {t("overview.owner.label")}
                     </Typography>
-                    {resolvingENSName ? (
+                    {loadingENSName ? (
                         <Skeleton width="100px" />
                     ) : (
                         <Typography truncate>
@@ -63,7 +65,9 @@ export const CampaignCard = ({
                     <Typography uppercase variant="xs">
                         {t("overview.description.label")}
                     </Typography>
-                    <Markdown>{kpiToken.specification.description}</Markdown>
+                    <Markdown data-testid="campaign-card-description-text">
+                        {kpiToken.specification.description}
+                    </Markdown>
                 </div>
                 <div className="p-4 flex flex-wrap gap-3">
                     {kpiToken.specification.tags.map((tag) => (
@@ -78,18 +82,19 @@ export const CampaignCard = ({
                         >
                             {t("overview.rewards.label")}
                         </Typography>
-                        <div className="flex flex-col gap-2">
-                            {loading || !collaterals ? (
-                                <CollateralRow loading />
+                        <div
+                            data-testid="campaign-card-rewards"
+                            className="flex flex-col gap-2"
+                        >
+                            {loading || !rewards ? (
+                                <RewardsRow loading />
                             ) : (
-                                collaterals.map((collateral) => {
+                                rewards.map((reward) => {
                                     return (
-                                        <CollateralRow
-                                            key={
-                                                collateral.amount.currency
-                                                    .address
-                                            }
-                                            collateral={collateral}
+                                        <RewardsRow
+                                            data-testid={`campaign-card-reward-${reward.amount.currency.address}`}
+                                            key={reward.amount.currency.address}
+                                            reward={reward}
                                         />
                                     );
                                 })
@@ -103,18 +108,19 @@ export const CampaignCard = ({
                         >
                             {t("overview.minimumPayout.label")}
                         </Typography>
-                        <div className="flex flex-col gap-2">
-                            {loading || !collaterals ? (
-                                <CollateralRow loading />
+                        <div
+                            data-testid="campaign-card-minimum-payouts"
+                            className="flex flex-col gap-2"
+                        >
+                            {loading || !rewards ? (
+                                <RewardsRow loading />
                             ) : (
-                                collaterals.map((collateral) => {
+                                rewards.map((reward) => {
                                     return (
-                                        <CollateralRow
-                                            key={
-                                                collateral.amount.currency
-                                                    .address
-                                            }
-                                            collateral={collateral}
+                                        <RewardsRow
+                                            data-testid={`campaign-card-minimum-payout-${reward.amount.currency.address}`}
+                                            key={reward.amount.currency.address}
+                                            reward={reward}
                                             minimumPayout
                                         />
                                     );
@@ -129,11 +135,15 @@ export const CampaignCard = ({
                         >
                             {t("overview.token.label")}
                         </Typography>
-                        {loading || !erc20Name || !erc20Symbol ? (
+                        {loading || !initialSupply ? (
                             <Skeleton width="40px" />
                         ) : (
-                            <Typography truncate>
-                                {erc20Name} ({erc20Symbol})
+                            <Typography
+                                data-testid="campaign-card-kpi-token-text"
+                                truncate
+                            >
+                                {initialSupply.currency.name} (
+                                {initialSupply.currency.symbol})
                             </Typography>
                         )}
                     </div>
@@ -149,9 +159,16 @@ export const CampaignCard = ({
                         {loading || !initialSupply ? (
                             <Skeleton />
                         ) : (
-                            <Typography uppercase truncate>
-                                {/* FIXME: reintroduce commify to make number easier to read */}
-                                {formatUnits(initialSupply, 18)}
+                            <Typography
+                                data-testid={
+                                    "campaign-card-kpi-token-initial-supply-text"
+                                }
+                                uppercase
+                                truncate
+                            >
+                                {formatCurrencyAmount({
+                                    amount: initialSupply,
+                                })}
                             </Typography>
                         )}
                     </div>
@@ -162,14 +179,19 @@ export const CampaignCard = ({
                         >
                             {t("overview.supply.current.label")}
                         </Typography>
-                        {loading ||
-                        erc20Supply === null ||
-                        erc20Supply === undefined ? (
+                        {loading || !currentSupply ? (
                             <Skeleton width="60px" />
                         ) : (
-                            <Typography uppercase truncate>
-                                {/* FIXME: reintroduce commify to make number easier to read */}
-                                {formatUnits(erc20Supply, 18)}
+                            <Typography
+                                data-testid={
+                                    "campaign-card-kpi-token-current-supply-text"
+                                }
+                                uppercase
+                                truncate
+                            >
+                                {formatCurrencyAmount({
+                                    amount: currentSupply,
+                                })}
                             </Typography>
                         )}
                     </div>
@@ -177,7 +199,9 @@ export const CampaignCard = ({
                         <Typography uppercase>
                             {t("overview.time.label")}
                         </Typography>
-                        <TimeLeft t={t} kpiToken={kpiToken} />
+                        <div data-testid="campaign-card-time-left">
+                            <TimeLeft t={t} kpiToken={kpiToken} />
+                        </div>
                     </div>
                 </div>
             </CardContent>

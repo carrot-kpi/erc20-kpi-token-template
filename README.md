@@ -3,8 +3,8 @@
 A multiple ERC20 collateral, multiple weighted condition, minimum-payout-enabled
 ERC20 KPI token template implementation.
 
-This token template lets anyone create ERC20 tokens that can easily
-be distributed via farming or airdrops, and that can be backed by multiple ERC20
+This token template lets anyone create ERC20 tokens that can easily be
+distributed via farming or airdrops, and that can be backed by multiple ERC20
 collaterals (up to 5). Multiple weighted conditions (oracles) can be attached to
 a single KPI token created using this template. An additional powerful feature
 of the template regarding conditions is the ability to specify how the
@@ -41,3 +41,26 @@ the collaterals will be redeemable by token holders. If condition B also
 verifies, the remaining third of the collaterals will be redeemable by the KPI
 token holders too, but if it fails, only that third gets sent back to the KPI
 token creator. Redeeming the collateral will burn any held ERC20 KPI token.
+
+### Run the playground
+
+To run the template locally, use the `start` script with the desired RPC URL:
+
+```sh
+yarn start YOUR_RPC_URL
+```
+
+The script will fork from the provided RPC, compile and deploy the contracts,
+start a local IPFS node and then bootstrap the front-end application written in
+React.
+
+Ensure both [ipfs](https://docs.ipfs.tech/install/command-line) and
+[foundry](https://getfoundry.sh) must be installed on your machine.
+
+### Working with the Defillama oracle
+
+For the Defillama oracle template to function correctly on your local
+environment, it is essential to have the `defillama-answerer` service running on
+your local machine. Please refer to the
+[defillama-answerer](https://github.com/carrot-kpi/defillama-answerer#readme)
+documentation for detailed instructions.

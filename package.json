@@ -14,16 +14,18 @@
         "lint": "turbo run lint",
         "format": "turbo run format",
         "start": "carrot-scripts start",
+        "start:staging": "ENVIRONMENT=staging carrot-scripts start",
+        "start:dev": "ENVIRONMENT=dev carrot-scripts start",
         "test": "turbo run test",
         "size-limit": "turbo run size-limit",
         "commitlint": "commitlint -e",
         "prepare": "husky install"
     },
     "devDependencies": {
-        "@commitlint/cli": "^17.7.1",
-        "@commitlint/config-conventional": "^17.7.0",
-        "carrot-scripts": "^0.22.14",
-        "husky": "^8.0.3",
-        "turbo": "^1.10.14"
+        "@commitlint/cli": "^19.0.3",
+        "@commitlint/config-conventional": "^19.0.3",
+        "carrot-scripts": "^0.24.0",
+        "husky": "^9.0.11",
+        "turbo": "^1.12.4"
     }
 }

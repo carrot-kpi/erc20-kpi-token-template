@@ -1,160 +1,197 @@
+import { useCallback, useEffect, useState } from "react";
 import {
-    type Dispatch,
-    type ReactElement,
-    type SetStateAction,
-    useCallback,
-    useEffect,
-    useState,
-} from "react";
-import type {
-    KPITokenCreationFormProps,
-    NamespacedTranslateFunction,
-    OracleInitializationBundleGetter,
+    type KPITokenCreationFormProps,
+    type NamespacedTranslateFunction,
+    type OracleInitializationBundleGetter,
+    type TemplateComponentStateChangeCallback,
+    type TemplateComponentStateUpdater,
 } from "@carrot-kpi/react";
 import { NextStepButton } from "@carrot-kpi/ui";
 import type { i18n } from "i18next";
-import type {
-    OracleConfigurationState,
-    OracleData,
-    OraclesConfigurationStepState,
-    SpecificationData,
-} from "../../types";
-import { KPIToken, Template } from "@carrot-kpi/sdk";
-import { unixTimestamp } from "../../../utils/dates";
-import { OraclesAccordion } from "./oracles-accordion";
-import { OracleCreationForm } from "./oracle-creation-form";
+import type { OracleWithInitializationBundleGetter, State } from "../../types";
+import { Template } from "@carrot-kpi/sdk";
+import { MultipleOraclesCreationForm } from "./multiple-oracles-creation-form";
 
-type Assert = (
-    data: OraclesConfigurationStepState,
-) => asserts data is { [id: number]: Required<OracleConfigurationState> };
-const assertInitializationBundleGetterPresent: Assert = (
-    data: OraclesConfigurationStepState,
-) => {
-    const dataValues = Object.values(data);
-    if (
-        dataValues.length === 0 ||
-        dataValues.some((item) => !item.initializationBundleGetter)
-    )
-        throw new Error();
-};
+type MaybeOracleWithInitializationBundleGetter =
+    OracleWithInitializationBundleGetter | null;
+
+const areOraclesWithInitializationBundleGetterDefined = (
+    oracles: MaybeOracleWithInitializationBundleGetter[],
+) => oracles.every((oracle) => !!oracle);
 
 interface OraclesConfigurationProps {
     t: NamespacedTranslateFunction;
     i18n: i18n;
     templates: Template[];
-    specificationData?: SpecificationData | null;
-    state: OraclesConfigurationStepState;
-    onStateChange: Dispatch<SetStateAction<OraclesConfigurationStepState>>;
-    onNext: (oraclesData: Required<OracleData>[]) => void;
-    navigate: KPITokenCreationFormProps["navigate"];
-    onTx: KPITokenCreationFormProps["onTx"];
+    state: State;
+    onStateChange: TemplateComponentStateChangeCallback<State>;
+    onNext: (
+        oraclesWithInitializationBundleGetter: OracleWithInitializationBundleGetter[],
+    ) => void;
+    navigate: KPITokenCreationFormProps<State>["navigate"];
+    onTx: KPITokenCreationFormProps<State>["onTx"];
 }
 
 export const OraclesConfiguration = ({
     t,
     i18n,
     templates,
-    specificationData,
     state,
     onStateChange,
     onNext,
     navigate,
     onTx,
-}: OraclesConfigurationProps): ReactElement => {
-    const [loading, setLoading] = useState(false);
+}: OraclesConfigurationProps) => {
+    const [
+        oraclesWithInitializationBundleGetter,
+        setOraclesWithInitializationBundleGetter,
+    ] = useState<MaybeOracleWithInitializationBundleGetter[]>(
+        state.oracles ? state.oracles.map(() => null) : [],
+    );
     const [disabled, setDisabled] = useState(true);
-    const [partialKPIToken, setPartialKPIToken] = useState<
-        Partial<KPIToken> | undefined
-    >();
 
     useEffect(() => {
-        try {
-            assertInitializationBundleGetterPresent(state);
-            setDisabled(false);
-        } catch (error) {
-            setDisabled(true);
-        }
-    }, [state]);
+        setDisabled(
+            !areOraclesWithInitializationBundleGetterDefined(
+                oraclesWithInitializationBundleGetter,
+            ),
+        );
+    }, [oraclesWithInitializationBundleGetter]);
 
-    useEffect(() => {
-        if (!specificationData?.expiration) return;
-        setPartialKPIToken({
-            expiration: unixTimestamp(specificationData.expiration),
-        });
-    }, [specificationData?.expiration]);
-
-    const handleChange = useCallback(
+    const handleStateChange = useCallback(
         (
-            templateId: number,
-            oracleState: Partial<unknown>,
+            index: number,
+            oracleStateOrUpdater:
+                | object
+                | TemplateComponentStateUpdater<object>,
+        ) => {
+            if (!state.oracles || !state.oracles[index]) {
+                console.warn(
+                    `no oracle present at given index ${index}, can't update state`,
+                );
+                return;
+            }
+            const newOracles = [...state.oracles];
+            const oldOracle = newOracles[index];
+            const newState =
+                typeof oracleStateOrUpdater === "function"
+                    ? oracleStateOrUpdater(oldOracle.state)
+                    : oracleStateOrUpdater;
+            const newOracle = { ...oldOracle, state: newState };
+            newOracles[index] = newOracle;
+            onStateChange((state) => ({ ...state, oracles: newOracles }));
+        },
+        [onStateChange, state.oracles],
+    );
+
+    const handleInitializationBundleGetterChange = useCallback(
+        (
+            index: number,
             initializationBundleGetter?: OracleInitializationBundleGetter,
         ) => {
-            onStateChange((prevState) => ({
-                ...prevState,
-                [templateId]: {
-                    state: oracleState,
-                    initializationBundleGetter,
-                },
+            if (!state.oracles || !state.oracles[index]) {
+                console.warn(
+                    `no oracle present at given index ${index}, can't update state`,
+                );
+                return;
+            }
+
+            setOraclesWithInitializationBundleGetter((prevState) => {
+                let newState;
+                if (initializationBundleGetter) {
+                    newState = [...prevState];
+                    newState[index] = {
+                        ...state.oracles![index],
+                        getInitializationBundle: initializationBundleGetter,
+                    };
+                } else {
+                    newState = prevState.map((oracle, i) =>
+                        i === index ? null : oracle,
+                    );
+                }
+                return newState;
+            });
+        },
+        [state.oracles],
+    );
+
+    const handleSuggestedExpirationTimestampChange = useCallback(
+        (index: number, suggestedExpirationTimestamp?: number) => {
+            if (!state.oracles || !state.oracles[index]) {
+                console.warn(
+                    `no oracle present at given index ${index}, can't update state`,
+                );
+                return;
+            }
+            const newOracles = [...state.oracles];
+            const newOracle = {
+                ...newOracles[index],
+                suggestedExpirationTimestamp,
+            };
+            newOracles[index] = newOracle;
+
+            let expiration = state.expiration;
+            if (newOracle.suggestedExpirationTimestamp) {
+                if (
+                    !expiration ||
+                    newOracle.suggestedExpirationTimestamp > expiration
+                )
+                    expiration = newOracle.suggestedExpirationTimestamp;
+            }
+
+            onStateChange((state) => ({
+                ...state,
+                expiration,
+                maximumSuggestedExirationTimestamp: expiration,
+                oracles: newOracles,
             }));
         },
-        [onStateChange],
+        [onStateChange, state.oracles, state.expiration],
     );
 
     const handleNext = useCallback(() => {
-        const perform = async () => {
-            try {
-                assertInitializationBundleGetterPresent(state);
-                setLoading(true);
-                const oracles = await Promise.all(
-                    Object.values(state).map(async (item) => {
-                        const initializationBundle =
-                            await item.initializationBundleGetter();
-                        const oracleData: Required<OracleData> = {
-                            state: item.state,
-                            initializationBundle,
-                        };
-                        return oracleData;
-                    }),
-                );
-                onNext(oracles);
-            } catch (error) {
-                console.warn("could not get initialization data", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        void perform();
-    }, [state, onNext]);
+        if (
+            !areOraclesWithInitializationBundleGetterDefined(
+                oraclesWithInitializationBundleGetter,
+            )
+        ) {
+            console.warn(
+                "not all oracles with initialization bundle getter are defined",
+            );
+            return;
+        }
+        onNext(
+            oraclesWithInitializationBundleGetter as OracleWithInitializationBundleGetter[],
+        );
+    }, [onNext, oraclesWithInitializationBundleGetter]);
+
+    if (!state.oracles) {
+        console.warn("no oracles in state at oracles configuration step");
+        return null;
+    }
 
     return (
         <div className="flex flex-col gap-6">
-            {templates.length === 1 ? (
-                <OracleCreationForm
-                    t={t}
-                    i18n={i18n}
-                    navigate={navigate}
-                    onTx={onTx}
-                    kpiToken={partialKPIToken}
-                    onChange={handleChange}
-                    template={templates[0]}
-                    data={state}
-                />
-            ) : (
-                <OraclesAccordion
-                    t={t}
-                    i18n={i18n}
-                    navigate={navigate}
-                    onTx={onTx}
-                    kpiToken={partialKPIToken}
-                    onChange={handleChange}
-                    templates={templates}
-                    data={state}
-                />
-            )}
+            <MultipleOraclesCreationForm
+                t={t}
+                i18n={i18n}
+                navigate={navigate}
+                onTx={onTx}
+                onStateChange={handleStateChange}
+                onInitializationBundleGetterChange={
+                    handleInitializationBundleGetterChange
+                }
+                onSuggestedExpirationTimestampChange={
+                    handleSuggestedExpirationTimestampChange
+                }
+                templates={templates}
+                state={state}
+            />
             <NextStepButton
+                data-testid="oracles-configuration-step-next-button"
                 onClick={handleNext}
                 disabled={disabled}
-                loading={loading}
+                className={{ root: "w-44 rounded-3xl" }}
             >
                 {t("next")}
             </NextStepButton>

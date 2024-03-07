@@ -65,6 +65,9 @@ create a .env.<NETWORK_NAME> file exporting 2 env variables:
 ```
 export PRIVATE_KEY=""
 export RPC_ENDPOINT=""
+export ETHERSCAN_API_KEY=""
+export VERIFIER_URL=""
+export FEE=""
 ```
 
 brief explainer of the env variables:
@@ -73,6 +76,12 @@ brief explainer of the env variables:
   deployment.
 - `RPC_ENDPOINT`: the RPC endpoint that will be used to broadcast transactions.
   This will also determine the network where the deployment will happen.
+- `ETHERSCAN_API_KEY`: the Etherscan (or Blockscout) API key used to verify
+  contracts.
+- `VERIFIER_URL`: the Etherscan pr Blockscout API URL that will be used to
+  verify contracts.
+- `FEE`: the fee percentage (in parts per million) that will be deducted from
+  the given rewards.
 
 Once you have one instance of this file for each network you're interested in
 (e.g. .`env.goerli`, `.env.gnosis`, `env.mainnet` etc etc), you can go ahead and
@@ -81,5 +90,5 @@ doing that, you can finally execute the following command to initiate the
 deployment:
 
 ```
-FOUNDRY_PROFILE=production forge script --broadcast --slow --private-key $PRIVATE_KEY --fork-url $RPC_ENDPOINT Deploy
+FOUNDRY_PROFILE=production forge script --broadcast --slow --private-key $PRIVATE_KEY --fork-url $RPC_ENDPOINT --verify --sig 'run(uint256)' Deploy $FEE
 ```

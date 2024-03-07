@@ -24,8 +24,18 @@ export const startPlayground = async (
     const templateFirstCompilation = true;
 
     const templateCompiler = webpack([
-        getTemplateComponentWebpackConfig("creationForm", globals),
-        getTemplateComponentWebpackConfig("page", globals),
+        getTemplateComponentWebpackConfig(
+            "creationForm",
+            globals,
+            undefined,
+            "playground",
+        ),
+        getTemplateComponentWebpackConfig(
+            "page",
+            globals,
+            undefined,
+            "playground",
+        ),
     ]);
 
     const templateDevServer = new WebpackDevServer(
@@ -107,6 +117,7 @@ export const startPlayground = async (
                 CCT_TEMPLATE_URL: JSON.stringify(
                     `http://localhost:${templatePort}`,
                 ),
+                ENVIRONMENT: JSON.stringify(process.env.ENVIRONMENT),
             }),
             new webpack.container.ModuleFederationPlugin({
                 name: "host",

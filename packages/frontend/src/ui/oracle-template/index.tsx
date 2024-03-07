@@ -20,7 +20,10 @@ export const OracleTemplate = ({
         useResolvedTemplate({ template });
 
     return (
-        <div className="relative p-1">
+        <div
+            data-testid={`oracle-template-${template.address}`}
+            className="relative p-1"
+        >
             <div className="absolute left-[1px] top-[1px] h-2 w-2 bg-black" />
             <div className="absolute right-[1px] top-[1px] h-2 w-2 bg-black" />
             <div className="absolute right-[1px] bottom-[1px] h-2 w-2 bg-black" />

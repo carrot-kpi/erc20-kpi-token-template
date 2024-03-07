@@ -15,34 +15,45 @@ hash.update(Date.now().toString());
 
 const UNIQUE_ID = `carrot-template-${hash.digest("hex").slice(0, 32)}`;
 
-export const getTemplateComponentWebpackConfig = (type, globals, outDir) => {
-    if (type !== "page" && type !== "creationForm")
-        throw new Error("type must either be creationForm or page");
+const TYPES = ["page", "creationForm"];
+const MODES = ["prod", "dev", "playground"];
 
-    const devMode = !!!outDir;
+export const getTemplateComponentWebpackConfig = (
+    type,
+    globals,
+    outDir,
+    mode,
+) => {
+    if (!TYPES.includes(type))
+        throw new Error("invalid type, must be on of:", TYPES.join(", "));
+
+    if (!MODES.includes(mode))
+        throw new Error("invalid mode, must be one of:", MODES.join(", "));
+
+    const prodMode = mode === "prod";
     return {
-        mode: devMode ? "development" : "production",
+        mode: !!prodMode ? "production" : "development",
         target: "browserslist",
-        devtool: false,
-        infrastructureLogging: devMode
-            ? {
+        devtool: !!prodMode ? false : "source-map",
+        infrastructureLogging: !!prodMode
+            ? undefined
+            : {
                   level: "none",
-              }
-            : undefined,
-        stats: devMode ? "none" : undefined,
+              },
+        stats: !!prodMode ? undefined : "none",
         entry: join(__dirname, "../../src"),
         output: {
             publicPath: "auto",
-            clean: true,
+            clean: false,
             ...(!!outDir ? { path: outDir } : {}),
             uniqueName: UNIQUE_ID,
         },
         resolve: {
-            fallback: devMode
-                ? {
+            fallback: !!prodMode
+                ? undefined
+                : {
                       buffer: join(__dirname, "./utils/buffer.js"),
-                  }
-                : undefined,
+                  },
             extensions: [".ts", ".tsx", "..."],
         },
         module: {
@@ -100,19 +111,19 @@ export const getTemplateComponentWebpackConfig = (type, globals, outDir) => {
             ],
         },
         optimization: {
-            minimize: !!!devMode,
+            minimize: !!prodMode,
         },
         plugins: [
             // TODO: further globals might be passed by carrot-scripts??
             new webpack.DefinePlugin({
                 ...globals,
                 __ROOT_ID__: JSON.stringify(UNIQUE_ID),
-                __DEV__: JSON.stringify(!!devMode),
+                __PLAYGROUND__: JSON.stringify(mode === "playground"),
             }),
             new MiniCssExtractPlugin(),
             new webpack.container.ModuleFederationPlugin({
                 name: type,
-                filename: devMode ? `${type}/remoteEntry.js` : "remoteEntry.js",
+                filename: `${type}/remoteEntry.js`,
                 exposes: {
                     "./component": join(
                         __dirname,

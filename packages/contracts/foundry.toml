@@ -6,6 +6,7 @@ remappings = [
     'oz-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/',
     'oz/=lib/openzeppelin-contracts/contracts/',
     'tests/=test/',
+    'src/=src',
 ]
 optimizer_runs = 200
 
@@ -13,3 +14,4 @@ optimizer_runs = 200
 optimizer = true
 via_ir = true
 optimizer_runs = 1000000
+evm_version = "paris"

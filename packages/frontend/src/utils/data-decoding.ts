@@ -1,81 +1,95 @@
-import { Amount, Fetcher } from "@carrot-kpi/sdk";
-import { type PublicClient } from "wagmi";
-import type { CollateralData } from "../creation-form/types";
-import { type Hex, decodeAbiParameters, type Address } from "viem";
+import { Amount, Fetcher, type SupportedChain } from "@carrot-kpi/sdk";
+import type { RewardData } from "../page/types";
+import {
+    type Hex,
+    decodeAbiParameters,
+    type Address,
+    type PublicClient,
+    type Transport,
+} from "viem";
 import type { FinalizableOracle } from "../page/types";
 
 interface DecodedData {
-    collaterals: CollateralData[];
+    rewards: RewardData[];
     finalizableOracles: FinalizableOracle[];
     allOrNone: boolean;
+    jitFunding: boolean;
     initialSupply: bigint;
 }
 
 export const decodeKPITokenData = async (
-    publicClient: PublicClient,
+    publicClient: PublicClient<Transport, SupportedChain | undefined>,
     data: Hex,
 ): Promise<DecodedData | null> => {
-    const [rawCollaterals, finalizableOracles, allOrNone, initialSupply] =
-        decodeAbiParameters(
-            [
-                {
-                    type: "tuple[]",
-                    name: "collaterals",
-                    components: [
-                        { type: "address", name: "token" },
-                        { type: "uint256", name: "amount" },
-                        { type: "uint256", name: "minimumPayout" },
-                    ],
-                },
-                {
-                    type: "tuple[]",
-                    name: "finalizableOracles",
-                    components: [
-                        { type: "address", name: "addrezz" },
-                        { type: "uint256", name: "finalResult" },
-                        { type: "uint256", name: "weight" },
-                        { type: "bool", name: "finalized" },
-                    ],
-                },
-                { type: "bool", name: "allOrNone" },
-                { type: "uint256", name: "initialSupply" },
-            ],
-            data,
-        ) as [
-            readonly {
-                token: Address;
-                amount: bigint;
-                minimumPayout: bigint;
-            }[],
-            readonly {
-                addrezz: Address;
-                finalResult: bigint;
-                weight: bigint;
-                finalized: boolean;
-            }[],
-            boolean,
-            bigint,
-        ];
+    const [
+        rawRewards,
+        finalizableOracles,
+        allOrNone,
+        jitFunding,
+        initialSupply,
+    ] = decodeAbiParameters(
+        [
+            {
+                type: "tuple[]",
+                name: "rewards",
+                components: [
+                    { type: "address", name: "token" },
+                    { type: "uint256", name: "amount" },
+                    { type: "uint256", name: "minimumPayout" },
+                ],
+            },
+            {
+                type: "tuple[]",
+                name: "finalizableOracles",
+                components: [
+                    { type: "address", name: "addrezz" },
+                    { type: "uint256", name: "weight" },
+                    { type: "uint256", name: "finalResult" },
+                    { type: "bool", name: "finalized" },
+                ],
+            },
+            { type: "bool", name: "allOrNone" },
+            { type: "bool", name: "jitFunding" },
+            { type: "uint256", name: "initialSupply" },
+        ],
+        data,
+    ) as [
+        readonly {
+            token: Address;
+            amount: bigint;
+            minimumPayout: bigint;
+        }[],
+        readonly {
+            addrezz: Address;
+            finalResult: bigint;
+            weight: bigint;
+            finalized: boolean;
+        }[],
+        boolean,
+        boolean,
+        bigint,
+    ];
 
     const erc20Tokens = await Fetcher.fetchERC20Tokens({
         publicClient,
-        addresses: rawCollaterals.map((collateral) => collateral.token),
+        addresses: rawRewards.map((reward) => reward.token),
     });
 
-    const collaterals = rawCollaterals.map((rawCollateral) => {
-        const token = erc20Tokens[rawCollateral.token];
+    const rewards = rawRewards.map((rawReward) => {
+        const token = erc20Tokens[rawReward.token];
         if (!token) return null;
         return {
-            amount: new Amount(token, rawCollateral.amount),
-            minimumPayout: new Amount(token, rawCollateral.minimumPayout),
+            amount: new Amount(token, rawReward.amount),
+            minimumPayout: new Amount(token, rawReward.minimumPayout),
         };
     });
 
-    return collaterals.some((collateral) => !collateral)
+    return rewards.some((reward) => !reward)
         ? null
         : {
-              collaterals: collaterals.slice() as CollateralData[],
+              rewards: rewards.slice() as RewardData[],
               allOrNone,
+              jitFunding,
               finalizableOracles: finalizableOracles as FinalizableOracle[],
               initialSupply,
           };
