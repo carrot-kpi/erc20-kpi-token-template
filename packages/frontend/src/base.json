@@ -3,5 +3,8 @@
     "description": "An official Carrot v1 template to support ERC20 KPI tokens creation with up to 5 ERC20 rewards. If you want to be able to distribute ERC20 KPI tokens after creating your campaign, this is the right template for you.",
     "tags": ["erc20", "multi-rewards"],
     "repository": "https://github.com/carrot-kpi/erc20-kpi-token-template",
-    "stagingURL": "https://erc20-kpi-token-template.staging.carrot.community"
+    "previewUrl": {
+        "development": "https://erc20-kpi-token-template.dev.carrot.community",
+        "staging": "https://erc20-kpi-token-template.staging.carrot.community"
+    }
 }
