@@ -1709,10 +1709,21 @@
     use-fathom-client "^1.3.2"
     viem "^2.7.1"
 
-"@carrot-kpi/react@*", "@carrot-kpi/react@^0.78.0":
+"@carrot-kpi/react@*":
   version "0.78.0"
   resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.78.0.tgz#beb28a11721020b6aaa894b855b4d396dfd126ca"
   integrity sha512-AuxpsiWJqizxwbYoRyVKEQVRn0V+QTsc/vXvSjqOFvIY81VL1Y5zkA7DuROSeFvarpc2O6oeM5EGerX9M2MXrA==
+  dependencies:
+    "@carrot-kpi/sdk" "*"
+    "@uniswap/token-lists" "1.0.0-beta.33"
+    class-variance-authority "^0.7.0"
+    react-use "^17.5.0"
+    viem "^2.7.1"
+
+"@carrot-kpi/react@^0.79.0":
+  version "0.79.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.79.0.tgz#fd824c29d36651632425b00a0638d8eb6ff9c645"
+  integrity sha512-uGz6n0HbMpRHCVIR5MJGEi0ACfEUE0p0i8+9tMnEzYZIzIphw9pqgEwvjsQvcTiHEw1MueLtqCzTHR0lmr4W5w==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@uniswap/token-lists" "1.0.0-beta.33"
@@ -1724,6 +1735,16 @@
   version "1.51.0"
   resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.51.0.tgz#0200f87c9069851490cc9e9e3d33603ac880c6bb"
   integrity sha512-+gAonIC9wBNcK3I91mUT0LJW3uuwZFQUSjHnyi8PTQAV73SYdDajvTW1ONhSK+HaH3oUVAS902hfnSBr3UL97A==
+  dependencies:
+    "@carrot-kpi/contracts" "^0.10.1"
+    decimal.js-light "^2.5.1"
+    multiformats "^13.0.1"
+    viem "^2.7.1"
+
+"@carrot-kpi/sdk@^1.52.0":
+  version "1.52.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.52.0.tgz#a52e5d67dc6e31404aa488ac2a30845ab84288bb"
+  integrity sha512-CCQupD9Zjh5IiKVb/a8amoKFQacpW3Jp0aX7HYtKuTxalGvYv9svKP/vRBnMoeK8AkM0J9G04/HprMpt+b0UQw==
   dependencies:
     "@carrot-kpi/contracts" "^0.10.1"
     decimal.js-light "^2.5.1"

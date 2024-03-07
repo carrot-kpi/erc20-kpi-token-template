@@ -27,8 +27,8 @@
         "size-limit": "size-limit"
     },
     "dependencies": {
-        "@carrot-kpi/react": "^0.78.0",
-        "@carrot-kpi/sdk": "^1.51.0",
+        "@carrot-kpi/react": "^0.79.0",
+        "@carrot-kpi/sdk": "^1.52.0",
         "@carrot-kpi/shared-state": "^0.17.0",
         "@carrot-kpi/ui": "^0.69.0",
         "@fontsource/ibm-plex-mono": "^5.0.8",
