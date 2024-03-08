@@ -1687,10 +1687,10 @@
   resolved "https://registry.yarnpkg.com/@carrot-kpi/contracts/-/contracts-0.10.1.tgz#dd200425fe505a288d4138c7211cb2e568ae22ab"
   integrity sha512-GGd0R7gnq0Gz6pIidRF49Qc5NzgONLj9SUAt5Yx5+XCwbZkqdCpqh422BbcJ5CXml5KqXahc5mxVKD0UySY5WA==
 
-"@carrot-kpi/host-frontend@^0.40.2":
-  version "0.40.2"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/host-frontend/-/host-frontend-0.40.2.tgz#5389130a855901d3de31735dfe073bc3016bce6c"
-  integrity sha512-+T4UWkPskGFOUldX0KZdsn2HPE/8oek4Uy0ZeQsU6swMWYCrhPtTKovR7pj30jBVIGx0/ixQnzMMeadQ8sC5qg==
+"@carrot-kpi/host-frontend@^0.41.0":
+  version "0.41.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/host-frontend/-/host-frontend-0.41.0.tgz#0ca4ea24ded1c5d0513ecbc03580cb371e498ce9"
+  integrity sha512-6mlMm7P6viHdlBZank0xHq7CemdD1wVz+hSOiw1FTde2GBlFykxviTyz1wFGPO1RSEusttIN5MRHID5MDsSlGQ==
   dependencies:
     "@carrot-kpi/react" "*"
     "@carrot-kpi/sdk" "*"
@@ -1720,10 +1720,10 @@
     react-use "^17.5.0"
     viem "^2.7.1"
 
-"@carrot-kpi/react@^0.79.0":
-  version "0.79.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.79.0.tgz#fd824c29d36651632425b00a0638d8eb6ff9c645"
-  integrity sha512-uGz6n0HbMpRHCVIR5MJGEi0ACfEUE0p0i8+9tMnEzYZIzIphw9pqgEwvjsQvcTiHEw1MueLtqCzTHR0lmr4W5w==
+"@carrot-kpi/react@^0.80.0":
+  version "0.80.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/react/-/react-0.80.0.tgz#0e521e53ad108617aea970d96448ff5e0a183abd"
+  integrity sha512-80ri+kqnUX+BFn2DjHAyXtlmPVTtdDDRDvNvj1H4Ca5WwVU086WANVNx76juyxDJ0pNekNuHPnBsRUHiJdAw3Q==
   dependencies:
     "@carrot-kpi/sdk" "*"
     "@uniswap/token-lists" "1.0.0-beta.33"
@@ -1741,10 +1741,10 @@
     multiformats "^13.0.1"
     viem "^2.7.1"
 
-"@carrot-kpi/sdk@^1.52.0":
-  version "1.52.0"
-  resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.52.0.tgz#a52e5d67dc6e31404aa488ac2a30845ab84288bb"
-  integrity sha512-CCQupD9Zjh5IiKVb/a8amoKFQacpW3Jp0aX7HYtKuTxalGvYv9svKP/vRBnMoeK8AkM0J9G04/HprMpt+b0UQw==
+"@carrot-kpi/sdk@^1.53.0":
+  version "1.53.0"
+  resolved "https://registry.yarnpkg.com/@carrot-kpi/sdk/-/sdk-1.53.0.tgz#a283d8e394e0fd534c524b235eeefff8f3116a83"
+  integrity sha512-ZI/YR5dDPJ3ul01ka+lsGWWKuLqB/Fb77KqLe9+zWsdlXaOmoatmte4BLdeSm9ZQpcvtQnJ2hP3mPTVqsMxxQw==
   dependencies:
     "@carrot-kpi/contracts" "^0.10.1"
     decimal.js-light "^2.5.1"
