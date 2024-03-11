@@ -148,6 +148,7 @@ export const Component = ({
         (
             oraclesWithInitializationBundleGetter: OracleWithInitializationBundleGetter[],
         ) => {
+            handleDraftSave();
             setOraclesWithInitializationBundleGetter(
                 oraclesWithInitializationBundleGetter,
             );
@@ -155,7 +156,7 @@ export const Component = ({
             setStep(nextStep);
             setMostUpdatedStep(nextStep);
         },
-        [enableOraclePickStep],
+        [enableOraclePickStep, handleDraftSave],
     );
 
     if (
