@@ -44,7 +44,6 @@ const main = async () => {
                 ),
                 getTemplateComponentWebpackConfig(
                     "page",
-                    {},
                     {
                         ENVIRONMENT: JSON.stringify(process.env.ENVIRONMENT),
                     },
