@@ -21,8 +21,10 @@
     "scripts": {
         "lint": "eslint --ext .js,.ts,.tsx ./src ./scripts ./.cct ./jest.config.js",
         "format": "eslint --fix --ext .tsx,.ts,.js ./ && prettier --write .",
-        "build": "node ./scripts/build.js",
-        "build:prod": "NODE_ENV=production node ./scripts/build.js",
+        "build": "yarn build:dev",
+        "build:production": "NODE_ENV=production ENVIRONMENT=prod node ./scripts/build.js",
+        "build:staging": "NODE_ENV=production ENVIRONMENT=staging node ./scripts/build.js",
+        "build:dev": "ENVIRONMENT=dev node ./scripts/build.js",
         "test": "echo 'No tests implemented yet...'",
         "size-limit": "size-limit"
     },

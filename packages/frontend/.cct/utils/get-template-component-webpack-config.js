@@ -119,6 +119,7 @@ export const getTemplateComponentWebpackConfig = (
                 ...globals,
                 __ROOT_ID__: JSON.stringify(UNIQUE_ID),
                 __PLAYGROUND__: JSON.stringify(mode === "playground"),
+                ENVIRONMENT: JSON.stringify(process.env.ENVIRONMENT),
             }),
             new MiniCssExtractPlugin(),
             new webpack.container.ModuleFederationPlugin({

@@ -14,6 +14,7 @@
         "lint": "turbo run lint",
         "format": "turbo run format",
         "start": "carrot-scripts start",
+        "start:production": "ENVIRONMENT=prod carrot-scripts start",
         "start:staging": "ENVIRONMENT=staging carrot-scripts start",
         "start:dev": "ENVIRONMENT=dev carrot-scripts start",
         "test": "turbo run test",
