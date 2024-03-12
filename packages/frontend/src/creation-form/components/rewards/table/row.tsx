@@ -111,7 +111,7 @@ export const RewardRow = ({
                     defaultText={symbol}
                     ipfsGatewayURL={ipfsGatewayURL}
                 />
-                <Typography>{symbol}</Typography>
+                <Typography weight="medium">{symbol}</Typography>
             </div>
             <Popover
                 anchor={anchorRef.current}
@@ -150,6 +150,7 @@ export const RewardRow = ({
                 <Info className="w-4 h-4" />
                 <Typography
                     ref={anchorRef}
+                    weight="medium"
                     className={{
                         root: "text-center",
                     }}
@@ -167,7 +168,7 @@ export const RewardRow = ({
                 )}
             </div>
             {!noMinimumPayout && (
-                <Typography className={{ root: "text-right" }}>
+                <Typography weight="medium" className={{ root: "text-right" }}>
                     {formatCurrencyAmount({
                         amount: new Amount(rewardToken, BigInt(minimumPayout)),
                         withSymbol: false,

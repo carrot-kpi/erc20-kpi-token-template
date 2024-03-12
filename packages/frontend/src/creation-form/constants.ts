@@ -1,3 +1,6 @@
+import type { ShareTarget } from "./types";
+import { getCampaignLink as getKpiTokenLink } from "./utils/campaign";
+
 export const NO_SPECIAL_CHARACTERS_REGEX =
     /^[A-Z0-9@~`!@#$%^&*()_=+\\';:"\/?>.<,-\s]*$/i;
 
@@ -17,3 +20,22 @@ export const DEFAULT_NUMBER_FORMAT_VALUE = {
 };
 
 export const JIT_FUNDING_FEATURE_ID = 1;
+
+const SHARE_BASE_TEXT = "Checkout this new Carrot campaign!";
+
+export const SHARE_INTENT_BASE_URL: Record<
+    ShareTarget,
+    (kpiTokenAddress: string) => string
+> = {
+    discord: (kpiTokenAddress: string) => {
+        // TODO: implement
+        return kpiTokenAddress;
+    },
+    telegram: (kpiTokenAddress: string) => {
+        return `https://t.me/share/url?url=${encodeURIComponent(getKpiTokenLink(kpiTokenAddress))}&text=${encodeURIComponent(SHARE_BASE_TEXT)}`;
+    },
+    x: (kpiTokenAddress: string) => {
+        const text = `${SHARE_BASE_TEXT} \n ${getKpiTokenLink(kpiTokenAddress)}`;
+        return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+    },
+};

@@ -57,7 +57,7 @@
     "label.rewards.picker.token.pick": "Pick a token",
     "label.rewards.picker.balance.max": "Max",
     "label.rewards.picker.fee": "Protocol fee: {{fee}}",
-    "label.rewards.table.reward": "Reward",
+    "label.rewards.table.reward": "Rewards",
     "label.rewards.table.amount": "Total amount",
     "label.rewards.table.amount.after.fees": "After fees",
     "label.rewards.table.minimum.payout": "Minimum payout",
@@ -87,6 +87,10 @@
     "add": "Add",
     "draft.create": "Save draft",
     "success.text": "Your campaign has successfully been created!",
+    "success.campaign.title": "Campaign",
+    "success.campaign.share.title": "Share campaign",
+    "success.campaign.share.url": "Campaign URL",
     "success.summary.time.label": "Expires in",
-    "success.button.label": "Go to campaign"
+    "success.summary.share.label": "Share on:",
+    "success.button.label": "See campaign page"
 }

@@ -56,11 +56,10 @@ export const RewardsTable = ({
     return (
         <div className="flex flex-col gap-2">
             <div className={headerStyles({ noMinimumPayout })}>
-                <Typography weight="medium" variant="sm">
+                <Typography variant="sm">
                     {t("label.rewards.table.reward")}
                 </Typography>
                 <Typography
-                    weight="medium"
                     className={{
                         root: noMinimumPayout ? "text-right" : "text-center",
                     }}
@@ -69,11 +68,7 @@ export const RewardsTable = ({
                     {t("label.rewards.table.amount")}
                 </Typography>
                 {!noMinimumPayout && (
-                    <Typography
-                        weight="medium"
-                        className={{ root: "text-right" }}
-                        variant="sm"
-                    >
+                    <Typography className={{ root: "text-right" }} variant="sm">
                         {t("label.rewards.table.minimum.payout")}
                     </Typography>
                 )}
