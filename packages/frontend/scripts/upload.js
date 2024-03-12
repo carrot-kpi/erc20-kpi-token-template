@@ -4,86 +4,94 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import chalk from "chalk";
 import ora from "ora";
-import { existsSync } from "fs";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { UnixFS } from "@web3-storage/upload-client";
-import { filesFromPaths } from "files-from-path";
-import mime from "mime";
+import { existsSync, readdirSync, readFileSync, statSync } from "fs";
+import { SERVICE_URLS } from "@carrot-kpi/sdk";
 
-const ALLOWED_ENVIRONMENTS = ["prod", "staging", "dev"];
+const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), "../dist");
 
-let spinner = ora();
-const [, , environment] = process.argv;
-if (!ALLOWED_ENVIRONMENTS.includes(environment)) {
-    spinner.fail(
-        `Invalid environment ${chalk.blue(environment)} specified, supported values are: ${chalk.blue(ALLOWED_ENVIRONMENTS.join(", "))}`,
+function prepareFolder(formData, basePath) {
+    let totalBytes = 0;
+    for (const fileName of readdirSync(basePath)) {
+        const filePath = join(basePath, fileName);
+        const fileStat = statSync(filePath);
+        if (fileStat.isDirectory()) {
+            totalBytes += prepareFolder(formData, filePath);
+        } else {
+            const content = readFileSync(filePath);
+            const blob = new Blob([content]);
+            totalBytes += blob.size;
+            formData.append(filePath.replace(OUT_DIR, ""), blob);
+        }
+    }
+    return totalBytes;
+}
+
+const [, , environment, jwt] = process.argv;
+
+const serviceUrls = SERVICE_URLS[environment]
+    ? SERVICE_URLS[environment]
+    : undefined;
+if (!serviceUrls) {
+    console.error(
+        `Invalid environment ${chalk.blue(environment)} specified, supported values are: ${chalk.blue(Object.keys(SERVICE_URLS).join(", "))}`,
     );
     process.exit(1);
 }
+
+if (!jwt) {
+    console.error(
+        `Please provide a valid JWT for the ${chalk.blue(environment)} data manager service`,
+    );
+    process.exit(1);
+}
+
+let spinner = ora();
 spinner.info(`Uploading to ${chalk.blue(environment)} CDN`);
 console.log();
 
 spinner = ora();
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const outDir = join(__dirname, "../dist");
-if (!existsSync(outDir)) {
-    spinner.fail(`Out folder ${chalk.blue(outDir)} does not exist`);
+if (!existsSync(OUT_DIR)) {
+    spinner.fail(`Out folder ${chalk.blue(OUT_DIR)} does not exist`);
     process.exit(1);
 }
-spinner.succeed(`Out folder ${chalk.blue(outDir)} exists`);
+spinner.succeed(`Out folder ${chalk.blue(OUT_DIR)} exists`);
 
-spinner = ora("Calculating template CID...").start();
-let files;
-let templateCID;
+spinner = ora("Preparing folder for upload...").start();
+let totalBytes;
+const formData = new FormData();
 try {
-    files = await filesFromPaths(outDir);
-    templateCID = (await UnixFS.encodeDirectory(files)).cid.toV1().toString();
+    totalBytes = prepareFolder(formData, OUT_DIR);
 } catch (error) {
-    spinner.fail(`Could not calculate template CID`);
+    spinner.fail(`Could not prepare folder for upload`);
     console.error(error);
     process.exit(1);
 }
-spinner.succeed(`Calculated template CID: ${templateCID}`);
+spinner.succeed(
+    `Folder successfully prepared for upload (${totalBytes} bytes)`,
+);
 
 spinner = ora(
     `Uploading template to ${chalk.blue(environment)} CDN...`,
 ).start();
-let filePath;
-let fileSpinner;
 try {
-    const s3Client = new S3Client({
-        forcePathStyle: false, // Configures to use subdomain/virtual calling format.
-        endpoint: "https://nyc3.digitaloceanspaces.com",
-        region: "us-east-1",
-    });
-    for (const file of files) {
-        filePath = join(outDir, file.name);
-        fileSpinner = ora({
-            text: `Uploading ${chalk.blue(filePath)}...`,
-            indent: 2,
-        });
-        /** @type {Uint8Array} */
-        let rawContent = Uint8Array.from([]);
-        let offset = 0;
-        for await (const chunk of file.stream()) {
-            rawContent.set(offset, chunk);
-            offset += chunk.length;
-        }
-        const put = new PutObjectCommand({
-            ACL: "public-read",
-            Bucket: `${environment}-carrot-data`,
-            Body: Buffer.from(rawContent),
-            Key: `${templateCID}/${file.name}`,
-            ContentType: mime.getType(file.name),
-        });
-        await s3Client.send(put);
-        fileSpinner.succeed(`${chalk.blue(filePath)} uploaded`);
-    }
+    const response = await fetch(
+        new URL("/data/s3/templates", serviceUrls.dataManager),
+        {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${jwt}`,
+            },
+            body: formData,
+        },
+    );
+    if (!response.ok) throw new Error(await response.text());
+    const { cid } = await response.json();
     spinner.succeed(
-        `Template uploaded to ${chalk.blue(environment)} CDN: https://data.${environment === "staging" ? "staging." : ""}carrot.community/${templateCID}/base.json`,
+        `Template uploaded to ${chalk.blue(environment)} CDN: ${serviceUrls.dataCdn}/${cid}/base.json`,
     );
 } catch (error) {
-    fileSpinner.fail(`Could not upload ${filePath}`);
+    spinner.fail(`Could not upload ${OUT_DIR}`);
+    console.log();
     console.error(error);
     process.exit(1);
 }

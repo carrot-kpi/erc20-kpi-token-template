@@ -56,3 +56,5 @@ export type State = {
     // oracle
     oracles?: Oracle[];
 };
+
+export type ShareTarget = "x" | "discord" | "telegram";

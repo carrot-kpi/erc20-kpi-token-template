@@ -31,6 +31,6 @@ createRoot(document.getElementById("root")!).render(
         ipfsGatewayURL={CCT_IPFS_GATEWAY_URL}
         kpiTokenTemplateBaseURL={CCT_TEMPLATE_URL}
         templateId={CCT_TEMPLATE_ID}
-        enableStagingMode={ENVIRONMENT !== "prod"}
+        enableTemplatePreviewMode={ENVIRONMENT !== "prod"}
     />,
 );
