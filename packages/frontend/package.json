@@ -21,7 +21,7 @@
     "scripts": {
         "lint": "eslint --ext .js,.ts,.tsx ./src ./scripts ./.cct ./jest.config.js",
         "format": "eslint --fix --ext .tsx,.ts,.js ./ && prettier --write .",
-        "build": "yarn build:dev",
+        "build": "node ./scripts/build.js",
         "build:production": "NODE_ENV=production ENVIRONMENT=prod node ./scripts/build.js",
         "build:staging": "NODE_ENV=production ENVIRONMENT=staging node ./scripts/build.js",
         "build:dev": "ENVIRONMENT=dev node ./scripts/build.js",
