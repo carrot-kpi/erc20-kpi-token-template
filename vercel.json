@@ -1,5 +1,0 @@
-{
-    "installCommand": "yarn install --frozen-lockfile",
-    "buildCommand": "yarn build --filter frontend",
-    "outputDirectory": "./packages/frontend/dist"
-}

@@ -4,7 +4,6 @@ import {BaseTestSetup} from "tests/commons/BaseTestSetup.sol";
 import {ERC20KPIToken} from "../src/ERC20KPIToken.sol";
 import {Clones} from "oz/proxy/Clones.sol";
 import {IERC20KPIToken, OracleData, Reward, FinalizableOracle} from "../src/interfaces/IERC20KPIToken.sol";
-import {TokenAmount} from "carrot/commons/Types.sol";
 
 /// SPDX-License-Identifier: GPL-3.0-or-later
 /// @title ERC20 KPI token get oracles test enumerate test

@@ -15,7 +15,7 @@ import {
     FinalizableOracle,
     FinalizableOracleWithoutAddress
 } from "./interfaces/IERC20KPIToken.sol";
-import {TokenAmount, InitializeKPITokenParams} from "carrot/commons/Types.sol";
+import {InitializeKPITokenParams} from "carrot/commons/Types.sol";
 
 uint256 constant JIT_FUNDING_FEATURE_ID = 1;
 
