@@ -80,8 +80,13 @@ export const Success = ({
                             {t("success.campaign.share.url")}
                         </Typography>
                         <div className="flex gap-2">
-                            <Typography weight="medium" uppercase truncate>
-                                {`carrot.eth/${state.title?.replace(/\s+/g, "")}`}
+                            <Typography
+                                weight="medium"
+                                uppercase
+                                truncate
+                                className={{ root: "flex-1" }}
+                            >
+                                {getCampaignLink(kpiTokenAddress)}
                             </Typography>
                             <ClipboardCopy
                                 text={getCampaignLink(kpiTokenAddress)}
