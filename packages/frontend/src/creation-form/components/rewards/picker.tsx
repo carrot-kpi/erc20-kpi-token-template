@@ -4,7 +4,7 @@ import {
 } from "@carrot-kpi/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { COINGECKO_LIST_URL } from "../../constants";
-import { SUPPORTED_CHAIN } from "@carrot-kpi/sdk";
+import { DATA_CDN_URL } from "@carrot-kpi/sdk";
 import { useImportableToken } from "../../hooks/useImportableToken";
 import {
     ERC20TokenPicker,
@@ -38,11 +38,8 @@ export const RewardTokenPicker = ({
     const chainId = useChainId();
 
     const tokenListUrls = useMemo(() => {
-        return [
-            COINGECKO_LIST_URL,
-            `${SUPPORTED_CHAIN[chainId].serviceUrls.staticCdn}/token-list.json`,
-        ];
-    }, [chainId]);
+        return [COINGECKO_LIST_URL, `${DATA_CDN_URL}/static/token-list.json`];
+    }, []);
     const { lists: tokenLists, loading } = useTokenLists({
         urls: tokenListUrls,
     });

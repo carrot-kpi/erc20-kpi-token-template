@@ -1,7 +1,7 @@
 import "../global.css";
 import "@carrot-kpi/ui/styles.css";
 
-import { Amount, Token } from "@carrot-kpi/sdk";
+import { Amount, Token, type SupportedChain } from "@carrot-kpi/sdk";
 import { Button, ErrorFeedback, Typography } from "@carrot-kpi/ui";
 import { type ReactElement, useEffect, useState } from "react";
 import {
@@ -26,7 +26,12 @@ import { decodeKPITokenData } from "../utils/data-decoding";
 import type { FinalizableOracle } from "./types";
 import ERC20_KPI_TOKEN_ABI from "../abis/erc20-kpi-token";
 import { useWatchKPITokenData } from "./hooks/useWatchKPITokenData";
-import { erc20Abi, type Address } from "viem";
+import {
+    erc20Abi,
+    type Address,
+    type PublicClient,
+    type Transport,
+} from "viem";
 
 export const Component = ({
     i18n,
@@ -34,7 +39,10 @@ export const Component = ({
     kpiToken,
     onTx,
 }: KPITokenRemotePageProps): ReactElement => {
-    const publicClient = usePublicClient();
+    const publicClient = usePublicClient() as PublicClient<
+        Transport,
+        SupportedChain | undefined
+    >;
     const { data: walletClient } = useWalletClient();
     const { chain } = useAccount();
 
