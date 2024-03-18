@@ -28,9 +28,9 @@ import {
     type KPITokenCreationFormProps,
     type NamespacedTranslateFunction,
     TxType,
-    useDevMode,
     useJSONUploader,
     type TemplateComponentStateChangeCallback,
+    useEnvironment,
 } from "@carrot-kpi/react";
 import {
     ChainId,
@@ -53,6 +53,7 @@ import {
 } from "../../utils/dates";
 import { RewardsTable } from "./rewards/table";
 import { ApproveRewards } from "./approve-rewards";
+import { Environment } from "@carrot-kpi/shared-state";
 
 interface DeployProps {
     t: NamespacedTranslateFunction;
@@ -79,7 +80,7 @@ export const Deploy = ({
 }: DeployProps): ReactElement => {
     const { address, chain } = useAccount();
     const publicClient = usePublicClient();
-    const devMode = useDevMode();
+    const environment = useEnvironment();
     const uploadJSON = useJSONUploader();
 
     const [expirationErrorText, setExpirationErrorText] = useState("");
@@ -321,7 +322,7 @@ export const Deploy = ({
                 );
                 const receipt = await publicClient.waitForTransactionReceipt({
                     hash: tx,
-                    confirmations: devMode ? 1 : 3,
+                    confirmations: environment === Environment.Local ? 1 : 3,
                 });
                 if (receipt.status === "reverted") {
                     console.warn("creation transaction reverted");
@@ -365,7 +366,7 @@ export const Deploy = ({
         void create();
     }, [
         simulatedCreateToken?.request,
-        devMode,
+        environment,
         onCreate,
         onNext,
         onTx,
